@@ -54,15 +54,15 @@ function PagePerDate(props) {
 
             if (scoresPerDay[dateValue] !== undefined) {
                 scoresPerDay[dateValue].count_scores++;
-                scoresPerDay[dateValue].total_score += parseInt(score.score);
-                scoresPerDay[dateValue].total_pp += parseFloat(score.pp);
-                scoresPerDay[dateValue].total_sr += parseFloat(score.stars);
+                scoresPerDay[dateValue].total_score += score.score;
+                scoresPerDay[dateValue].total_pp += score.pp;
+                scoresPerDay[dateValue].total_sr += score.stars;
             } else {
                 scoresPerDay[dateValue] = {};
                 scoresPerDay[dateValue].count_scores = 1;
-                scoresPerDay[dateValue].total_score = parseInt(score.score);
-                scoresPerDay[dateValue].total_pp = parseFloat(score.pp);
-                scoresPerDay[dateValue].total_sr = parseFloat(score.stars);
+                scoresPerDay[dateValue].total_score = score.score;
+                scoresPerDay[dateValue].total_pp = score.pp;
+                scoresPerDay[dateValue].total_sr = score.stars;
             }
             scoresPerDay[dateValue].actual_date = moment(score.date_played);
 

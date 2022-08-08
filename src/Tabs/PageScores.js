@@ -95,18 +95,18 @@ function PageScores(props) {
                 rows.push({
                     id: index,
                     title: `${score.title} [${score.diffname}]`,
-                    score: parseInt(score.score),
-                    mods: parseInt(score.enabled_mods),
-                    sr: parseFloat(score.stars),
-                    pp: parseFloat(score.pp),
+                    score: score.score,
+                    mods: score.enabled_mods,
+                    sr: score.stars,
+                    pp: score.pp,
                     date: `${score.date_played}`,
                     grade: `${score.rank}`,
-                    combo: `${parseFloat(score.combo)}`,
-                    maxcombo: `${parseFloat(score.maxcombo)}`,
-                    acc: parseFloat(score.accuracy),
-                    length: (score.mods & mods.DoubleTime ? parseInt(score.length) * 1.5 : (score.mods & mods.HalfTime ? parseInt(score.length) * 0.75 : parseInt(score.length))),
-                    bpm: (score.mods & mods.DoubleTime ? parseInt(score.bpm) * 1.5 : (score.mods & mods.HalfTime ? parseInt(score.bpm) * 0.75 : parseInt(score.bpm))),
-                    approved: parseInt(score.approved),
+                    combo: `${score.combo}`,
+                    maxcombo: `${score.maxcombo}`,
+                    acc: score.accuracy,
+                    length: (score.mods & mods.DoubleTime ? score.length * 1.5 : (score.mods & mods.HalfTime ? score.length * 0.75 : score.length)),
+                    bpm: (score.mods & mods.DoubleTime ? score.bpm * 1.5 : (score.mods & mods.HalfTime ? score.bpm * 0.75 : score.bpm)),
+                    approved: score.approved,
                 });
                 index++;
             });

@@ -51,7 +51,6 @@ function App() {
     var processed = await CalculateData(scores, _user);
     setProcessedData(processed);
 
-
     setLoadState(false);
   };
 
@@ -85,6 +84,17 @@ function App() {
             score.pp = Math.max(0, parseFloat(score.pp));
             score.enabled_mods = parseInt(score.enabled_mods);
             score.stars = parseFloat(score.stars);
+            score.maxcombo = parseInt(score.maxcombo);
+            score.combo = parseInt(score.combo);
+            score.countmiss = parseInt(score.countmiss);
+            score.count300 = parseInt(score.count300);
+            score.count100 = parseInt(score.count100);
+            score.count50 = parseInt(score.count50);
+            score.score = parseInt(score.score);
+            score.accuracy = parseFloat(score.accuracy);
+            score.length = parseInt(score.length);
+            score.bpm = parseInt(score.bpm);
+            score.approved = parseInt(score.approved);
           });
           setScoreData(results.data);
           new Promise((resolve) => resolve(processData(results.data)));
@@ -211,8 +221,8 @@ async function CalculateData(scores, _user) {
     var is_fc = score.perfect === "1";
 
     if (!is_fc) {
-      if (parseInt(score.countmiss) === 0 && parseInt(score.maxcombo) > 0) {
-        const perc_fc = 100 / parseInt(score.maxcombo) * parseInt(score.combo);
+      if (score.countmiss === 0 && score.maxcombo > 0) {
+        const perc_fc = 100 / score.maxcombo * score.combo;
         is_fc = perc_fc >= 99;
       }
     }
