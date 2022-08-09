@@ -10,6 +10,7 @@ import PageGeneral from './Tabs/PageGeneral';
 import { getModString, mods } from './helper';
 import PageScores from './Tabs/PageScores';
 import PhoneIcon from '@mui/icons-material/Phone';
+import PageInfo from './Tabs/PageInfo';
 const darkTheme = createTheme({
   palette: {
     mode: 'dark',
@@ -145,6 +146,7 @@ function App() {
           <Tooltip title="WARNING: This can take a while to generate">
             <Tab label="Per Month" {...a11yProps(3)} />
           </Tooltip>
+          <Tab label="Info" {...a11yProps(4)} />
         </Tabs>
         <Box component="main" sx={{ flexGrow: 1 }}>
           <Toolbar />
@@ -181,8 +183,8 @@ function App() {
               </Grid>
             </> : <></>}
           </Paper>
-          {(scoreData != null && user != null && processedData != null) ? <>
-            <Grid>
+          <Grid>
+            {(scoreData != null && user != null && processedData != null) ? <>
               <TabPanel value={tabValue} index={1}>
                 <br />
                 <PageGeneral data={{ scores: scoreData, user: user, processed: processedData }} />
@@ -199,8 +201,12 @@ function App() {
                 <br />
                 <PagePerDay data={{ scores: scoreData, user: user, processed: processedData, format: 'month' }} />
               </TabPanel>
-            </Grid>
-          </> : <></>}
+            </> : <></>}
+            <TabPanel value={tabValue} index={5}>
+              <br />
+              <PageInfo />
+            </TabPanel>
+          </Grid>
         </Box>
       </Box>
     </ThemeProvider>
@@ -224,9 +230,18 @@ async function CalculateData(scores, _user) {
   };
 
   var ranks = [];
+  ranks["XH"] = 0;
+  ranks["X"] = 0;
+  ranks["SH"] = 0;
+  ranks["S"] = 0;
+  ranks["A"] = 0;
+  ranks["B"] = 0;
+  ranks["C"] = 0;
+  ranks["D"] = 0;
   var used_mods = [];
   var tags = [];
   var highest_sr = 0;
+  console.time("total values");
   for await (const score of scores) {
 
     var is_fc = score.perfect === "1";
@@ -274,13 +289,17 @@ async function CalculateData(scores, _user) {
       highest_sr = score.stars;
     }
   }
+  console.timeEnd("total values");
 
+  console.time("sort used mods");
   used_mods.sort((a, b) => {
     if (a.value > b.value) { return -1; }
     if (a.value < b.value) { return 1; }
     return 0;
   })
+  console.timeEnd("sort used mods");
 
+  console.time("sort tags");
   var improvedTags = [];
   for (const tag in tags) {
     improvedTags.push({
@@ -294,6 +313,7 @@ async function CalculateData(scores, _user) {
     if (a.value < b.value) { return 1; }
     return 0;
   })
+  console.timeEnd("sort tags");
 
   processed.usedMods = used_mods;
   // processed.usedTags = tags;

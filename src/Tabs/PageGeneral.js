@@ -225,7 +225,7 @@ function PageGeneral(props) {
                                                     },
                                                     backgroundColor: '#00000088',
                                                     formatter: function (value, context) {
-                                                        return `${context.chart.data.labels[context.dataIndex]}: ${value.toLocaleString("en-US")} (${(100 / props.data.scores.length * value).toFixed(2)}%)`;
+                                                        return (value!==undefined?(`${context.chart.data.labels[context.dataIndex]}: ${value.toLocaleString("en-US")} (${(100 / props.data.scores.length * value).toFixed(2)}%)`):"");
                                                     }
                                                 }
                                             }
