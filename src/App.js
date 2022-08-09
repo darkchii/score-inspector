@@ -46,6 +46,12 @@ function App() {
       setLoadState(false);
       return;
     }
+
+    let _scoreRank = await fetch(`https://score.respektive.pw/u/${scores[0].user_id}`).then((res) => res.json());
+    if (_scoreRank !== undefined) {
+      _user.scoreRank = _scoreRank[0].rank;
+    }
+
     setUser(_user);
 
     var processed = await CalculateData(scores, _user);
@@ -97,7 +103,7 @@ function App() {
             score.approved = parseInt(score.approved);
           });
           setScoreData(results.data);
-          new Promise((resolve) => resolve(processData(results.data)));
+          Promise.resolve(processData(results.data));
         } else {
           // console.log("Invalid score dataset!!!!!");
           setLoadState(false);
@@ -150,13 +156,15 @@ function App() {
               direction="column"
               alignItems="center"
               justifyContent="center"
-              sx={{ py: 2 }}
+              sx={{ py: 2, backgroundImage: `url("${(user !== undefined && user !== null ? user.cover_url : "null")}")` }}
             >
               <Typography>To get your scores, head over to the osu!alternative Discord server, and follow the guide to fetching scores.<br />
                 When the fetcher is complete, run <code>!getfile -type scores</code> in the bot channel. Upload the resulting file here.<br /><br />
-                <a href="https://discord.gg/VZWRZZXcW4">Join osu!alternative</a><br /><br />
-              </Typography>
-              <Button variant="contained" component="label" disabled={loadState}>
+                <Button href='https://discord.gg/VZWRZZXcW4' variant="contained" size='small' component="label">
+                  Join osu!alternative
+                </Button>
+              </Typography><br /><br />
+              <Button variant="contained" color="success" component="label" disabled={loadState}>
                 Upload scores
                 <input onChange={e => handleScoresUpload(e.target.files[0])} hidden accept=".csv" type="file" />
               </Button>
@@ -174,22 +182,24 @@ function App() {
             </> : <></>}
           </Paper>
           {(scoreData != null && user != null && processedData != null) ? <>
-            <TabPanel value={tabValue} index={1}>
-              <br />
-              <PageGeneral data={{ scores: scoreData, user: user, processed: processedData }} />
-            </TabPanel>
-            <TabPanel value={tabValue} index={2}>
-              <br />
-              <PageScores data={{ scores: scoreData, user: user, processed: processedData }} />
-            </TabPanel>
-            <TabPanel value={tabValue} index={3}>
-              <br />
-              <PagePerDay data={{ scores: scoreData, user: user, processed: processedData }} />
-            </TabPanel>
-            <TabPanel value={tabValue} index={4}>
-              <br />
-              <PagePerDay data={{ scores: scoreData, user: user, processed: processedData, format: 'month' }} />
-            </TabPanel>
+            <Grid>
+              <TabPanel value={tabValue} index={1}>
+                <br />
+                <PageGeneral data={{ scores: scoreData, user: user, processed: processedData }} />
+              </TabPanel>
+              <TabPanel value={tabValue} index={2}>
+                <br />
+                <PageScores data={{ scores: scoreData, user: user, processed: processedData }} />
+              </TabPanel>
+              <TabPanel value={tabValue} index={3}>
+                <br />
+                <PagePerDay data={{ scores: scoreData, user: user, processed: processedData }} />
+              </TabPanel>
+              <TabPanel value={tabValue} index={4}>
+                <br />
+                <PagePerDay data={{ scores: scoreData, user: user, processed: processedData, format: 'month' }} />
+              </TabPanel>
+            </Grid>
           </> : <></>}
         </Box>
       </Box>
@@ -215,6 +225,7 @@ async function CalculateData(scores, _user) {
 
   var ranks = [];
   var used_mods = [];
+  var tags = [];
   var highest_sr = 0;
   for await (const score of scores) {
 
@@ -234,6 +245,16 @@ async function CalculateData(scores, _user) {
     } else {
       ranks[rankIndex[score.rank]] = 1;
     }
+
+    score.tags.split(" ").forEach(tag => {
+      // console.log(tag);
+      const _tag = tag.trim().replaceAll('"', '').toString();
+      if (tags[_tag] !== undefined) {
+        tags[_tag]++;
+      } else {
+        tags[_tag] = 1;
+      }
+    });
 
     const _m = getModString(score.enabled_mods).toString();
     if (used_mods.findIndex(m => m.mods === _m) === -1) {
@@ -260,8 +281,23 @@ async function CalculateData(scores, _user) {
     return 0;
   })
 
+  var improvedTags = [];
+  for (const tag in tags) {
+    improvedTags.push({
+      tag: tag,
+      value: tags[tag]
+    });
+  }
+
+  improvedTags.sort((a, b) => {
+    if (a.value > b.value) { return -1; }
+    if (a.value < b.value) { return 1; }
+    return 0;
+  })
+
   processed.usedMods = used_mods;
-  console.log(used_mods);
+  // processed.usedTags = tags;
+  processed.usedTags = improvedTags;
 
   processed.rankCounts = ranks;
 
@@ -270,7 +306,11 @@ async function CalculateData(scores, _user) {
   var total_pp = 0;
   var total_sr = 0;
   var total_fc = 0;
+  var total_length = 0;
   for await (const score of scores) {
+    if (!isNaN(score.length)) {
+      total_length += score.length;
+    }
     if (!isNaN(score.pp)) {
       total_pp += score.pp;
     }
@@ -288,6 +328,8 @@ async function CalculateData(scores, _user) {
   processed.average_score = _user.statistics.ranked_score / scores.length;
   processed.highest_sr = highest_sr;
   processed.fc_rate = 100 / scores.length * total_fc;
+  processed.total_length = total_length;
+  processed.average_length = total_length / scores.length;
 
   return processed;
 }

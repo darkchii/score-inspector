@@ -6,6 +6,7 @@ import { Chart as ChartJS, ArcElement, Tooltip as ChartTooltip, Legend } from 'c
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { getModString, mods, mod_strings_long } from "../helper";
 import { getModIcon } from "../Assets";
+import moment from "moment";
 ChartJS.register(ArcElement, ChartTooltip, Legend, ChartDataLabels);
 
 function PageGeneral(props) {
@@ -113,6 +114,79 @@ function PageGeneral(props) {
                 </Grid>
             </Grid>
             <Grid container spacing={3} sx={{ mt: 1 }}>
+                <Grid item xs={12} sm={3} md={3}>
+                    <Grid container spacing={3}>
+                        <Grid item xs={12} sm={12} md={12}>
+                            <Card>
+                                <CardContent>
+                                    <Grid container spacing={3} sx={{ justifyContent: 'space-between' }}>
+                                        <Grid item>
+                                            <Typography color="textPrimary" variant="h4">
+                                                {props.data.user.scoreRank !== undefined && props.data.user.scoreRank > 0 ?
+                                                    <>#<NumberFormat displayType={'text'} thousandSeparator={true} value={props.data.user.scoreRank.toLocaleString("en-US")} /></>
+                                                    : <>&gt;#10,000</>}
+                                            </Typography>
+                                            <Typography color="textSecondary">score rank</Typography>
+                                        </Grid>
+                                    </Grid>
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={12}>
+                            <Card>
+                                <CardContent>
+                                    <Grid container spacing={3} sx={{ justifyContent: 'space-between' }}>
+                                        <Grid item>
+                                            <Typography color="textPrimary" variant="h4">{(props.data.processed.total_length/60/60).toFixed(1)} hours</Typography>
+                                            <Typography color="textSecondary">total length</Typography>
+                                        </Grid>
+                                    </Grid>
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={12}>
+                            <Card>
+                                <CardContent>
+                                    <Grid container spacing={3} sx={{ justifyContent: 'space-between' }}>
+                                        <Grid item>
+                                            <Typography color="textPrimary" variant="h4">{moment.utc(moment.duration(props.data.processed.average_length, "seconds").asMilliseconds()).format("mm:ss")} minutes</Typography>
+                                            <Typography color="textSecondary">average length</Typography>
+                                        </Grid>
+                                    </Grid>
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                    </Grid>
+                </Grid>
+                <Grid item xs={12} sm={3} md={3}>
+                    <Card sx={{ height: "100%" }}>
+                        <CardContent>
+                            <Grid container spacing={3} sx={{ justifyContent: 'space-between' }}>
+                                <Grid item sx={{width:'100%'}}>
+                                    <Typography color="textPrimary">tag occurances ({props.data.processed.usedTags.length.toLocaleString("en-US")} total)</Typography>
+                                    <TableContainer>
+                                        <Table size="small">
+                                            <TableBody>
+                                                {
+                                                    props.data.processed.usedTags.slice(0, 9).map((row) => (
+                                                        <TableRow>
+                                                            <TableCell component="th" scope="row">
+                                                                {row.tag}
+                                                            </TableCell>
+                                                            <TableCell component="th" scope="row">
+                                                                {row.value.toLocaleString("en-US")}
+                                                            </TableCell>
+                                                        </TableRow>
+                                                    ))
+                                                }
+                                            </TableBody>
+                                        </Table>
+                                    </TableContainer>
+                                </Grid>
+                            </Grid>
+                        </CardContent>
+                    </Card>
+                </Grid>
                 <Grid item xs={12} sm={6} md={3}>
                     <Paper elevation={10} sx={{ height: "100%" }}>
                         <Card sx={{ height: "100%" }}>
@@ -166,7 +240,7 @@ function PageGeneral(props) {
                     <Card sx={{ height: "100%" }}>
                         <CardContent>
                             <Grid container spacing={3} sx={{ justifyContent: 'space-between' }}>
-                                <Grid item>
+                                <Grid item sx={{width:'100%'}}>
                                     <Typography color="textPrimary">most used mod combinations</Typography>
                                     <TableContainer>
                                         <Table size="small">

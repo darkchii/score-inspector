@@ -38,19 +38,35 @@ function PagePerDate(props) {
                 addDateFormat = "month";
                 break;
         }
-        for await (const score of scores) {
-            var date = new Date(score.date_played);
 
-            var dateValue = date.toLocaleDateString("en-US");
+        console.log(moment(scores[0].date_played));
+
+        console.time("per section stats");
+        for (const score of scores) {
+            // var date = new Date(score.date_played);
+            var _moment = moment(score.date_played);
+
+            var dateValue;
             switch (dateFormat) {
                 default:
                 case "day":
-                    dateValue = date.toLocaleDateString("en-US");
+                    dateValue = _moment.format('YYYY-MM-DD');
                     break;
                 case "month":
-                    dateValue = moment(dateValue).format('MMMM YYYY');
+                    dateValue = _moment.format('MMMM YYYY');
                     break;
             }
+
+            // var dateValue = date.toLocaleDateString("en-US");
+            // switch (dateFormat) {
+            //     default:
+            //     case "day":
+            //         dateValue = date.toLocaleDateString("en-US");
+            //         break;
+            //     case "month":
+            //         dateValue = moment(dateValue).format('MMMM YYYY');
+            //         break;
+            // }
 
             if (scoresPerDay[dateValue] !== undefined) {
                 scoresPerDay[dateValue].count_scores++;
@@ -64,11 +80,13 @@ function PagePerDate(props) {
                 scoresPerDay[dateValue].total_pp = score.pp;
                 scoresPerDay[dateValue].total_sr = score.stars;
             }
-            scoresPerDay[dateValue].actual_date = moment(score.date_played);
+            scoresPerDay[dateValue].actual_date = _moment;
 
             index++;
         };
+        console.timeEnd("per section stats");
 
+        console.time("sorting");
         //convert it to a sortable array
         var realScoresPerDay = [];
         //(async function () { setLoadTitle("Sorting statistics"); })();
@@ -88,31 +106,43 @@ function PagePerDate(props) {
             return a.actual_date.valueOf() - b.actual_date.valueOf();
         });
 
+        console.timeEnd("sorting");
+
+        console.time("generating dates");
         //fill empty gaps
         let dates = [];
         var _start = moment(sorted[0].actual_date);
         var _end = moment(sorted[sorted.length - 1].actual_date).add(1, `${addDateFormat}s`);
         for (var m = moment(_start); m.isBefore(_end); m.add(1, `${addDateFormat}s`)) {
-            dates.push(m.toString());
+            dates.push(moment(m));
         }
+        console.timeEnd("generating dates");
 
+        console.time("filling empty spots");
         var r = dates.map(date => {
-            var o = sorted.find(x => moment(x.actual_date).isSame(date, addDateFormat));
-            var dateValue;
-            switch (dateFormat) {
-                default:
-                case "day":
-                    dateValue = moment(date).toDate().toLocaleDateString("en-US");
-                    break;
-                case "month":
-                    dateValue = moment(date).format('MMMM YYYY');
-                    break;
+            var o = sorted.findIndex(x => x.actual_date.isSame(date, addDateFormat));
+            if(o===-1){
+                var dateValue;
+                switch (dateFormat) {
+                    default:
+                    case "day":
+                        dateValue = date.format('YYYY-MM-DD');
+                        break;
+                    case "month":
+                        dateValue = date.format('MMMM YYYY');
+                        break;
+                }
+                return { date: dateValue, actual_date: date, count_scores: 0, total_score: 0, average_pp: 0, average_sr: 0 };
             }
-            return o ?? { date: dateValue, actual_date: date, count_scores: 0, total_score: 0, average_pp: 0, average_sr: 0 }
+            const data = sorted[o];
+            sorted.splice(o, 1);
+            return data;
         })
-
+        
         sorted = r;
+        console.timeEnd("filling empty spots");
 
+        console.time("generating cumulative stuff");
         //calculate cumulative data
         for (var i = 0; i < sorted.length; i++) {
             var prev = i > 0 ? sorted[i - 1].cumulative_score : 0;
@@ -141,8 +171,7 @@ function PagePerDate(props) {
             props.data.processed.scorePerDate[dateFormat] = sorted;
             props.data.processed.scorePerDateLabels[dateFormat] = props.data.processed.scorePerDate[dateFormat].map(x => x.date);
         }
-
-        forceUpdate();
+        console.timeEnd("generating cumulative stuff");
     }
 
 
@@ -150,7 +179,7 @@ function PagePerDate(props) {
         if (props.data.processed.scorePerDate === undefined || props.data.processed.scorePerDate[dateFormat] === undefined) {
             (async function () {
                 await new Promise(r => setTimeout(r, 1000));
-                processData(scores);
+                Promise.resolve(processData(scores)).then(() => { forceUpdate(); });
             })();
         }
     }, []);
