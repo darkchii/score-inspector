@@ -23,6 +23,7 @@ import PNG_MOD_EZ from "./Assets/MOD_EZ.png";
 import PNG_MOD_FL from "./Assets/MOD_FL.png";
 import PNG_MOD_HD from "./Assets/MOD_HD.png";
 import PNG_MOD_HR from "./Assets/MOD_HR.png";
+import PNG_MOD_TD from "./Assets/MOD_TD.png";
 
 function getModIcon(modString) {
     switch (modString) {
@@ -43,6 +44,7 @@ function getModIcon(modString) {
         case "FL": return PNG_MOD_FL;
         case "HD": return PNG_MOD_HD;
         case "HR": return PNG_MOD_HR;
+        case "TD": return PNG_MOD_TD;
     }
 }
 
@@ -71,5 +73,6 @@ export {
     PNG_MOD_FL,
     PNG_MOD_HD,
     PNG_MOD_HR,
+    PNG_MOD_TD,
     getModIcon
 };
