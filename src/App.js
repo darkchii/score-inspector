@@ -1,4 +1,4 @@
-import { CssBaseline, Box, AppBar, Toolbar, Typography, Button, Paper, Grid, CircularProgress, Tabs, Tab, Snackbar, Alert, Tooltip } from '@mui/material';
+import { CssBaseline, Box, AppBar, Toolbar, Typography, Button, Paper, Grid, CircularProgress, Tabs, Tab, Snackbar, Alert, Tooltip, Link } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import React, { useEffect } from 'react';
 import './App.css';
@@ -160,7 +160,7 @@ function App() {
             >
               <Typography>To get your scores, head over to the osu!alternative Discord server, and follow the guide to fetching scores.<br />
                 When the fetcher is complete, run <code>!getfile -type scores</code> in the bot channel. Upload the resulting file here.<br /><br />
-                <Button href='https://discord.gg/VZWRZZXcW4' variant="contained" size='small' component="label">
+                <Button href='https://discord.gg/VZWRZZXcW4' target="_blank" variant="contained" size='small'>
                   Join osu!alternative
                 </Button>
               </Typography><br /><br />
