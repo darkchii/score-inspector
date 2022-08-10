@@ -1,5 +1,5 @@
-import { useRef } from "react";
-import { Avatar, Box, Button, Card, CardContent, Grid, Typography } from "@mui/material";
+import { useEffect, useRef, useState } from "react";
+import { Avatar, Box, Button, Card, CardContent, FormControlLabel, FormGroup, Grid, Switch, Typography } from "@mui/material";
 import { Line } from "react-chartjs-2";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {
@@ -11,6 +11,8 @@ import {
     Title,
     Tooltip,
     Legend,
+    Filler,
+    ScriptableContext
 } from 'chart.js';
 ChartJS.register(
     CategoryScale,
@@ -20,7 +22,8 @@ ChartJS.register(
     Title,
     Tooltip,
     Legend,
-    ChartDataLabels
+    ChartDataLabels,
+    Filler
 );
 
 function TimeGraph(props) {
@@ -29,34 +32,17 @@ function TimeGraph(props) {
     var labels = props.labels;
     var _data = props.data;
 
-    //const labels = scoreData.map(x => x.date);
-
-    const data = {
+    const [data, setData] = useState({
         labels,
-        datasets: [
-            {
-                label: name,
-                data: _data, //scoreData.map(x => x.count_scores),
-                fill: 'start',
-                borderColor: 'rgb(255, 102, 158)',
-                backgroundColor: 'rgba(255, 102, 158, 0.5)',
-                tension: 0.1
-            },
-            // {
-            //     label: "Week average",
-            //     data: scoreData.map(x => x.average),
-            //     borderColor: 'rgb(255, 99, 132)',
-            //     backgroundColor: 'rgba(255, 99, 132, 0.5)',
-            //     tension: 0.1
-            // }
-        ]
-    }
+        datasets: []
+    })
 
-    const options = {
+    const [options, setOptions] = useState({
         responsive: true,
         plugins: {
             legend: {
                 position: 'top',
+                display: false
             },
             title: {
                 display: false,
@@ -80,14 +66,75 @@ function TimeGraph(props) {
             }
         },
         maintainAspectRatio: false,
-        animation: false
-    };
+        animation: false,
+        spanGaps: true
+    })
+
+    useEffect(() => {
+        // var cloneData = JSON.parse(JSON.stringify(data));
+        var newData = {
+            labels,
+            datasets: []
+        }
+        var index = 0;
+        props.data.forEach(_data => {
+            var dataObject = {
+                label: _data.name,
+                data: _data.set,
+                borderColor: `rgb(${_data.color.r}, ${_data.color.g}, ${_data.color.b})`,
+                fill: 'start',
+                backgroundColor: (context) => {
+                    const ctx = context.chart.ctx;
+                    const gradient = ctx.createLinearGradient(0, 0, 0, 500);
+                    gradient.addColorStop(0, `rgba(${_data.color.r}, ${_data.color.g}, ${_data.color.b}, 0.7)`);
+                    gradient.addColorStop(1, `rgba(${_data.color.r}, ${_data.color.g}, ${_data.color.b}, 0)`);
+                    return gradient;
+                },
+                tension: 0.3,
+            };
+            newData.datasets.push(dataObject);
+            index++;
+        });
+
+        setData(newData);
+    }, [props.data]);
 
     var chart = useRef(null);
 
+    const handleDataToggleChange = (event) => {
+
+        var clone = JSON.parse(JSON.stringify(data));
+        clone.datasets.forEach(_data => {
+            if (_data.label === event.target.name) {
+                _data.hidden = !event.target.checked
+            }
+        });
+
+        setData(clone);
+
+        // setState({
+        //   ...state,
+        //   [event.target.name]: event.target.checked,
+        // });
+    };
+
     return (
         <>
-            <Grid sx={{ height: 600 }}>
+            <Grid sx={{ height: 600, position: "relative" }}>
+                <FormGroup sx={{ position: "absolute", left: "5rem" }}>
+
+                    {
+                        data.datasets.length > 1 ?
+                            data.datasets.map(_data => (
+                                <FormControlLabel
+                                    control={
+                                        <Switch checked={!_data.hidden} onChange={handleDataToggleChange} name={_data.label} />
+                                    }
+                                    label={_data.label}
+                                />
+                            )) : <></>
+                    }
+                </FormGroup>
                 <Line ref={chart} options={options} data={data} />
             </Grid>
         </>

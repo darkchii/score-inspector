@@ -1,3 +1,4 @@
+/* eslint-disable no-loop-func */
 import { Avatar, BottomNavigation, BottomNavigationAction, Box, Card, CardContent, Grid, Paper, Skeleton, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import NumberFormat from "react-number-format";
@@ -6,6 +7,87 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import TimeGraph from "../Components/TimeGraph";
 import moment from "moment";
 ChartJS.register(ArcElement, Tooltip, Legend);
+
+const dataToList = [
+    {
+        outputValue: "count_scores",
+        exec: function (output, score) {
+            return output + 1;
+        }
+    },
+    {
+        outputValue: "total_score",
+        exec: function (output, score) {
+            return output + score.score;
+        }
+    },
+    {
+        outputValue: "total_pp",
+        exec: function (output, score) {
+            return output + score.pp;
+        }
+    },
+    {
+        outputValue: "total_sr",
+        exec: function (output, score) {
+            return output + score.stars;
+        }
+    },
+    {
+        outputValue: "total_ss",
+        exec: function (output, score) {
+            if (score.rank === "X" || score.rank === "XH") {
+                return output + 1;
+            }
+            return output;
+        }
+    },
+    {
+        outputValue: "total_s",
+        exec: function (output, score) {
+            if (score.rank === "S" || score.rank === "SH") {
+                return output + 1;
+            }
+            return output;
+        }
+    },
+    {
+        outputValue: "total_a",
+        exec: function (output, score) {
+            if (score.rank === "A") {
+                return output + 1;
+            }
+            return output;
+        }
+    },
+    {
+        outputValue: "total_b",
+        exec: function (output, score) {
+            if (score.rank === "B") {
+                return output + 1;
+            }
+            return output;
+        }
+    },
+    {
+        outputValue: "total_c",
+        exec: function (output, score) {
+            if (score.rank === "C") {
+                return output + 1;
+            }
+            return output;
+        }
+    },
+    {
+        outputValue: "total_d",
+        exec: function (output, score) {
+            if (score.rank === "D") {
+                return output + 1;
+            }
+            return output;
+        }
+    }
+];
 
 function useForceUpdate() {
     const [value, setValue] = useState(0); // integer state
@@ -57,29 +139,15 @@ function PagePerDate(props) {
                     break;
             }
 
-            // var dateValue = date.toLocaleDateString("en-US");
-            // switch (dateFormat) {
-            //     default:
-            //     case "day":
-            //         dateValue = date.toLocaleDateString("en-US");
-            //         break;
-            //     case "month":
-            //         dateValue = moment(dateValue).format('MMMM YYYY');
-            //         break;
-            // }
-
-            if (scoresPerDay[dateValue] !== undefined) {
-                scoresPerDay[dateValue].count_scores++;
-                scoresPerDay[dateValue].total_score += score.score;
-                scoresPerDay[dateValue].total_pp += score.pp;
-                scoresPerDay[dateValue].total_sr += score.stars;
-            } else {
+            if (scoresPerDay[dateValue] === undefined) {
                 scoresPerDay[dateValue] = {};
-                scoresPerDay[dateValue].count_scores = 1;
-                scoresPerDay[dateValue].total_score = score.score;
-                scoresPerDay[dateValue].total_pp = score.pp;
-                scoresPerDay[dateValue].total_sr = score.stars;
             }
+            dataToList.forEach(val => {
+                if (scoresPerDay[dateValue][val.outputValue] === undefined || scoresPerDay[dateValue][val.outputValue] === null) {
+                    scoresPerDay[dateValue][val.outputValue] = 0;
+                }
+                scoresPerDay[dateValue][val.outputValue] = val.exec(scoresPerDay[dateValue][val.outputValue], score);
+            });
             scoresPerDay[dateValue].actual_date = _moment;
 
             index++;
@@ -91,14 +159,15 @@ function PagePerDate(props) {
         var realScoresPerDay = [];
         //(async function () { setLoadTitle("Sorting statistics"); })();
         Object.keys(scoresPerDay).forEach(key => {
-            realScoresPerDay.push({
-                date: key,
-                actual_date: scoresPerDay[key].actual_date,
-                count_scores: scoresPerDay[key].count_scores,
-                total_score: scoresPerDay[key].total_score,
-                average_pp: parseInt("" + (scoresPerDay[key].total_pp / scoresPerDay[key].count_scores)),
-                average_sr: (scoresPerDay[key].total_sr / scoresPerDay[key].count_scores).toFixed(2)
-            })
+            var obj = {};
+            dataToList.forEach(val => {
+                obj[val.outputValue] = scoresPerDay[key][val.outputValue];
+            });
+            obj.date = key;
+            obj.actual_date = scoresPerDay[key].actual_date;
+            obj.average_pp = parseInt("" + (scoresPerDay[key].total_pp / scoresPerDay[key].count_scores));
+            obj.average_sr = scoresPerDay[key].count_scores > 0 ? parseFloat((scoresPerDay[key].total_sr / scoresPerDay[key].count_scores).toFixed(2)) : 0;
+            realScoresPerDay.push(obj);
         });
 
         //sort array
@@ -119,9 +188,13 @@ function PagePerDate(props) {
         console.timeEnd("generating dates");
 
         console.time("filling empty spots");
+        const referenceObject = JSON.parse(JSON.stringify(sorted[0]));
+        for (var p in referenceObject) {
+            referenceObject[p] = 0;
+        }
         var r = dates.map(date => {
             var o = sorted.findIndex(x => x.actual_date.isSame(date, addDateFormat));
-            if(o===-1){
+            if (o === -1) {
                 var dateValue;
                 switch (dateFormat) {
                     default:
@@ -132,13 +205,17 @@ function PagePerDate(props) {
                         dateValue = date.format('MMMM YYYY');
                         break;
                 }
-                return { date: dateValue, actual_date: date, count_scores: 0, total_score: 0, average_pp: 0, average_sr: 0 };
+                var clone = JSON.parse(JSON.stringify(referenceObject));
+                clone.date = dateValue;
+                clone.actual_date = date;
+                return clone;
             }
             const data = sorted[o];
             sorted.splice(o, 1);
             return data;
-        })
-        
+        });
+        console.log(r);
+
         sorted = r;
         console.timeEnd("filling empty spots");
 
@@ -158,6 +235,48 @@ function PagePerDate(props) {
             } else {
                 sorted[i].cumulative_plays = sorted[i].count_scores;
             }
+
+            prev = i > 0 ? sorted[i - 1].cumulative_rank_ss : 0;
+            if (prev) {
+                sorted[i].cumulative_rank_ss = sorted[i].total_ss + prev;
+            } else {
+                sorted[i].cumulative_rank_ss = sorted[i].total_ss;
+            }
+
+            prev = i > 0 ? sorted[i - 1].cumulative_rank_s : 0;
+            if (prev) {
+                sorted[i].cumulative_rank_s = sorted[i].total_s + prev;
+            } else {
+                sorted[i].cumulative_rank_s = sorted[i].total_s;
+            }
+
+            prev = i > 0 ? sorted[i - 1].cumulative_rank_a : 0;
+            if (prev) {
+                sorted[i].cumulative_rank_a = sorted[i].total_a + prev;
+            } else {
+                sorted[i].cumulative_rank_a = sorted[i].total_a;
+            }
+
+            prev = i > 0 ? sorted[i - 1].cumulative_rank_b : 0;
+            if (prev) {
+                sorted[i].cumulative_rank_b = sorted[i].total_b + prev;
+            } else {
+                sorted[i].cumulative_rank_b = sorted[i].total_b;
+            }
+
+            prev = i > 0 ? sorted[i - 1].cumulative_rank_c : 0;
+            if (prev) {
+                sorted[i].cumulative_rank_c = sorted[i].total_c + prev;
+            } else {
+                sorted[i].cumulative_rank_c = sorted[i].total_c;
+            }
+
+            prev = i > 0 ? sorted[i - 1].cumulative_rank_d : 0;
+            if (prev) {
+                sorted[i].cumulative_rank_d = sorted[i].total_d + prev;
+            } else {
+                sorted[i].cumulative_rank_d = sorted[i].total_d;
+            }
         }
 
         if (props.data.processed.scorePerDate === undefined) {
@@ -176,12 +295,12 @@ function PagePerDate(props) {
 
 
     useEffect(() => {
-        if (props.data.processed.scorePerDate === undefined || props.data.processed.scorePerDate[dateFormat] === undefined) {
-            (async function () {
-                await new Promise(r => setTimeout(r, 1000));
-                Promise.resolve(processData(scores)).then(() => { forceUpdate(); });
-            })();
-        }
+        // if (props.data.processed.scorePerDate === undefined || props.data.processed.scorePerDate[dateFormat] === undefined) {
+        (async function () {
+            await new Promise(r => setTimeout(r, 1000));
+            Promise.resolve(processData(scores)).then(() => { forceUpdate(); });
+        })();
+        // }
     }, []);
 
 
@@ -194,12 +313,28 @@ function PagePerDate(props) {
                             <Grid>
                                 {
                                     {
-                                        0: <TimeGraph name={`Scores set per ${dateFormat}`} labels={props.data.processed.scorePerDateLabels[dateFormat]} data={props.data.processed.scorePerDate[dateFormat].map(x => x.count_scores)} />,
-                                        1: <TimeGraph name={`Total score per ${dateFormat}`} labels={props.data.processed.scorePerDateLabels[dateFormat]} data={props.data.processed.scorePerDate[dateFormat].map(x => x.total_score)} />,
-                                        2: <TimeGraph name="Average PP per play" labels={props.data.processed.scorePerDateLabels[dateFormat]} data={props.data.processed.scorePerDate[dateFormat].map(x => x.average_pp)} />,
-                                        3: <TimeGraph name="Average SR per play" labels={props.data.processed.scorePerDateLabels[dateFormat]} data={props.data.processed.scorePerDate[dateFormat].map(x => x.average_sr)} />,
-                                        4: <TimeGraph name="Cumulative ranked score" labels={props.data.processed.scorePerDateLabels[dateFormat]} data={props.data.processed.scorePerDate[dateFormat].map(x => x.cumulative_score)} />,
-                                        5: <TimeGraph name="Cumulative plays" labels={props.data.processed.scorePerDateLabels[dateFormat]} data={props.data.processed.scorePerDate[dateFormat].map(x => x.cumulative_plays)} />,
+                                        0: <TimeGraph name={`Scores set per ${dateFormat}`} labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Scores set", set: props.data.processed.scorePerDate[dateFormat].map(x => x.count_scores), color: { r: 255, g: 102, b: 158 } }]} />,
+                                        1: <TimeGraph name={`Total score per ${dateFormat}`} labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Total score gained", set: props.data.processed.scorePerDate[dateFormat].map(x => x.total_score), color: { r: 255, g: 102, b: 158 } }]} />,
+                                        2: <TimeGraph name="Average PP per play" labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Average PP", set: props.data.processed.scorePerDate[dateFormat].map(x => x.average_pp), color: { r: 255, g: 102, b: 158 } }]} />,
+                                        3: <TimeGraph name="Average SR per play" labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Average SR", set: props.data.processed.scorePerDate[dateFormat].map(x => x.average_sr), color: { r: 255, g: 102, b: 158 } }]} />,
+                                        4: <TimeGraph name="Cumulative ranked score" labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Cumulative ranked score", set: props.data.processed.scorePerDate[dateFormat].map(x => x.cumulative_score), color: { r: 255, g: 102, b: 158 } }]} />,
+                                        5: <TimeGraph name="Cumulative plays" labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Cumulative plays", set: props.data.processed.scorePerDate[dateFormat].map(x => x.cumulative_plays), color: { r: 255, g: 102, b: 158 } }]} />,
+                                        6: <TimeGraph name="Grades" labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[
+                                            { name: "Total SS", set: props.data.processed.scorePerDate[dateFormat].map(x => x.total_ss), color: { r: 197, g: 197, b: 197 } },
+                                            { name: "Total S", set: props.data.processed.scorePerDate[dateFormat].map(x => x.total_s), color: { r: 255, g: 186, b: 14 } },
+                                            { name: "Total A", set: props.data.processed.scorePerDate[dateFormat].map(x => x.total_a), color: { r: 163, g: 163, b: 163 } },
+                                            { name: "Total B", set: props.data.processed.scorePerDate[dateFormat].map(x => x.total_b), color: { r: 255, g: 148, b: 11 } },
+                                            { name: "Total C", set: props.data.processed.scorePerDate[dateFormat].map(x => x.total_c), color: { r: 133, g: 214, b: 28 } },
+                                            { name: "Total D", set: props.data.processed.scorePerDate[dateFormat].map(x => x.total_d), color: { r: 243, g: 87, b: 90 } },
+                                        ]} />,
+                                        7: <TimeGraph name="Cumulative Grades" labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[
+                                            { name: "Total SS", set: props.data.processed.scorePerDate[dateFormat].map(x => x.cumulative_rank_ss), color: { r: 197, g: 197, b: 197 } },
+                                            { name: "Total S", set: props.data.processed.scorePerDate[dateFormat].map(x => x.cumulative_rank_s), color: { r: 255, g: 186, b: 14 } },
+                                            { name: "Total A", set: props.data.processed.scorePerDate[dateFormat].map(x => x.cumulative_rank_a), color: { r: 163, g: 163, b: 163 } },
+                                            { name: "Total B", set: props.data.processed.scorePerDate[dateFormat].map(x => x.cumulative_rank_b), color: { r: 255, g: 148, b: 11 } },
+                                            { name: "Total C", set: props.data.processed.scorePerDate[dateFormat].map(x => x.cumulative_rank_c), color: { r: 133, g: 214, b: 28 } },
+                                            { name: "Total D", set: props.data.processed.scorePerDate[dateFormat].map(x => x.cumulative_rank_d), color: { r: 243, g: 87, b: 90 } },
+                                        ]} />,
                                     }[timeGraphValue]
                                 }
                             </Grid>
@@ -210,6 +345,8 @@ function PagePerDate(props) {
                                 <BottomNavigationAction label="Average starrating" />
                                 <BottomNavigationAction label="Cumulative ranked score" />
                                 <BottomNavigationAction label="Cumulative plays set" />
+                                <BottomNavigationAction label="Grades" />
+                                <BottomNavigationAction label="Cumulative grades" />
                             </BottomNavigation>
                         </Paper>
                     </Grid>
