@@ -42,7 +42,7 @@ function TimeGraph(props) {
         plugins: {
             legend: {
                 position: 'top',
-                display: false
+                // display: false
             },
             title: {
                 display: false,
