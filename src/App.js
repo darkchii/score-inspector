@@ -9,8 +9,8 @@ import PagePerDay from './Tabs/PagePerDate';
 import PageGeneral from './Tabs/PageGeneral';
 import { getModString, mods } from './helper';
 import PageScores from './Tabs/PageScores';
-import PhoneIcon from '@mui/icons-material/Phone';
 import PageInfo from './Tabs/PageInfo';
+import axios from 'axios';
 const darkTheme = createTheme({
   palette: {
     mode: 'dark',
@@ -41,7 +41,14 @@ function App() {
   const processData = async (scores) => {
     (async function () { setLoadTitle("Fetching user"); })();
 
-    let _user = await fetch(`https://darkchii.nl/osu/api.php?user_id=${scores[0].user_id}`).then((res) => res.json());
+    const res = await axios.get(`https://darkchii.nl/score/api/user.php`, {
+      params: { id: scores[0].user_id },
+      headers: {
+        "Access-Control-Allow-Origin": "*"
+      }
+    }
+    );
+    let _user = res.data;
     if (_user.error !== undefined) {
       console.log(`Error fetching user: ${_user.error}`);
       setLoadState(false);
@@ -298,6 +305,7 @@ async function CalculateData(scores, _user) {
   var used_mods = [];
   var tags = [];
   var highest_sr = 0;
+
   console.time("total values");
   for await (const score of scores) {
 

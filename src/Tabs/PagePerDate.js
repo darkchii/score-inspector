@@ -181,7 +181,8 @@ function PagePerDate(props) {
         //fill empty gaps
         let dates = [];
         var _start = moment(sorted[0].actual_date);
-        var _end = moment(sorted[sorted.length - 1].actual_date).add(1, `${addDateFormat}s`);
+        // var _end = moment(sorted[sorted.length - 1].actual_date).add(1, `${addDateFormat}s`);
+        var _end = moment().add(1, `${addDateFormat}s`);
         for (var m = moment(_start); m.isBefore(_end); m.add(1, `${addDateFormat}s`)) {
             dates.push(moment(m));
         }
