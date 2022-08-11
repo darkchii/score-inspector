@@ -11,6 +11,7 @@ import { getModString, mods } from './helper';
 import PageScores from './Tabs/PageScores';
 import PageInfo from './Tabs/PageInfo';
 import axios from 'axios';
+import { getPerformance } from './osu';
 const darkTheme = createTheme({
   palette: {
     mode: 'dark',
@@ -93,6 +94,8 @@ function App() {
       complete: async function (results) {
         setLoadTitle("Validating scores");
         if (testScores(results.data)) {
+          results.data = results.data.filter(score => parseInt(score.approved) < 4);
+
           // console.log("Valid score dataset");
           results.data.forEach(score => {
             score.pp = Math.max(0, parseFloat(score.pp));
@@ -109,7 +112,32 @@ function App() {
             score.length = parseInt(score.length);
             score.bpm = parseInt(score.bpm);
             score.approved = parseInt(score.approved);
+            score.star_rating = parseFloat(score.star_rating);
+            score.aim_diff = parseFloat(score.aim_diff);
+            score.speed_diff = parseFloat(score.speed_diff);
+            score.fl_diff = parseFloat(score.fl_diff);
+            score.slider_factor = parseFloat(score.slider_factor);
+            score.modded_od = parseFloat(score.modded_od);
+            score.modded_ar = parseFloat(score.modded_ar);
+            score.modded_cs = parseFloat(score.modded_cs);
+            score.modded_hp = parseFloat(score.modded_hp);
+            score.sliders = parseInt(score.sliders);
+            score.circles = parseInt(score.circles);
+            score.spinners = parseInt(score.spinners);
+
+            score.totalhits = score.count300 + score.count100 + score.count50 + score.countmiss;
+
+            //perform these at the latest point of parsing
+            score.pp_fc = getPerformance({ count300: score.count300 + score.countmiss, count100: score.count100, count50: score.count50, countmiss: 0, combo: score.maxcombo, score: score });
+            score.pp_ss = getPerformance({ count300: score.count300 + score.countmiss + score.count100 + score.count50, count100: 0, count50: 0, countmiss: 0, combo: score.maxcombo, score: score });
           });
+          // const testID = Math.floor(Math.random() * (5000 - 100 + 1) + 100);
+          // const testPP = results.data.find(score=>score.star_rating>8);
+          // testPP.pp_ss = getPerformance({ count300: testPP.count300 + testPP.countmiss + testPP.count100 + testPP.count50, count100: 0, count50: 0, countmiss: 0, combo: testPP.maxcombo, score: testPP });
+          // testPP.pp_ss = getPerformance()
+          // console.log(testPP);
+          // results.data[testID].pp_fc = getPerformance({ count300: results.data[testID].count300 + results.data[testID].countmiss, count100: results.data[testID].count100, count50: results.data[testID].count50, countmiss: 0, combo: results.data[testID].maxcombo, score: results.data[testID] });
+          //results.data[testID].pp_ss = getPerformance({ count300: results.data[testID].count300 + results.data[testID].countmiss+results.data[testID].count50+results.data[testID].count100, count100: 0, count50: 0, countmiss: 0, combo: results.data[testID].maxcombo, score: results.data[testID] });
           setScoreData(results.data);
           Promise.resolve(processData(results.data));
         } else {
@@ -180,7 +208,7 @@ function App() {
               direction="column"
               alignItems="center"
               justifyContent="center"
-              sx={{ py: 2, backgroundImage: `url("${(user !== undefined && user !== null ? user.cover_url : "null")}")` }}
+              sx={{ py: 2, backgroundSize: "cover", backgroundRepeat: "no-repeat", backgroundPositionY: "center", backgroundImage: `url("${(user !== undefined && user !== null ? user.cover_url : "null")}")` }}
             >
               <Card sx={{ width: '60%' }}>
                 <CardContent>
@@ -306,6 +334,46 @@ async function CalculateData(scores, _user) {
   var tags = [];
   var highest_sr = 0;
 
+  console.time("calculate pp weights");
+
+  scores.sort((a, b) => {
+    if (a.pp > b.pp) { return -1; }
+    if (a.pp < b.pp) { return 1; }
+    return 0;
+  });
+
+  var index = 0;
+  scores.forEach(score => { score.pp_weight = Math.pow(0.95, index); index++; });
+
+  scores.sort((a, b) => {
+    if (a.pp_fc.total > b.pp_fc.total) { return -1; }
+    if (a.pp_fc.total < b.pp_fc.total) { return 1; }
+    return 0;
+  });
+
+  index = 0;
+  scores.forEach(score => { score.pp_fc.weight = Math.pow(0.95, index); index++; });
+
+  scores.sort((a, b) => {
+    if (a.pp_ss.total > b.pp_ss.total) { return -1; }
+    if (a.pp_ss.total < b.pp_ss.total) { return 1; }
+    return 0;
+  });
+
+  index = 0;
+  scores.forEach(score => { score.pp_ss.weight = Math.pow(0.95, index); index++; });
+
+  processed.fc_pp_weighted = 0;
+  processed.ss_pp_weighted = 0;
+  scores.forEach(score => {
+    processed.fc_pp_weighted += score.pp_fc.total * score.pp_fc.weight;
+    processed.ss_pp_weighted += score.pp_ss.total * score.pp_ss.weight;
+  });
+
+  console.log(scores);
+
+  console.timeEnd("calculate pp weights");
+
   console.time("total values");
   for await (const score of scores) {
 
@@ -350,8 +418,8 @@ async function CalculateData(scores, _user) {
       })
     }
 
-    if (!(score.enabled_mods & mods.NF) && score.stars > highest_sr) {
-      highest_sr = score.stars;
+    if (!(score.enabled_mods & mods.NF) && score.star_rating > highest_sr) {
+      highest_sr = score.star_rating;
     }
   }
   console.timeEnd("total values");

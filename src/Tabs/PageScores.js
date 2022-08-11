@@ -7,6 +7,7 @@ import { getModString, mods, mod_strings_long, numToMod } from "../helper";
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import DoneIcon from '@mui/icons-material/Done';
 import { green, pink } from "@mui/material/colors";
+import { getPerformance } from "../osu";
 // import grade_image_xh from "./assets/grade-xh.svg";
 
 function PageScores(props) {
@@ -78,6 +79,7 @@ function PageScores(props) {
         { field: 'approved', headerName: 'Status', minWidth: 50, type: "number", renderCell: (params) => { return approvedFormatter(params) } },
         { field: 'sr', headerName: 'Stars', minWidth: 100, type: "number", valueFormatter: (params) => { return `${params.value.toFixed(2)}*`; } },
         { field: 'pp', headerName: 'PP', minWidth: 80, type: "number", valueFormatter: (params) => { return `${params.value.toFixed(1)}pp`; } },
+        { field: 'ppfc', headerName: 'PPfc', minWidth: 80, type: "number", valueFormatter: (params) => { return `${params.value.toFixed(1)}pp`; } },
         { field: 'date', headerName: 'Date', minWidth: 150, valueFormatter: (params) => { return `${moment(params.value).fromNow()}`; } },
         { field: 'acc', headerName: 'Accuracy', minWidth: 120, type: "number", valueFormatter: (params) => { return `${params.value.toFixed(2)}%`; } },
         { field: 'grade', headerName: 'Grade', minWidth: 80, renderCell: (params) => { return gradeFormatter(params) } },
@@ -97,8 +99,9 @@ function PageScores(props) {
                     title: `${score.title} [${score.diffname}]`,
                     score: score.score,
                     mods: score.enabled_mods,
-                    sr: score.stars,
+                    sr: score.star_rating,
                     pp: score.pp,
+                    ppfc: score.pp_fc.total,
                     date: `${score.date_played}`,
                     grade: `${score.rank}`,
                     combo: `${score.combo}`,
@@ -106,7 +109,7 @@ function PageScores(props) {
                     acc: score.accuracy,
                     length: (score.mods & mods.DoubleTime ? score.length * 1.5 : (score.mods & mods.HalfTime ? score.length * 0.75 : score.length)),
                     bpm: (score.mods & mods.DoubleTime ? score.bpm * 1.5 : (score.mods & mods.HalfTime ? score.bpm * 0.75 : score.bpm)),
-                    approved: score.approved,
+                    approved: score.approved
                 });
                 index++;
             });

@@ -112,6 +112,30 @@ function PageGeneral(props) {
                         </CardContent>
                     </Card>
                 </Grid>
+                <Grid item xs={12} sm={6} md={3}>
+                    <Card>
+                        <CardContent>
+                            <Grid container spacing={3} sx={{ justifyContent: 'space-between' }}>
+                                <Grid item>
+                                    <Typography color="textPrimary" variant="h4"><NumberFormat displayType={'text'} thousandSeparator={true} value={props.data.processed.fc_pp_weighted.toFixed(0)} />pp</Typography>
+                                    <Typography color="textSecondary">if everything fullcombo</Typography>
+                                </Grid>
+                            </Grid>
+                        </CardContent>
+                    </Card>
+                </Grid>
+                <Grid item xs={12} sm={6} md={3}>
+                    <Card>
+                        <CardContent>
+                            <Grid container spacing={3} sx={{ justifyContent: 'space-between' }}>
+                                <Grid item>
+                                    <Typography color="textPrimary" variant="h4"><NumberFormat displayType={'text'} thousandSeparator={true} value={props.data.processed.ss_pp_weighted.toFixed(0)} />pp</Typography>
+                                    <Typography color="textSecondary">if everything 100% accuracy</Typography>
+                                </Grid>
+                            </Grid>
+                        </CardContent>
+                    </Card>
+                </Grid>
             </Grid>
             <Grid container spacing={3} sx={{ mt: 1 }}>
                 <Grid item xs={12} sm={3} md={3}>
