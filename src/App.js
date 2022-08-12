@@ -43,7 +43,7 @@ function App() {
   const processData = async (scores) => {
     (async function () { setLoadTitle("Fetching user"); })();
 
-    const res = await axios.get(`http://darkchii.nl:4500/users/${scores[0].user_id}`, {
+    const res = await axios.get(`http://darkchii.nl:5000/users/${scores[0].user_id}`, {
       headers: {
         "Access-Control-Allow-Origin": "*"
       }
