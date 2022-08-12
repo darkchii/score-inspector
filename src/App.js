@@ -66,7 +66,7 @@ function App() {
 
     var processed = {};
 
-    const bmCount = await axios.get(`http://darkchii.nl:${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development')?5000:4500}/api/beatmaps/monthly`, {
+    const bmCount = await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development')?'http://darkchii.nl:5000/':'http://darkchii.nl/score/api/'}api/beatmaps/monthly`, {
       params: { id: scores[0].user_id },
       headers: {
         "Access-Control-Allow-Origin": "*"
