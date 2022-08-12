@@ -12,6 +12,7 @@ import PageScores from './Tabs/PageScores';
 import PageInfo from './Tabs/PageInfo';
 import axios from 'axios';
 import { getPerformance } from './osu';
+import moment from 'moment';
 const darkTheme = createTheme({
   palette: {
     mode: 'dark',
@@ -63,7 +64,35 @@ function App() {
 
     setUser(_user);
 
-    var processed = await CalculateData(scores, _user);
+    var processed = {};
+
+    const bmCount = await axios.get(`http://darkchii.nl:5000/api/beatmaps/monthly`, {
+      params: { id: scores[0].user_id },
+      headers: {
+        "Access-Control-Allow-Origin": "*"
+      }
+    }
+    );
+
+    processed.beatmapInfo = {};
+    processed.beatmapInfo.monthly = [];
+
+    bmCount.data.forEach(monthData => {
+      const y = monthData.year;
+      const m = monthData.month;
+      const c = monthData.amount;
+      processed.beatmapInfo.monthly[`${y}-${m}-01`] = c;
+    })
+
+    var total = 0;
+    processed.beatmapInfo.monthlyCumulative = [];
+    Object.keys(processed.beatmapInfo.monthly).forEach(key => {
+      const c = processed.beatmapInfo.monthly[key];
+      total+=c;
+      processed.beatmapInfo.monthlyCumulative[key] = total;
+    });
+
+    processed = await CalculateData(processed, scores, _user);
     setProcessedData(processed);
 
     setLoadState(false);
@@ -190,13 +219,10 @@ function App() {
           <Toolbar />
           <Tab label="General" {...a11yProps(0)} />
           <Tab label="Scores" {...a11yProps(1)} />
-          <Tooltip title="WARNING: This can take a while to generate">
-            <Tab label="Per Day" {...a11yProps(2)} />
+          <Tooltip>
+            <Tab label="Per Month" {...a11yProps(2)} />
           </Tooltip>
-          <Tooltip title="WARNING: This can take a while to generate">
-            <Tab label="Per Month" {...a11yProps(3)} />
-          </Tooltip>
-          <Tab label="Info" {...a11yProps(4)} />
+          <Tab label="Info" {...a11yProps(3)} />
         </Tabs>
         <Box component="main" sx={{ flexGrow: 1 }}>
           <Toolbar />
@@ -287,14 +313,10 @@ function App() {
               </TabPanel>
               <TabPanel value={tabValue} index={3}>
                 <br />
-                <PagePerDay data={{ scores: scoreData, user: user, processed: processedData }} />
-              </TabPanel>
-              <TabPanel value={tabValue} index={4}>
-                <br />
                 <PagePerDay data={{ scores: scoreData, user: user, processed: processedData, format: 'month' }} />
               </TabPanel>
             </> : <></>}
-            <TabPanel value={tabValue} index={5}>
+            <TabPanel value={tabValue} index={4}>
               <br />
               <PageInfo />
             </TabPanel>
@@ -307,9 +329,7 @@ function App() {
 
 export default App;
 
-async function CalculateData(scores, _user) {
-  var processed = {};
-
+async function CalculateData(processed, scores, _user) {
   const rankIndex = {
     "XH": 0,
     "X": 1,
@@ -334,47 +354,8 @@ async function CalculateData(scores, _user) {
   var tags = [];
   var highest_sr = 0;
 
-  console.time("calculate pp weights");
+  processed = calculatePPdata(processed, scores);
 
-  scores.sort((a, b) => {
-    if (a.pp > b.pp) { return -1; }
-    if (a.pp < b.pp) { return 1; }
-    return 0;
-  });
-
-  var index = 0;
-  scores.forEach(score => { score.pp_weight = Math.pow(0.95, index); index++; });
-
-  scores.sort((a, b) => {
-    if (a.pp_fc.total > b.pp_fc.total) { return -1; }
-    if (a.pp_fc.total < b.pp_fc.total) { return 1; }
-    return 0;
-  });
-
-  index = 0;
-  scores.forEach(score => { score.pp_fc.weight = Math.pow(0.95, index); index++; });
-
-  scores.sort((a, b) => {
-    if (a.pp_ss.total > b.pp_ss.total) { return -1; }
-    if (a.pp_ss.total < b.pp_ss.total) { return 1; }
-    return 0;
-  });
-
-  index = 0;
-  scores.forEach(score => { score.pp_ss.weight = Math.pow(0.95, index); index++; });
-
-  processed.fc_pp_weighted = 0;
-  processed.ss_pp_weighted = 0;
-  scores.forEach(score => {
-    processed.fc_pp_weighted += score.pp_fc.total * score.pp_fc.weight;
-    processed.ss_pp_weighted += score.pp_ss.total * score.pp_ss.weight;
-  });
-
-  console.log(scores);
-
-  console.timeEnd("calculate pp weights");
-
-  console.time("total values");
   for await (const score of scores) {
 
     var is_fc = score.perfect === "1";
@@ -422,17 +403,13 @@ async function CalculateData(scores, _user) {
       highest_sr = score.star_rating;
     }
   }
-  console.timeEnd("total values");
 
-  console.time("sort used mods");
   used_mods.sort((a, b) => {
     if (a.value > b.value) { return -1; }
     if (a.value < b.value) { return 1; }
     return 0;
   })
-  console.timeEnd("sort used mods");
 
-  console.time("sort tags");
   var improvedTags = [];
   for (const tag in tags) {
     improvedTags.push({
@@ -446,7 +423,6 @@ async function CalculateData(scores, _user) {
     if (a.value < b.value) { return 1; }
     return 0;
   })
-  console.timeEnd("sort tags");
 
   processed.usedMods = used_mods;
   // processed.usedTags = tags;
@@ -483,6 +459,44 @@ async function CalculateData(scores, _user) {
   processed.fc_rate = 100 / scores.length * total_fc;
   processed.total_length = total_length;
   processed.average_length = total_length / scores.length;
+
+  return processed;
+}
+
+function calculatePPdata(processed, scores){
+  scores.sort((a, b) => {
+    if (a.pp > b.pp) { return -1; }
+    if (a.pp < b.pp) { return 1; }
+    return 0;
+  });
+
+  var index = 0;
+  scores.forEach(score => { score.pp_weight = Math.pow(0.95, index); index++; });
+
+  scores.sort((a, b) => {
+    if (a.pp_fc.total > b.pp_fc.total) { return -1; }
+    if (a.pp_fc.total < b.pp_fc.total) { return 1; }
+    return 0;
+  });
+
+  index = 0;
+  scores.forEach(score => { score.pp_fc.weight = Math.pow(0.95, index); index++; });
+
+  scores.sort((a, b) => {
+    if (a.pp_ss.total > b.pp_ss.total) { return -1; }
+    if (a.pp_ss.total < b.pp_ss.total) { return 1; }
+    return 0;
+  });
+
+  index = 0;
+  scores.forEach(score => { score.pp_ss.weight = Math.pow(0.95, index); index++; });
+
+  processed.fc_pp_weighted = 0;
+  processed.ss_pp_weighted = 0;
+  scores.forEach(score => {
+    processed.fc_pp_weighted += score.pp_fc.total * score.pp_fc.weight;
+    processed.ss_pp_weighted += score.pp_ss.total * score.pp_ss.weight;
+  });
 
   return processed;
 }
