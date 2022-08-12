@@ -81,15 +81,19 @@ function App() {
       const y = monthData.year;
       const m = monthData.month;
       const c = monthData.amount;
-      processed.beatmapInfo.monthly[`${y}-${m}-01`] = c;
+      processed.beatmapInfo.monthly[`${y}-${m}-01`] = monthData;
     })
 
-    var total = 0;
+    var bm_maps = 0;
+    var bm_score = 0;
+    var bm_length = 0;
     processed.beatmapInfo.monthlyCumulative = [];
     Object.keys(processed.beatmapInfo.monthly).forEach(key => {
-      const c = processed.beatmapInfo.monthly[key];
-      total+=c;
-      processed.beatmapInfo.monthlyCumulative[key] = total;
+      const o = JSON.parse(JSON.stringify(processed.beatmapInfo.monthly[key]));
+      o.amount = bm_maps+=o.amount;
+      o.score = bm_score+=o.score;
+      o.length = bm_length+=o.length;
+      processed.beatmapInfo.monthlyCumulative[key] = o;
     });
 
     processed = await CalculateData(processed, scores, _user);

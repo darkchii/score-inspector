@@ -60,7 +60,7 @@ function TimeGraph(props) {
                 anchor: 'end',
                 align: 'end',
                 backgroundColor: '#00000088',
-                formatter: function (value, context) {
+                formatter: (value, context) => {
                     return `${value.toLocaleString("en-US")}`;
                 }
             }
@@ -97,7 +97,12 @@ function TimeGraph(props) {
         });
 
         setData(newData);
-    }, [props.data]);
+
+        if(props.formatter!==undefined){
+            options.plugins.datalabels.formatter = props.formatter;
+            setOptions(options);
+        }
+    }, [props, labels]);
 
     var chart = useRef(null);
 
