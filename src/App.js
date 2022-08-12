@@ -43,8 +43,7 @@ function App() {
   const processData = async (scores) => {
     (async function () { setLoadTitle("Fetching user"); })();
 
-    const res = await axios.get(`https://darkchii.nl/score/api/user.php`, {
-      params: { id: scores[0].user_id },
+    const res = await axios.get(`http://darkchii.nl:4500/users/${scores[0].user_id}`, {
       headers: {
         "Access-Control-Allow-Origin": "*"
       }
@@ -66,8 +65,7 @@ function App() {
 
     var processed = {};
 
-    const bmCount = await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development')?'http://darkchii.nl:5000/':'http://darkchii.nl/score/api/'}api/beatmaps/monthly`, {
-      params: { id: scores[0].user_id },
+    const bmCount = await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development')?'http://darkchii.nl:4500/':'http://darkchii.nl:5000/'}beatmaps/monthly`, {
       headers: {
         "Access-Control-Allow-Origin": "*"
       }
