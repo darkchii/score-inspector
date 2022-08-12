@@ -1,0 +1,5 @@
+{
+    "OSU_API": "http://darkchii.nl/score/api/",
+    "OSU_TEST_API": "http://darkchii.nl/score/test_api/",
+    "SCORE_API": "https://score.respektive.pw/u/"
+}

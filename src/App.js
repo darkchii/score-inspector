@@ -12,7 +12,8 @@ import PageScores from './Tabs/PageScores';
 import PageInfo from './Tabs/PageInfo';
 import axios from 'axios';
 import { getPerformance } from './osu';
-import moment from 'moment';
+import config from "./config.json";
+
 const darkTheme = createTheme({
   palette: {
     mode: 'dark',
@@ -45,9 +46,9 @@ function App() {
 
     let _user = null;
     try {
-      const res = await axios.get(`http://darkchii.nl/score/api/users/${scores[0].user_id}`, { headers: { "Access-Control-Allow-Origin": "*" } });
+      const res = await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}users/${scores[0].user_id}`, { headers: { "Access-Control-Allow-Origin": "*" } });
       _user = res.data;
-      if(_user.error!==undefined){
+      if (_user.error !== undefined) {
         throw Error();
       }
     } catch (err) {
@@ -57,7 +58,7 @@ function App() {
     }
 
     try {
-      let _scoreRank = await fetch(`https://score.respektive.pw/u/${scores[0].user_id}`).then((res) => res.json());
+      let _scoreRank = await fetch(`${config.SCORE_API}${scores[0].user_id}`).then((res) => res.json());
       if (_scoreRank !== undefined) {
         _user.scoreRank = _scoreRank[0].rank;
       }
@@ -73,7 +74,7 @@ function App() {
 
     let bmCount = null;
     try {
-      bmCount = await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? 'http://darkchii.nl/score/test_api/' : 'http://darkchii.nl/score/api/'}beatmaps/monthly`, {
+      bmCount = await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/monthly`, {
         headers: {
           "Access-Control-Allow-Origin": "*"
         }
