@@ -43,34 +43,47 @@ function App() {
   const processData = async (scores) => {
     (async function () { setLoadTitle("Fetching user"); })();
 
-    const res = await axios.get(`http://darkchii.nl:5000/users/${scores[0].user_id}`, {
-      headers: {
-        "Access-Control-Allow-Origin": "*"
+    let _user = null;
+    try {
+      const res = await axios.get(`http://darkchii.nl/score/api/users/${scores[0].user_id}`, { headers: { "Access-Control-Allow-Origin": "*" } });
+      _user = res.data;
+      if(_user.error!==undefined){
+        throw Error();
       }
-    }
-    );
-    let _user = res.data;
-    if (_user.error !== undefined) {
-      console.log(`Error fetching user: ${_user.error}`);
+    } catch (err) {
+      alert(`Unable to get user information right now`);
       setLoadState(false);
       return;
     }
 
-    let _scoreRank = await fetch(`https://score.respektive.pw/u/${scores[0].user_id}`).then((res) => res.json());
-    if (_scoreRank !== undefined) {
-      _user.scoreRank = _scoreRank[0].rank;
+    try {
+      let _scoreRank = await fetch(`https://score.respektive.pw/u/${scores[0].user_id}`).then((res) => res.json());
+      if (_scoreRank !== undefined) {
+        _user.scoreRank = _scoreRank[0].rank;
+      }
+    } catch (err) {
+      alert(`Unable to get user score rank right now`);
+      setLoadState(false);
+      return;
     }
 
     setUser(_user);
 
     var processed = {};
 
-    const bmCount = await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development')?'http://darkchii.nl:4500/':'http://darkchii.nl:5000/'}beatmaps/monthly`, {
-      headers: {
-        "Access-Control-Allow-Origin": "*"
+    let bmCount = null;
+    try {
+      bmCount = await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? 'http://darkchii.nl/score/test_api/' : 'http://darkchii.nl/score/api/'}beatmaps/monthly`, {
+        headers: {
+          "Access-Control-Allow-Origin": "*"
+        }
       }
+      );
+    } catch (err) {
+      alert(`Unable to get beatmap information right now`);
+      setLoadState(false);
+      return;
     }
-    );
 
     processed.beatmapInfo = {};
     processed.beatmapInfo.monthly = [];
@@ -88,9 +101,9 @@ function App() {
     processed.beatmapInfo.monthlyCumulative = [];
     Object.keys(processed.beatmapInfo.monthly).forEach(key => {
       const o = JSON.parse(JSON.stringify(processed.beatmapInfo.monthly[key]));
-      o.amount = bm_maps+=o.amount;
-      o.score = bm_score+=o.score;
-      o.length = bm_length+=o.length;
+      o.amount = bm_maps += o.amount;
+      o.score = bm_score += o.score;
+      o.length = bm_length += o.length;
       processed.beatmapInfo.monthlyCumulative[key] = o;
     });
 
@@ -470,7 +483,7 @@ async function CalculateData(processed, scores, _user) {
   return processed;
 }
 
-function calculatePPdata(processed, scores){
+function calculatePPdata(processed, scores) {
   scores.sort((a, b) => {
     if (a.pp > b.pp) { return -1; }
     if (a.pp < b.pp) { return 1; }
