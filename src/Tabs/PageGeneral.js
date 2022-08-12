@@ -16,66 +16,32 @@ import GeneralCardAverageLengthPlayed from "./GeneralCards/GeneralCardAverageLen
 import GeneralCardTagOccurances from "./GeneralCards/GeneralCardTagOccurances";
 import GeneralCardGradeSpread from "./GeneralCards/GeneralCardGradeSpread";
 import GeneralCardUsedModCombos from "./GeneralCards/GeneralCardUsedModCombos";
+import ReactFluidGrid from "@allpro/react-fluid-grid";
 
 function PageGeneral(props) {
     return (
         <>
-            <Grid container spacing={3}>
-                <Grid item xs={12} sm={6} md={3}>
-                    <GeneralCardUser data={props.data} />
-                </Grid>
-                <Grid item xs={12} sm={6} md={3}>
-                    <GeneralCardClears data={props.data} />
-                </Grid>
-                <Grid item xs={12} sm={6} md={3}>
-                    <GeneralCardTotalPP data={props.data} />
-                </Grid>
-                <Grid item xs={12} sm={6} md={3}>
-                    <GeneralCardAveragePP data={props.data} />
-                </Grid>
-                <Grid item xs={12} sm={6} md={3}>
-                    <GeneralCardAverageSR data={props.data} />
-                </Grid>
-                <Grid item xs={12} sm={6} md={3}>
-                    <GeneralCardHighestSR data={props.data} />
-                </Grid>
-                <Grid item xs={12} sm={6} md={3}>
-                    <GeneralCardScorePerPlay data={props.data} />
-                </Grid>
-                <Grid item xs={12} sm={6} md={3}>
-                    <GeneralCardFullComboPerc data={props.data} />
-                </Grid>
-                <Grid item xs={12} sm={6} md={3}>
-                    <GeneralCardPPifFC data={props.data} />
-                </Grid>
-                <Grid item xs={12} sm={6} md={3}>
-                    <GeneralCardPPifSS data={props.data} />
-                </Grid>
-            </Grid>
-            <Grid container spacing={3} sx={{ mt: 1 }}>
-                <Grid item xs={12} sm={3} md={3}>
-                    <Grid container spacing={3}>
-                        <Grid item xs={12} sm={12} md={12}>
-                            <GeneralCardScoreRank data={props.data} />
-                        </Grid>
-                        <Grid item xs={12} sm={12} md={12}>
-                            <GeneralCardTotalLengthPlayed data={props.data} />
-                        </Grid>
-                        <Grid item xs={12} sm={12} md={12}>
-                            <GeneralCardAverageLengthPlayed data={props.data} />
-                        </Grid>
-                    </Grid>
-                </Grid>
-                <Grid item xs={12} sm={3} md={3}>
-                    <GeneralCardTagOccurances data={props.data} />
-                </Grid>
-                <Grid item xs={12} sm={6} md={3}>
-                    <GeneralCardGradeSpread data={props.data} />
-                </Grid>
-                <Grid item xs={12} sm={6} md={3}>
-                    <GeneralCardUsedModCombos data={props.data} />
-                </Grid>
-            </Grid>
+            <ReactFluidGrid container spacing={3}>
+                <ReactFluidGrid item minWidth={500}><GeneralCardUser data={props.data} /></ReactFluidGrid>
+                <ReactFluidGrid item minWidth={300}><GeneralCardClears data={props.data} /></ReactFluidGrid>
+                <ReactFluidGrid item minWidth={300}><GeneralCardTotalPP data={props.data} /></ReactFluidGrid>
+                <ReactFluidGrid item minWidth={300}><GeneralCardAveragePP data={props.data} /></ReactFluidGrid>
+                <ReactFluidGrid item minWidth={300}><GeneralCardAverageSR data={props.data} /></ReactFluidGrid>
+                <ReactFluidGrid item minWidth={300}><GeneralCardHighestSR data={props.data} /></ReactFluidGrid>
+                <ReactFluidGrid item minWidth={300}><GeneralCardScorePerPlay data={props.data} /></ReactFluidGrid>
+                <ReactFluidGrid item minWidth={300}><GeneralCardFullComboPerc data={props.data} /></ReactFluidGrid>
+                <ReactFluidGrid item minWidth={300}><GeneralCardPPifFC data={props.data} /></ReactFluidGrid>
+                <ReactFluidGrid item minWidth={300}><GeneralCardPPifSS data={props.data} /></ReactFluidGrid>
+                <ReactFluidGrid item minWidth={300}><GeneralCardScoreRank data={props.data} /></ReactFluidGrid>
+                <ReactFluidGrid item minWidth={300}><GeneralCardTotalLengthPlayed data={props.data} /></ReactFluidGrid>
+                <ReactFluidGrid item minWidth={300}><GeneralCardAverageLengthPlayed data={props.data} /></ReactFluidGrid>
+            </ReactFluidGrid>
+            <br />
+            <ReactFluidGrid container spacing={3}>
+                <ReactFluidGrid item minWidth={300}><GeneralCardTagOccurances data={props.data} /></ReactFluidGrid>
+                <ReactFluidGrid item minWidth={300}><GeneralCardGradeSpread data={props.data} /></ReactFluidGrid>
+                <ReactFluidGrid item minWidth={300}><GeneralCardUsedModCombos data={props.data} /></ReactFluidGrid>
+            </ReactFluidGrid>
         </>
     );
 }

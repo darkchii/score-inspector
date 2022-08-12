@@ -4,6 +4,7 @@
   "private": true,
   "homepage": "https://darkchii.nl/score",
   "dependencies": {
+    "@allpro/react-fluid-grid": "^0.5.8",
     "@emotion/react": "^11.10.0",
     "@emotion/styled": "^11.10.0",
     "@fontsource/roboto": "^4.5.7",
