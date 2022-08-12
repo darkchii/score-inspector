@@ -100,8 +100,12 @@ function TimeGraph(props) {
 
         if(props.formatter!==undefined){
             options.plugins.datalabels.formatter = props.formatter;
-            setOptions(options);
+        }else{
+            options.plugins.datalabels.formatter = (value, context) => {
+                return `${value.toLocaleString("en-US")}`;
+            };
         }
+        setOptions(options);
     }, [props, labels]);
 
     var chart = useRef(null);
