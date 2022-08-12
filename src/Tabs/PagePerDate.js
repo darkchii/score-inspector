@@ -215,7 +215,6 @@ function PagePerDate(props) {
             sorted.splice(o, 1);
             return data;
         });
-        console.log(r);
 
         sorted = r;
         console.timeEnd("filling empty spots");
@@ -278,7 +277,12 @@ function PagePerDate(props) {
             } else {
                 sorted[i].cumulative_rank_d = sorted[i].total_d;
             }
+
+            const beatmaps = props.data.processed.beatmapInfo.monthlyCumulative[`${sorted[i].actual_date.format("YYYY-M")}-01`];
+            sorted[i].completion = 100 / beatmaps * sorted[i].cumulative_plays;
         }
+
+        console.log(sorted);
 
         if (props.data.processed.scorePerDate === undefined) {
             props.data.processed.scorePerDate = [];
@@ -296,12 +300,12 @@ function PagePerDate(props) {
 
 
     useEffect(() => {
-        // if (props.data.processed.scorePerDate === undefined || props.data.processed.scorePerDate[dateFormat] === undefined) {
-        (async function () {
-            await new Promise(r => setTimeout(r, 1000));
-            Promise.resolve(processData(scores)).then(() => { forceUpdate(); });
-        })();
-        // }
+        if (props.data.processed.scorePerDate === undefined || props.data.processed.scorePerDate[dateFormat] === undefined) {
+            (async function () {
+                await new Promise(r => setTimeout(r, 1000));
+                Promise.resolve(processData(scores)).then(() => { forceUpdate(); });
+            })();
+        }
     }, []);
 
 
@@ -316,11 +320,12 @@ function PagePerDate(props) {
                                     {
                                         0: <TimeGraph name={`Scores set per ${dateFormat}`} labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Scores set", set: props.data.processed.scorePerDate[dateFormat].map(x => x.count_scores), color: { r: 255, g: 102, b: 158 } }]} />,
                                         1: <TimeGraph name={`Total score per ${dateFormat}`} labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Total score gained", set: props.data.processed.scorePerDate[dateFormat].map(x => x.total_score), color: { r: 255, g: 102, b: 158 } }]} />,
-                                        2: <TimeGraph name="Average PP per play" labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Average PP", set: props.data.processed.scorePerDate[dateFormat].map(x => x.average_pp), color: { r: 255, g: 102, b: 158 } }]} />,
-                                        3: <TimeGraph name="Average SR per play" labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Average SR", set: props.data.processed.scorePerDate[dateFormat].map(x => x.average_sr), color: { r: 255, g: 102, b: 158 } }]} />,
-                                        4: <TimeGraph name="Cumulative ranked score" labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Cumulative ranked score", set: props.data.processed.scorePerDate[dateFormat].map(x => x.cumulative_score), color: { r: 255, g: 102, b: 158 } }]} />,
-                                        5: <TimeGraph name="Cumulative plays" labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Cumulative plays", set: props.data.processed.scorePerDate[dateFormat].map(x => x.cumulative_plays), color: { r: 255, g: 102, b: 158 } }]} />,
-                                        6: <TimeGraph name="Grades" labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[
+                                        2: <TimeGraph name='Completion' labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "% Completion", set: props.data.processed.scorePerDate[dateFormat].map(x => x.completion), color: { r: 255, g: 102, b: 158 } }]} />,
+                                        3: <TimeGraph name="Average PP per play" labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Average PP", set: props.data.processed.scorePerDate[dateFormat].map(x => x.average_pp), color: { r: 255, g: 102, b: 158 } }]} />,
+                                        4: <TimeGraph name="Average SR per play" labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Average SR", set: props.data.processed.scorePerDate[dateFormat].map(x => x.average_sr), color: { r: 255, g: 102, b: 158 } }]} />,
+                                        5: <TimeGraph name="Cumulative ranked score" labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Cumulative ranked score", set: props.data.processed.scorePerDate[dateFormat].map(x => x.cumulative_score), color: { r: 255, g: 102, b: 158 } }]} />,
+                                        6: <TimeGraph name="Cumulative plays" labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Cumulative plays", set: props.data.processed.scorePerDate[dateFormat].map(x => x.cumulative_plays), color: { r: 255, g: 102, b: 158 } }]} />,
+                                        7: <TimeGraph name="Grades" labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[
                                             { name: "Total SS", set: props.data.processed.scorePerDate[dateFormat].map(x => x.total_ss), color: { r: 197, g: 197, b: 197 } },
                                             { name: "Total S", set: props.data.processed.scorePerDate[dateFormat].map(x => x.total_s), color: { r: 255, g: 186, b: 14 } },
                                             { name: "Total A", set: props.data.processed.scorePerDate[dateFormat].map(x => x.total_a), color: { r: 163, g: 163, b: 163 } },
@@ -328,7 +333,7 @@ function PagePerDate(props) {
                                             { name: "Total C", set: props.data.processed.scorePerDate[dateFormat].map(x => x.total_c), color: { r: 133, g: 214, b: 28 } },
                                             { name: "Total D", set: props.data.processed.scorePerDate[dateFormat].map(x => x.total_d), color: { r: 243, g: 87, b: 90 } },
                                         ]} />,
-                                        7: <TimeGraph name="Cumulative Grades" labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[
+                                        8: <TimeGraph name="Cumulative Grades" labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[
                                             { name: "Total SS", set: props.data.processed.scorePerDate[dateFormat].map(x => x.cumulative_rank_ss), color: { r: 197, g: 197, b: 197 } },
                                             { name: "Total S", set: props.data.processed.scorePerDate[dateFormat].map(x => x.cumulative_rank_s), color: { r: 255, g: 186, b: 14 } },
                                             { name: "Total A", set: props.data.processed.scorePerDate[dateFormat].map(x => x.cumulative_rank_a), color: { r: 163, g: 163, b: 163 } },
@@ -342,6 +347,7 @@ function PagePerDate(props) {
                             <BottomNavigation showLabels value={timeGraphValue} onChange={(event, newValue) => { setTimeGraphValue(newValue); }}>
                                 <BottomNavigationAction label={`Plays per ${dateFormat}`} />
                                 <BottomNavigationAction label={`Score per ${dateFormat}`} />
+                                <BottomNavigationAction label='Completion' />
                                 <BottomNavigationAction label="PP per play" />
                                 <BottomNavigationAction label="Average starrating" />
                                 <BottomNavigationAction label="Cumulative ranked score" />
