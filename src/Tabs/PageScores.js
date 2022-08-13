@@ -88,7 +88,6 @@ function PageScores(props) {
         { field: 'approved', headerName: 'Status', minWidth: 50, type: "number", renderCell: (params) => { return approvedFormatter(params) } },
         { field: 'sr', headerName: 'Stars', minWidth: 100, type: "number", valueFormatter: (params) => { return `${params.value.toFixed(2)}*`; } },
         { field: 'pp', headerName: 'PP', minWidth: 80, type: "number", valueFormatter: (params) => { return `${params.value.toFixed(1)}pp`; } },
-        { field: 'ppfc', headerName: 'PPfc', minWidth: 80, type: "number", valueFormatter: (params) => { return `${params.value.toFixed(1)}pp`; } },
         { field: 'date', headerName: 'Date', minWidth: 150, valueFormatter: (params) => { return `${moment(params.value).fromNow()}`; } },
         { field: 'acc', headerName: 'Accuracy', minWidth: 120, type: "number", valueFormatter: (params) => { return `${params.value.toFixed(2)}%`; } },
         { field: 'grade', headerName: 'Grade', minWidth: 80, renderCell: (params) => { return gradeFormatter(params) } },

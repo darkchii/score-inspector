@@ -17,7 +17,21 @@ import config from "./config.json";
 const darkTheme = createTheme({
   palette: {
     mode: 'dark',
+    primary: {
+      main: '#FF66AB',
+    },
+    background: {
+      default: "#18171C",
+      dark: '#fff',
+      paper: "#221F2E"
+    }
+    // secondary: {
+    //   main: '#edf2ff',
+    // },
   },
+  shape: {
+    borderRadius: 8
+  }
 });
 
 function a11yProps(index) {
@@ -277,7 +291,7 @@ function App() {
                           0: <><Typography sx={{ mt: 2, mb: 1 }}>Join the following discord: <Button href='https://discord.gg/VZWRZZXcW4' target="_blank" variant="contained" size='small'>osu!alternative</Button></Typography></>,
                           1: <><Typography sx={{ mt: 2, mb: 1 }}>Go to the #info text-channel, and do what the section "Fetching scores" says.<br />It can take a couple of hours to get all of your scores ready, depending on your stats.</Typography></>,
                           2: <><Typography sx={{ mt: 2, mb: 1 }}>To get your file, go to #bot-channel and perform the following command: <br /><code>!getfile -type scores -u username</code> - Replace username with yours. You will receive a <code>scores.csv</code> file.</Typography></>,
-                          3: <><Typography sx={{ mt: 2, mb: 1 }}>Upload the downloaded <code>scores.csv</code> file here:<br /><Button variant="contained" color="success" component="label" disabled={loadState}>Upload scores<input onChange={e => handleScoresUpload(e.target.files[0])} hidden accept=".csv" type="file" /></Button></Typography></>,
+                          3: <><Typography sx={{ mt: 2, mb: 1 }}>Upload the downloaded <code>scores.csv</code> file here:<br /><Button variant="contained" color="primary" component="label" disabled={loadState}>Upload scores<input onChange={e => handleScoresUpload(e.target.files[0])} hidden accept=".csv" type="file" /></Button></Typography></>,
                         }[stepperActiveStep]
                       }
                     </Box>
