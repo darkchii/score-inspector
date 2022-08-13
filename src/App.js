@@ -501,7 +501,7 @@ function calculatePPdata(processed, scores) {
   });
 
   index = 0;
-  scores.forEach(score => { score.pp_fc.weight = Math.pow(0.95, index); index++; });
+  scores.forEach(score => { if (!(score.enabled_mods & mods.NF)) { score.pp_fc.weight = Math.pow(0.95, index); index++; } else { score.pp_fc.weight = 0 } });
 
   scores.sort((a, b) => {
     if (a.pp_ss.total > b.pp_ss.total) { return -1; }
@@ -510,7 +510,7 @@ function calculatePPdata(processed, scores) {
   });
 
   index = 0;
-  scores.forEach(score => { score.pp_ss.weight = Math.pow(0.95, index); index++; });
+  scores.forEach(score => { if (!(score.enabled_mods & mods.NF)) { score.pp_ss.weight = Math.pow(0.95, index); index++; } else { score.pp_ss.weight = 0 } });
 
   processed.fc_pp_weighted = 0;
   processed.ss_pp_weighted = 0;
