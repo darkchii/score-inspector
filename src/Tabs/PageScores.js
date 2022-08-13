@@ -7,10 +7,12 @@ import { getModString, mods, mod_strings_long } from "../helper";
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import DoneIcon from '@mui/icons-material/Done';
 import { green, pink } from "@mui/material/colors";
+import ScoreModal from "../Components/ScoreModal";
 
 function PageScores(props) {
     const [, updateState] = React.useState();
     const forceUpdate = React.useCallback(() => updateState({}), []);
+    const [modalData, setModalData] = React.useState({ active: false });
 
     const gradeFormatter = (cell) => {
         return (
@@ -70,10 +72,19 @@ function PageScores(props) {
         );
     }
 
+    const rowHandleClick = (params, event, details) => {
+        //console.log(params.row.beatmap_id);
+        const score = params.row.score_object;
+        setModalData({
+            active: true,
+            score: score
+        })
+    }
+
     var columns = [
         { field: 'title', flex: 1, headerName: 'Title', minWidth: 280 },
         { field: 'score', headerName: 'Score', minWidth: 170, type: "number", valueFormatter: (params) => { return `${params.value.toLocaleString('en-US')}`; } },
-        { field: 'mods', headerName: 'Mods', minWidth: 180, type: "number", renderCell: (params) => { return modFormatter(params) }, onMouseEnter: (params) => {console.log(params)} },
+        { field: 'mods', headerName: 'Mods', minWidth: 180, type: "number", renderCell: (params) => { return modFormatter(params) }, onMouseEnter: (params) => { console.log(params) } },
         { field: 'approved', headerName: 'Status', minWidth: 50, type: "number", renderCell: (params) => { return approvedFormatter(params) } },
         { field: 'sr', headerName: 'Stars', minWidth: 100, type: "number", valueFormatter: (params) => { return `${params.value.toFixed(2)}*`; } },
         { field: 'pp', headerName: 'PP', minWidth: 80, type: "number", valueFormatter: (params) => { return `${params.value.toFixed(1)}pp`; } },
@@ -107,7 +118,8 @@ function PageScores(props) {
                     acc: score.accuracy,
                     length: (score.mods & mods.DoubleTime ? score.length * 1.5 : (score.mods & mods.HalfTime ? score.length * 0.75 : score.length)),
                     bpm: (score.mods & mods.DoubleTime ? score.bpm * 1.5 : (score.mods & mods.HalfTime ? score.bpm * 0.75 : score.bpm)),
-                    approved: score.approved
+                    approved: score.approved,
+                    score_object: score
                 });
                 index++;
             });
@@ -119,8 +131,10 @@ function PageScores(props) {
     return (
         props.data.scoreRows != null ?
             <>
+                <ScoreModal data={modalData} />
                 <Box sx={{ height: 'auto', width: '100%' }}>
                     <DataGrid
+                        onRowClick={rowHandleClick}
                         autoHeight
                         rows={props.data.scoreRows}
                         columns={columns}

@@ -48,6 +48,20 @@ function getModIcon(modString) {
     }
 }
 
+function getGradeIcon(grade) {
+    switch (grade) {
+        case 'XH': return <SVG_GRADE_XH />
+        case 'X': return <SVG_GRADE_X />
+        case 'SH': return <SVG_GRADE_SH />
+        case 'S': return <SVG_GRADE_S />
+        case 'A': return <SVG_GRADE_A />
+        case 'B': return <SVG_GRADE_B />
+        case 'C': return <SVG_GRADE_C />
+        case 'D': return <SVG_GRADE_D />
+        default: return null
+    }
+}
+
 export {
     SVG_GRADE_XH,
     SVG_GRADE_X,
@@ -74,5 +88,6 @@ export {
     PNG_MOD_HD,
     PNG_MOD_HR,
     PNG_MOD_TD,
-    getModIcon
+    getModIcon,
+    getGradeIcon
 };

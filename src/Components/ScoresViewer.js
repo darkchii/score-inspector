@@ -4,6 +4,7 @@ import NumberFormat from "react-number-format";
 import TimeGraph from "./TimeGraph";
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+import ScoreModal from "./ScoreModal";
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 function ScoresViewer(props) {

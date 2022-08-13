@@ -21,26 +21,26 @@ export function getPerformance(data) {
     return data;
 }
 
-function getTotalValue(data){
-    if(data.score.enabled_mods & mods.RX || data.score.enabled_mods & mods.AP){
+function getTotalValue(data) {
+    if (data.score.enabled_mods & mods.RX || data.score.enabled_mods & mods.AP) {
         return 0;
     }
 
     var mul = 1.12;
 
-    if((data.score.enabled_mods & mods.NF)!==0){
-        mul *= Math.max(0.9, 1.0-0.02*data.effectiveMissCount);
+    if ((data.score.enabled_mods & mods.NF) !== 0) {
+        mul *= Math.max(0.9, 1.0 - 0.02 * data.effectiveMissCount);
     }
 
-    if((data.score.enabled_mods & mods.SO)!==0){
-        mul *= 1.0-Math.pow(data.score.spinners / data.totalhits, 0.85);
+    if ((data.score.enabled_mods & mods.SO) !== 0) {
+        mul *= 1.0 - Math.pow(data.score.spinners / data.totalhits, 0.85);
     }
 
     var total = Math.pow(
-        Math.pow(data.aim, 1.1)+Math.pow(data.speed, 1.1)+
-        Math.pow(data.acc, 1.1)+Math.pow(data.flashlight, 1.1),
+        Math.pow(data.aim, 1.1) + Math.pow(data.speed, 1.1) +
+        Math.pow(data.acc, 1.1) + Math.pow(data.flashlight, 1.1),
         1.0 / 1.1
-    )*mul;
+    ) * mul;
 
     return total;
 }
@@ -48,7 +48,7 @@ function getTotalValue(data){
 function getAimValue(data) {
     var raw_aim = data.score.aim_diff;
 
-    if ((data.score.enabled_mods & mods.TD)!==0) {
+    if ((data.score.enabled_mods & mods.TD) !== 0) {
         raw_aim = Math.pow(raw_aim, 0.8);
     }
 
@@ -117,7 +117,7 @@ function getSpeedValue(data) {
     speedValue *= (1.0 - approachRateFactor) * lengthBonus;
     // console.log("TEST SPEED AR: "+speedValue);
 
-    if ((data.score.enabled_mods & mods.HD)!==0) {
+    if ((data.score.enabled_mods & mods.HD) !== 0) {
         speedValue *= (1.0 + 0.04 * (12 - data.score.modded_ar));
     }
     // console.log("TEST SPEED HD: "+speedValue);
@@ -150,11 +150,11 @@ function getAccuracyValue(data) {
     var accValue = Math.pow(1.52163, data.score.modded_od) * Math.pow(betterAccuracyPercentage, 24) * 2.83;
     accValue *= Math.min(1.15, Math.pow(numHitObjectsWithAccuracy / 1000.0, 0.3));
 
-    if ((data.score.enabled_mods & mods.HD)!==0) {
+    if ((data.score.enabled_mods & mods.HD) !== 0) {
         accValue *= 1.08;
     }
 
-    if ((data.score.enabled_mods & mods.FL)!==0) {
+    if ((data.score.enabled_mods & mods.FL) !== 0) {
         accValue *= 1.02;
     }
 
@@ -164,10 +164,10 @@ function getAccuracyValue(data) {
 function getFlashlightValue(data) {
     var flashlightValue = 0;
 
-    if ((data.score.enabled_mods & mods.FL)!==0) {
+    if ((data.score.enabled_mods & mods.FL) !== 0) {
         var rawFlashlight = data.score.fl_diff;
 
-        if ((data.score.enabled_mods & mods.TD)!==0) {
+        if ((data.score.enabled_mods & mods.TD) !== 0) {
             rawFlashlight = Math.pow(rawFlashlight, 0.8);
         }
 
@@ -204,8 +204,13 @@ function getEffectiveMissCount(data) {
 }
 
 function getAccuracy(data) {
+    
     if (data.totalhits === 0) {
         return 0;
+    }
+
+    if(data.accuracy!==undefined){
+        return data.accuracy;
     }
 
     return Math.min(Math.max((data.count50 * 50 + data.count100 * 100 + data.count300 * 300) / (data.totalhits * 300), 0.0), 1.0);
