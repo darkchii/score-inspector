@@ -1,7 +1,5 @@
-import { Avatar, Card, CardContent, Typography, Grid } from '@mui/material';
+import { Card, CardContent, Typography, Grid } from '@mui/material';
 import moment from 'moment';
-import { useEffect } from 'react';
-import NumberFormat from 'react-number-format';
 
 function GeneralCardAverageLengthPlayed(props) {
     return (

@@ -1,4 +1,4 @@
-import { Card, CardContent, Grid, Paper, TableContainer, Typography, Table, TableBody, TableRow, TableCell } from "@mui/material";
+import { Card, CardContent, Grid, TableContainer, Typography, Table, TableBody, TableRow, TableCell } from "@mui/material";
 import GitHubIcon from '@mui/icons-material/GitHub';
 import TwitterIcon from '@mui/icons-material/Twitter';
 

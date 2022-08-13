@@ -1,8 +1,6 @@
 /* eslint-disable no-loop-func */
-import { Avatar, BottomNavigation, BottomNavigationAction, Box, Card, CardContent, Grid, Paper, Skeleton, Typography } from "@mui/material";
+import { BottomNavigation, BottomNavigationAction, Grid, Paper, Skeleton } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import NumberFormat from "react-number-format";
-import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import TimeGraph from "../Components/TimeGraph";
 import moment from "moment";

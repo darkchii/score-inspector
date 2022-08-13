@@ -1,6 +1,4 @@
-import { Avatar, Card, CardContent, Typography, Grid } from '@mui/material';
-import { useEffect } from 'react';
-import NumberFormat from 'react-number-format';
+import { Card, CardContent, Typography, Grid } from '@mui/material';
 
 function GeneralCardTotalLengthPlayed(props) {
     return (

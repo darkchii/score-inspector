@@ -1,6 +1,4 @@
-import { Avatar, Card, CardContent, Typography, Grid, TableContainer, Table, TableBody, TableRow, TableCell } from '@mui/material';
-import { useEffect } from 'react';
-import NumberFormat from 'react-number-format';
+import { Card, CardContent, Typography, Grid, TableContainer, Table, TableBody, TableRow, TableCell } from '@mui/material';
 
 function GeneralCardTagOccurances(props) {
     return (

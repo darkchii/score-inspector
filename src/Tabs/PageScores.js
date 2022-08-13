@@ -1,14 +1,12 @@
-import { Avatar, BottomNavigation, BottomNavigationAction, Box, Card, CardContent, Grid, Paper, Stack, Tooltip, Typography } from "@mui/material";
+import { Box, Tooltip } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import moment from "moment";
 import React, { useEffect } from "react";
 import * as Assets from "../Assets";
-import { getModString, mods, mod_strings_long, numToMod } from "../helper";
+import { getModString, mods, mod_strings_long } from "../helper";
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import DoneIcon from '@mui/icons-material/Done';
 import { green, pink } from "@mui/material/colors";
-import { getPerformance } from "../osu";
-// import grade_image_xh from "./assets/grade-xh.svg";
 
 function PageScores(props) {
     const [, updateState] = React.useState();

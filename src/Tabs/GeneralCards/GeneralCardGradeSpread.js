@@ -1,6 +1,4 @@
-import { Avatar, Card, CardContent, Typography, Grid, Paper } from '@mui/material';
-import { useEffect } from 'react';
-import NumberFormat from 'react-number-format';
+import { Card, CardContent, Typography, Grid, Paper } from '@mui/material';
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip as ChartTooltip, Legend } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';

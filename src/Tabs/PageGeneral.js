@@ -1,5 +1,5 @@
 import { Grid } from "@mui/material";
-import React, { useEffect } from "react";
+import React from "react";
 import GeneralCardUser from "./GeneralCards/GeneralCardUser";
 import GeneralCardClears from "./GeneralCards/GeneralCardClears";
 import GeneralCardTotalPP from "./GeneralCards/GeneralCardTotalPP";

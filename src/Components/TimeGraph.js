@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Avatar, Box, Button, Card, CardContent, FormControlLabel, FormGroup, Grid, Switch, Typography } from "@mui/material";
+import { FormControlLabel, FormGroup, Grid, Switch } from "@mui/material";
 import { Line } from "react-chartjs-2";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {
@@ -11,8 +11,7 @@ import {
     Title,
     Tooltip,
     Legend,
-    Filler,
-    ScriptableContext
+    Filler
 } from 'chart.js';
 ChartJS.register(
     CategoryScale,

@@ -1,4 +1,4 @@
-import { Avatar, BottomNavigation, BottomNavigationAction, Box, Card, CardContent, Grid, Paper, Typography } from "@mui/material";
+import { Avatar, BottomNavigation, BottomNavigationAction, Card, CardContent, Grid, Paper, Typography } from "@mui/material";
 import React from "react";
 import NumberFormat from "react-number-format";
 import TimeGraph from "./TimeGraph";

@@ -1,6 +1,6 @@
-import { CssBaseline, Box, AppBar, Toolbar, Typography, Button, Paper, Grid, CircularProgress, Tabs, Tab, Snackbar, Alert, Tooltip, Link, Stepper, Step, StepLabel, CardContent, Card } from '@mui/material';
+import { CssBaseline, Box, AppBar, Toolbar, Typography, Button, Paper, Grid, CircularProgress, Tabs, Tab, Tooltip, Stepper, Step, StepLabel, CardContent, Card } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import React, { useEffect } from 'react';
+import React from 'react';
 import './App.css';
 import Papa from "papaparse";
 import './Tabs.js';

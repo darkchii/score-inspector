@@ -1,6 +1,4 @@
-import { Avatar, Card, CardContent, Typography, Grid, TableContainer, Table, TableBody, TableRow, TableCell, Tooltip } from '@mui/material';
-import { useEffect } from 'react';
-import NumberFormat from 'react-number-format';
+import { Card, CardContent, Typography, Grid, TableContainer, Table, TableBody, TableRow, TableCell, Tooltip } from '@mui/material';
 import { getModIcon } from '../../Assets';
 import { mods, mod_strings_long } from '../../helper';
 

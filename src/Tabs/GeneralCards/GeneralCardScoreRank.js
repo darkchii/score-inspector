@@ -1,5 +1,4 @@
-import { Avatar, Card, CardContent, Typography, Grid } from '@mui/material';
-import { useEffect } from 'react';
+import { Card, CardContent, Typography, Grid } from '@mui/material';
 import NumberFormat from 'react-number-format';
 
 function GeneralCardScoreRank(props) {
