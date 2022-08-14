@@ -1,3 +1,5 @@
+import { isScoreRealistic } from "./osu";
+
 export const mods = {
     None: 0,
     NF: 1,
@@ -117,4 +119,30 @@ export function numToMod(num) {
     if (number & 1 << 28) mod_list.push('2 KEY')
 
     return mod_list
+}
+
+export function calculatePPifFC(scores) {
+    scores.sort((a, b) => {
+        if (a.pp_fc.total > b.pp_fc.total) { return -1; }
+        if (a.pp_fc.total < b.pp_fc.total) { return 1; }
+        return 0;
+    });
+
+    var index = 0;
+    scores.forEach(score => { if (isScoreRealistic(score)) { score.pp_fc.weight = Math.pow(0.95, index); index++; } else { score.pp_fc.weight = 0 } });
+
+    return scores;
+}
+
+export function calculatePPifSS(scores) {
+    scores.sort((a, b) => {
+        if (a.pp_ss.total > b.pp_ss.total) { return -1; }
+        if (a.pp_ss.total < b.pp_ss.total) { return 1; }
+        return 0;
+    });
+
+    var index = 0;
+    scores.forEach(score => { if (isScoreRealistic(score)) { score.pp_ss.weight = Math.pow(0.95, index); index++; } else { score.pp_ss.weight = 0 } });
+
+    return scores;
 }

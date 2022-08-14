@@ -7,11 +7,11 @@ import './Tabs.js';
 import TabPanel from './Tabs.js';
 import PagePerDay from './Tabs/PagePerDate';
 import PageGeneral from './Tabs/PageGeneral';
-import { getModString, mods } from './helper';
+import { calculatePPifFC, calculatePPifSS, getModString, mods } from './helper';
 import PageScores from './Tabs/PageScores';
 import PageInfo from './Tabs/PageInfo';
 import axios from 'axios';
-import { getPerformance } from './osu';
+import { getBeatmapCount, getPerformance, getUser } from './osu';
 import config from "./config.json";
 
 const darkTheme = createTheme({
@@ -58,26 +58,12 @@ function App() {
   const processData = async (scores) => {
     (async function () { setLoadTitle("Fetching user"); })();
 
-    let _user = null;
-    try {
-      const res = await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}users/${scores[0].user_id}`, { headers: { "Access-Control-Allow-Origin": "*" } });
-      _user = res.data;
-      if (_user.error !== undefined) {
-        throw Error();
-      }
-    } catch (err) {
-      alert(`Unable to get user information right now`);
-      setLoadState(false);
-      return;
-    }
+    let _user;
 
-    try {
-      let _scoreRank = await fetch(`${config.SCORE_API}${scores[0].user_id}`).then((res) => res.json());
-      if (_scoreRank !== undefined) {
-        _user.scoreRank = _scoreRank[0].rank;
-      }
-    } catch (err) {
-      alert(`Unable to get user score rank right now`);
+    try{
+      _user = await getUser(scores[0].user_id);
+    }catch(err){
+      alert(err);
       setLoadState(false);
       return;
     }
@@ -88,12 +74,7 @@ function App() {
 
     let bmCount = null;
     try {
-      bmCount = await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/monthly`, {
-        headers: {
-          "Access-Control-Allow-Origin": "*"
-        }
-      }
-      );
+      bmCount = await getBeatmapCount();
     } catch (err) {
       alert(`Unable to get beatmap information right now`);
       setLoadState(false);
@@ -506,25 +487,10 @@ function calculatePPdata(processed, scores) {
   });
 
   var index = 0;
-  scores.forEach(score => { score.pp_weight = Math.pow(0.95, index); index++; });
+    scores.forEach(score => { score.pp_weight = Math.pow(0.95, index); index++; });
 
-  scores.sort((a, b) => {
-    if (a.pp_fc.total > b.pp_fc.total) { return -1; }
-    if (a.pp_fc.total < b.pp_fc.total) { return 1; }
-    return 0;
-  });
-
-  index = 0;
-  scores.forEach(score => { if (!(score.enabled_mods & mods.NF)) { score.pp_fc.weight = Math.pow(0.95, index); index++; } else { score.pp_fc.weight = 0 } });
-
-  scores.sort((a, b) => {
-    if (a.pp_ss.total > b.pp_ss.total) { return -1; }
-    if (a.pp_ss.total < b.pp_ss.total) { return 1; }
-    return 0;
-  });
-
-  index = 0;
-  scores.forEach(score => { if (!(score.enabled_mods & mods.NF)) { score.pp_ss.weight = Math.pow(0.95, index); index++; } else { score.pp_ss.weight = 0 } });
+  scores = calculatePPifFC(scores);
+  scores = calculatePPifSS(scores);
 
   processed.fc_pp_weighted = 0;
   processed.ss_pp_weighted = 0;
