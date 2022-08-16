@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { FormControlLabel, FormGroup, Grid, Switch } from "@mui/material";
+import { Button, FormControlLabel, FormGroup, Grid, Switch } from "@mui/material";
 import { Line } from "react-chartjs-2";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {
@@ -13,6 +13,7 @@ import {
     Legend,
     Filler
 } from 'chart.js';
+import Zoom from "chartjs-plugin-zoom";
 ChartJS.register(
     CategoryScale,
     LinearScale,
@@ -22,7 +23,8 @@ ChartJS.register(
     Tooltip,
     Legend,
     ChartDataLabels,
-    Filler
+    Filler,
+    Zoom
 );
 
 function TimeGraph(props) {
@@ -62,10 +64,29 @@ function TimeGraph(props) {
                 formatter: (value, context) => {
                     return `${value.toLocaleString("en-US")}`;
                 }
+            },
+            zoom: {
+                zoom: {
+                    drag: {
+                        enabled: true,
+                    },
+                    pinch: {
+                        enabled: false
+                    },
+                    mode: 'x',
+                }
+            },
+            transitions: {
+                zoom: {
+                    animation: {
+                        duration: 1000,
+                        easing: 'easeOutCubic'
+                    }
+                }
             }
         },
         maintainAspectRatio: false,
-        animation: false,
+        animation: true,
         spanGaps: true
     })
 
@@ -97,9 +118,9 @@ function TimeGraph(props) {
 
         setData(newData);
 
-        if(props.formatter!==undefined){
+        if (props.formatter !== undefined) {
             options.plugins.datalabels.formatter = props.formatter;
-        }else{
+        } else {
             options.plugins.datalabels.formatter = (value, context) => {
                 return `${value.toLocaleString("en-US")}`;
             };
@@ -126,11 +147,17 @@ function TimeGraph(props) {
         // });
     };
 
+    const resetZoom = function(){
+        if(chart!==undefined && chart.current!==undefined){
+            chart.current.resetZoom();
+        }
+    }
+
     return (
         <>
             <Grid sx={{ height: 600, position: "relative" }}>
-                <FormGroup sx={{ position: "absolute", left: "5rem" }}>
-
+                <FormGroup sx={{ position: "absolute", left: "5rem", top: 5 }}>
+                    <Button variant="contained" onClick={resetZoom}>Reset Zoom</Button>
                     {
                         data.datasets.length > 1 ?
                             data.datasets.map(_data => (

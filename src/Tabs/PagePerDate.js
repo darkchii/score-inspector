@@ -4,7 +4,8 @@ import React, { useEffect, useState } from "react";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import TimeGraph from "../Components/TimeGraph";
 import moment from "moment";
-ChartJS.register(ArcElement, Tooltip, Legend);
+import Zoom from "chartjs-plugin-zoom";
+ChartJS.register(ArcElement, Tooltip, Legend, Zoom);
 
 const dataToList = [
     {

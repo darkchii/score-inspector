@@ -18,12 +18,12 @@ const darkTheme = createTheme({
   palette: {
     mode: 'dark',
     primary: {
-      main: '#FF66AB',
+      main: '#C8598A',
     },
     background: {
-      default: "#18171C",
+      default: "#2A2226",
       dark: '#fff',
-      paper: "#221F2E"
+      paper: "#382E32"
     }
     // secondary: {
     //   main: '#edf2ff',
