@@ -7,7 +7,7 @@ import { getBeatmapMaxscore, getGrade } from '../../osu';
 function GeneralCardPPifFC(props) {
     const [modalData, setModalData] = useState({ active: false });
 
-    const openModal = () => {
+    const openModal = async () => {
         var _scores = JSON.parse(JSON.stringify(props.data.scores));
         _scores.sort((a, b) => {
             if (a.pp_fc.weight > b.pp_fc.weight) { return -1; }

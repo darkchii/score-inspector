@@ -7,7 +7,7 @@ import { getGrade } from '../../osu';
 function GeneralCardPPifSS(props) {
     const [modalData, setModalData] = useState({ active: false });
 
-    const openModal = () => {
+    const openModal = async () => {
         var _scores = JSON.parse(JSON.stringify(props.data.scores));
         _scores.sort((a, b) => {
             if (a.pp_ss.weight > b.pp_ss.weight) { return -1; }
@@ -25,6 +25,7 @@ function GeneralCardPPifSS(props) {
             score.combo = score.maxcombo;
             score.weight = score.pp_ss.weight;
             score.rank = getGrade(score);
+            score.score = -1;
         })
         setModalData({
             scores: _scores,

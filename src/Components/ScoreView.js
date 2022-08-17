@@ -18,11 +18,24 @@ function ScoreView(props) {
         if (props.data !== undefined && props.data.score !== undefined) {
 
             setScore(props.data.score.score);
-            async function fixScore(){
-                if(props.data.score.score===-1){ //if we get -1, we approximate the score of this play
+            async function fixScore() {
+                if (props.data.score.score === -1) { //if we get -1, we approximate the score of this play
                     const _score = await getBeatmapMaxscore(props.data.score.beatmap_id);
-                    if(_score!==null && _score!==null){
-                        props.data.score.score = _score;
+                    if (_score !== null && _score !== null) {
+                        var mul = 1;
+                        const m = props.data.score.enabled_mods;
+
+                        if (m & mods.EZ) { mul *= 0.5; }
+                        if (m & mods.NF) { mul *= 0.5; }
+                        if (m & mods.HT) { mul *= 0.3; }
+                        if (m & mods.HR) { mul *= 1.12; }
+                        if (m & mods.DT) { mul *= 1.06; }
+                        if (m & mods.NC) { mul *= 1.06; }
+                        if (m & mods.HD) { mul *= 1.06; }
+
+                        const real_score = _score * mul;
+
+                        props.data.score.score = (real_score * (props.data.score.accuracy * 0.01)).toFixed(0);
                         setScore(_score);
                     }
                 }
@@ -60,7 +73,7 @@ function ScoreView(props) {
                         </Card>
                         <Box sx={{ px: 4 }}>
                             <Grid container spacing={3} sx={{ justifyContent: 'left', my: 1 }}>
-                                <Grid item sx={{ width: '25%'}}>
+                                <Grid item sx={{ width: '25%' }}>
                                     <Doughnut data={{
                                         labels: ["300", "100", "50", "Miss"],
                                         datasets: [

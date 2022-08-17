@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardContent, Collapse, Grid, IconButton, Paper, Table, TableBody, TableCell, tableCellClasses, TableContainer, Tooltip, Typography } from "@mui/material";
+import { Box, Button, Card, CardContent, CircularProgress, Collapse, Grid, IconButton, LinearProgress, Paper, Table, TableBody, TableCell, tableCellClasses, TableContainer, Tooltip, Typography } from "@mui/material";
 import React, { useEffect } from "react";
 import { getGradeIcon, getModIcon } from "../Assets";
 import { getModString, mods, mod_strings_long } from "../helper";
@@ -78,7 +78,11 @@ function ScoreTableRow(props) {
                             }
                         </Grid>
                     </>
-                    : <></>
+                    : <>
+                        <Box sx={{ width: '100%' }}>
+                            <LinearProgress />
+                        </Box>
+                    </>
             }
         </>
     );
