@@ -9,10 +9,8 @@ import PagePerDay from './Tabs/PagePerDate';
 import PageGeneral from './Tabs/PageGeneral';
 import { calculatePPifFC, calculatePPifSS, getModString, mods } from './helper';
 import PageScores from './Tabs/PageScores';
-import PageInfo from './Tabs/PageInfo';
 import axios from 'axios';
 import { getBeatmapCount, getBonusPerformance, getPerformance, getUser } from './osu';
-import config from "./config.json";
 import Footer from './Components/Footer';
 import FileSelector from './Components/FileSelector';
 
@@ -48,7 +46,6 @@ function App() {
   const [user, setUser] = React.useState(null);
   const [processedData, setProcessedData] = React.useState(null);
   const [loadState, setLoadState] = React.useState(false);
-  const [loadTitle, setLoadTitle] = React.useState('Load status');
 
   const [tabValue, setTabValue] = React.useState(1);
 
@@ -58,8 +55,6 @@ function App() {
   };
 
   const processData = async (scores) => {
-    (async function () { setLoadTitle("Fetching user"); })();
-
     let _user;
 
     try {
@@ -134,7 +129,6 @@ function App() {
       header: true,
       skipEmptyLines: true,
       complete: async function (results) {
-        setLoadTitle("Validating scores");
         if (testScores(results.data)) {
           results.data = results.data.filter(score => parseInt(score.approved) < 4);
 
@@ -221,7 +215,6 @@ function App() {
           <Tooltip>
             <Tab label="Per Month" {...a11yProps(3)} />
           </Tooltip>
-          <Tab label="Info" {...a11yProps(4)} />
         </Tabs>
         <Box component="main" sx={{ flexGrow: 1 }}>
           <Toolbar />
@@ -236,11 +229,6 @@ function App() {
               sx={{ py: 2, backgroundSize: "cover", backgroundRepeat: "no-repeat", backgroundPositionY: "center", backgroundImage: `url("${(user !== undefined && user !== null ? user.cover_url : "null")}")` }}
             >
               <FileSelector sx={{ width: '60%' }} handleScoresUpload={handleScoresUpload} loadState={loadState}/>
-              {/* <Typography>To get your scores, head over to the osu!alternative Discord server, and follow the guide to fetching scores.<br />
-                When the fetcher is complete, run <code>!getfile -type scores</code> in the bot channel. Upload the resulting file here.<br /><br />
-                <Button href='https://discord.gg/VZWRZZXcW4' target="_blank" variant="contained" size='small'>Join osu!alternative</Button>
-              </Typography><br /><br />
-              <Button variant="contained" color="success" component="label" disabled={loadState}>Upload scores<input onChange={e => handleScoresUpload(e.target.files[0])} hidden accept=".csv" type="file" /></Button> */}
             </Grid>
             {loadState ? <>
               <br />
@@ -248,9 +236,9 @@ function App() {
                 spacing={0}
                 direction="column"
                 alignItems="center"
-                justifyContent="center">
+                justifyContent="center"
+                sx={{pb:1}}>
                 <CircularProgress />
-                <Typography sx={{ py: 2 }}>{loadTitle}</Typography>
               </Grid>
             </> : <></>}
           </Paper>
@@ -273,10 +261,6 @@ function App() {
                 <PagePerDay data={{ scores: scoreData, user: user, processed: processedData, format: 'month' }} />
               </TabPanel>
             </> : <></>}
-            <TabPanel value={tabValue} index={5}>
-              <br />
-              <PageInfo />
-            </TabPanel>
             <Footer sx={{px:3,my:1}} />
           </Grid>
         </Box>
