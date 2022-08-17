@@ -2,6 +2,10 @@ import axios from "axios";
 import config from "./config.json";
 import { mods } from "./helper";
 
+export function getBonusPerformance(clears){
+    return 416.6667 * (1-Math.pow(0.9994, clears));
+}
+
 export async function getUser(id) {
     let _user = null;
     try {

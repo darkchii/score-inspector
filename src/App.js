@@ -11,7 +11,7 @@ import { calculatePPifFC, calculatePPifSS, getModString, mods } from './helper';
 import PageScores from './Tabs/PageScores';
 import PageInfo from './Tabs/PageInfo';
 import axios from 'axios';
-import { getBeatmapCount, getPerformance, getUser } from './osu';
+import { getBeatmapCount, getBonusPerformance, getPerformance, getUser } from './osu';
 import config from "./config.json";
 
 const darkTheme = createTheme({
@@ -60,9 +60,9 @@ function App() {
 
     let _user;
 
-    try{
+    try {
       _user = await getUser(scores[0].user_id);
-    }catch(err){
+    } catch (err) {
       alert(err);
       setLoadState(false);
       return;
@@ -487,7 +487,7 @@ function calculatePPdata(processed, scores) {
   });
 
   var index = 0;
-    scores.forEach(score => { score.pp_weight = Math.pow(0.95, index); index++; });
+  scores.forEach(score => { score.pp_weight = Math.pow(0.95, index); index++; });
 
   scores = calculatePPifFC(scores);
   scores = calculatePPifSS(scores);
@@ -498,6 +498,9 @@ function calculatePPdata(processed, scores) {
     processed.fc_pp_weighted += score.pp_fc.total * score.pp_fc.weight;
     processed.ss_pp_weighted += score.pp_ss.total * score.pp_ss.weight;
   });
+  const bonus = getBonusPerformance(scores.length);
+  processed.fc_pp_weighted += bonus;
+  processed.ss_pp_weighted += bonus;
 
   return processed;
 }
