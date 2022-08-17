@@ -13,6 +13,7 @@ import PageInfo from './Tabs/PageInfo';
 import axios from 'axios';
 import { getBeatmapCount, getBonusPerformance, getPerformance, getUser } from './osu';
 import config from "./config.json";
+import Footer from './Components/Footer';
 
 const darkTheme = createTheme({
   palette: {
@@ -336,6 +337,7 @@ function App() {
               <br />
               <PageInfo />
             </TabPanel>
+            <Footer sx={{px:3,my:1}} />
           </Grid>
         </Box>
       </Box>
