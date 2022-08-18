@@ -1,4 +1,21 @@
+import axios from "axios";
 import { isScoreRealistic } from "./osu";
+import config from "./config.json";
+
+export async function getUserTrackerStatus(user_id) {
+    const currentlyTracking = await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}proxy/aHR0cHM6Ly9vc3VhbHQucmVzcGVrdGl2ZS5wdy9hcGkvY3VycmVudA==`, { headers: { "Access-Control-Allow-Origin": "*" } });
+
+    if (currentlyTracking.data === undefined || currentlyTracking.data.length === 0) {
+        return false;
+    }
+
+    const existing = currentlyTracking.data.filter(user => parseInt(user.user_id) === parseInt(user_id));
+    if (existing.length > 0) {
+        return existing[0];
+    }
+
+    return false;
+}
 
 export const mods = {
     None: 0,

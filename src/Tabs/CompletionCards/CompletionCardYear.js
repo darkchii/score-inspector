@@ -1,0 +1,97 @@
+import { Box, Card, CardContent, Chip, CircularProgress, Grid, Typography, Table, TableContainer, TableHead, TableRow, TableCell, TableBody } from "@mui/material";
+import React, { useEffect } from "react";
+import ErrorIcon from '@mui/icons-material/Error';
+import axios from "axios";
+import config from '../../config.json';
+import moment from "moment";
+
+function CompletionCardYear(props) {
+    const [working, setWorkingState] = React.useState(true);
+    const [failed, setFailedState] = React.useState(false);
+    const [tableData, setData] = React.useState([]);
+
+    useEffect(() => {
+        (async () => {
+            setFailedState(false);
+            setWorkingState(true);
+            setData([]);
+
+            await new Promise(r => setTimeout(r, 1000));
+
+            const res = await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/yearly`, { headers: { "Access-Control-Allow-Origin": "*" } });
+            console.log(res);
+            if(res.data.length>0){
+                const __data = [];
+                res.data.forEach(yearData=>{
+                    const y = moment(`${yearData.year}-01-01`);
+                    const maps = yearData.amount;
+                    var count = 0;
+
+                    const scores = props.data.scores.filter(score=>{
+                        const approval = moment(score.approved_date);
+                        if(approval.isSame(y, 'year')){
+                            count++;
+                        }
+                    });
+                    __data.push({year: yearData.year, clears: count, total_maps: maps});
+                });
+                setData(__data);
+            }else{
+                setFailedState(true);
+            }
+            setWorkingState(false);
+        })();
+    }, [props.data]);
+
+    return (
+        <>
+            <Card sx={props.sx}>
+                <CardContent sx={{ height: '100%' }}>
+                    <Typography variant="h5">Completion by year</Typography>
+                    {
+                        working ? <>
+                            <Box sx={{ height: '100%', direction: 'column', alignItems: 'center', display: 'flex', justifyContent: 'center' }}>
+                                <CircularProgress />
+                            </Box>
+                        </> : <>
+                            {
+                                failed ? <>
+                                    <Box sx={{ height: '100%', direction: 'column', alignItems: 'center', display: 'flex', justifyContent: 'center' }}>
+                                        <ErrorIcon fontSize="large" color="primary" /><br />
+                                        <Chip label="Unable to get beatmap data" />
+                                    </Box>
+                                </> : <>
+                                    <TableContainer>
+                                        <Table size="small">
+                                            <TableHead>
+                                                <TableRow>
+                                                    <TableCell>Year</TableCell>
+                                                    <TableCell align="right">Clears</TableCell>
+                                                    <TableCell>Total</TableCell>
+                                                    <TableCell>%</TableCell>
+                                                </TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                                {
+                                                    tableData.map(data=>(
+                                                        <TableRow>
+                                                            <TableCell>{data.year}</TableCell>
+                                                            <TableCell align="right">{data.clears}</TableCell>
+                                                            <TableCell>{data.total_maps}</TableCell>
+                                                            <TableCell>{(100/data.total_maps*data.clears).toFixed(1)}%</TableCell>
+                                                        </TableRow>
+                                                    ))
+                                                }
+                                            </TableBody>
+                                        </Table>
+                                    </TableContainer>
+                                </>
+                            }
+                        </>
+                    }
+                </CardContent>
+            </Card>
+        </>
+    );
+}
+export default CompletionCardYear;

@@ -1,4 +1,4 @@
-import { CssBaseline, Box, AppBar, Toolbar, Typography, Paper, Grid, CircularProgress, Tabs, Tab, Tooltip } from '@mui/material';
+import { CssBaseline, Box, AppBar, Toolbar, Typography, Paper, Grid, CircularProgress, Tabs, Tab, Tooltip, Alert, AlertTitle } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import React from 'react';
 import './App.css';
@@ -11,6 +11,8 @@ import Footer from './Components/Footer';
 import FileSelector from './Components/FileSelector';
 import config from './config.json';
 import { processFile } from './scoresProcessing';
+import PageCompletion from './Tabs/PageCompletion';
+import { getUserTrackerStatus } from './helper';
 
 const darkTheme = createTheme(config.theme);
 
@@ -26,6 +28,7 @@ function App() {
   const [user, setUser] = React.useState(null);
   const [processedData, setProcessedData] = React.useState(null);
   const [loadState, setLoadState] = React.useState(false);
+  const [isUserProcessing, setUserProcessing] = React.useState(false);
 
   const [tabValue, setTabValue] = React.useState(1);
 
@@ -39,9 +42,17 @@ function App() {
     setUser(null);
     setProcessedData(null);
     setScoreData(null);
+    setUserProcessing(false);
 
     var complete = 0;
-    await processFile(file, processed => { setProcessedData(processed); }, user => { setUser(user); }, scores => { setScoreData(scores); }, () => { complete++; if (complete === 3) { setLoadState(false); } });
+    await processFile(file,
+      processed => { setProcessedData(processed); },
+      user => {
+        setUser(user);
+        setUserProcessing(user.isWorking);
+      },
+      scores => { setScoreData(scores); },
+      () => { complete++; if (complete === 3) { setLoadState(false); } });
   }
 
   return (
@@ -69,10 +80,11 @@ function App() {
         >
           <Toolbar />
           <Tab label="General" {...a11yProps(0)} />
-          <Tab label="Scores" {...a11yProps(1)} />
-          <Tab label="Per Day" {...a11yProps(2)} />
+          <Tab label="Completion" {...a11yProps(1)} />
+          <Tab label="Scores" {...a11yProps(2)} />
+          <Tab label="Per Day" {...a11yProps(3)} />
           <Tooltip>
-            <Tab label="Per Month" {...a11yProps(3)} />
+            <Tab label="Per Month" {...a11yProps(4)} />
           </Tooltip>
         </Tabs>
         <Box component="main" sx={{ flexGrow: 1 }}>
@@ -101,6 +113,14 @@ function App() {
               </Grid>
             </> : <></>}
           </Paper>
+          {
+            isUserProcessing ? <>
+              <Alert severity="warning">
+                <AlertTitle>Warning</AlertTitle>
+                The scorefetcher isn't done checking all of your scores yet! The data is most likely incomplete. ({isUserProcessing.percentage.toFixed(2)}% done)
+              </Alert>
+            </> : <></>
+          }
           <Grid>
             {(scoreData != null && user != null && processedData != null) ? <>
               <TabPanel value={tabValue} index={1}>
@@ -109,13 +129,17 @@ function App() {
               </TabPanel>
               <TabPanel value={tabValue} index={2}>
                 <br />
-                <PageScores data={{ scores: scoreData, user: user, processed: processedData }} />
+                <PageCompletion data={{ scores: scoreData, user: user, processed: processedData }} />
               </TabPanel>
               <TabPanel value={tabValue} index={3}>
                 <br />
-                <PagePerDay data={{ scores: scoreData, user: user, processed: processedData, format: 'day' }} />
+                <PageScores data={{ scores: scoreData, user: user, processed: processedData }} />
               </TabPanel>
               <TabPanel value={tabValue} index={4}>
+                <br />
+                <PagePerDay data={{ scores: scoreData, user: user, processed: processedData, format: 'day' }} />
+              </TabPanel>
+              <TabPanel value={tabValue} index={5}>
                 <br />
                 <PagePerDay data={{ scores: scoreData, user: user, processed: processedData, format: 'month' }} />
               </TabPanel>

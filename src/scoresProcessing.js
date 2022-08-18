@@ -1,5 +1,5 @@
 import Papa from "papaparse";
-import { calculatePPifFC, calculatePPifSS, getModString, mods } from "./helper";
+import { calculatePPifFC, calculatePPifSS, getModString, getUserTrackerStatus, mods } from "./helper";
 import { getBeatmapCount, getBonusPerformance, getPerformance, getUser } from "./osu";
 
 const processData = async (scores, cb, cbProc) => {
@@ -12,6 +12,8 @@ const processData = async (scores, cb, cbProc) => {
         cb(false);
         return;
     }
+
+    _user.isWorking = await getUserTrackerStatus(_user.id);
 
     cb(_user);
 
@@ -88,6 +90,10 @@ function parseScore(score) {
     score.pp = Math.max(0, parseFloat(score.pp));
     score.enabled_mods = parseInt(score.enabled_mods);
     score.stars = parseFloat(score.stars);
+    score.ar = parseFloat(score.ar);
+    score.od = parseFloat(score.od);
+    score.cs = parseFloat(score.cs);
+    score.hp = parseFloat(score.hp);
     score.maxcombo = parseInt(score.maxcombo);
     score.combo = parseInt(score.combo);
     score.countmiss = parseInt(score.countmiss);
