@@ -13,26 +13,9 @@ import axios from 'axios';
 import { getBeatmapCount, getBonusPerformance, getPerformance, getUser } from './osu';
 import Footer from './Components/Footer';
 import FileSelector from './Components/FileSelector';
+import config from './config.json';
 
-const darkTheme = createTheme({
-  palette: {
-    mode: 'dark',
-    primary: {
-      main: '#C8598A',
-    },
-    background: {
-      default: "#2A2226",
-      dark: '#fff',
-      paper: "#382E32"
-    }
-    // secondary: {
-    //   main: '#edf2ff',
-    // },
-  },
-  shape: {
-    borderRadius: 8
-  }
-});
+const darkTheme = createTheme(config.theme);
 
 function a11yProps(index) {
   return {

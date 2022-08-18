@@ -1,5 +1,21 @@
 {
     "OSU_API": "http://darkchii.nl/score/api/",
     "OSU_TEST_API": "http://darkchii.nl/score/test_api/",
-    "SCORE_API": "https://score.respektive.pw/u/"
+    "SCORE_API": "https://score.respektive.pw/u/",
+    "theme": {
+        "palette": {
+            "mode": "dark",
+            "primary": {
+                "main": "#C8598A"
+            },
+            "background": {
+                "default": "#2A2226",
+                "dark": "#fff",
+                "paper": "#382E32"
+            }
+        },
+        "shape": {
+            "borderRadius": 8
+        }
+    }
 }
