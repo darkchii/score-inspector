@@ -115,10 +115,14 @@ function App() {
           </Paper>
           {
             isUserProcessing ? <>
-              <Alert severity="warning">
-                <AlertTitle>Warning</AlertTitle>
-                The scorefetcher isn't done checking all of your scores yet! The data is most likely incomplete. ({isUserProcessing.percentage.toFixed(2)}% done)
-              </Alert>
+              <Grid container sx={{p:2}} direction="column" alignItems="center">
+                <Grid item xs={12} md={6} lg={6}>
+                  <Alert severity="warning">
+                    <AlertTitle>Warning</AlertTitle>
+                    The scorefetcher isn't done checking all of your scores yet! The data is most likely incomplete. ({isUserProcessing.percentage.toFixed(2)}% done)
+                  </Alert>
+                </Grid>
+              </Grid>
             </> : <></>
           }
           <Grid>
