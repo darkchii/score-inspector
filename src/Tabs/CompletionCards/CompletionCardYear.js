@@ -8,39 +8,44 @@ import moment from "moment";
 function CompletionCardYear(props) {
     const [working, setWorkingState] = React.useState(true);
     const [failed, setFailedState] = React.useState(false);
-    const [tableData, setData] = React.useState([]);
 
     useEffect(() => {
-        (async () => {
-            setFailedState(false);
-            setWorkingState(true);
-            setData([]);
+        if (props.data.processed.completion === undefined || props.data.processed.completion.years === undefined) {
+            (async () => {
+                setFailedState(false);
+                setWorkingState(true);
+                if (props.data.processed.completion === undefined) {
+                    props.data.processed.completion = [];
+                }
 
-            await new Promise(r => setTimeout(r, 1000));
+                await new Promise(r => setTimeout(r, 1000));
 
-            const res = await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/yearly`, { headers: { "Access-Control-Allow-Origin": "*" } });
-            console.log(res);
-            if(res.data.length>0){
-                const __data = [];
-                res.data.forEach(yearData=>{
-                    const y = moment(`${yearData.year}-01-01`);
-                    const maps = yearData.amount;
-                    var count = 0;
+                const res = await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/yearly`, { headers: { "Access-Control-Allow-Origin": "*" } });
+                console.log(res);
+                if (res.data.length > 0) {
+                    const __data = [];
+                    res.data.forEach(yearData => {
+                        const y = moment(`${yearData.year}-01-01`);
+                        const maps = yearData.amount;
+                        var count = 0;
 
-                    const scores = props.data.scores.filter(score=>{
-                        const approval = moment(score.approved_date);
-                        if(approval.isSame(y, 'year')){
-                            count++;
-                        }
+                        const scores = props.data.scores.filter(score => {
+                            const approval = moment(score.approved_date);
+                            if (approval.isSame(y, 'year')) {
+                                count++;
+                            }
+                        });
+                        __data.push({ year: yearData.year, clears: count, total_maps: maps });
                     });
-                    __data.push({year: yearData.year, clears: count, total_maps: maps});
-                });
-                setData(__data);
-            }else{
-                setFailedState(true);
-            }
+                    props.data.processed.completion.years = __data;
+                } else {
+                    setFailedState(true);
+                }
+                setWorkingState(false);
+            })();
+        }else{
             setWorkingState(false);
-        })();
+        }
     }, [props.data]);
 
     return (
@@ -49,7 +54,7 @@ function CompletionCardYear(props) {
                 <CardContent sx={{ height: '100%' }}>
                     <Typography variant="h5">Completion by year</Typography>
                     {
-                        working ? <>
+                        working || props.data.processed.completion === undefined || props.data.processed.completion.years === undefined ? <>
                             <Box sx={{ height: '100%', direction: 'column', alignItems: 'center', display: 'flex', justifyContent: 'center' }}>
                                 <CircularProgress />
                             </Box>
@@ -73,12 +78,12 @@ function CompletionCardYear(props) {
                                             </TableHead>
                                             <TableBody>
                                                 {
-                                                    tableData.map(data=>(
+                                                    props.data.processed.completion.years.map(data => (
                                                         <TableRow>
                                                             <TableCell>{data.year}</TableCell>
                                                             <TableCell align="right">{data.clears}</TableCell>
                                                             <TableCell>{data.total_maps}</TableCell>
-                                                            <TableCell>{(100/data.total_maps*data.clears).toFixed(1)}%</TableCell>
+                                                            <TableCell>{(100 / data.total_maps * data.clears).toFixed(1)}%</TableCell>
                                                         </TableRow>
                                                     ))
                                                 }
