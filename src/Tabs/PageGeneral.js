@@ -24,24 +24,24 @@ function PageGeneral(props) {
     return (
         <>
             <FluidGrid>
-                <Grid><GeneralCardUser data={props.data} />                 </Grid>
-                <Grid><GeneralCardClears data={props.data} />               </Grid>
-                <Grid><GeneralCardTotalPP data={props.data} />              </Grid>
-                <Grid><GeneralCardAveragePP data={props.data} />            </Grid>
-                <Grid><GeneralCardAverageSR data={props.data} />            </Grid>
-                <Grid><GeneralCardHighestSR data={props.data} />           </Grid>
-                <Grid><GeneralCardTagOccurances data={props.data} />        </Grid>
-                <Grid><GeneralCardGradeSpread data={props.data} />          </Grid>
-                <Grid><GeneralCardUsedModCombos data={props.data} />        </Grid>
-                <Grid><GeneralCardScorePerPlay data={props.data} />        </Grid>
-                <Grid><GeneralCardFullComboPerc data={props.data} />        </Grid>
-                <Grid><GeneralCardPPifFC data={props.data} />               </Grid>
-                <Grid><GeneralCardPPifSS data={props.data} />               </Grid>
-                <Grid><GeneralCardScoreRank data={props.data} />            </Grid>
-                <Grid><GeneralCardTotalLengthPlayed data={props.data} />    </Grid>
-                <Grid><GeneralCardAverageLengthPlayed data={props.data} />  </Grid>
+                <Grid><GeneralCardUser data={props.data} /></Grid>
+                <Grid><GeneralCardClears data={props.data} /></Grid>
+                <Grid><GeneralCardTotalPP data={props.data} /></Grid>
+                <Grid><GeneralCardAveragePP data={props.data} /></Grid>
+                <Grid><GeneralCardAverageSR data={props.data} /></Grid>
+                <Grid><GeneralCardHighestSR data={props.data} /></Grid>
+                <Grid><GeneralCardTagOccurances data={props.data} /></Grid>
+                <Grid><GeneralCardGradeSpread data={props.data} /></Grid>
+                <Grid><GeneralCardUsedModCombos data={props.data} /></Grid>
+                <Grid><GeneralCardScorePerPlay data={props.data} /></Grid>
+                <Grid><GeneralCardFullComboPerc data={props.data} /></Grid>
+                <Grid><GeneralCardPPifFC data={props.data} /></Grid>
+                <Grid><GeneralCardPPifSS data={props.data} /></Grid>
+                <Grid><GeneralCardScoreRank data={props.data} /></Grid>
+                <Grid><GeneralCardTotalLengthPlayed data={props.data} /></Grid>
+                <Grid><GeneralCardAverageLengthPlayed data={props.data} /></Grid>
                 {
-                    config.DONATE_URL?<><Grid><GeneralCardDonation data={props.data} />  </Grid></>:<></>
+                    config.DONATE_URL ? <><Grid><GeneralCardDonation data={props.data} /></Grid></> : <></>
                 }
             </FluidGrid>
         </>
