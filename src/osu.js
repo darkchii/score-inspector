@@ -228,7 +228,7 @@ function getSpeedValue(data) {
     if (data.score.modded_ar > 10.33) {
         approachRateFactor = 0.3 * (data.score.modded_ar - 10.33);
     }
-    speedValue *= (1.0 - approachRateFactor) * lengthBonus;
+    speedValue *= 1.0 + approachRateFactor * lengthBonus;
     // console.log("TEST SPEED AR: "+speedValue);
 
     if ((data.score.enabled_mods & mods.HD) !== 0) {
