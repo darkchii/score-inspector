@@ -173,15 +173,17 @@ async function CalculateData(processed, scores, _user) {
             ranks[rankIndex[score.rank]] = 1;
         }
 
-        score.tags.split(" ").forEach(tag => {
-            // console.log(tag);
-            const _tag = tag.trim().replaceAll('"', '').toString();
-            if (tags[_tag] !== undefined) {
-                tags[_tag]++;
-            } else {
-                tags[_tag] = 1;
-            }
-        });
+        if(score.tags.length>0){
+            score.tags.replace(/\s+/g, ' ').trim().split(" ").forEach(tag => {
+                // console.log(tag);
+                const _tag = tag.trim().replaceAll('"', '').toString();
+                if (tags[_tag] !== undefined) {
+                    tags[_tag]++;
+                } else {
+                    tags[_tag] = 1;
+                }
+            });
+        }
 
         const _m = getModString(score.enabled_mods).toString();
         if (used_mods.findIndex(m => m.mods === _m) === -1) {
