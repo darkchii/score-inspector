@@ -95,6 +95,8 @@ function PageScores(props) {
         { field: 'maxcombo', headerName: 'Max combo', minWidth: 100, type: "number", valueFormatter: (params) => { return `${params.value}x`; } },
         { field: 'length', headerName: 'Length', minWidth: 100, type: "number", valueFormatter: (params) => { return moment.utc(moment.duration(params.value, "seconds").asMilliseconds()).format("mm:ss") } },
         { field: 'bpm', headerName: 'BPM', minWidth: 100, type: "number" },
+        { field: 'ppfc', headerName: 'FC PP', minWidth: 100, type: "number", hide: true },
+        { field: 'ppss', headerName: 'SS PP', minWidth: 100, type: "number", hide: true },
     ];
     useEffect(() => {
         if (props.data.scoreTable === undefined) {
@@ -109,7 +111,6 @@ function PageScores(props) {
                     mods: score.enabled_mods,
                     sr: score.star_rating,
                     pp: score.pp,
-                    ppfc: score.pp_fc.total,
                     date: `${score.date_played}`,
                     grade: `${score.rank}`,
                     combo: `${score.combo}`,
@@ -118,6 +119,8 @@ function PageScores(props) {
                     length: (score.mods & mods.DoubleTime ? score.length * 1.5 : (score.mods & mods.HalfTime ? score.length * 0.75 : score.length)),
                     bpm: (score.mods & mods.DoubleTime ? score.bpm * 1.5 : (score.mods & mods.HalfTime ? score.bpm * 0.75 : score.bpm)),
                     approved: score.approved,
+                    ppfc: score.pp_fc.total,
+                    ppss: score.pp_ss.total,
                     score_object: score
                 });
                 index++;
