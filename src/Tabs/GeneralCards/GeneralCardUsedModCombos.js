@@ -23,7 +23,11 @@ function GeneralCardUsedModCombos(props) {
                                                                     <img height="20px" src={getModIcon(mod)} alt={mod} />
                                                                 </Tooltip>
                                                             </>
-                                                        )) : "None"}
+                                                        )) : <>
+                                                            <Tooltip title='Nomod'>
+                                                                <img height="20px" src={getModIcon('None')} alt='Nomod' />
+                                                            </Tooltip>
+                                                        </>}
                                                     </TableCell>
                                                     <TableCell component="th" scope="row">
                                                         {row.value.toLocaleString("en-US")}

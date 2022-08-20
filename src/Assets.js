@@ -24,6 +24,7 @@ import PNG_MOD_FL from "./Assets/MOD_FL.png";
 import PNG_MOD_HD from "./Assets/MOD_HD.png";
 import PNG_MOD_HR from "./Assets/MOD_HR.png";
 import PNG_MOD_TD from "./Assets/MOD_TD.png";
+import PNG_MOD_NM from "./Assets/MOD_NM.png";
 
 function getModIcon(modString) {
     switch (modString) {
@@ -45,6 +46,7 @@ function getModIcon(modString) {
         case "HD": return PNG_MOD_HD;
         case "HR": return PNG_MOD_HR;
         case "TD": return PNG_MOD_TD;
+        case "None": return PNG_MOD_NM;
     }
 }
 
@@ -88,6 +90,7 @@ export {
     PNG_MOD_HD,
     PNG_MOD_HR,
     PNG_MOD_TD,
+    PNG_MOD_NM,
     getModIcon,
     getGradeIcon
 };
