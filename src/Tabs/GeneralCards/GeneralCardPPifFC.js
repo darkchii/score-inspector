@@ -2,7 +2,7 @@ import { Card, CardContent, Typography, Grid, Button } from '@mui/material';
 import { useState } from 'react';
 import NumberFormat from 'react-number-format';
 import TopplaysModal from '../../Components/TopplaysModal';
-import { getBeatmapMaxscore, getGrade } from '../../osu';
+import { getBeatmapMaxscore, getGrade, getPerformance } from '../../osu';
 
 function GeneralCardPPifFC(props) {
     const [modalData, setModalData] = useState({ active: false });
@@ -26,6 +26,7 @@ function GeneralCardPPifFC(props) {
             score.weight = score.pp_fc.weight;
             score.rank = getGrade(score);
             score.score = -1;
+            score.pp_cur = score.pp_fc;
         })
         setModalData({
             scores: _scores,

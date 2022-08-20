@@ -119,7 +119,7 @@ export function getPerformance(data) {
     data.count100 = data.count100 ?? score.count100;
     data.count50 = data.count50 ?? score.count50;
     data.countmiss = data.countmiss ?? score.countmiss;
-    data.combo = data.combo ?? score.maxcombo;
+    data.combo = data.combo ?? score.combo;
     data.totalhits = data.count300 + data.count100 + data.count50 + data.countmiss;
     data.accuracy = getAccuracy(data);
 

@@ -146,7 +146,7 @@ export function calculatePPifFC(scores) {
     });
 
     var index = 0;
-    scores.forEach(score => { if (isScoreRealistic(score)) { score.pp_fc.weight = Math.pow(0.95, index); index++; } else { score.pp_fc.weight = 0 } });
+    scores.forEach(score => { if (isScoreRealistic(score) && !isNaN(score.pp_fc.total)) { score.pp_fc.weight = Math.pow(0.95, index); index++; } else { score.pp_fc.weight = 0 } });
 
     return scores;
 }
@@ -159,7 +159,7 @@ export function calculatePPifSS(scores) {
     });
 
     var index = 0;
-    scores.forEach(score => { if (isScoreRealistic(score)) { score.pp_ss.weight = Math.pow(0.95, index); index++; } else { score.pp_ss.weight = 0 } });
+    scores.forEach(score => { if (isScoreRealistic(score) && !isNaN(score.pp_ss.total)) { score.pp_ss.weight = Math.pow(0.95, index); index++; } else { score.pp_ss.weight = 0 } });
 
     return scores;
 }

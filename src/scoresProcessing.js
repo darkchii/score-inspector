@@ -123,6 +123,7 @@ function parseScore(score) {
     //perform these at the latest point of parsing
     score.pp_fc = getPerformance({ count300: score.count300 + score.countmiss, count100: score.count100, count50: score.count50, countmiss: 0, combo: score.maxcombo, score: score });
     score.pp_ss = getPerformance({ count300: score.count300 + score.countmiss + score.count100 + score.count50, count100: 0, count50: 0, countmiss: 0, combo: score.maxcombo, score: score });
+    score.pp_cur = getPerformance({ score: score });
 
     return score;
 }
@@ -173,7 +174,7 @@ async function CalculateData(processed, scores, _user) {
             ranks[rankIndex[score.rank]] = 1;
         }
 
-        if(score.tags.length>0){
+        if (score.tags.length > 0) {
             score.tags.replace(/\s+/g, ' ').trim().split(" ").forEach(tag => {
                 // console.log(tag);
                 const _tag = tag.trim().replaceAll('"', '').toString();
@@ -279,8 +280,12 @@ function calculatePPdata(processed, scores) {
     processed.fc_pp_weighted = 0;
     processed.ss_pp_weighted = 0;
     scores.forEach(score => {
-        processed.fc_pp_weighted += score.pp_fc.total * score.pp_fc.weight;
-        processed.ss_pp_weighted += score.pp_ss.total * score.pp_ss.weight;
+        if (!isNaN(score.pp_fc.total)) {
+            processed.fc_pp_weighted += score.pp_fc.total * score.pp_fc.weight;
+        }
+        if (!isNaN(score.pp_ss.total)) {
+            processed.ss_pp_weighted += score.pp_ss.total * score.pp_ss.weight;
+        }
     });
     const bonus = getBonusPerformance(scores.length);
     processed.fc_pp_weighted += bonus;

@@ -130,38 +130,68 @@ function ScoreView(props) {
                                     </Box>
                                 </Grid>
                             </Grid>
+                            <Typography>Performance breakdown</Typography>
+                            <Card variant="outlined" sx={{ mb: 3 }}>
+                                <TableContainer>
+                                    <Table size="small" sx={{
+                                        [`& .${tableCellClasses.root}`]: {
+                                            borderBottom: "none"
+                                        }
+                                    }}>
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell>Aim PP</TableCell>
+                                                <TableCell>Speed PP</TableCell>
+                                                <TableCell>Accuracy PP</TableCell>
+                                                <TableCell>Flashlight PP</TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            <TableRow>
+                                                <TableCell>{props.data.score.pp_cur.aim.toFixed(1)}pp</TableCell>
+                                                <TableCell>{props.data.score.pp_cur.speed.toFixed(1)}pp</TableCell>
+                                                <TableCell>{props.data.score.pp_cur.acc.toFixed(1)}pp</TableCell>
+                                                <TableCell>{props.data.score.pp_cur.flashlight.toFixed(1)}pp</TableCell>
+                                            </TableRow>
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                            </Card>
                             {
                                 performance !== null ?
-                                    <Card variant="outlined" sx={{ my: 3 }}>
-                                        <TableContainer>
-                                            <Table size="small" sx={{
-                                                [`& .${tableCellClasses.root}`]: {
-                                                    borderBottom: "none"
-                                                }
-                                            }}>
-                                                <TableHead>
-                                                    <TableRow>
-                                                        <TableCell>80% FC</TableCell>
-                                                        <TableCell>90% FC</TableCell>
-                                                        <TableCell>95% FC</TableCell>
-                                                        <TableCell>98% FC</TableCell>
-                                                        <TableCell>99% FC</TableCell>
-                                                        <TableCell>100% FC</TableCell>
-                                                    </TableRow>
-                                                </TableHead>
-                                                <TableBody>
-                                                    <TableRow>
-                                                        <TableCell>{performance["80%"].total.toFixed(0)}pp</TableCell>
-                                                        <TableCell>{performance["90%"].total.toFixed(0)}pp</TableCell>
-                                                        <TableCell>{performance["95%"].total.toFixed(0)}pp</TableCell>
-                                                        <TableCell>{performance["98%"].total.toFixed(0)}pp</TableCell>
-                                                        <TableCell>{performance["99%"].total.toFixed(0)}pp</TableCell>
-                                                        <TableCell>{performance["100%"].total.toFixed(0)}pp</TableCell>
-                                                    </TableRow>
-                                                </TableBody>
-                                            </Table>
-                                        </TableContainer>
-                                    </Card>
+                                    <>
+                                        <Typography>Accuracy to performance</Typography>
+                                        <Card variant="outlined" sx={{ mb: 3 }}>
+                                            <TableContainer>
+                                                <Table size="small" sx={{
+                                                    [`& .${tableCellClasses.root}`]: {
+                                                        borderBottom: "none"
+                                                    }
+                                                }}>
+                                                    <TableHead>
+                                                        <TableRow>
+                                                            <TableCell>80% FC</TableCell>
+                                                            <TableCell>90% FC</TableCell>
+                                                            <TableCell>95% FC</TableCell>
+                                                            <TableCell>98% FC</TableCell>
+                                                            <TableCell>99% FC</TableCell>
+                                                            <TableCell>100% FC</TableCell>
+                                                        </TableRow>
+                                                    </TableHead>
+                                                    <TableBody>
+                                                        <TableRow>
+                                                            <TableCell>{performance["80%"].total.toFixed(0)}pp</TableCell>
+                                                            <TableCell>{performance["90%"].total.toFixed(0)}pp</TableCell>
+                                                            <TableCell>{performance["95%"].total.toFixed(0)}pp</TableCell>
+                                                            <TableCell>{performance["98%"].total.toFixed(0)}pp</TableCell>
+                                                            <TableCell>{performance["99%"].total.toFixed(0)}pp</TableCell>
+                                                            <TableCell>{performance["100%"].total.toFixed(0)}pp</TableCell>
+                                                        </TableRow>
+                                                    </TableBody>
+                                                </Table>
+                                            </TableContainer>
+                                        </Card>
+                                    </>
                                     : <></>
                             }
                             <Typography id="modal-modal-description" sx={{ mt: 0 }}>
