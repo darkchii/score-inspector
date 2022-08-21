@@ -83,9 +83,7 @@ function App() {
           <Tab label="Completion" {...a11yProps(1)} />
           <Tab label="Scores" {...a11yProps(2)} />
           <Tab label="Per Day" {...a11yProps(3)} />
-          <Tooltip>
-            <Tab label="Per Month" {...a11yProps(4)} />
-          </Tooltip>
+          <Tab label="Per Month" {...a11yProps(4)} />
         </Tabs>
         <Box component="main" sx={{ flexGrow: 1 }}>
           <Toolbar />
