@@ -1,4 +1,4 @@
-import { CssBaseline, Box, AppBar, Toolbar, Typography, Paper, Grid, CircularProgress, Tabs, Tab, Tooltip, Alert, AlertTitle } from '@mui/material';
+import { CssBaseline, Box, AppBar, Toolbar, Typography, Paper, Grid, CircularProgress, Tabs, Tab, Tooltip, Alert, AlertTitle, FormControlLabel, Switch } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import React from 'react';
 import './App.css';
@@ -37,7 +37,7 @@ function App() {
     console.log(newValue);
   };
 
-  const handleScoresUpload = async (file) => {
+  const handleScoresUpload = async (file, allowLoved) => {
     setLoadState(true);
     setUser(null);
     setProcessedData(null);
@@ -45,7 +45,7 @@ function App() {
     setUserProcessing(false);
 
     var complete = 0;
-    await processFile(file,
+    await processFile(file, allowLoved,
       processed => { setProcessedData(processed); },
       user => {
         setUser(user);
@@ -97,7 +97,7 @@ function App() {
               justifyContent="center"
               sx={{ py: 2, backgroundSize: "cover", backgroundRepeat: "no-repeat", backgroundPositionY: "center", backgroundImage: `url("${(user !== undefined && user !== null ? user.cover_url : "null")}")` }}
             >
-              <FileSelector sx={{ width: '60%' }} handleScoresUpload={handleScoresUpload} loadState={loadState} />
+              <FileSelector sx={{ width: '60%' }} data={{ hasProcessedData: processedData !== null }} handleScoresUpload={handleScoresUpload} loadState={loadState} />
             </Grid>
             {loadState ? <>
               <br />
@@ -113,7 +113,7 @@ function App() {
           </Paper>
           {
             isUserProcessing ? <>
-              <Grid container sx={{p:2}} direction="column" alignItems="center">
+              <Grid container sx={{ p: 2 }} direction="column" alignItems="center">
                 <Grid item xs={12} md={6} lg={6}>
                   <Alert severity="warning">
                     <AlertTitle>Warning</AlertTitle>

@@ -54,13 +54,15 @@ const processData = async (scores, cb, cbProc) => {
     cbProc(processed);
 };
 
-export async function processFile(file, cbProc, cbUser, cbScores, cb) {
+export async function processFile(file, allowLoved, cbProc, cbUser, cbScores, cb) {
     Papa.parse(file, {
         header: true,
         skipEmptyLines: true,
         complete: async function (results) {
             if (testScores(results.data)) {
-                results.data = results.data.filter(score => parseInt(score.approved) < 4);
+                if(!allowLoved){
+                    results.data = results.data.filter(score => parseInt(score.approved) < 4);
+                }
 
                 // console.log("Valid score dataset");
                 results.data.forEach(score => {
