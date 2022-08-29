@@ -9,7 +9,7 @@
     "@fontsource/roboto": "^4.5.7",
     "@koale/useworker": "^4.0.2",
     "@mui/icons-material": "^5.8.4",
-    "@mui/material": "^5.9.3",
+    "@mui/material": "^5.10.2",
     "@mui/x-data-grid": "^5.15.3",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.3.0",
