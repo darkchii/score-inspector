@@ -12,6 +12,7 @@ import FileSelector from './Components/FileSelector';
 import config from './config.json';
 import { processFile } from './scoresProcessing';
 import PageCompletion from './Tabs/PageCompletion';
+import PageChangelog from './Tabs/PageChangelog';
 
 const darkTheme = createTheme(config.theme);
 
@@ -83,6 +84,7 @@ function App() {
           <Tab label="Scores" {...a11yProps(2)} />
           <Tab label="Per Day" {...a11yProps(3)} />
           <Tab label="Per Month" {...a11yProps(4)} />
+          <Tab label="Changelog" {...a11yProps(5)} />
         </Tabs>
         <Box component="main" sx={{ flexGrow: 1 }}>
           <Toolbar />
@@ -145,6 +147,10 @@ function App() {
                 <PagePerDay data={{ scores: scoreData, user: user, processed: processedData, format: 'month' }} />
               </TabPanel>
             </> : <></>}
+            <TabPanel value={tabValue} index={6}>
+                <br />
+                <PageChangelog data={{ scores: scoreData, user: user, processed: processedData }} />
+              </TabPanel>
             <Footer sx={{ px: 3, my: 1 }} />
           </Grid>
         </Box>
