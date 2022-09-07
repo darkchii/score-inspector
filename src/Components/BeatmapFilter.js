@@ -1,7 +1,7 @@
-import { Box, Button, Checkbox, FormControl, FormControlLabel, FormGroup, Grid, Link, Radio, RadioGroup, TextField, Tooltip, Typography } from "@mui/material";
+import { Box, Button, FormControl, FormControlLabel, Grid, Radio, RadioGroup, TextField, Tooltip, Typography } from "@mui/material";
 import moment from "moment";
 import React, { useEffect } from "react";
-import { getModIcon, getPossibleMods, IMG_SVG_GRADE_A, IMG_SVG_GRADE_B, IMG_SVG_GRADE_C, IMG_SVG_GRADE_D, IMG_SVG_GRADE_S, IMG_SVG_GRADE_SH, IMG_SVG_GRADE_X, IMG_SVG_GRADE_XH, SVG_GRADE_XH } from "../Assets";
+import { getModIcon, getPossibleMods, IMG_SVG_GRADE_A, IMG_SVG_GRADE_B, IMG_SVG_GRADE_C, IMG_SVG_GRADE_D, IMG_SVG_GRADE_S, IMG_SVG_GRADE_SH, IMG_SVG_GRADE_X, IMG_SVG_GRADE_XH } from "../Assets";
 import { mods, mod_strings_long } from "../helper";
 import ImageToggle from "./ImageToggle";
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
@@ -41,7 +41,7 @@ function BeatmapFilter(props) {
 
     const toggleMod = (mod, checked) => {
         const updatedMods = enabledMods + mods[mod] * (checked ? 1 : -1);
-        if (mod == 'None') {
+        if (mod === 'None') {
             setNomodEnabled(checked);
         }
         setEnabledMods(updatedMods);

@@ -1,9 +1,8 @@
-import { Alert, AlertTitle, Box, Button, Card, CardContent, FormControlLabel, Grid, Link, Paper, Step, StepLabel, Stepper, Switch, Typography } from "@mui/material";
+import { Alert, AlertTitle, Box, Button, Card, CardContent, FormControlLabel, Grid, Step, StepLabel, Stepper, Switch, Typography } from "@mui/material";
 import React from "react";
 
 function FileSelector(props) {
     const [stepperActiveStep, setStepperActiveStep] = React.useState(0);
-    const [stepperCompleted, setStepperCompleted] = React.useState({});
     const [useLoved, setLovedState] = React.useState(JSON.parse(window.localStorage.getItem('useLovedMaps')) ?? false);
     const [askReprocess, setReprocessState] = React.useState(false);
     const [curFile, setFile] = React.useState(null);
@@ -23,10 +22,6 @@ function FileSelector(props) {
 
     const stepperHandleNext = () => {
         setStepperActiveStep((prevActiveStep) => prevActiveStep + 1);
-    };
-
-    const stepperHandleReset = () => {
-        setStepperActiveStep(0);
     };
 
     const handleScoresUpload = async (file) => {

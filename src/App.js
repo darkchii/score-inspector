@@ -1,4 +1,4 @@
-import { CssBaseline, Box, AppBar, Toolbar, Typography, Paper, Grid, CircularProgress, Tabs, Tab, Tooltip, Alert, AlertTitle, FormControlLabel, Switch } from '@mui/material';
+import { CssBaseline, Box, AppBar, Toolbar, Typography, Paper, Grid, CircularProgress, Tabs, Tab, Alert, AlertTitle } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import React from 'react';
 import './App.css';
@@ -12,7 +12,6 @@ import FileSelector from './Components/FileSelector';
 import config from './config.json';
 import { processFile } from './scoresProcessing';
 import PageCompletion from './Tabs/PageCompletion';
-import { getUserTrackerStatus } from './helper';
 
 const darkTheme = createTheme(config.theme);
 
