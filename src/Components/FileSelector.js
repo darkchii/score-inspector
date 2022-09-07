@@ -5,7 +5,7 @@ function FileSelector(props) {
     const [stepperActiveStep, setStepperActiveStep] = React.useState(0);
     const [stepperCompleted, setStepperCompleted] = React.useState({});
     const [useLoved, setLovedState] = React.useState(JSON.parse(window.localStorage.getItem('useLovedMaps')) ?? false);
-    const [askReprocess, setReprocessState] = React.useState(true);
+    const [askReprocess, setReprocessState] = React.useState(false);
     const [curFile, setFile] = React.useState(null);
 
     const handleLovedToggle = (event) => {
