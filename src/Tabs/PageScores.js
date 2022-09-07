@@ -1,4 +1,4 @@
-import { Box, Tooltip } from "@mui/material";
+import { Box, Tooltip, Typography } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import moment from "moment";
 import React, { useEffect } from "react";
@@ -8,11 +8,13 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import DoneIcon from '@mui/icons-material/Done';
 import { green, pink } from "@mui/material/colors";
 import ScoreModal from "../Components/ScoreModal";
+import BeatmapFilter from "../Components/BeatmapFilter";
 
 function PageScores(props) {
     const [, updateState] = React.useState();
     const forceUpdate = React.useCallback(() => updateState({}), []);
     const [modalData, setModalData] = React.useState({ active: false });
+    const [scoreCount, setScoreCount] = React.useState(0);
 
     const gradeFormatter = (cell) => {
         return (
@@ -81,6 +83,7 @@ function PageScores(props) {
         })
     }
 
+
     var columns = [
         { field: 'title', flex: 1, headerName: 'Title', minWidth: 280 },
         { field: 'score', headerName: 'Score', minWidth: 170, type: "number", valueFormatter: (params) => { return `${params.value.toLocaleString('en-US')}`; } },
@@ -104,52 +107,107 @@ function PageScores(props) {
     ];
     useEffect(() => {
         if (props.data.scoreTable === undefined) {
-            var rows = [];
-
-            var index = 0;
-            props.data.scores.forEach(score => {
-                rows.push({
-                    id: index,
-                    title: `${score.title} [${score.diffname}]`,
-                    score: score.score,
-                    mods: score.enabled_mods,
-                    sr: score.star_rating,
-                    pp: score.pp,
-                    aimpp: score.pp_cur.aim,
-                    speedpp: score.pp_cur.speed,
-                    accpp: score.pp_cur.acc,
-                    flpp: score.pp_cur.flashlight,
-                    date: `${score.date_played}`,
-                    grade: `${score.rank}`,
-                    combo: `${score.combo}`,
-                    maxcombo: `${score.maxcombo}`,
-                    acc: score.accuracy,
-                    length: (score.mods & mods.DoubleTime ? score.length * 1.5 : (score.mods & mods.HalfTime ? score.length * 0.75 : score.length)),
-                    bpm: (score.mods & mods.DoubleTime ? score.bpm * 1.5 : (score.mods & mods.HalfTime ? score.bpm * 0.75 : score.bpm)),
-                    approved: score.approved,
-                    ppfc: score.pp_fc.total,
-                    ppss: score.pp_ss.total,
-                    score_object: score
-                });
-                index++;
-            });
-
-            props.data.scoreRows = rows;
-            forceUpdate();
+            setScores(props.data.scores);
         }
     }, []);
+
+    const setScores = (scores) => {
+        var rows = [];
+
+        var index = 0;
+        scores.forEach(score => {
+            rows.push({
+                id: index,
+                title: `${score.title} [${score.diffname}]`,
+                score: score.score,
+                mods: score.enabled_mods,
+                sr: score.star_rating,
+                pp: score.pp,
+                aimpp: score.pp_cur.aim,
+                speedpp: score.pp_cur.speed,
+                accpp: score.pp_cur.acc,
+                flpp: score.pp_cur.flashlight,
+                date: `${score.date_played}`,
+                grade: `${score.rank}`,
+                combo: `${score.combo}`,
+                maxcombo: `${score.maxcombo}`,
+                acc: score.accuracy,
+                length: (score.mods & mods.DoubleTime ? score.length * 1.5 : (score.mods & mods.HalfTime ? score.length * 0.75 : score.length)),
+                bpm: (score.mods & mods.DoubleTime ? score.bpm * 1.5 : (score.mods & mods.HalfTime ? score.bpm * 0.75 : score.bpm)),
+                approved: score.approved,
+                ppfc: score.pp_fc.total,
+                ppss: score.pp_ss.total,
+                score_object: score
+            });
+            index++;
+        });
+
+        props.data.scoreRows = rows;
+        setScoreCount(scores.length);
+        forceUpdate();
+
+        console.log(props.data.scores.filter(x => scores.includes(x)));
+    }
+
+    const handleFilter = (filter) => {
+        var scores = JSON.parse(JSON.stringify(props.data.scores));
+
+        //mods
+        scores = scores.filter(score => {
+            if (filter.modsUsage === 'any') {
+                if (score.enabled_mods === 0 && filter.enabledNomod) {
+                    return true;
+                }
+                return (filter.enabledMods & score.enabled_mods) !== 0;
+            }
+            return filter.enabledMods === score.enabled_mods;
+        });
+
+        //grades
+        scores = scores.filter(score => {
+            return filter.enabledGrades.includes(score.rank);
+        });
+
+        if (filter.scoreRange[0]!==null && filter.scoreRange[0] >= 0) { scores = scores.filter(score => score.score >= filter.scoreRange[0]); }
+        if (filter.scoreRange[1]!==null && filter.scoreRange[1] >= 0) { scores = scores.filter(score => score.score <= filter.scoreRange[1]); }
+
+        if (filter.starsRange[0]!==null && filter.starsRange[0] >= 0) { scores = scores.filter(score => score.star_rating >= filter.starsRange[0]); }
+        if (filter.starsRange[1]!==null && filter.starsRange[1] >= 0) { scores = scores.filter(score => score.star_rating <= filter.starsRange[1]); }
+
+        if (filter.ppRange[0]!==null && filter.ppRange[0] >= 0) { scores = scores.filter(score => score.pp >= filter.ppRange[0]); }
+        if (filter.ppRange[1]!==null && filter.ppRange[1] >= 0) { scores = scores.filter(score => score.pp <= filter.ppRange[1]); }
+
+        if (filter.accRange[0]!==null && filter.accRange[0] >= 0) { scores = scores.filter(score => score.accuracy >= filter.accRange[0]); }
+        if (filter.accRange[1]!==null && filter.accRange[1] >= 0) { scores = scores.filter(score => score.accuracy <= filter.accRange[1]); }
+
+        if (filter.comboRange[0]!==null && filter.comboRange[0] >= 0) { scores = scores.filter(score => score.combo >= filter.comboRange[0]); }
+        if (filter.comboRange[1]!==null && filter.comboRange[1] >= 0) { scores = scores.filter(score => score.combo <= filter.comboRange[1]); }
+
+        scores = scores.filter(score => {
+            return moment(score.approved_date).isBetween(filter.approvedDateRange[0], filter.approvedDateRange[1], undefined, '[]');
+        });
+
+        scores = scores.filter(score => {
+            return moment(score.date_played).isBetween(filter.playedDateRange[0], filter.playedDateRange[1], undefined, '[]');
+        });
+
+        setScores(scores);
+    };
+
     return (
         props.data.scoreRows != null ?
             <>
                 <ScoreModal data={modalData} />
                 <Box sx={{ height: 'auto', width: '100%' }}>
+                    <BeatmapFilter onApply={handleFilter} />
+                    <Typography variant="h6" style={{ marginBottom: 10 }}>Scores: {scoreCount}</Typography>
                     <DataGrid
                         onRowClick={rowHandleClick}
                         autoHeight
                         rows={props.data.scoreRows}
                         columns={columns}
                         pagination
-                        components={{ Toolbar: GridToolbar }}
+                        // components={{ Toolbar: GridToolbar }}
                         density="compact"
                     />
                 </Box>

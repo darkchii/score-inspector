@@ -65,6 +65,7 @@ export const mod_strings = {
 }
 
 export const mod_strings_long = {
+    0: "Nomod",
     1: "NoFail",
     2: "Easy",
     4: "Touch Device",
