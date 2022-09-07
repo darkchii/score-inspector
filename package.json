@@ -8,10 +8,10 @@
     "@emotion/styled": "^11.10.0",
     "@fontsource/roboto": "^4.5.7",
     "@koale/useworker": "^4.0.2",
-    "@mui/icons-material": "^5.8.4",
-    "@mui/material": "^5.9.3",
-    "@mui/x-data-grid": "^5.15.3",
+    "@mui/icons-material": "^5.10.2",
     "@mui/x-date-pickers": "^5.0.0",
+    "@mui/x-data-grid": "^5.16.0",
+    "@mui/material": "^5.10.2",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^14.4.3",
@@ -28,7 +28,7 @@
     "react-number-format": "^4.9.3",
     "react-scripts": "5.0.1",
     "react-virtualized": "^9.22.3",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^3.0.0"
   },
   "scripts": {
     "start": "react-scripts start",
