@@ -13,6 +13,7 @@ import config from './config.json';
 import { processFile } from './scoresProcessing';
 import PageCompletion from './Tabs/PageCompletion';
 import PageChangelog from './Tabs/PageChangelog';
+import PageIndividualDate from './Tabs/PageIndividualDate';
 
 const darkTheme = createTheme(config.theme);
 
@@ -140,7 +141,7 @@ function App() {
               </TabPanel>
               <TabPanel value={tabValue} index={4}>
                 <br />
-                <PagePerDay data={{ scores: scoreData, user: user, processed: processedData, format: 'day' }} />
+                <PageIndividualDate data={{ scores: scoreData, user: user, processed: processedData }} />
               </TabPanel>
               <TabPanel value={tabValue} index={5}>
                 <br />
