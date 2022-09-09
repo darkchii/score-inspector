@@ -16,6 +16,31 @@ function PageScores(props) {
     const forceUpdate = React.useCallback(() => updateState({}), []);
     const [modalData, setModalData] = React.useState({ active: false });
     const [scoreCount, setScoreCount] = React.useState(0);
+    const [columns, setColumns] = React.useState(
+        [
+            { field: 'title', flex: 1, headerName: 'Title', minWidth: 280 },
+            { field: 'score', headerName: 'Score', minWidth: 170, type: "number", valueFormatter: (params) => { return `${params.value.toLocaleString('en-US')}`; } },
+            { field: 'mods', headerName: 'Mods', minWidth: 180, type: "number", renderCell: (params) => { return modFormatter(params) }, onMouseEnter: (params) => { console.log(params) } },
+            { field: 'approved', headerName: 'Status', minWidth: 50, type: "number", renderCell: (params) => { return approvedFormatter(params) } },
+            { field: 'sr', headerName: 'Stars', minWidth: 100, type: "number", valueFormatter: (params) => { return `${params.value.toFixed(2)}*`; } },
+            { field: 'pp', headerName: 'PP', minWidth: 80, type: "number", valueFormatter: (params) => { return `${params.value.toFixed(1)}pp`; } },
+            { field: 'aimpp', headerName: 'Aim PP', minWidth: 80, type: "number", valueFormatter: (params) => { return `${params.value.toFixed(1)}pp`; }, hide: true },
+            { field: 'speedpp', headerName: 'Speed PP', minWidth: 80, type: "number", valueFormatter: (params) => { return `${params.value.toFixed(1)}pp`; }, hide: true },
+            { field: 'accpp', headerName: 'Acc PP', minWidth: 80, type: "number", valueFormatter: (params) => { return `${params.value.toFixed(1)}pp`; }, hide: true },
+            { field: 'flpp', headerName: 'FL PP', minWidth: 80, type: "number", valueFormatter: (params) => { return `${params.value.toFixed(1)}pp`; }, hide: true },
+            { field: 'date', headerName: 'Date', minWidth: 150, valueFormatter: (params) => { return `${moment(params.value).fromNow()}`; } },
+            { field: 'acc', headerName: 'Accuracy', minWidth: 120, type: "number", valueFormatter: (params) => { return `${params.value.toFixed(2)}%`; } },
+            { field: 'grade', headerName: 'Grade', minWidth: 80, renderCell: (params) => { return gradeFormatter(params) } },
+            { field: 'combo', headerName: 'Play combo', minWidth: 100, type: "number", valueFormatter: (params) => { return `${params.value}x`; } },
+            { field: 'maxcombo', headerName: 'Max combo', minWidth: 100, type: "number", valueFormatter: (params) => { return `${params.value}x`; }, hide: true },
+            { field: 'length', headerName: 'Length', minWidth: 100, type: "number", valueFormatter: (params) => { return moment.utc(moment.duration(params.value, "seconds").asMilliseconds()).format("mm:ss") } },
+            { field: 'bpm', headerName: 'BPM', minWidth: 100, type: "number" },
+            { field: 'ppfc', headerName: 'FC PP', minWidth: 100, type: "number", hide: true },
+            { field: 'ppss', headerName: 'SS PP', minWidth: 100, type: "number", hide: true },
+        ]
+    );
+
+    const [columnVisibilityModel, setColumnVisibilityModel] = React.useState({});
 
     const gradeFormatter = (cell) => {
         return (
@@ -84,34 +109,6 @@ function PageScores(props) {
         })
     }
 
-
-    var columns = [
-        { field: 'title', flex: 1, headerName: 'Title', minWidth: 280 },
-        { field: 'score', headerName: 'Score', minWidth: 170, type: "number", valueFormatter: (params) => { return `${params.value.toLocaleString('en-US')}`; } },
-        { field: 'mods', headerName: 'Mods', minWidth: 180, type: "number", renderCell: (params) => { return modFormatter(params) }, onMouseEnter: (params) => { console.log(params) } },
-        { field: 'approved', headerName: 'Status', minWidth: 50, type: "number", renderCell: (params) => { return approvedFormatter(params) } },
-        { field: 'sr', headerName: 'Stars', minWidth: 100, type: "number", valueFormatter: (params) => { return `${params.value.toFixed(2)}*`; } },
-        { field: 'pp', headerName: 'PP', minWidth: 80, type: "number", valueFormatter: (params) => { return `${params.value.toFixed(1)}pp`; } },
-        { field: 'aimpp', headerName: 'Aim PP', minWidth: 80, type: "number", valueFormatter: (params) => { return `${params.value.toFixed(1)}pp`; }, hide: true },
-        { field: 'speedpp', headerName: 'Speed PP', minWidth: 80, type: "number", valueFormatter: (params) => { return `${params.value.toFixed(1)}pp`; }, hide: true },
-        { field: 'accpp', headerName: 'Acc PP', minWidth: 80, type: "number", valueFormatter: (params) => { return `${params.value.toFixed(1)}pp`; }, hide: true },
-        { field: 'flpp', headerName: 'FL PP', minWidth: 80, type: "number", valueFormatter: (params) => { return `${params.value.toFixed(1)}pp`; }, hide: true },
-        { field: 'date', headerName: 'Date', minWidth: 150, valueFormatter: (params) => { return `${moment(params.value).fromNow()}`; } },
-        { field: 'acc', headerName: 'Accuracy', minWidth: 120, type: "number", valueFormatter: (params) => { return `${params.value.toFixed(2)}%`; } },
-        { field: 'grade', headerName: 'Grade', minWidth: 80, renderCell: (params) => { return gradeFormatter(params) } },
-        { field: 'combo', headerName: 'Play combo', minWidth: 100, type: "number", valueFormatter: (params) => { return `${params.value}x`; } },
-        { field: 'maxcombo', headerName: 'Max combo', minWidth: 100, type: "number", valueFormatter: (params) => { return `${params.value}x`; } },
-        { field: 'length', headerName: 'Length', minWidth: 100, type: "number", valueFormatter: (params) => { return moment.utc(moment.duration(params.value, "seconds").asMilliseconds()).format("mm:ss") } },
-        { field: 'bpm', headerName: 'BPM', minWidth: 100, type: "number" },
-        { field: 'ppfc', headerName: 'FC PP', minWidth: 100, type: "number", hide: true },
-        { field: 'ppss', headerName: 'SS PP', minWidth: 100, type: "number", hide: true },
-    ];
-    useEffect(() => {
-        if (props.data.scoreTable === undefined) {
-            setScores(props.data.scores);
-        }
-    }, []);
-
     const setScores = (scores) => {
         var rows = [];
 
@@ -150,63 +147,85 @@ function PageScores(props) {
         console.log(props.data.scores.filter(x => scores.includes(x)));
     }
 
-    const handleFilter = (filter) => {
-        var scores = JSON.parse(JSON.stringify(props.data.scores));
+    const handleFilter = (c, filter) => {
+        // setColumns(c);
+        // console.log(c);
+        let _cProc = {};
+        c.forEach(col => {
+            _cProc[col.field] = !col.hide;
+        });
+        setColumnVisibilityModel(_cProc);
 
-        //mods
-        scores = scores.filter(score => {
-            if (filter.modsUsage === 'any') {
-                if (score.enabled_mods === 0 && filter.enabledNomod) {
-                    return true;
+        if (filter !== null) {
+            var scores = JSON.parse(JSON.stringify(props.data.scores));
+
+            //mods
+            scores = scores.filter(score => {
+                if (filter.modsUsage === 'any') {
+                    if (score.enabled_mods === 0 && filter.enabledNomod) {
+                        return true;
+                    }
+                    return (filter.enabledMods & score.enabled_mods) !== 0;
                 }
-                return (filter.enabledMods & score.enabled_mods) !== 0;
-            }
-            return filter.enabledMods === score.enabled_mods;
-        });
+                return filter.enabledMods === score.enabled_mods;
+            });
 
-        //grades
-        scores = scores.filter(score => {
-            return filter.enabledGrades.includes(score.rank);
-        });
+            //grades
+            scores = scores.filter(score => {
+                return filter.enabledGrades.includes(score.rank);
+            });
 
-        if (filter.scoreRange[0]!==null && filter.scoreRange[0] >= 0) { scores = scores.filter(score => score.score >= filter.scoreRange[0]); }
-        if (filter.scoreRange[1]!==null && filter.scoreRange[1] >= 0) { scores = scores.filter(score => score.score <= filter.scoreRange[1]); }
+            if (filter.scoreRange[0] !== null && filter.scoreRange[0] >= 0) { scores = scores.filter(score => score.score >= filter.scoreRange[0]); }
+            if (filter.scoreRange[1] !== null && filter.scoreRange[1] >= 0) { scores = scores.filter(score => score.score <= filter.scoreRange[1]); }
 
-        if (filter.starsRange[0]!==null && filter.starsRange[0] >= 0) { scores = scores.filter(score => score.star_rating >= filter.starsRange[0]); }
-        if (filter.starsRange[1]!==null && filter.starsRange[1] >= 0) { scores = scores.filter(score => score.star_rating <= filter.starsRange[1]); }
+            if (filter.starsRange[0] !== null && filter.starsRange[0] >= 0) { scores = scores.filter(score => score.star_rating >= filter.starsRange[0]); }
+            if (filter.starsRange[1] !== null && filter.starsRange[1] >= 0) { scores = scores.filter(score => score.star_rating <= filter.starsRange[1]); }
 
-        if (filter.ppRange[0]!==null && filter.ppRange[0] >= 0) { scores = scores.filter(score => score.pp >= filter.ppRange[0]); }
-        if (filter.ppRange[1]!==null && filter.ppRange[1] >= 0) { scores = scores.filter(score => score.pp <= filter.ppRange[1]); }
+            if (filter.ppRange[0] !== null && filter.ppRange[0] >= 0) { scores = scores.filter(score => score.pp >= filter.ppRange[0]); }
+            if (filter.ppRange[1] !== null && filter.ppRange[1] >= 0) { scores = scores.filter(score => score.pp <= filter.ppRange[1]); }
 
-        if (filter.accRange[0]!==null && filter.accRange[0] >= 0) { scores = scores.filter(score => score.accuracy >= filter.accRange[0]); }
-        if (filter.accRange[1]!==null && filter.accRange[1] >= 0) { scores = scores.filter(score => score.accuracy <= filter.accRange[1]); }
+            if (filter.accRange[0] !== null && filter.accRange[0] >= 0) { scores = scores.filter(score => score.accuracy >= filter.accRange[0]); }
+            if (filter.accRange[1] !== null && filter.accRange[1] >= 0) { scores = scores.filter(score => score.accuracy <= filter.accRange[1]); }
 
-        if (filter.comboRange[0]!==null && filter.comboRange[0] >= 0) { scores = scores.filter(score => score.combo >= filter.comboRange[0]); }
-        if (filter.comboRange[1]!==null && filter.comboRange[1] >= 0) { scores = scores.filter(score => score.combo <= filter.comboRange[1]); }
+            if (filter.comboRange[0] !== null && filter.comboRange[0] >= 0) { scores = scores.filter(score => score.combo >= filter.comboRange[0]); }
+            if (filter.comboRange[1] !== null && filter.comboRange[1] >= 0) { scores = scores.filter(score => score.combo <= filter.comboRange[1]); }
 
-        scores = scores.filter(score => {
-            return moment(score.approved_date).isBetween(filter.approvedDateRange[0], filter.approvedDateRange[1], undefined, '[]');
-        });
+            scores = scores.filter(score => {
+                return moment(score.approved_date).isBetween(filter.approvedDateRange[0], filter.approvedDateRange[1], undefined, '[]');
+            });
 
-        scores = scores.filter(score => {
-            return moment(score.date_played).isBetween(filter.playedDateRange[0], filter.playedDateRange[1], undefined, '[]');
-        });
+            scores = scores.filter(score => {
+                return moment(score.date_played).isBetween(filter.playedDateRange[0], filter.playedDateRange[1], undefined, '[]');
+            });
 
-        setScores(scores);
+            setScores(scores);
+        }
     };
+
+    useEffect(() => {
+        if (props.data.scoreTable === undefined) {
+            setScores(props.data.scores);
+        }
+
+        handleFilter(columns, null);
+    }, []);
 
     return (
         props.data.scoreRows != null ?
             <>
                 <ScoreModal data={modalData} />
                 <Box sx={{ height: 'auto', width: '100%' }}>
-                    <BeatmapFilter onApply={handleFilter} />
+                    <BeatmapFilter columns={columns} onApply={handleFilter} />
                     <Typography variant="h6" style={{ marginBottom: 10 }}>Scores: {scoreCount}</Typography>
                     <DataGrid
                         onRowClick={rowHandleClick}
                         autoHeight
                         rows={props.data.scoreRows}
                         columns={columns}
+                        columnVisibilityModel={columnVisibilityModel}
+                        onColumnVisibilityModelChange={(newModel) =>
+                            setColumnVisibilityModel(newModel)
+                        }
                         pagination
                         // components={{ Toolbar: GridToolbar }}
                         density="compact"

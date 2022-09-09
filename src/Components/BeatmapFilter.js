@@ -1,4 +1,4 @@
-import { Box, Button, FormControl, FormControlLabel, Grid, Radio, RadioGroup, TextField, Tooltip, Typography } from "@mui/material";
+import { Box, Button, Checkbox, FormControl, FormControlLabel, Grid, Radio, RadioGroup, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Tooltip, Typography } from "@mui/material";
 import moment from "moment";
 import React, { useEffect } from "react";
 import { getModIcon, getPossibleMods, IMG_SVG_GRADE_A, IMG_SVG_GRADE_B, IMG_SVG_GRADE_C, IMG_SVG_GRADE_D, IMG_SVG_GRADE_S, IMG_SVG_GRADE_SH, IMG_SVG_GRADE_X, IMG_SVG_GRADE_XH } from "../Assets";
@@ -7,7 +7,7 @@ import ImageToggle from "./ImageToggle";
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 
-const FILTER_FIELD_SIZE = 1.71428571429;
+const FILTER_FIELD_SIZE = 12 / 7;
 const MIN_DATE = moment('6 Oct 2007');
 const MAX_DATE = moment();
 
@@ -32,6 +32,8 @@ function BeatmapFilter(props) {
     const [maxApprovedDate, setMaxApprovedDate] = React.useState(MAX_DATE);
     const [minPlayedDate, setMinPlayedDate] = React.useState(MIN_DATE);
     const [maxPlayedDate, setMaxPlayedDate] = React.useState(MAX_DATE);
+
+    const [columns, setColumns] = React.useState(null);
 
     console.log('approved min: ' + minApprovedDate);
 
@@ -71,8 +73,12 @@ function BeatmapFilter(props) {
         setEnabledMods(m);
     }, []);
 
+    useEffect(()=>{
+        setColumns(props.columns);
+    }, props.columns);
+
     const onApply = () => {
-        props.onApply({
+        props.onApply(columns, {
             enabledMods: enabledMods,
             enabledNomod: enabledNomod,
             modsUsage: modsState,
@@ -86,6 +92,17 @@ function BeatmapFilter(props) {
             playedDateRange: [minPlayedDate, maxPlayedDate]
         });
     }
+
+    const updateColumn = (column, checked) => {
+        const _c = columns;
+        _c.forEach(c => {
+            if(c.field===column.field){
+                c.hide = !checked; 
+            }
+        });
+        setColumns(_c);
+        console.log(_c);
+    };
 
     return (
         <>
@@ -156,39 +173,67 @@ function BeatmapFilter(props) {
                         </Grid>
                     </Grid>
                 </Grid>
-                <Grid container sx={{ mt: 2 }}>
-                    <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE} sx={{ px: 1 }}>
+                <Grid container sx={{ pt: 2, '& > *': { pl: 1 } }}>
+                    <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE}>
                         <TextField sx={{ width: '100%' }} label="Min Score" onChange={(e) => setMinScore(e.target.value)} value={minScore} variant="standard" size="small" />
                         <TextField sx={{ width: '100%' }} label="Max Score" onChange={(e) => setMaxScore(e.target.value)} value={maxScore} variant="standard" size="small" />
                     </Grid>
-                    <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE} sx={{ px: 1 }}>
+                    <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE}>
                         <TextField sx={{ width: '100%' }} label="Min Stars" onChange={(e) => setMinStars(e.target.value)} value={minStars} variant="standard" size="small" />
                         <TextField sx={{ width: '100%' }} label="Max Stars" onChange={(e) => setMaxStars(e.target.value)} value={maxStars} variant="standard" size="small" />
                     </Grid>
-                    <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE} sx={{ px: 1 }}>
+                    <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE}>
                         <TextField sx={{ width: '100%' }} label="Min PP" onChange={(e) => setMinPP(e.target.value)} value={minPP} variant="standard" size="small" />
                         <TextField sx={{ width: '100%' }} label="Max PP" onChange={(e) => setMaxPP(e.target.value)} value={maxPP} variant="standard" size="small" />
                     </Grid>
-                    <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE} sx={{ px: 1 }}>
+                    <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE}>
                         <TextField sx={{ width: '100%' }} label="Min Acc" onChange={(e) => setMinAcc(e.target.value)} value={minAcc} variant="standard" size="small" />
                         <TextField sx={{ width: '100%' }} label="Max Acc" onChange={(e) => setMaxAcc(e.target.value)} value={maxAcc} variant="standard" size="small" />
                     </Grid>
-                    <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE} sx={{ px: 1 }}>
+                    <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE}>
                         <TextField sx={{ width: '100%' }} label="Min Combo" onChange={(e) => setMinCombo(e.target.value)} value={minCombo} variant="standard" size="small" />
                         <TextField sx={{ width: '100%' }} label="Max Combo" onChange={(e) => setMaxCombo(e.target.value)} value={maxCombo} variant="standard" size="small" />
                     </Grid>
-                    <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE} sx={{ px: 1 }}>
+                    <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE}>
                         <LocalizationProvider dateAdapter={AdapterMoment}>
                             <DesktopDatePicker minDate={MIN_DATE} maxDate={MAX_DATE} label="Min Ranked Date" inputFormat="MM/DD/YYYY" value={minApprovedDate} onChange={setMinApprovedDate} renderInput={(params) => <TextField variant="standard" size="small" {...params} />} />
                             <DesktopDatePicker minDate={MIN_DATE} maxDate={MAX_DATE} label="Max Ranked Date" inputFormat="MM/DD/YYYY" value={maxApprovedDate} onChange={setMaxApprovedDate} renderInput={(params) => <TextField variant="standard" size="small" {...params} />} />
                         </LocalizationProvider>
                     </Grid>
-                    <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE} sx={{ px: 1 }}>
+                    <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE}>
                         <LocalizationProvider dateAdapter={AdapterMoment}>
                             <DesktopDatePicker minDate={MIN_DATE} maxDate={MAX_DATE} label="Min Played Date" inputFormat="MM/DD/YYYY" value={minPlayedDate} onChange={setMinPlayedDate} renderInput={(params) => <TextField variant="standard" size="small" {...params} />} />
                             <DesktopDatePicker minDate={MIN_DATE} maxDate={MAX_DATE} label="Max Played Date" inputFormat="MM/DD/YYYY" value={maxPlayedDate} onChange={setMaxPlayedDate} renderInput={(params) => <TextField variant="standard" size="small" {...params} />} />
                         </LocalizationProvider>
                     </Grid>
+                </Grid>
+                <Grid container sx={{ py: 2 }}>
+                    <TableContainer>
+                        <Table size="small">
+                            <TableHead>
+                                <TableRow>
+                                    {
+                                        columns && columns.map((column) => (
+                                            <>
+                                                <TableCell>{column.headerName}</TableCell>
+                                            </>
+                                        ))
+                                    }
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                <TableRow>
+                                    {
+                                        columns && columns.map((column) => (
+                                            <>
+                                                <TableCell><Checkbox onChange={(e) => { updateColumn(column, e.target.checked); }} defaultChecked={!column.hide} /></TableCell>
+                                            </>
+                                        ))
+                                    }
+                                </TableRow>
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
                 </Grid>
                 <Grid sx={{ alignContent: 'center', minWidth: '100%' }}>
                     <Button sx={{ my: 1 }} onClick={onApply} variant="contained">Apply</Button>
