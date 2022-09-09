@@ -14,7 +14,10 @@ import {
 } from 'chart.js';
 import { Scatter, Line } from 'react-chartjs-2';
 import { getGradeColor } from "../helper";
-ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend);
+import Annotations from "chartjs-plugin-annotation";
+ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend, Annotations);
+
+const ACTIVITY_THRESHOLD = 60*60*1.5; //this value dictates a new activity region
 
 const heightDefiners = [
     { value: 'pp', label: 'Performance' },
@@ -40,6 +43,57 @@ function PageIndividualDate(props) {
 
     useEffect(() => {
         const updateGraph = () => {
+            let annotations = {};
+
+            if (scores !== null) {
+                console.log(scores);
+                let activities = [];
+                let currentActivity = {
+                    start: null,
+                    end: null,
+                    done: false
+                }
+                scores.forEach((score, index) => {
+                    if (currentActivity.start === null) {
+                        currentActivity.start = moment(score.date_played).unix() - score.length;
+                    }
+
+                    currentActivity.end = moment(score.date_played).unix();
+
+                    if (index > 0 || index === scores.length - 1) {
+                        if (index === scores.length - 1) {
+                            currentActivity.done = true;
+                        } else {
+                            if (moment(score.date_played).unix() - moment(scores[index - 1].date_played).unix() > ACTIVITY_THRESHOLD) {
+                                currentActivity.end = moment(scores[index - 1].date_played).unix();
+                                currentActivity.done = true;
+                            }
+                        }
+                    }
+
+                    if (currentActivity.done) {
+                        activities.push(currentActivity);
+                        currentActivity = {
+                            start: null,
+                            end: null,
+                            done: false
+                        }
+                    }
+                });
+
+                if(activities.length>0){
+                    console.log(activities);
+                    activities.forEach((activity, index) => {
+                        annotations[`activity${index}`] = {
+                            type: 'box',
+                            xMin: activity.start,
+                            xMax: activity.end,
+                            backgroundColor: 'rgba(252, 3, 148, 0.25)' 
+                        }
+                    });
+                }
+            }
+
             const options = {
                 maintainAspectRatio: false,
                 scales: {
@@ -64,6 +118,9 @@ function PageIndividualDate(props) {
                                 return `${moment.unix(context.parsed.x).format("HH:mm")} • ${context.raw.score.artist} - ${context.raw.score.title} [${context.raw.score.diffname}] • ${context.raw.score.accuracy}% ${context.raw.score.rank} • ${context.raw.score.score} score • ${context.raw.score.pp.toFixed(2)}pp`;
                             }
                         }
+                    },
+                    annotation: {
+                        annotations: annotations
                     }
                 },
             };
@@ -75,7 +132,7 @@ function PageIndividualDate(props) {
                         label: "Scores",
                         data: scores !== null ? scores.map((score) => { return { x: moment(score.date_played).unix(), y: score[heightDefiner], score: score } }) : [],
                         backgroundColor: scores !== null ? scores.map((score) => getGradeColor(score)) : [],
-                        pointRadius: 10,
+                        pointRadius: 5,
                         datalabels: {
                             display: false
                         }
@@ -101,7 +158,8 @@ function PageIndividualDate(props) {
             setWorkingState(true);
             setScores(null);
             const scoresSubset = props.data.scores.filter(score => moment(score.date_played).isSame(date, 'day'));
-            setScores(scoresSubset);
+            const sorted = scoresSubset.sort((a, b) => moment(a.date_played).valueOf() - moment(b.date_played).valueOf());
+            setScores(sorted);
             setWorkingState(false);
         };
         handleDayChange(selectedDay.startOf('day'));
@@ -118,7 +176,7 @@ function PageIndividualDate(props) {
                     <Grid sx={{ my: 2 }}>
                         <ButtonGroup>
                             {heightDefiners.map((definer) => (
-                                <Button onClick={()=>setHeightDefiner(definer.value)} variant={heightDefiner === definer.value ? 'contained' : 'outlined'}>
+                                <Button onClick={() => setHeightDefiner(definer.value)} variant={heightDefiner === definer.value ? 'contained' : 'outlined'}>
                                     {definer.label}
                                 </Button>
                             ))

@@ -215,7 +215,7 @@ function BeatmapFilter(props) {
                                     {
                                         columns && columns.map((column) => (
                                             <>
-                                                <TableCell>{column.headerName}</TableCell>
+                                                <TableCell align="center"><Typography variant="subtitles1">{column.headerName}</Typography></TableCell>
                                             </>
                                         ))
                                     }
@@ -226,7 +226,7 @@ function BeatmapFilter(props) {
                                     {
                                         columns && columns.map((column) => (
                                             <>
-                                                <TableCell><Checkbox onChange={(e) => { updateColumn(column, e.target.checked); }} defaultChecked={!column.hide} /></TableCell>
+                                                <TableCell align="center"><Checkbox onChange={(e) => { updateColumn(column, e.target.checked); }} defaultChecked={!column.hide} /></TableCell>
                                             </>
                                         ))
                                     }
@@ -235,7 +235,7 @@ function BeatmapFilter(props) {
                         </Table>
                     </TableContainer>
                 </Grid>
-                <Grid sx={{ alignContent: 'center', minWidth: '100%' }}>
+                <Grid sx={{ alignContent: 'center' }}>
                     <Button sx={{ my: 1 }} onClick={onApply} variant="contained">Apply</Button>
                     <Typography variant='subtitle2'>Enter -1 to ignore a filter</Typography>
                 </Grid>

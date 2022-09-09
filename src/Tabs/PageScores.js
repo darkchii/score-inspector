@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Box, Tooltip, Typography } from "@mui/material";
+import { Box, Card, CardContent, Tooltip, Typography } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import moment from "moment";
 import React, { useEffect } from "react";
@@ -214,22 +214,26 @@ function PageScores(props) {
         props.data.scoreRows != null ?
             <>
                 <ScoreModal data={modalData} />
-                <Box sx={{ height: 'auto', width: '100%' }}>
-                    <BeatmapFilter columns={columns} onApply={handleFilter} />
-                    <Typography variant="h6" style={{ marginBottom: 10 }}>Scores: {scoreCount}</Typography>
-                    <DataGrid
-                        onRowClick={rowHandleClick}
-                        autoHeight
-                        rows={props.data.scoreRows}
-                        columns={columns}
-                        columnVisibilityModel={columnVisibilityModel}
-                        onColumnVisibilityModelChange={(newModel) =>
-                            setColumnVisibilityModel(newModel)
-                        }
-                        pagination
-                        // components={{ Toolbar: GridToolbar }}
-                        density="compact"
-                    />
+                <Box>
+                    <Card>
+                        <CardContent>
+                            <BeatmapFilter columns={columns} onApply={handleFilter} />
+                            <Typography variant="h6" style={{ marginBottom: 10 }}>Scores: {scoreCount}</Typography>
+                            <DataGrid
+                                onRowClick={rowHandleClick}
+                                autoHeight
+                                rows={props.data.scoreRows}
+                                columns={columns}
+                                columnVisibilityModel={columnVisibilityModel}
+                                onColumnVisibilityModelChange={(newModel) =>
+                                    setColumnVisibilityModel(newModel)
+                                }
+                                pagination
+                                // components={{ Toolbar: GridToolbar }}
+                                density="compact"
+                            />
+                        </CardContent>
+                    </Card>
                 </Box>
             </> : <></>
     );

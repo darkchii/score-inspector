@@ -77,7 +77,7 @@ function App() {
           variant="scrollable"
           value={tabValue}
           onChange={tabHandleChange}
-          sx={{ borderRight: 1, borderColor: 'divider', minHeight: '100%', width: '10rem' }}
+          sx={{ borderRight: 1, borderColor: 'divider', minHeight: '100%', minWidth: '10rem' }}
         >
           <Toolbar />
           <Tab label="General" {...a11yProps(0)} />
