@@ -36,7 +36,7 @@ const heightDefiners = [
 ]
 function PageIndividualDate(props) {
     const MIN_DATE = moment(props.data.user.join_date);
-    const MAX_DATE = moment();
+    const MAX_DATE = moment.unix((props.data.scores !== null && props.data.scores.length > 0) ? Math.max(...props.data.scores.map(score => moment(score.date_played).unix())) : moment().unix());
     const [selectedDay, setSelectedDay] = useState(MAX_DATE.startOf('day'));
     const [isWorking, setWorkingState] = useState(false);
     const [scores, setScores] = useState(null);

@@ -129,7 +129,6 @@ function parseScore(score) {
 
     score.totalhits = score.count300 + score.count100 + score.count50 + score.countmiss;
 
-    //perform these at the latest point of parsing
     score.pp_fc = getPerformance({ count300: score.count300 + score.countmiss, count100: score.count100, count50: score.count50, countmiss: 0, combo: score.maxcombo, score: score });
     score.pp_ss = getPerformance({ count300: score.count300 + score.countmiss + score.count100 + score.count50, count100: 0, count50: 0, countmiss: 0, combo: score.maxcombo, score: score });
     score.pp_cur = getPerformance({ score: score });
@@ -293,8 +292,23 @@ function calculatePPdata(processed, scores) {
     scores = calculatePPifFC(scores);
     scores = calculatePPifSS(scores);
 
+    scores.sort((a, b) => {
+        if (a.pp > b.pp) { return -1; }
+        if (a.pp < b.pp) { return 1; }
+        return 0;
+    });
+
     processed.fc_pp_weighted = 0;
     processed.ss_pp_weighted = 0;
+
+    let xexxar_score_pp = 0;
+    let xexxar_total_pp = 0;
+    scores.forEach((score, index) => {
+        xexxar_score_pp += score.pp * Math.pow(0.95, index);
+        xexxar_total_pp += score.pp;
+    });
+    processed.xexxar_weighted = ((2 - 1) * xexxar_score_pp + 0.75 * xexxar_score_pp * (Math.log(xexxar_total_pp) / Math.log(xexxar_score_pp))) / 2;
+
     scores.forEach(score => {
         if (!isNaN(score.pp_fc.total)) {
             processed.fc_pp_weighted += score.pp_fc.total * score.pp_fc.weight;
@@ -306,6 +320,7 @@ function calculatePPdata(processed, scores) {
     const bonus = getBonusPerformance(scores.length);
     processed.fc_pp_weighted += bonus;
     processed.ss_pp_weighted += bonus;
+
 
     return processed;
 }
