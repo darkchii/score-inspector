@@ -17,8 +17,8 @@ export async function getUserTrackerStatus(user_id) {
     return false;
 }
 
-export function getGradeColor(score) {
-    switch (score.rank) {
+export function getGradeColor(grade) {
+    switch (grade) {
         default:
             return '#ffffff';
         case 'XH':

@@ -2,7 +2,7 @@ import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import moment from "moment/moment";
 import { useState } from "react";
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import { Button, ButtonGroup, Card, CardContent, Grid, TextField } from "@mui/material";
+import { Button, ButtonGroup, Card, CardContent, Chip, chipClasses, Grid, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableRow, TextField } from "@mui/material";
 import { useEffect } from "react";
 import {
     Chart as ChartJS,
@@ -13,11 +13,14 @@ import {
     Legend,
 } from 'chart.js';
 import { Scatter, Line } from 'react-chartjs-2';
-import { getGradeColor } from "../helper";
+import { getGradeColor, mods } from "../helper";
 import Annotations from "chartjs-plugin-annotation";
+import CircleIcon from '@mui/icons-material/Circle';
+import SquareIcon from '@mui/icons-material/Square';
+import { getGradeIcon, SVG_GRADE_A, SVG_GRADE_S, SVG_GRADE_SH, SVG_GRADE_X, SVG_GRADE_XH } from "../Assets";
 ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend, Annotations);
 
-const ACTIVITY_THRESHOLD = 60*60*1.5; //this value dictates a new activity region
+const ACTIVITY_THRESHOLD = 60 * 60 * 1.5; //this value dictates a new activity region
 
 const heightDefiners = [
     { value: 'pp', label: 'Performance' },
@@ -41,12 +44,13 @@ function PageIndividualDate(props) {
     const [graphData, setGraphData] = useState(null);
     const [heightDefiner, setHeightDefiner] = useState('pp');
 
+    const [stats, setStats] = useState(null);
+
     useEffect(() => {
         const updateGraph = () => {
             let annotations = {};
 
             if (scores !== null) {
-                console.log(scores);
                 let activities = [];
                 let currentActivity = {
                     start: null,
@@ -81,14 +85,15 @@ function PageIndividualDate(props) {
                     }
                 });
 
-                if(activities.length>0){
+                if (activities.length > 0) {
                     console.log(activities);
                     activities.forEach((activity, index) => {
                         annotations[`activity${index}`] = {
                             type: 'box',
                             xMin: activity.start,
                             xMax: activity.end,
-                            backgroundColor: 'rgba(252, 3, 148, 0.25)' 
+                            backgroundColor: 'rgba(252, 3, 148, 0.25)',
+                            z: -1000
                         }
                     });
                 }
@@ -131,8 +136,9 @@ function PageIndividualDate(props) {
                     {
                         label: "Scores",
                         data: scores !== null ? scores.map((score) => { return { x: moment(score.date_played).unix(), y: score[heightDefiner], score: score } }) : [],
-                        backgroundColor: scores !== null ? scores.map((score) => getGradeColor(score)) : [],
+                        backgroundColor: scores !== null ? scores.map((score) => getGradeColor(score.rank)) : [],
                         pointRadius: 5,
+                        pointStyle: scores !== null ? scores.map((score) => (((score.enabled_mods & mods.HD !== 0) || (score.enabled_mods & mods.FL) !== 0) ? 'rect' : 'circle')) : [],
                         datalabels: {
                             display: false
                         }
@@ -159,6 +165,37 @@ function PageIndividualDate(props) {
             setScores(null);
             const scoresSubset = props.data.scores.filter(score => moment(score.date_played).isSame(date, 'day'));
             const sorted = scoresSubset.sort((a, b) => moment(a.date_played).valueOf() - moment(b.date_played).valueOf());
+
+            const _stats = {
+                gained_score: 0,
+                clears: 0,
+                grade_ss: 0,
+                grade_s: 0,
+                grade_a: 0,
+                average_acc: 0,
+                playtime: 0
+            }
+
+            if (sorted.length > 0) {
+                let acc = 0;
+                sorted.forEach(score => {
+                    _stats.gained_score += score.score;
+                    if (score.rank === 'XH' || score.rank === 'X') {
+                        _stats.grade_ss++;
+                    } else if (score.rank === 'SH' || score.rank === 'S') {
+                        _stats.grade_s++;
+                    } else if (score.rank === 'A') {
+                        _stats.grade_a++;
+                    }
+                    _stats.clears++;
+                    acc += score.accuracy;
+                    _stats.playtime += score.length;
+                });
+                _stats.average_acc = acc / sorted.length;
+            }
+
+            setStats(_stats);
+
             setScores(sorted);
             setWorkingState(false);
         };
@@ -170,7 +207,8 @@ function PageIndividualDate(props) {
             <Card>
                 <CardContent>
                     <LocalizationProvider dateAdapter={AdapterMoment}>
-                        <DesktopDatePicker disabled={isWorking} minDate={MIN_DATE} maxDate={MAX_DATE} label="Select day to view" inputFormat="MM/DD/YYYY" value={selectedDay} onChange={setSelectedDay} renderInput={(params) => <TextField variant="standard" size="small" {...params} />} />
+                        <DesktopDatePicker disabled={isWorking} minDate={MIN_DATE} maxDate={MAX_DATE} label="Select day to view" inputFormat="MM/DD/YYYY" value={selectedDay} onChange={setSelectedDay} renderInput={(params) => <TextField variant="standard" size="small" {...params} />}
+                            shouldDisableDate={(date) => (props.data.processed.activeDays !== null && props.data.processed.activeDays.size > 0) ? !props.data.processed.activeDays.has(date.format("YYYY-MM-DD")) : false} />
                     </LocalizationProvider>
 
                     <Grid sx={{ my: 2 }}>
@@ -184,8 +222,86 @@ function PageIndividualDate(props) {
                         </ButtonGroup>
                     </Grid>
 
-                    {graphOptions && <Grid sx={{ my: 5, maxHeight: '400px' }}>
-                        <Scatter height='400px' options={graphOptions} data={graphData} />
+                    {graphOptions && <Grid sx={{ mt: 5 }}>
+                        <Stack direction="row" spacing={2}>
+                            <Chip icon={<SquareIcon />} sx={{ [`& .${chipClasses.icon}`]: { color: getGradeColor('X') } }} label="Silver SS" size="small" variant="outlined" />
+                            <Chip icon={<CircleIcon />} sx={{ [`& .${chipClasses.icon}`]: { color: getGradeColor('X') } }} label="Gold SS" size="small" variant="outlined" />
+                            <Chip icon={<SquareIcon />} sx={{ [`& .${chipClasses.icon}`]: { color: getGradeColor('S') } }} label="Silver S" size="small" variant="outlined" />
+                            <Chip icon={<CircleIcon />} sx={{ [`& .${chipClasses.icon}`]: { color: getGradeColor('S') } }} label="Gold S" size="small" variant="outlined" />
+                            <Chip icon={<CircleIcon />} sx={{ [`& .${chipClasses.icon}`]: { color: getGradeColor('A') } }} label="A" size="small" variant="outlined" />
+                            <Chip icon={<CircleIcon />} sx={{ [`& .${chipClasses.icon}`]: { color: getGradeColor('B') } }} label="B" size="small" variant="outlined" />
+                            <Chip icon={<CircleIcon />} sx={{ [`& .${chipClasses.icon}`]: { color: getGradeColor('C') } }} label="C" size="small" variant="outlined" />
+                            <Chip icon={<CircleIcon />} sx={{ [`& .${chipClasses.icon}`]: { color: getGradeColor('D') } }} label="D" size="small" variant="outlined" />
+                        </Stack>
+                        <Grid sx={{ maxHeight: '400px' }}>
+                            <Scatter height='400px' options={graphOptions} data={graphData} />
+                        </Grid>
+                        <Grid sx={{ mt: 1, pl: 2 }}>
+                            <Grid container>
+                                <Grid item xs={0} md={2}></Grid>
+                                <Grid item xs={12} md={4}>
+                                    <Grid>
+                                        {
+                                            stats && <>
+                                                <TableContainer>
+                                                    <Table size="small">
+                                                        <TableBody>
+                                                            <TableRow>
+                                                                <TableCell sx={{ width: '50%' }}>Score gained</TableCell>
+                                                                <TableCell sx={{ width: '50%' }}>{stats.gained_score.toLocaleString('en-US')}</TableCell>
+                                                            </TableRow>
+                                                            <TableRow>
+                                                                <TableCell sx={{ width: '50%' }}>Clears gained</TableCell>
+                                                                <TableCell sx={{ width: '50%' }}>{stats.clears.toLocaleString('en-US')}</TableCell>
+                                                            </TableRow>
+                                                            <TableRow>
+                                                                <TableCell sx={{ width: '50%' }}>Score per clear</TableCell>
+                                                                <TableCell sx={{ width: '50%' }}>{Math.round(stats.clears > 0 ? (stats.gained_score / stats.clears) : 0).toLocaleString('en-US')}</TableCell>
+                                                            </TableRow>
+                                                            <TableRow>
+                                                                <TableCell sx={{ width: '50%' }}>Average accuracy</TableCell>
+                                                                <TableCell sx={{ width: '50%' }}>{stats.average_acc.toLocaleString('en-US')}%</TableCell>
+                                                            </TableRow>
+                                                            <TableRow>
+                                                                <TableCell sx={{ width: '50%' }}>Playtime</TableCell>
+                                                                <TableCell sx={{ width: '50%' }}>{stats.average_acc.toLocaleString('en-US')}%</TableCell>
+                                                            </TableRow>
+                                                        </TableBody>
+                                                    </Table>
+                                                </TableContainer>
+                                            </>
+                                        }
+                                    </Grid>
+                                </Grid>
+                                <Grid item xs={12} md={4}>
+                                    <Grid sx={{ ml: 1 }}>
+                                        {
+                                            stats && <>
+                                                <TableContainer>
+                                                    <Table size="small">
+                                                        <TableBody>
+                                                            <TableRow>
+                                                                <TableCell sx={{ width: '50%' }}><SVG_GRADE_X /></TableCell>
+                                                                <TableCell sx={{ width: '50%' }}>{stats.grade_ss.toLocaleString('en-US')}</TableCell>
+                                                            </TableRow>
+                                                            <TableRow>
+                                                                <TableCell sx={{ width: '50%' }}><SVG_GRADE_S /></TableCell>
+                                                                <TableCell sx={{ width: '50%' }}>{stats.grade_s.toLocaleString('en-US')}</TableCell>
+                                                            </TableRow>
+                                                            <TableRow>
+                                                                <TableCell sx={{ width: '50%' }}><SVG_GRADE_A /></TableCell>
+                                                                <TableCell sx={{ width: '50%' }}>{stats.grade_a.toLocaleString('en-US')}</TableCell>
+                                                            </TableRow>
+                                                        </TableBody>
+                                                    </Table>
+                                                </TableContainer>
+                                            </>
+                                        }
+                                    </Grid>
+                                </Grid>
+                                <Grid item xs={0} md={2}></Grid>
+                            </Grid>
+                        </Grid>
                     </Grid>}
                 </CardContent>
             </Card>

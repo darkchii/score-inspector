@@ -1,3 +1,4 @@
+import moment from "moment";
 import Papa from "papaparse";
 import { calculatePPifFC, calculatePPifSS, getModString, getUserTrackerStatus, mods } from "./helper";
 import { getBeatmapCount, getBonusPerformance, getPerformance, getUser } from "./osu";
@@ -60,7 +61,7 @@ export async function processFile(file, allowLoved, cbProc, cbUser, cbScores, cb
         skipEmptyLines: true,
         complete: async function (results) {
             if (testScores(results.data)) {
-                if(!allowLoved){
+                if (!allowLoved) {
                     results.data = results.data.filter(score => parseInt(score.approved) < 4);
                 }
 
@@ -262,6 +263,13 @@ async function CalculateData(processed, scores, _user) {
     processed.fc_rate = 100 / scores.length * total_fc;
     processed.total_length = total_length;
     processed.average_length = total_length / scores.length;
+
+    const activeDays = new Set();
+    scores.forEach(score => {
+        const cur = moment(score.date_played);
+        activeDays.add(cur.format("YYYY-MM-DD"));
+    });
+    processed.activeDays = activeDays;
 
     return processed;
 }
