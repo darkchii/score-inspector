@@ -1,4 +1,4 @@
-import { Tooltip, Box, Card, CardContent, CardMedia, Chip, Modal, Typography, Grid, Paper, Table, TableContainer, TableHead, TableRow, TableCell, TableBody, tableCellClasses, CardHeader } from "@mui/material";
+import { Tooltip, Box, Card, CardContent, CardMedia, Chip, Modal, Typography, Grid, Paper, Table, TableContainer, TableHead, TableRow, TableCell, TableBody, tableCellClasses, CardHeader, Link } from "@mui/material";
 import React, { useEffect } from "react";
 import NumberFormat from "react-number-format";
 import TimeGraph from "./TimeGraph";
@@ -195,7 +195,7 @@ function ScoreView(props) {
                                     : <></>
                             }
                             <Typography id="modal-modal-description" sx={{ mt: 0 }}>
-                                Mapped by <a href={`https://osu.ppy.sh/users/${props.data.score.creator_id}`} target='_blank' rel='noreferrer'>{props.data.score.creator}</a>
+                                Mapped by <Link href={`https://osu.ppy.sh/users/${props.data.score.creator_id}`} target='_blank' rel='noreferrer'>{props.data.score.creator}</Link> - Go to <Link href={`https://osu.ppy.sh/beatmaps/${props.data.score.beatmap_id}`} target='_blank' rel='noreferrer'>Beatmap</Link>
                             </Typography>
                         </Box>
                     </CardContent>

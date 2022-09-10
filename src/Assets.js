@@ -7,6 +7,15 @@ import { ReactComponent as SVG_GRADE_B } from "./Assets/Grade-B.svg";
 import { ReactComponent as SVG_GRADE_C } from "./Assets/Grade-C.svg";
 import { ReactComponent as SVG_GRADE_D } from "./Assets/Grade-D.svg";
 
+import IMG_SVG_GRADE_XH from "./Assets/Grade-XH.svg";
+import IMG_SVG_GRADE_X from "./Assets/Grade-X.svg";
+import IMG_SVG_GRADE_SH from "./Assets/Grade-SH.svg";
+import IMG_SVG_GRADE_S from "./Assets/Grade-S.svg";
+import IMG_SVG_GRADE_A from "./Assets/Grade-A.svg";
+import IMG_SVG_GRADE_B from "./Assets/Grade-B.svg";
+import IMG_SVG_GRADE_C from "./Assets/Grade-C.svg";
+import IMG_SVG_GRADE_D from "./Assets/Grade-D.svg";
+
 import PNG_MOD_HT from "./Assets/MOD_HT.png";
 import PNG_MOD_NC from "./Assets/MOD_NC.png";
 import PNG_MOD_NF from "./Assets/MOD_NF.png";
@@ -48,6 +57,24 @@ function getModIcon(modString) {
         case "TD": return PNG_MOD_TD;
         case "None": return PNG_MOD_NM;
     }
+}
+
+export function getPossibleMods() {
+    return [
+        "EZ",
+        "NF",
+        "HT",
+        "HR",
+        "SD",
+        "PF",
+        "DT",
+        "NC",
+        "HD",
+        "FL",
+        "TD",
+        "SO",
+        "None"
+    ]
 }
 
 function getGradeIcon(grade) {
@@ -92,5 +119,13 @@ export {
     PNG_MOD_TD,
     PNG_MOD_NM,
     getModIcon,
-    getGradeIcon
+    getGradeIcon,
+    IMG_SVG_GRADE_XH,
+    IMG_SVG_GRADE_X,
+    IMG_SVG_GRADE_SH,
+    IMG_SVG_GRADE_S,
+    IMG_SVG_GRADE_A,
+    IMG_SVG_GRADE_B,
+    IMG_SVG_GRADE_C,
+    IMG_SVG_GRADE_D
 };

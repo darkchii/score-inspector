@@ -17,6 +17,29 @@ export async function getUserTrackerStatus(user_id) {
     return false;
 }
 
+export function getGradeColor(grade) {
+    switch (grade) {
+        default:
+            return '#ffffff';
+        case 'XH':
+            return '#C0C0C0';
+        case 'X':
+            return '#C0C0C0';
+        case 'SH':
+            return '#E8BF3F';
+        case 'S':
+            return '#E8BF3F';
+        case 'A':
+            return '#72B75D';
+        case 'B':
+            return '#8B6996';
+        case 'C':
+            return '#8B6996';
+        case 'D':
+            return '#8B6996';
+    }
+}
+
 export const mods = {
     None: 0,
     NF: 1,
@@ -65,6 +88,7 @@ export const mod_strings = {
 }
 
 export const mod_strings_long = {
+    0: "Nomod",
     1: "NoFail",
     2: "Easy",
     4: "Touch Device",

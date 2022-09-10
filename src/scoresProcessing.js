@@ -1,3 +1,4 @@
+import moment from "moment";
 import Papa from "papaparse";
 import { calculatePPifFC, calculatePPifSS, getModString, getUserTrackerStatus, mods } from "./helper";
 import { getBeatmapCount, getBonusPerformance, getPerformance, getUser } from "./osu";
@@ -54,13 +55,15 @@ const processData = async (scores, cb, cbProc) => {
     cbProc(processed);
 };
 
-export async function processFile(file, cbProc, cbUser, cbScores, cb) {
+export async function processFile(file, allowLoved, cbProc, cbUser, cbScores, cb) {
     Papa.parse(file, {
         header: true,
         skipEmptyLines: true,
         complete: async function (results) {
             if (testScores(results.data)) {
-                results.data = results.data.filter(score => parseInt(score.approved) < 4);
+                if (!allowLoved) {
+                    results.data = results.data.filter(score => parseInt(score.approved) < 4);
+                }
 
                 // console.log("Valid score dataset");
                 results.data.forEach(score => {
@@ -117,10 +120,15 @@ function parseScore(score) {
     score.sliders = parseInt(score.sliders);
     score.circles = parseInt(score.circles);
     score.spinners = parseInt(score.spinners);
+    score.modded_length = score.length;
+    if (score.enabled_mods & mods.DT || score.enabled_mods & mods.NC) {
+        score.modded_length /= 1.5;
+    } else if (score.enabled_mods & mods.HT) {
+        score.modded_length /= 0.75;
+    }
 
     score.totalhits = score.count300 + score.count100 + score.count50 + score.countmiss;
 
-    //perform these at the latest point of parsing
     score.pp_fc = getPerformance({ count300: score.count300 + score.countmiss, count100: score.count100, count50: score.count50, countmiss: 0, combo: score.maxcombo, score: score });
     score.pp_ss = getPerformance({ count300: score.count300 + score.countmiss + score.count100 + score.count50, count100: 0, count50: 0, countmiss: 0, combo: score.maxcombo, score: score });
     score.pp_cur = getPerformance({ score: score });
@@ -261,6 +269,13 @@ async function CalculateData(processed, scores, _user) {
     processed.total_length = total_length;
     processed.average_length = total_length / scores.length;
 
+    const activeDays = new Set();
+    scores.forEach(score => {
+        const cur = moment(score.date_played);
+        activeDays.add(cur.format("YYYY-MM-DD"));
+    });
+    processed.activeDays = activeDays;
+
     return processed;
 }
 
@@ -277,8 +292,23 @@ function calculatePPdata(processed, scores) {
     scores = calculatePPifFC(scores);
     scores = calculatePPifSS(scores);
 
+    scores.sort((a, b) => {
+        if (a.pp > b.pp) { return -1; }
+        if (a.pp < b.pp) { return 1; }
+        return 0;
+    });
+
     processed.fc_pp_weighted = 0;
     processed.ss_pp_weighted = 0;
+
+    let xexxar_score_pp = 0;
+    let xexxar_total_pp = 0;
+    scores.forEach((score, index) => {
+        xexxar_score_pp += score.pp * Math.pow(0.95, index);
+        xexxar_total_pp += score.pp;
+    });
+    processed.xexxar_weighted = ((2 - 1) * xexxar_score_pp + 0.75 * xexxar_score_pp * (Math.log(xexxar_total_pp) / Math.log(xexxar_score_pp))) / 2;
+
     scores.forEach(score => {
         if (!isNaN(score.pp_fc.total)) {
             processed.fc_pp_weighted += score.pp_fc.total * score.pp_fc.weight;
@@ -290,6 +320,7 @@ function calculatePPdata(processed, scores) {
     const bonus = getBonusPerformance(scores.length);
     processed.fc_pp_weighted += bonus;
     processed.ss_pp_weighted += bonus;
+
 
     return processed;
 }

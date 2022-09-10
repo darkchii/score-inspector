@@ -188,7 +188,7 @@ function PagePerDate(props) {
         var _start = moment(sorted[0].actual_date);
         // var _end = moment(sorted[sorted.length - 1].actual_date).add(1, `${addDateFormat}s`);
         var _end = moment();
-        for (var m = moment(_start); m.isBefore(_end); m.add(1, `${addDateFormat}s`)) {
+        for (var m = moment(_start); (m.isBefore(_end)||m.isSame(_end, addDateFormat)); m.add(1, `${addDateFormat}s`)) {
             dates.push(moment(m));
         }
         console.timeEnd("generating dates");

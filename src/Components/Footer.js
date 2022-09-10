@@ -1,4 +1,4 @@
-import { Card, CardContent, Grid, Link, Paper, Typography } from "@mui/material";
+import { Card, CardContent, Grid, Link, Typography } from "@mui/material";
 import React from "react";
 import config from '../config.json';
 

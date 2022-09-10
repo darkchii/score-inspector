@@ -16,7 +16,11 @@
             }
         },
         "shape": {
-            "borderRadius": 8
+            "borderRadius": 0
+        },
+        "typography": {
+            "fontFamily": "Comfortaa",
+            "fontWeight": 700
         }
     }
 }

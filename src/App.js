@@ -1,4 +1,4 @@
-import { CssBaseline, Box, AppBar, Toolbar, Typography, Paper, Grid, CircularProgress, Tabs, Tab, Tooltip, Alert, AlertTitle } from '@mui/material';
+import { CssBaseline, Box, AppBar, Toolbar, Typography, Paper, Grid, CircularProgress, Tabs, Tab, Alert, AlertTitle } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import React from 'react';
 import './App.css';
@@ -12,7 +12,8 @@ import FileSelector from './Components/FileSelector';
 import config from './config.json';
 import { processFile } from './scoresProcessing';
 import PageCompletion from './Tabs/PageCompletion';
-import { getUserTrackerStatus } from './helper';
+import PageChangelog from './Tabs/PageChangelog';
+import PageIndividualDate from './Tabs/PageIndividualDate';
 
 const darkTheme = createTheme(config.theme);
 
@@ -37,7 +38,7 @@ function App() {
     console.log(newValue);
   };
 
-  const handleScoresUpload = async (file) => {
+  const handleScoresUpload = async (file, allowLoved) => {
     setLoadState(true);
     setUser(null);
     setProcessedData(null);
@@ -45,7 +46,7 @@ function App() {
     setUserProcessing(false);
 
     var complete = 0;
-    await processFile(file,
+    await processFile(file, allowLoved,
       processed => { setProcessedData(processed); },
       user => {
         setUser(user);
@@ -76,7 +77,7 @@ function App() {
           variant="scrollable"
           value={tabValue}
           onChange={tabHandleChange}
-          sx={{ borderRight: 1, borderColor: 'divider', minHeight: '100%', width: '10rem' }}
+          sx={{ borderRight: 1, borderColor: 'divider', minHeight: '100%', minWidth: '10rem' }}
         >
           <Toolbar />
           <Tab label="General" {...a11yProps(0)} />
@@ -84,6 +85,7 @@ function App() {
           <Tab label="Scores" {...a11yProps(2)} />
           <Tab label="Per Day" {...a11yProps(3)} />
           <Tab label="Per Month" {...a11yProps(4)} />
+          <Tab label="Changelog" {...a11yProps(5)} />
         </Tabs>
         <Box component="main" sx={{ flexGrow: 1 }}>
           <Toolbar />
@@ -97,7 +99,7 @@ function App() {
               justifyContent="center"
               sx={{ py: 2, backgroundSize: "cover", backgroundRepeat: "no-repeat", backgroundPositionY: "center", backgroundImage: `url("${(user !== undefined && user !== null ? user.cover_url : "null")}")` }}
             >
-              <FileSelector sx={{ width: '60%' }} handleScoresUpload={handleScoresUpload} loadState={loadState} />
+              <FileSelector sx={{ width: '60%' }} data={{ hasProcessedData: processedData !== null }} handleScoresUpload={handleScoresUpload} loadState={loadState} />
             </Grid>
             {loadState ? <>
               <br />
@@ -113,7 +115,7 @@ function App() {
           </Paper>
           {
             isUserProcessing ? <>
-              <Grid container sx={{p:2}} direction="column" alignItems="center">
+              <Grid container sx={{ p: 2 }} direction="column" alignItems="center">
                 <Grid item xs={12} md={6} lg={6}>
                   <Alert severity="warning">
                     <AlertTitle>Warning</AlertTitle>
@@ -139,13 +141,17 @@ function App() {
               </TabPanel>
               <TabPanel value={tabValue} index={4}>
                 <br />
-                <PagePerDay data={{ scores: scoreData, user: user, processed: processedData, format: 'day' }} />
+                <PageIndividualDate data={{ scores: scoreData, user: user, processed: processedData }} />
               </TabPanel>
               <TabPanel value={tabValue} index={5}>
                 <br />
                 <PagePerDay data={{ scores: scoreData, user: user, processed: processedData, format: 'month' }} />
               </TabPanel>
             </> : <></>}
+            <TabPanel value={tabValue} index={6}>
+                <br />
+                <PageChangelog data={{ scores: scoreData, user: user, processed: processedData }} />
+              </TabPanel>
             <Footer sx={{ px: 3, my: 1 }} />
           </Grid>
         </Box>
