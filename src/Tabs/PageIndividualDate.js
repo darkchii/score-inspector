@@ -59,7 +59,7 @@ function PageIndividualDate(props) {
                 }
                 scores.forEach((score, index) => {
                     if (currentActivity.start === null) {
-                        currentActivity.start = moment(score.date_played).unix() - score.length;
+                        currentActivity.start = moment(score.date_played).unix() - score.modded_length;
                     }
 
                     currentActivity.end = moment(score.date_played).unix();
@@ -189,7 +189,7 @@ function PageIndividualDate(props) {
                     }
                     _stats.clears++;
                     acc += score.accuracy;
-                    _stats.playtime += score.length;
+                    _stats.playtime += score.modded_length;
                 });
                 _stats.average_acc = acc / sorted.length;
             }
@@ -264,7 +264,7 @@ function PageIndividualDate(props) {
                                                             </TableRow>
                                                             <TableRow>
                                                                 <TableCell sx={{ width: '50%' }}>Playtime</TableCell>
-                                                                <TableCell sx={{ width: '50%' }}>{stats.average_acc.toLocaleString('en-US')}%</TableCell>
+                                                                <TableCell sx={{ width: '50%' }}>{`${moment.duration(stats.playtime, 'seconds').humanize()}`}</TableCell>
                                                             </TableRow>
                                                         </TableBody>
                                                     </Table>

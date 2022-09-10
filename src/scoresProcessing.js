@@ -120,6 +120,12 @@ function parseScore(score) {
     score.sliders = parseInt(score.sliders);
     score.circles = parseInt(score.circles);
     score.spinners = parseInt(score.spinners);
+    score.modded_length = score.length;
+    if (score.enabled_mods & mods.DT || score.enabled_mods & mods.NC) {
+        score.modded_length /= 1.5;
+    } else if (score.enabled_mods & mods.HT) {
+        score.modded_length /= 0.75;
+    }
 
     score.totalhits = score.count300 + score.count100 + score.count50 + score.countmiss;
 
