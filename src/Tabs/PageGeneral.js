@@ -8,8 +8,6 @@ import GeneralCardAverageSR from "./GeneralCards/GeneralCardAverageSR";
 import GeneralCardHighestSR from "./GeneralCards/GeneralCardHighestSR";
 import GeneralCardScorePerPlay from "./GeneralCards/GeneralCardScorePerPlay";
 import GeneralCardFullComboPerc from "./GeneralCards/GeneralCardFullComboPerc";
-import GeneralCardPPifFC from "./GeneralCards/GeneralCardPPifFC";
-import GeneralCardPPifSS from "./GeneralCards/GeneralCardPPifSS";
 import GeneralCardScoreRank from "./GeneralCards/GeneralCardScoreRank";
 import GeneralCardTotalLengthPlayed from "./GeneralCards/GeneralCardTotalLengthPlayed";
 import GeneralCardAverageLengthPlayed from "./GeneralCards/GeneralCardAverageLengthPlayed";
@@ -19,8 +17,10 @@ import GeneralCardUsedModCombos from "./GeneralCards/GeneralCardUsedModCombos";
 import FluidGrid from 'react-fluid-grid'
 import GeneralCardDonation from "./GeneralCards/GeneralCardDonation";
 import config from '../config.json';
-import GeneralCardPPifXexxar from "./GeneralCards/GeneralCardPPifXexxar";
-import GeneralCardPPif2016 from "./GeneralCards/GeneralCardPPif2016";
+import GeneralCardPPifSS from "./GeneralCards/PerformanceCards/GeneralCardPPifSS";
+import GeneralCardPPifFC from "./GeneralCards/PerformanceCards/GeneralCardPPifFC";
+import GeneralCardPPif2016 from "./GeneralCards/PerformanceCards/GeneralCardPPif2016";
+import GeneralCardPPifXexxar from "./GeneralCards/PerformanceCards/GeneralCardPPifXexxar";
 
 function PageGeneral(props) {
     return (

@@ -334,7 +334,6 @@ function calculatePPdata(processed, scores) {
     processed.weighted.ss += bonus;
     processed.weighted._2016 += bonus;
 
-
     return processed;
 }
 

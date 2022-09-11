@@ -78,7 +78,7 @@ function PageIndividualDate(props) {
                     if (currentActivity.done) {
                         activities.push(currentActivity);
                         currentActivity = {
-                            start: null,
+                            start: moment(score.date_played).unix() - score.modded_length,
                             end: null,
                             done: false
                         }
