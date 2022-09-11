@@ -9,6 +9,13 @@ const CHANGETYPES = {
 
 const updates = [
     {
+        version: '1.0.2',
+        date: 'n/a',
+        changes: [
+            [CHANGETYPES.FIX, 'Fixed some scores showing outside any activity area'],
+        ]
+    },
+    {
         version: "1.0.1",
         date: "2022-09-10",
         changes: [

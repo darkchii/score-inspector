@@ -2,7 +2,7 @@ import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import moment from "moment/moment";
 import { useState } from "react";
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import { Button, ButtonGroup, Card, CardContent, Chip, chipClasses, Grid, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableRow, TextField } from "@mui/material";
+import { Box, Button, ButtonGroup, Card, CardContent, Chip, chipClasses, Grid, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableRow, TextField } from "@mui/material";
 import { useEffect } from "react";
 import {
     Chart as ChartJS,
@@ -37,12 +37,15 @@ const heightDefiners = [
 function PageIndividualDate(props) {
     const MIN_DATE = moment(props.data.user.join_date);
     const MAX_DATE = moment.unix((props.data.scores !== null && props.data.scores.length > 0) ? Math.max(...props.data.scores.map(score => moment(score.date_played).unix())) : moment().unix());
-    const [selectedDay, setSelectedDay] = useState(MAX_DATE.startOf('day'));
+    const [selectedStartDay, setSelectedStartDay] = useState(MAX_DATE.startOf('day'));
+    const [selectedEndDay, setSelectedEndDay] = useState(MAX_DATE.endOf('day'));
     const [isWorking, setWorkingState] = useState(false);
     const [scores, setScores] = useState(null);
     const [graphOptions, setGraphOptions] = useState(null);
     const [graphData, setGraphData] = useState(null);
     const [heightDefiner, setHeightDefiner] = useState('pp');
+
+    const [sessionCount, setSessionCount] = useState(0);
 
     const [stats, setStats] = useState(null);
 
@@ -97,6 +100,8 @@ function PageIndividualDate(props) {
                         }
                     });
                 }
+
+                setSessionCount(activities.length);
             }
 
             const options = {
@@ -106,10 +111,10 @@ function PageIndividualDate(props) {
                     {
                         ticks: {
                             callback: function (value, index, values) {
-                                return moment.unix(value).format("HH:mm");
+                                return moment.unix(value).format("MMMM Do, YYYY HH:mm");
                             },
-                            min: selectedDay.startOf('day'),
-                            max: selectedDay.endOf('day')
+                            min: selectedStartDay.startOf('day'),
+                            max: selectedEndDay !== null ? selectedEndDay.endOf('day') : selectedStartDay.endOf('day')
                         }
                     }
                 },
@@ -145,7 +150,7 @@ function PageIndividualDate(props) {
                     },
                     {
                         label: "hidden",
-                        data: [{ x: selectedDay.startOf('day').unix(), y: 0 }, { x: selectedDay.endOf('day').unix(), y: 0 }],
+                        data: [{ x: selectedStartDay.startOf('day').unix(), y: 0 }, { x: selectedEndDay.endOf('day').unix(), y: 0 }],
                         backgroundColor: 'rgba(255, 99, 132, 1)',
                         pointRadius: 0,
                         datalabels: {
@@ -160,10 +165,10 @@ function PageIndividualDate(props) {
     }, [scores, props.data.scores, heightDefiner]);
 
     useEffect(() => {
-        const handleDayChange = (date) => {
+        const handleDayChange = (start, end) => {
             setWorkingState(true);
             setScores(null);
-            const scoresSubset = props.data.scores.filter(score => moment(score.date_played).isSame(date, 'day'));
+            const scoresSubset = props.data.scores.filter(score => moment(score.date_played).isBetween(start, end, '[]'));
             const sorted = scoresSubset.sort((a, b) => moment(a.date_played).valueOf() - moment(b.date_played).valueOf());
 
             const _stats = {
@@ -199,31 +204,40 @@ function PageIndividualDate(props) {
             setScores(sorted);
             setWorkingState(false);
         };
-        handleDayChange(selectedDay.startOf('day'));
-    }, [selectedDay, props.data.scores]);
+        handleDayChange(selectedStartDay.startOf('day'), selectedEndDay.endOf('day'));
+    }, [selectedStartDay, selectedEndDay, props.data.scores]);
 
     return (
         <>
             <Card>
                 <CardContent>
                     <LocalizationProvider dateAdapter={AdapterMoment}>
-                        <DesktopDatePicker disabled={isWorking} minDate={MIN_DATE} maxDate={MAX_DATE} label="Select day to view" inputFormat="MM/DD/YYYY" value={selectedDay} onChange={setSelectedDay} renderInput={(params) => <TextField variant="standard" size="small" {...params} />}
-                            shouldDisableDate={(date) => (props.data.processed.activeDays !== null && props.data.processed.activeDays.size > 0) ? !props.data.processed.activeDays.has(date.format("YYYY-MM-DD")) : false} />
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                            <Grid sx={{ px: 1 }}>
+                                <DesktopDatePicker disabled={isWorking} minDate={MIN_DATE} maxDate={MAX_DATE} label="Select start day" inputFormat="MM/DD/YYYY" value={selectedStartDay} onChange={setSelectedStartDay} renderInput={(params) => <TextField variant="standard" size="small" {...params} />} shouldDisableDate={(date) => (props.data.processed.activeDays !== null && props.data.processed.activeDays.size > 0) ? !props.data.processed.activeDays.has(date.format("YYYY-MM-DD")) : false} />
+                            </Grid>
+                            <Grid sx={{ px: 1 }}>
+                                <DesktopDatePicker disabled={isWorking} minDate={MIN_DATE} maxDate={MAX_DATE} label="Select end day" inputFormat="MM/DD/YYYY" value={selectedEndDay} onChange={setSelectedEndDay} renderInput={(params) => <TextField variant="standard" size="small" {...params} />} shouldDisableDate={(date) => (props.data.processed.activeDays !== null && props.data.processed.activeDays.size > 0) ? !props.data.processed.activeDays.has(date.format("YYYY-MM-DD")) : false} />
+                            </Grid>
+                        </Box>
                     </LocalizationProvider>
 
-                    <Grid sx={{ my: 2 }}>
-                        <ButtonGroup>
-                            {heightDefiners.map((definer) => (
-                                <Button onClick={() => setHeightDefiner(definer.value)} variant={heightDefiner === definer.value ? 'contained' : 'outlined'}>
-                                    {definer.label}
-                                </Button>
-                            ))
-                            }
-                        </ButtonGroup>
-                    </Grid>
+                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        <Grid sx={{ my: 2 }}>
+                            <ButtonGroup>
+                                {heightDefiners.map((definer) => (
+                                    <Button onClick={() => setHeightDefiner(definer.value)} variant={heightDefiner === definer.value ? 'contained' : 'outlined'}>
+                                        {definer.label}
+                                    </Button>
+                                ))
+                                }
+                            </ButtonGroup>
+                        </Grid>
+                    </Box>
+
 
                     {graphOptions && <Grid sx={{ mt: 5 }}>
-                        <Stack direction="row" spacing={2}>
+                        <Stack sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} direction="row" spacing={2}>
                             <Chip icon={<SquareIcon />} sx={{ [`& .${chipClasses.icon}`]: { color: getGradeColor('X') } }} label="Silver SS" size="small" variant="outlined" />
                             <Chip icon={<CircleIcon />} sx={{ [`& .${chipClasses.icon}`]: { color: getGradeColor('X') } }} label="Gold SS" size="small" variant="outlined" />
                             <Chip icon={<SquareIcon />} sx={{ [`& .${chipClasses.icon}`]: { color: getGradeColor('S') } }} label="Silver S" size="small" variant="outlined" />
@@ -265,6 +279,10 @@ function PageIndividualDate(props) {
                                                             <TableRow>
                                                                 <TableCell sx={{ width: '50%' }}>Playtime</TableCell>
                                                                 <TableCell sx={{ width: '50%' }}>{`${moment.duration(stats.playtime, 'seconds').humanize()}`}</TableCell>
+                                                            </TableRow>
+                                                            <TableRow>
+                                                                <TableCell sx={{ width: '50%' }}>Sessions</TableCell>
+                                                                <TableCell sx={{ width: '50%' }}>{`${sessionCount.toLocaleString('en-US')}`}</TableCell>
                                                             </TableRow>
                                                         </TableBody>
                                                     </Table>
