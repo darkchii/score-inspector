@@ -41,7 +41,7 @@ function GeneralCardPPifSS(props) {
                 <CardContent>
                     <Grid container spacing={3} sx={{ justifyContent: 'space-between' }}>
                         <Grid item>
-                            <Typography color="textPrimary" variant="h4"><NumberFormat displayType={'text'} thousandSeparator={true} value={props.data.processed.ss_pp_weighted.toFixed(0)} />pp</Typography>
+                            <Typography color="textPrimary" variant="h4"><NumberFormat displayType={'text'} thousandSeparator={true} value={props.data.processed.weighted.ss.toFixed(0)} />pp</Typography>
                             <Typography color="textSecondary">if everything 100% accuracy</Typography>
                             <Button onClick={openModal} variant='contained' sx={{mt:2}}>See top plays</Button>
                         </Grid>

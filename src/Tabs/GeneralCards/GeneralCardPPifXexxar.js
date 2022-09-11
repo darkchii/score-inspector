@@ -14,7 +14,7 @@ function GeneralCardPPifXexxar(props) {
                 <CardContent>
                     <Grid container spacing={3} sx={{ justifyContent: 'space-between' }}>
                         <Grid item>
-                            <Typography color="textPrimary" variant="h4"><NumberFormat displayType={'text'} thousandSeparator={true} value={props.data.processed.xexxar_weighted.toFixed(0)} />pp</Typography>
+                            <Typography color="textPrimary" variant="h4"><NumberFormat displayType={'text'} thousandSeparator={true} value={props.data.processed.weighted.xexxar.toFixed(0)} />pp</Typography>
                             <Typography color="textSecondary">with xexxar profile pp proposal</Typography>
                             <Button href='https://github.com/ppy/osu/discussions/20210' target='_blank' variant='contained' sx={{mt:2}}>See proposal</Button>
                         </Grid>

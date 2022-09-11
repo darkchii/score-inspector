@@ -6,8 +6,9 @@ import { Doughnut, Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip as ChartTooltip, Legend } from 'chart.js';
 import { getGradeIcon, getModIcon } from "../Assets";
 import { getModString, mods, mod_strings_long } from "../helper";
-import { getBeatmapMaxscore, getPerformance } from "../osu";
+import { getBeatmapMaxscore } from "../osu";
 import moment from "moment";
+import { getPerformanceLive } from "../Performance/PerformanceLive";
 ChartJS.register(ArcElement, ChartTooltip, Legend);
 
 function ScoreView(props) {
@@ -45,12 +46,12 @@ function ScoreView(props) {
             setPerformance(null);
 
             const pp = [];
-            pp["100%"] = getPerformance({ accuracy: 1, score: props.data.score, combo: props.data.maxcombo, count300: props.data.score.count300 + props.data.score.count100 + props.data.score.count50 + props.data.score.countmiss, count100: 0, count50: 0, countmiss: 0 });
-            pp["99%"] = getPerformance({ accuracy: 0.99, score: props.data.score, combo: props.data.score.maxcombo, count300: props.data.score.count300 + props.data.score.count100 + props.data.score.count50 + props.data.score.countmiss, count100: 0, count50: 0, countmiss: 0 });
-            pp["98%"] = getPerformance({ accuracy: 0.98, score: props.data.score, combo: props.data.score.maxcombo, count300: props.data.score.count300 + props.data.score.count100 + props.data.score.count50 + props.data.score.countmiss, count100: 0, count50: 0, countmiss: 0 });
-            pp["95%"] = getPerformance({ accuracy: 0.95, score: props.data.score, combo: props.data.score.maxcombo, count300: props.data.score.count300 + props.data.score.count100 + props.data.score.count50 + props.data.score.countmiss, count100: 0, count50: 0, countmiss: 0 });
-            pp["90%"] = getPerformance({ accuracy: 0.90, score: props.data.score, combo: props.data.score.maxcombo, count300: props.data.score.count300 + props.data.score.count100 + props.data.score.count50 + props.data.score.countmiss, count100: 0, count50: 0, countmiss: 0 });
-            pp["80%"] = getPerformance({ accuracy: 0.80, score: props.data.score, combo: props.data.score.maxcombo, count300: props.data.score.count300 + props.data.score.count100 + props.data.score.count50 + props.data.score.countmiss, count100: 0, count50: 0, countmiss: 0 });
+            pp["100%"] = getPerformanceLive({ accuracy: 1, score: props.data.score, combo: props.data.maxcombo, count300: props.data.score.count300 + props.data.score.count100 + props.data.score.count50 + props.data.score.countmiss, count100: 0, count50: 0, countmiss: 0 });
+            pp["99%"] = getPerformanceLive({ accuracy: 0.99, score: props.data.score, combo: props.data.score.maxcombo, count300: props.data.score.count300 + props.data.score.count100 + props.data.score.count50 + props.data.score.countmiss, count100: 0, count50: 0, countmiss: 0 });
+            pp["98%"] = getPerformanceLive({ accuracy: 0.98, score: props.data.score, combo: props.data.score.maxcombo, count300: props.data.score.count300 + props.data.score.count100 + props.data.score.count50 + props.data.score.countmiss, count100: 0, count50: 0, countmiss: 0 });
+            pp["95%"] = getPerformanceLive({ accuracy: 0.95, score: props.data.score, combo: props.data.score.maxcombo, count300: props.data.score.count300 + props.data.score.count100 + props.data.score.count50 + props.data.score.countmiss, count100: 0, count50: 0, countmiss: 0 });
+            pp["90%"] = getPerformanceLive({ accuracy: 0.90, score: props.data.score, combo: props.data.score.maxcombo, count300: props.data.score.count300 + props.data.score.count100 + props.data.score.count50 + props.data.score.countmiss, count100: 0, count50: 0, countmiss: 0 });
+            pp["80%"] = getPerformanceLive({ accuracy: 0.80, score: props.data.score, combo: props.data.score.maxcombo, count300: props.data.score.count300 + props.data.score.count100 + props.data.score.count50 + props.data.score.countmiss, count100: 0, count50: 0, countmiss: 0 });
 
             setPerformance(pp);
         }
@@ -148,10 +149,10 @@ function ScoreView(props) {
                                         </TableHead>
                                         <TableBody>
                                             <TableRow>
-                                                <TableCell>{props.data.score.pp_cur.aim.toFixed(1)}pp</TableCell>
-                                                <TableCell>{props.data.score.pp_cur.speed.toFixed(1)}pp</TableCell>
-                                                <TableCell>{props.data.score.pp_cur.acc.toFixed(1)}pp</TableCell>
-                                                <TableCell>{props.data.score.pp_cur.flashlight.toFixed(1)}pp</TableCell>
+                                                <TableCell>{(props.data.score.pp_cur.aim ?? 0).toFixed(1)}pp</TableCell>
+                                                <TableCell>{(props.data.score.pp_cur.speed ?? 0).toFixed(1)}pp</TableCell>
+                                                <TableCell>{(props.data.score.pp_cur.acc ?? 0).toFixed(1)}pp</TableCell>
+                                                <TableCell>{(props.data.score.pp_cur.flashlight ?? 0).toFixed(1)}pp</TableCell>
                                             </TableRow>
                                         </TableBody>
                                     </Table>

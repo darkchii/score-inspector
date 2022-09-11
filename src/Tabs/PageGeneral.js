@@ -20,6 +20,7 @@ import FluidGrid from 'react-fluid-grid'
 import GeneralCardDonation from "./GeneralCards/GeneralCardDonation";
 import config from '../config.json';
 import GeneralCardPPifXexxar from "./GeneralCards/GeneralCardPPifXexxar";
+import GeneralCardPPif2016 from "./GeneralCards/GeneralCardPPif2016";
 
 function PageGeneral(props) {
     return (
@@ -36,15 +37,19 @@ function PageGeneral(props) {
                 <Grid><GeneralCardUsedModCombos data={props.data} /></Grid>
                 <Grid><GeneralCardScorePerPlay data={props.data} /></Grid>
                 <Grid><GeneralCardFullComboPerc data={props.data} /></Grid>
-                <Grid><GeneralCardPPifFC data={props.data} /></Grid>
-                <Grid><GeneralCardPPifSS data={props.data} /></Grid>
                 <Grid><GeneralCardScoreRank data={props.data} /></Grid>
                 <Grid><GeneralCardTotalLengthPlayed data={props.data} /></Grid>
                 <Grid><GeneralCardAverageLengthPlayed data={props.data} /></Grid>
-                <Grid><GeneralCardPPifXexxar data={props.data} /></Grid>
                 {
                     config.DONATE_URL ? <><Grid><GeneralCardDonation data={props.data} /></Grid></> : <></>
                 }
+            </FluidGrid>
+            <Grid sx={{height:'1rem'}}></Grid>
+            <FluidGrid>
+                <Grid><GeneralCardPPifFC data={props.data} /></Grid>
+                <Grid><GeneralCardPPifSS data={props.data} /></Grid>
+                <Grid><GeneralCardPPif2016 data={props.data} /></Grid>
+                <Grid><GeneralCardPPifXexxar data={props.data} /></Grid>
             </FluidGrid>
         </>
     );

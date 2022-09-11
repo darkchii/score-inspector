@@ -187,3 +187,17 @@ export function calculatePPifSS(scores) {
 
     return scores;
 }
+
+export function calculatePP2016(scores){
+    scores.sort((a, b) => {
+        if (a.pp_2016.total > b.pp_2016.total) { return -1; }
+        if (a.pp_2016.total < b.pp_2016.total) { return 1; }
+        return 0;
+    });
+
+    var index = 0;
+    scores.forEach(score => { if (!isNaN(score.pp_2016.total)) { score.pp_2016.weight = Math.pow(0.95, index); index++; } else { score.pp_2016.weight = 0 } });
+    console.log(scores.slice(0, 100));
+
+    return scores;
+}

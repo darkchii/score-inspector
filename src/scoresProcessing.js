@@ -1,7 +1,9 @@
 import moment from "moment";
 import Papa from "papaparse";
-import { calculatePPifFC, calculatePPifSS, getModString, getUserTrackerStatus, mods } from "./helper";
-import { getBeatmapCount, getBonusPerformance, getPerformance, getUser } from "./osu";
+import { calculatePP2016, calculatePPifFC, calculatePPifSS, getModString, getUserTrackerStatus, mods } from "./helper";
+import { getBeatmapCount, getBonusPerformance, getUser } from "./osu";
+import { getPerformance2016 } from "./Performance/Performance2016";
+import { getPerformanceLive } from "./Performance/PerformanceLive";
 
 const processData = async (scores, cb, cbProc) => {
     let _user;
@@ -59,6 +61,7 @@ export async function processFile(file, allowLoved, cbProc, cbUser, cbScores, cb
     Papa.parse(file, {
         header: true,
         skipEmptyLines: true,
+        worker: true,
         complete: async function (results) {
             if (testScores(results.data)) {
                 if (!allowLoved) {
@@ -129,9 +132,10 @@ function parseScore(score) {
 
     score.totalhits = score.count300 + score.count100 + score.count50 + score.countmiss;
 
-    score.pp_fc = getPerformance({ count300: score.count300 + score.countmiss, count100: score.count100, count50: score.count50, countmiss: 0, combo: score.maxcombo, score: score });
-    score.pp_ss = getPerformance({ count300: score.count300 + score.countmiss + score.count100 + score.count50, count100: 0, count50: 0, countmiss: 0, combo: score.maxcombo, score: score });
-    score.pp_cur = getPerformance({ score: score });
+    score.pp_fc = getPerformanceLive({ count300: score.count300 + score.countmiss, count100: score.count100, count50: score.count50, countmiss: 0, combo: score.maxcombo, score: score });
+    score.pp_ss = getPerformanceLive({ count300: score.count300 + score.countmiss + score.count100 + score.count50, count100: 0, count50: 0, countmiss: 0, combo: score.maxcombo, score: score });
+    score.pp_cur = getPerformanceLive({ score: score });
+    score.pp_2016 = getPerformance2016({ score: score });
 
     return score;
 }
@@ -291,6 +295,7 @@ function calculatePPdata(processed, scores) {
 
     scores = calculatePPifFC(scores);
     scores = calculatePPifSS(scores);
+    scores = calculatePP2016(scores);
 
     scores.sort((a, b) => {
         if (a.pp > b.pp) { return -1; }
@@ -298,8 +303,12 @@ function calculatePPdata(processed, scores) {
         return 0;
     });
 
-    processed.fc_pp_weighted = 0;
-    processed.ss_pp_weighted = 0;
+    processed.weighted = {};
+
+    processed.weighted.fc = 0;
+    processed.weighted.ss = 0;
+    processed.weighted.xexxar = 0;
+    processed.weighted._2016 = 0;
 
     let xexxar_score_pp = 0;
     let xexxar_total_pp = 0;
@@ -307,19 +316,23 @@ function calculatePPdata(processed, scores) {
         xexxar_score_pp += score.pp * Math.pow(0.95, index);
         xexxar_total_pp += score.pp;
     });
-    processed.xexxar_weighted = ((2 - 1) * xexxar_score_pp + 0.75 * xexxar_score_pp * (Math.log(xexxar_total_pp) / Math.log(xexxar_score_pp))) / 2;
+    processed.weighted.xexxar = ((2 - 1) * xexxar_score_pp + 0.75 * xexxar_score_pp * (Math.log(xexxar_total_pp) / Math.log(xexxar_score_pp))) / 2;
 
     scores.forEach(score => {
         if (!isNaN(score.pp_fc.total)) {
-            processed.fc_pp_weighted += score.pp_fc.total * score.pp_fc.weight;
+            processed.weighted.fc += score.pp_fc.total * score.pp_fc.weight;
         }
         if (!isNaN(score.pp_ss.total)) {
-            processed.ss_pp_weighted += score.pp_ss.total * score.pp_ss.weight;
+            processed.weighted.ss += score.pp_ss.total * score.pp_ss.weight;
+        }
+        if (!isNaN(score.pp_2016.total)) {
+            processed.weighted._2016 += score.pp_2016.total * score.pp_2016.weight;
         }
     });
     const bonus = getBonusPerformance(scores.length);
-    processed.fc_pp_weighted += bonus;
-    processed.ss_pp_weighted += bonus;
+    processed.weighted.fc += bonus;
+    processed.weighted.ss += bonus;
+    processed.weighted._2016 += bonus;
 
 
     return processed;
