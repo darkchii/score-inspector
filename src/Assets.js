@@ -6,6 +6,7 @@ import { ReactComponent as SVG_GRADE_A } from "./Assets/Grade-A.svg";
 import { ReactComponent as SVG_GRADE_B } from "./Assets/Grade-B.svg";
 import { ReactComponent as SVG_GRADE_C } from "./Assets/Grade-C.svg";
 import { ReactComponent as SVG_GRADE_D } from "./Assets/Grade-D.svg";
+import { ReactComponent as SVG_TRIANGLES } from "./Assets/Triangles.svg";
 
 import IMG_SVG_GRADE_XH from "./Assets/Grade-XH.svg";
 import IMG_SVG_GRADE_X from "./Assets/Grade-X.svg";
@@ -15,6 +16,8 @@ import IMG_SVG_GRADE_A from "./Assets/Grade-A.svg";
 import IMG_SVG_GRADE_B from "./Assets/Grade-B.svg";
 import IMG_SVG_GRADE_C from "./Assets/Grade-C.svg";
 import IMG_SVG_GRADE_D from "./Assets/Grade-D.svg";
+
+import IMG_TRIANGLES from "./Assets/Triangles.svg";
 
 import PNG_MOD_HT from "./Assets/MOD_HT.png";
 import PNG_MOD_NC from "./Assets/MOD_NC.png";
@@ -127,5 +130,7 @@ export {
     IMG_SVG_GRADE_A,
     IMG_SVG_GRADE_B,
     IMG_SVG_GRADE_C,
-    IMG_SVG_GRADE_D
+    IMG_SVG_GRADE_D,
+    IMG_TRIANGLES,
+    SVG_TRIANGLES
 };

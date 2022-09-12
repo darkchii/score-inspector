@@ -14,8 +14,9 @@ import { processFile } from './scoresProcessing';
 import PageCompletion from './Tabs/PageCompletion';
 import PageChangelog from './Tabs/PageChangelog';
 import PageIndividualDate from './Tabs/PageIndividualDate';
+import DefaultTheme from './Themes/Default';
 
-const darkTheme = createTheme(config.theme);
+const darkTheme = createTheme(DefaultTheme);
 
 function a11yProps(index) {
   return {
