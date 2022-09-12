@@ -3,6 +3,7 @@ import { useState } from 'react';
 import NumberFormat from 'react-number-format';
 import TopplaysModal from '../../../Components/TopplaysModal';
 import { getGrade, getPerformance } from '../../../osu';
+import AutoGraphIcon from '@mui/icons-material/AutoGraph';
 
 function GeneralCardPPif2016(props) {
     const [modalData, setModalData] = useState({ active: false });
@@ -34,7 +35,7 @@ function GeneralCardPPif2016(props) {
                         <Grid item>
                             <Typography color="textPrimary" variant="h4"><NumberFormat displayType={'text'} thousandSeparator={true} value={props.data.processed.weighted._2016.toFixed(0)} />pp</Typography>
                             <Typography color="textSecondary">if using 2016 ppv2</Typography>
-                            <Button onClick={openModal} variant='contained' sx={{mt:2}}>See top plays</Button>
+                            <Button startIcon={<AutoGraphIcon />} onClick={openModal} variant='contained' sx={{mt:2}}>See top plays</Button>
                         </Grid>
                     </Grid>
                 </CardContent>

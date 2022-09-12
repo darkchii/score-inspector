@@ -21,6 +21,9 @@
         "typography": {
             "fontFamily": "Comfortaa",
             "fontWeight": 700
+        },
+        "card": {
+            "borderRadius": 5
         }
     }
 }

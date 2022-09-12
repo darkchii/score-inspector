@@ -1,5 +1,6 @@
 import { Alert, AlertTitle, Box, Button, Card, CardContent, FormControlLabel, Grid, Step, StepLabel, Stepper, Switch, Typography } from "@mui/material";
 import React from "react";
+import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 
 function FileSelector(props) {
     const [stepperActiveStep, setStepperActiveStep] = React.useState(0);
@@ -61,7 +62,7 @@ function FileSelector(props) {
                                             <Grid item xs={12} md={6} lg={6}>
                                                 <Typography sx={{ mt: 2, mb: 1 }}>Upload the downloaded <code>scores.csv</code> file here:<br />
                                                     <FormControlLabel onChange={handleLovedToggle} control={<Switch defaultChecked={useLoved} />} label="Use loved scores" />
-                                                    <Button variant="contained" color="primary" component="label" disabled={props.loadState}>Upload scores<input onChange={e => handleScoresUpload(e.target.files[0])} hidden accept=".csv" type="file" /></Button>
+                                                    <Button startIcon={<InsertDriveFileIcon />} variant="contained" color="primary" component="label" disabled={props.loadState}>Upload scores<input onChange={e => handleScoresUpload(e.target.files[0])} hidden accept=".csv" type="file" /></Button>
                                                 </Typography>
                                             </Grid>
                                             <Grid item xs={12} md={6} lg={6}>

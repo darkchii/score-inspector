@@ -280,7 +280,34 @@ async function CalculateData(processed, scores, _user) {
     });
     processed.activeDays = activeDays;
 
+    processed.topScores = getBestScores(scores);
+    console.log(processed.topScores);
+
     return processed;
+}
+
+function getBestScores(scores){
+    let _scores = {
+        best_pp: null,
+        best_sr: null,
+        best_score: null,
+    };
+
+    scores.forEach(score => {
+        if (_scores.best_pp === null || score.pp > _scores.best_pp.pp) {
+            _scores.best_pp = score;
+        }
+        if((score.enabled_mods&mods.NF)===0){
+            if ((_scores.best_sr === null || score.star_rating > _scores.best_sr.star_rating)) {
+                _scores.best_sr = score;
+            }
+        }
+        if (_scores.best_score === null || score.score > _scores.best_score.score) {
+            _scores.best_score = score;
+        } 
+    });
+
+    return _scores;
 }
 
 function calculatePPdata(processed, scores) {
