@@ -34,7 +34,7 @@ function CompletionCardOD(props) {
                     __data[6] = parseFloat((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?od_min=6&od_max=7`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
                     __data[7] = parseFloat((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?od_min=7&od_max=8`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
                     __data[8] = parseFloat((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?od_min=8&od_max=9`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
-                    __data[9] = parseFloat((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?od_min=9&od_max=10`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
+                    __data[9] = parseFloat((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?od_min=9&od_max=11`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
                 } catch (err) {
                     setFailedState(true);
                     setWorkingState(false);
@@ -47,7 +47,7 @@ function CompletionCardOD(props) {
                     const min_od = parseFloat(key);
                     const maps = value;
 
-                    const __scores = _scores.filter(score => score.od >= min_od && score.od < min_od + 1);
+                    const __scores = _scores.filter(score => score.od >= min_od && score.od < min_od + (min_od === 9 ? 1.01 : 1));
                     _data.push({ od: min_od, clears: __scores.length, total_maps: maps });
                 });
 

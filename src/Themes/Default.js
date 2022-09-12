@@ -1,6 +1,7 @@
 import {
     experimental_sx as sx,
-  } from '@mui/material/styles';
+} from '@mui/material/styles';
+import { shadows } from '@mui/system';
 import { IMG_TRIANGLES, SVG_TRIANGLES } from "../Assets";
 
 const DefaultTheme = {
@@ -16,7 +17,7 @@ const DefaultTheme = {
         },
     },
     shape: {
-        borderRadius: 0,
+        borderRadius: 0
     },
     typography: {
         fontFamily: 'Comfortaa',

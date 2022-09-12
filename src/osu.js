@@ -73,8 +73,6 @@ export function isScoreRealistic(score) {
     const minCombo = score.maxcombo / 100 * 80; //80% combo
     const minAcc = (score.enabled_mods & mods.NF) ? 90 : 80; //90% acc required for NF, 80% for no NF
 
-    const percMiss = 100 / (score.totalhits) * score.countmiss;
-
     if (score.countmiss <= maxMissCount || score.combo > minCombo || score.accuracy > minAcc) {
         return true;
     }

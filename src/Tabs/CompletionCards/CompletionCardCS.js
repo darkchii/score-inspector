@@ -33,7 +33,7 @@ function CompletionCardCS(props) {
                     __data[6] = parseFloat((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?cs_min=6&cs_max=7`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
                     __data[7] = parseFloat((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?cs_min=7&cs_max=8`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
                     __data[8] = parseFloat((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?cs_min=8&cs_max=9`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
-                    __data[9] = parseFloat((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?cs_min=9&cs_max=10`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
+                    __data[9] = parseFloat((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?cs_min=9&cs_max=11`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
                 } catch (err) {
                     setFailedState(true);
                     setWorkingState(false);
@@ -46,14 +46,14 @@ function CompletionCardCS(props) {
                     const _min = parseFloat(key);
                     const maps = value;
 
-                    const __scores = _scores.filter(score => score.cs >= _min && score.cs < _min + 1);
+                    const __scores = _scores.filter(score => score.cs >= _min && score.cs < _min + (_min === 9 ? 1.01 : 1));
                     _data.push({ cs: _min, clears: __scores.length, total_maps: maps });
                 });
 
                 setWorkingState(false);
                 props.data.processed.completion.cs = _data;
             })();
-        }else{
+        } else {
             setWorkingState(false);
         }
     }, [props.data]);
