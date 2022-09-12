@@ -1,5 +1,5 @@
 import { Card, CardContent, Typography, Grid, Button } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import NumberFormat from 'react-number-format';
 import TopplaysModal from '../../../Components/TopplaysModal';
 import { getGrade, getPerformance } from '../../../osu';
@@ -7,6 +7,7 @@ import AutoGraphIcon from '@mui/icons-material/AutoGraph';
 
 function GeneralCardPPifSS(props) {
     const [modalData, setModalData] = useState({ active: false });
+    const [ppDiff, setPPDiff] = useState(0);
 
     const openModal = async () => {
         var _scores = JSON.parse(JSON.stringify(props.data.scores));
@@ -15,10 +16,10 @@ function GeneralCardPPifSS(props) {
             if (a.pp_ss.weight < b.pp_ss.weight) { return 1; }
             return 0;
         });
-        _scores = _scores.slice(0,200);
-        _scores.forEach(score=>{
+        _scores = _scores.slice(0, 200);
+        _scores.forEach(score => {
             score.pp = score.pp_ss.total;
-            score.accuracy = score.pp_ss.accuracy*100;
+            score.accuracy = score.pp_ss.accuracy * 100;
             score.count300 = score.pp_ss.count300;
             score.count100 = score.pp_ss.count100;
             score.count50 = score.pp_ss.count50;
@@ -35,6 +36,10 @@ function GeneralCardPPifSS(props) {
         })
     }
 
+    useEffect(() => {
+        setPPDiff(props.data.processed.weighted.ss - props.data.user.statistics.pp);
+    }, []);
+
     return (
         <>
             <TopplaysModal data={modalData} />
@@ -42,9 +47,9 @@ function GeneralCardPPifSS(props) {
                 <CardContent>
                     <Grid container spacing={3} sx={{ justifyContent: 'space-between' }}>
                         <Grid item>
-                            <Typography color="textPrimary" variant="h4"><NumberFormat displayType={'text'} thousandSeparator={true} value={props.data.processed.weighted.ss.toFixed(0)} />pp</Typography>
+                            <Typography component="div" color="textPrimary" variant="h4"><NumberFormat displayType={'text'} thousandSeparator={true} value={props.data.processed.weighted.ss.toFixed(0)} />pp <Typography color={'' + (ppDiff >= 0 ? '#11cb5f' : 'error')} variant='subtitle2' display="inline">{(ppDiff >= 0 ? '+' : '')}{ppDiff.toFixed(1)}pp</Typography></Typography>
                             <Typography color="textSecondary">if everything 100% accuracy</Typography>
-                            <Button startIcon={<AutoGraphIcon />} onClick={openModal} variant='contained' sx={{mt:2}}>See top plays</Button>
+                            <Button startIcon={<AutoGraphIcon />} onClick={openModal} variant='contained' sx={{ mt: 2 }}>See top plays</Button>
                         </Grid>
                     </Grid>
                 </CardContent>
