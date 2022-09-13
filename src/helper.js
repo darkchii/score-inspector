@@ -111,6 +111,16 @@ export const mod_strings_long = {
     1073741824: "Mirror"
 }
 
+export function formatNumber(n, decimals = 0, short = false){
+    if(n>999999999){
+        return (n/1000000000).toFixed(decimals)+(short?'b':' billion');
+    }
+    if(n>999999){
+        return (n/1000000).toFixed(decimals)+(short?'m':' million');
+    }
+    return n;
+}
+
 export function getModString(value) {
     var data = [];
 

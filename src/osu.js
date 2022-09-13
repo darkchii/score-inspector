@@ -80,6 +80,11 @@ export function isScoreRealistic(score) {
     return false;
 }
 
+export function getLazerScore(score){
+    const mul = getModMultiplier(score.enabled_mods);
+    return (((((50 * score.count50 + 100 * score.count100 + 300 * score.count300) / (300 * score.count50 + 300 * score.count100 + 300 * score.count300 + 300 * score.countmiss))* 300000) + ((score.combo / score.maxcombo) * 700000)) * mul);
+}
+
 export function getGrade(score) {
     var grade = 'D';
 
@@ -109,4 +114,30 @@ export function getGrade(score) {
         }
     }
     return grade;
+}
+
+export function getModMultiplier(enabled_mods){
+    let multiplier = 1.0;
+    if (enabled_mods & mods.HD) {
+        multiplier *= 1.06;
+    }
+    if (enabled_mods & mods.FL) {
+        multiplier *= 1.12;
+    }
+    if (enabled_mods & mods.EZ) {
+        multiplier *= 0.50;
+    }
+    if (enabled_mods & mods.NF) {
+        multiplier *= 0.90;
+    }
+    if (enabled_mods & mods.HT) {
+        multiplier *= 0.30;
+    }
+    if (enabled_mods & mods.HR) {
+        multiplier *= 1.12;
+    }
+    if (enabled_mods & mods.DT || enabled_mods & mods.NC) {
+        multiplier *= 1.06;
+    }
+    return multiplier;
 }

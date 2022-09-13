@@ -33,11 +33,11 @@ const DefaultTheme = {
                     '--bg-move': '0px',
                     backgroundPosition: 'calc(50% + var(--bg-move)) 50%',
                     '&:hover': {
-                        '--bg-move': '-20px',
+                        '--bg-move': '-10px',
                     }
                 },
             }
-        },
+        }
     }
 }
 

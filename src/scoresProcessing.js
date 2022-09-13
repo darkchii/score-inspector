@@ -1,7 +1,7 @@
 import moment from "moment";
 import Papa from "papaparse";
 import { calculatePP2016, calculatePPifFC, calculatePPifSS, getModString, getUserTrackerStatus, mods } from "./helper";
-import { getBeatmapCount, getBonusPerformance, getUser } from "./osu";
+import { getBeatmapCount, getBonusPerformance, getLazerScore, getUser } from "./osu";
 import { getPerformance2016 } from "./Performance/Performance2016";
 import { getPerformanceLive } from "./Performance/PerformanceLive";
 
@@ -73,6 +73,8 @@ export async function processFile(file, allowLoved, cbProc, cbUser, cbScores, cb
                     score = parseScore(score);
                 });
 
+                console.log(results.data)
+
                 cbScores(results.data);
                 cb();
 
@@ -136,6 +138,8 @@ function parseScore(score) {
     score.pp_ss = getPerformanceLive({ count300: score.count300 + score.countmiss + score.count100 + score.count50, count100: 0, count50: 0, countmiss: 0, combo: score.maxcombo, score: score });
     score.pp_cur = getPerformanceLive({ score: score });
     score.pp_2016 = getPerformance2016({ score: score });
+
+    score.scoreLazer = getLazerScore(score);
 
     return score;
 }
@@ -249,6 +253,8 @@ async function CalculateData(processed, scores, _user) {
     var total_sr = 0;
     var total_fc = 0;
     var total_length = 0;
+    processed.ranked_score = 0;
+    processed.ranked_scorelazer = 0;
     for await (const score of scores) {
         if (!isNaN(score.length)) {
             total_length += score.length;
@@ -262,7 +268,11 @@ async function CalculateData(processed, scores, _user) {
         if (score.is_fc) {
             total_fc++;
         }
+        processed.ranked_score += score.score;
+        processed.ranked_scorelazer += score.scoreLazer;
     }
+
+    console.log("Lazer Score: " + processed.ranked_scorelazer.toLocaleString('en-US'));
 
     processed.total_pp = total_pp;
     processed.average_pp = total_pp / scores.length;
@@ -286,7 +296,7 @@ async function CalculateData(processed, scores, _user) {
     return processed;
 }
 
-function getBestScores(scores){
+function getBestScores(scores) {
     let _scores = {
         best_pp: null,
         best_sr: null,
@@ -297,14 +307,14 @@ function getBestScores(scores){
         if (_scores.best_pp === null || score.pp > _scores.best_pp.pp) {
             _scores.best_pp = score;
         }
-        if((score.enabled_mods&mods.NF)===0){
+        if ((score.enabled_mods & mods.NF) === 0) {
             if ((_scores.best_sr === null || score.star_rating > _scores.best_sr.star_rating)) {
                 _scores.best_sr = score;
             }
         }
         if (_scores.best_score === null || score.score > _scores.best_score.score) {
             _scores.best_score = score;
-        } 
+        }
     });
 
     return _scores;
