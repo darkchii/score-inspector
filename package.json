@@ -4,7 +4,7 @@
   "private": true,
   "homepage": "https://darkchii.nl/score",
   "dependencies": {
-    "@emotion/react": "^11.10.0",
+    "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
     "@fontsource/comfortaa": "^4.5.9",
     "@fontsource/roboto": "^4.5.7",
