@@ -5,7 +5,7 @@
   "homepage": "https://darkchii.nl/score",
   "dependencies": {
     "@emotion/react": "^11.10.0",
-    "@emotion/styled": "^11.10.0",
+    "@emotion/styled": "^11.10.4",
     "@fontsource/comfortaa": "^4.5.9",
     "@fontsource/roboto": "^4.5.7",
     "@koale/useworker": "^4.0.2",
@@ -30,7 +30,7 @@
     "react-number-format": "^4.9.3",
     "react-scripts": "5.0.1",
     "react-virtualized": "^9.22.3",
-    "web-vitals": "^3.0.0"
+    "web-vitals": "^3.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
