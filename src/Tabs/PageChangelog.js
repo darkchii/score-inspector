@@ -14,6 +14,7 @@ const updates = [
         changes: [
             [CHANGETYPES.NEW, 'Added 2016 performance calculator and topplays for it', '06004fa8a6e36633da4f6d8146544515d5a1a1fa'],
             [CHANGETYPES.NEW, 'Added pp difference on \'if\' cards on general', '4e3f7fa1f05aa92686cbed3c8c7577a72ed9b191'],
+            [CHANGETYPES.FIX, 'Fixed wrong combo on 100% accuracy pp calc on scoreview'],
             [CHANGETYPES.FIX, 'Fixed some scores showing outside any activity area', '1b11696749deec3fa26a4f9637fea54f87857204'],
             [CHANGETYPES.FIX, 'Fixed completion cards missing the highest value (AR10, OD10, CS10)'],
             [CHANGETYPES.MISC, 'Now able to select a start and end day for the daily graph', '53c3730debc4231d1080d51a60669bb0a03d7bc7'],

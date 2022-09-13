@@ -46,12 +46,14 @@ function ScoreView(props) {
             setPerformance(null);
 
             const pp = [];
-            pp["100%"] = getPerformanceLive({ accuracy: 1, score: props.data.score, combo: props.data.maxcombo, count300: props.data.score.count300 + props.data.score.count100 + props.data.score.count50 + props.data.score.countmiss, count100: 0, count50: 0, countmiss: 0 });
+            pp["100%"] = getPerformanceLive({ accuracy: 1, score: props.data.score, combo: props.data.score.maxcombo, count300: props.data.score.count300 + props.data.score.count100 + props.data.score.count50 + props.data.score.countmiss, count100: 0, count50: 0, countmiss: 0 });
             pp["99%"] = getPerformanceLive({ accuracy: 0.99, score: props.data.score, combo: props.data.score.maxcombo, count300: props.data.score.count300 + props.data.score.count100 + props.data.score.count50 + props.data.score.countmiss, count100: 0, count50: 0, countmiss: 0 });
             pp["98%"] = getPerformanceLive({ accuracy: 0.98, score: props.data.score, combo: props.data.score.maxcombo, count300: props.data.score.count300 + props.data.score.count100 + props.data.score.count50 + props.data.score.countmiss, count100: 0, count50: 0, countmiss: 0 });
             pp["95%"] = getPerformanceLive({ accuracy: 0.95, score: props.data.score, combo: props.data.score.maxcombo, count300: props.data.score.count300 + props.data.score.count100 + props.data.score.count50 + props.data.score.countmiss, count100: 0, count50: 0, countmiss: 0 });
             pp["90%"] = getPerformanceLive({ accuracy: 0.90, score: props.data.score, combo: props.data.score.maxcombo, count300: props.data.score.count300 + props.data.score.count100 + props.data.score.count50 + props.data.score.countmiss, count100: 0, count50: 0, countmiss: 0 });
             pp["80%"] = getPerformanceLive({ accuracy: 0.80, score: props.data.score, combo: props.data.score.maxcombo, count300: props.data.score.count300 + props.data.score.count100 + props.data.score.count50 + props.data.score.countmiss, count100: 0, count50: 0, countmiss: 0 });
+
+            console.log(pp["100%"]);
 
             setPerformance(pp);
         }
