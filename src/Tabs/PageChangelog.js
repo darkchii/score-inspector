@@ -19,6 +19,7 @@ const updates = [
             [CHANGETYPES.FIX, 'Fixed completion cards missing the highest value (AR10, OD10, CS10)'],
             [CHANGETYPES.MISC, 'Now able to select a start and end day for the daily graph', '53c3730debc4231d1080d51a60669bb0a03d7bc7'],
             [CHANGETYPES.MISC, 'Design overhaul', '4740f58373862be6fe41cca6adae275c143270f0'],
+            [CHANGETYPES.MISC, 'Dependencies version bumping'],
         ]
     },
     {
