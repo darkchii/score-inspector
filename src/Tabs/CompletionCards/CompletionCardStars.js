@@ -25,17 +25,17 @@ function CompletionCardStars(props) {
 
                 var __data = [];
                 try {
-                    __data[0] = parseInt((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?stars_min=0&stars_max=1`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
-                    __data[1] = parseInt((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?stars_min=1&stars_max=2`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
-                    __data[2] = parseInt((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?stars_min=2&stars_max=3`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
-                    __data[3] = parseInt((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?stars_min=3&stars_max=4`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
-                    __data[4] = parseInt((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?stars_min=4&stars_max=5`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
-                    __data[5] = parseInt((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?stars_min=5&stars_max=6`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
-                    __data[6] = parseInt((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?stars_min=6&stars_max=7`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
-                    __data[7] = parseInt((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?stars_min=7&stars_max=8`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
-                    __data[8] = parseInt((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?stars_min=8&stars_max=9`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
-                    __data[9] = parseInt((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?stars_min=9&stars_max=10`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
-                    __data[10] = parseInt((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?stars_min=10`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
+                    __data[0] = parseInt((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?include_loved=${props.data.processed.allowLoved ? 'true' : 'false'}&stars_min=0&stars_max=1`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
+                    __data[1] = parseInt((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?include_loved=${props.data.processed.allowLoved ? 'true' : 'false'}&stars_min=1&stars_max=2`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
+                    __data[2] = parseInt((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?include_loved=${props.data.processed.allowLoved ? 'true' : 'false'}&stars_min=2&stars_max=3`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
+                    __data[3] = parseInt((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?include_loved=${props.data.processed.allowLoved ? 'true' : 'false'}&stars_min=3&stars_max=4`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
+                    __data[4] = parseInt((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?include_loved=${props.data.processed.allowLoved ? 'true' : 'false'}&stars_min=4&stars_max=5`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
+                    __data[5] = parseInt((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?include_loved=${props.data.processed.allowLoved ? 'true' : 'false'}&stars_min=5&stars_max=6`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
+                    __data[6] = parseInt((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?include_loved=${props.data.processed.allowLoved ? 'true' : 'false'}&stars_min=6&stars_max=7`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
+                    __data[7] = parseInt((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?include_loved=${props.data.processed.allowLoved ? 'true' : 'false'}&stars_min=7&stars_max=8`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
+                    __data[8] = parseInt((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?include_loved=${props.data.processed.allowLoved ? 'true' : 'false'}&stars_min=8&stars_max=9`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
+                    __data[9] = parseInt((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?include_loved=${props.data.processed.allowLoved ? 'true' : 'false'}&stars_min=9&stars_max=10`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
+                    __data[10] = parseInt((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?include_loved=${props.data.processed.allowLoved ? 'true' : 'false'}&stars_min=10`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
                 } catch (err) {
                     setFailedState(true);
                     setWorkingState(false);
@@ -55,7 +55,7 @@ function CompletionCardStars(props) {
                 setWorkingState(false);
                 props.data.processed.completion.stars = _data;
             })();
-        }else{
+        } else {
             setWorkingState(false);
         }
     }, [props.data]);

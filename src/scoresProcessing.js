@@ -5,7 +5,7 @@ import { getBeatmapCount, getBonusPerformance, getLazerScore, getUser } from "./
 import { getPerformance2016 } from "./Performance/Performance2016";
 import { getPerformanceLive } from "./Performance/PerformanceLive";
 
-const processData = async (scores, cb, cbProc) => {
+const processData = async (scores, cb, cbProc, allowLoved) => {
     let _user;
 
     try {
@@ -21,6 +21,7 @@ const processData = async (scores, cb, cbProc) => {
     cb(_user);
 
     var processed = {};
+    processed.allowLoved = allowLoved;
 
     let bmCount = null;
     try {
@@ -84,7 +85,7 @@ export async function processFile(file, allowLoved, cbProc, cbUser, cbScores, cb
                 }, res => {
                     cbProc(res);
                     cb();
-                }));
+                }, allowLoved));
             } else {
                 // console.log("Invalid score dataset!!!!!");
                 cbProc(false);

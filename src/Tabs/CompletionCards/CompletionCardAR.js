@@ -24,16 +24,16 @@ function CompletionCardOD(props) {
 
                 var __data = [];
                 try {
-                    __data[0] = parseFloat((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?ar_min=0&ar_max=1`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
-                    __data[1] = parseFloat((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?ar_min=1&ar_max=2`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
-                    __data[2] = parseFloat((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?ar_min=2&ar_max=3`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
-                    __data[3] = parseFloat((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?ar_min=3&ar_max=4`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
-                    __data[4] = parseFloat((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?ar_min=4&ar_max=5`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
-                    __data[5] = parseFloat((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?ar_min=5&ar_max=6`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
-                    __data[6] = parseFloat((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?ar_min=6&ar_max=7`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
-                    __data[7] = parseFloat((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?ar_min=7&ar_max=8`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
-                    __data[8] = parseFloat((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?ar_min=8&ar_max=9`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
-                    __data[9] = parseFloat((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?ar_min=9&ar_max=11`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
+                    __data[0] = parseFloat((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?include_loved=${props.data.processed.allowLoved ? 'true' : 'false'}&ar_min=0&ar_max=1`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
+                    __data[1] = parseFloat((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?include_loved=${props.data.processed.allowLoved ? 'true' : 'false'}&ar_min=1&ar_max=2`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
+                    __data[2] = parseFloat((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?include_loved=${props.data.processed.allowLoved ? 'true' : 'false'}&ar_min=2&ar_max=3`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
+                    __data[3] = parseFloat((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?include_loved=${props.data.processed.allowLoved ? 'true' : 'false'}&ar_min=3&ar_max=4`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
+                    __data[4] = parseFloat((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?include_loved=${props.data.processed.allowLoved ? 'true' : 'false'}&ar_min=4&ar_max=5`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
+                    __data[5] = parseFloat((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?include_loved=${props.data.processed.allowLoved ? 'true' : 'false'}&ar_min=5&ar_max=6`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
+                    __data[6] = parseFloat((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?include_loved=${props.data.processed.allowLoved ? 'true' : 'false'}&ar_min=6&ar_max=7`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
+                    __data[7] = parseFloat((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?include_loved=${props.data.processed.allowLoved ? 'true' : 'false'}&ar_min=7&ar_max=8`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
+                    __data[8] = parseFloat((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?include_loved=${props.data.processed.allowLoved ? 'true' : 'false'}&ar_min=8&ar_max=9`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
+                    __data[9] = parseFloat((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?include_loved=${props.data.processed.allowLoved ? 'true' : 'false'}&ar_min=9&ar_max=11`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
                 } catch (err) {
                     setFailedState(true);
                     setWorkingState(false);
@@ -53,7 +53,7 @@ function CompletionCardOD(props) {
                 setWorkingState(false);
                 props.data.processed.completion.ar = _data;
             })();
-        }else{
+        } else {
             setWorkingState(false);
         }
     }, [props.data]);
