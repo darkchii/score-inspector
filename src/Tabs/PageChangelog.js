@@ -17,6 +17,7 @@ const updates = [
             [CHANGETYPES.FIX, 'Fixed wrong combo on 100% accuracy pp calc on scoreview'],
             [CHANGETYPES.FIX, 'Fixed some scores showing outside any activity area', '1b11696749deec3fa26a4f9637fea54f87857204'],
             [CHANGETYPES.FIX, 'Fixed completion cards missing the highest value (AR10, OD10, CS10)'],
+            [CHANGETYPES.FIX, 'Fixed completion cards missing loved data'],
             [CHANGETYPES.MISC, 'Now able to select a start and end day for the daily graph', '53c3730debc4231d1080d51a60669bb0a03d7bc7'],
             [CHANGETYPES.MISC, 'Design overhaul', '4740f58373862be6fe41cca6adae275c143270f0'],
             [CHANGETYPES.MISC, 'Dependencies version bumping'],
