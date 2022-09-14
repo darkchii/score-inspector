@@ -1,14 +1,16 @@
-import { Card, CardContent, Chip, CircularProgress, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography } from "@mui/material";
+import { Card, CardContent, Chip, CircularProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useEffect } from "react";
 import ErrorIcon from '@mui/icons-material/Error';
 import axios from "axios";
-import config from '../../config.json';
+import { getAPIURL } from "../../helper";
 
 function CompletionCardStars(props) {
     const [working, setWorkingState] = React.useState(true);
     const [failed, setFailedState] = React.useState(false);
     const [tableData, setData] = React.useState([]);
+
+    const rowSize = 10;
 
     useEffect(() => {
         if (props.data.processed.completion === undefined || props.data.processed.completion.stars === undefined) {
@@ -23,37 +25,30 @@ function CompletionCardStars(props) {
 
                 var _scores = JSON.parse(JSON.stringify(props.data.scores));
 
-                var __data = [];
-                try {
-                    __data[0] = parseInt((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?include_loved=${props.data.processed.allowLoved ? 'true' : 'false'}&stars_min=0&stars_max=1`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
-                    __data[1] = parseInt((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?include_loved=${props.data.processed.allowLoved ? 'true' : 'false'}&stars_min=1&stars_max=2`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
-                    __data[2] = parseInt((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?include_loved=${props.data.processed.allowLoved ? 'true' : 'false'}&stars_min=2&stars_max=3`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
-                    __data[3] = parseInt((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?include_loved=${props.data.processed.allowLoved ? 'true' : 'false'}&stars_min=3&stars_max=4`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
-                    __data[4] = parseInt((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?include_loved=${props.data.processed.allowLoved ? 'true' : 'false'}&stars_min=4&stars_max=5`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
-                    __data[5] = parseInt((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?include_loved=${props.data.processed.allowLoved ? 'true' : 'false'}&stars_min=5&stars_max=6`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
-                    __data[6] = parseInt((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?include_loved=${props.data.processed.allowLoved ? 'true' : 'false'}&stars_min=6&stars_max=7`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
-                    __data[7] = parseInt((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?include_loved=${props.data.processed.allowLoved ? 'true' : 'false'}&stars_min=7&stars_max=8`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
-                    __data[8] = parseInt((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?include_loved=${props.data.processed.allowLoved ? 'true' : 'false'}&stars_min=8&stars_max=9`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
-                    __data[9] = parseInt((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?include_loved=${props.data.processed.allowLoved ? 'true' : 'false'}&stars_min=9&stars_max=10`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
-                    __data[10] = parseInt((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?include_loved=${props.data.processed.allowLoved ? 'true' : 'false'}&stars_min=10`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
-                } catch (err) {
-                    setFailedState(true);
-                    setWorkingState(false);
-                    return;
-                }
+                var __data = (await axios.get(`${getAPIURL()}beatmaps/ranges/star_rating?include_loved=${props.data.processed.allowLoved ? 'true' : 'false'}`)).data;
+                let visible = __data.slice(0, rowSize + 1);
+                let remainder = __data.slice(rowSize + 1, __data.length);
 
-                const _data = [];
-                Object.entries(__data).forEach(entry => {
-                    const [key, value] = entry;
-                    const min_sr = parseInt(key);
-                    const maps = value;
+                remainder.forEach((rangeData, index) => {
+                    visible[rowSize].amount += rangeData.amount;
+                    if (rangeData.max > visible[rowSize].max) {
+                        visible[rowSize].max = rangeData.max;
+                    }
+                });
 
-                    const __scores = _scores.filter(score => score.stars >= min_sr && (min_sr < 10 ? (score.stars < min_sr + 1) : true));
-                    _data.push({ sr: min_sr, clears: __scores.length, total_maps: maps });
+                let processed = [];
+                visible.forEach((rangeData, index) => {
+                    const scoreSlice = _scores.filter(score => score.stars >= rangeData.min && score.stars < rangeData.max);
+                    processed.push({
+                        min: rangeData.min,
+                        max: rangeData.max,
+                        clears: scoreSlice.length,
+                        total: rangeData.amount
+                    });
                 });
 
                 setWorkingState(false);
-                props.data.processed.completion.stars = _data;
+                props.data.processed.completion.stars = processed;
             })();
         } else {
             setWorkingState(false);
@@ -90,17 +85,18 @@ function CompletionCardStars(props) {
                                             </TableHead>
                                             <TableBody>
                                                 {
-                                                    props.data.processed.completion.stars.map(data => (
+                                                    props.data.processed.completion.stars.map((data, index) => (
                                                         <TableRow>
-                                                            <TableCell>{
-                                                                data.sr < 10 ?
-                                                                    <>{data.sr}* to {data.sr + 1}*</> : <>
-                                                                        {data.sr}*+
-                                                                    </>}
+                                                            <TableCell>
+                                                                {
+                                                                    index === rowSize ? <>{data.min}*+</> : <>
+                                                                        {data.min}* to {data.max + 1}*
+                                                                    </>
+                                                                }
                                                             </TableCell>
                                                             <TableCell align="right">{data.clears}</TableCell>
-                                                            <TableCell>{data.total_maps}</TableCell>
-                                                            <TableCell>{(100 / data.total_maps * data.clears).toFixed(1)}%</TableCell>
+                                                            <TableCell>{data.total}</TableCell>
+                                                            <TableCell>{(100 / data.total * data.clears).toFixed(1)}%</TableCell>
                                                         </TableRow>
                                                     ))
                                                 }

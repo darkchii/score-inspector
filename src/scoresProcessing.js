@@ -1,7 +1,7 @@
 import moment from "moment";
 import Papa from "papaparse";
 import { calculatePP2016, calculatePPifFC, calculatePPifSS, getModString, getUserTrackerStatus, mods } from "./helper";
-import { getBeatmapCount, getBonusPerformance, getLazerScore, getUser } from "./osu";
+import { getBeatmapCount, getBeatmapPacks, getBonusPerformance, getLazerScore, getUser } from "./osu";
 import { getPerformance2016 } from "./Performance/Performance2016";
 import { getPerformanceLive } from "./Performance/PerformanceLive";
 
@@ -22,6 +22,7 @@ const processData = async (scores, cb, cbProc, allowLoved) => {
 
     var processed = {};
     processed.allowLoved = allowLoved;
+
 
     let bmCount = null;
     try {
@@ -55,6 +56,7 @@ const processData = async (scores, cb, cbProc, allowLoved) => {
     });
 
     processed = await CalculateData(processed, scores, _user);
+    processed = await calculatePackData(processed, scores);
     cbProc(processed);
 };
 
@@ -69,12 +71,9 @@ export async function processFile(file, allowLoved, cbProc, cbUser, cbScores, cb
                     results.data = results.data.filter(score => parseInt(score.approved) < 4);
                 }
 
-                // console.log("Valid score dataset");
                 results.data.forEach(score => {
                     score = parseScore(score);
                 });
-
-                console.log(results.data)
 
                 cbScores(results.data);
                 cb();
@@ -87,7 +86,6 @@ export async function processFile(file, allowLoved, cbProc, cbUser, cbScores, cb
                     cb();
                 }, allowLoved));
             } else {
-                // console.log("Invalid score dataset!!!!!");
                 cbProc(false);
                 cb();
             }
@@ -193,7 +191,6 @@ async function CalculateData(processed, scores, _user) {
 
         if (score.tags.length > 0) {
             score.tags.replace(/\s+/g, ' ').trim().split(" ").forEach(tag => {
-                // console.log(tag);
                 const _tag = tag.trim().replaceAll('"', '').toString();
                 if (tags[_tag] !== undefined) {
                     tags[_tag]++;
@@ -273,8 +270,6 @@ async function CalculateData(processed, scores, _user) {
         processed.ranked_scorelazer += score.scoreLazer;
     }
 
-    console.log("Lazer Score: " + processed.ranked_scorelazer.toLocaleString('en-US'));
-
     processed.total_pp = total_pp;
     processed.average_pp = total_pp / scores.length;
     processed.average_sr = total_sr / scores.length;
@@ -292,7 +287,6 @@ async function CalculateData(processed, scores, _user) {
     processed.activeDays = activeDays;
 
     processed.topScores = getBestScores(scores);
-    console.log(processed.topScores);
 
     return processed;
 }
@@ -371,6 +365,14 @@ function calculatePPdata(processed, scores) {
     processed.weighted.fc += bonus;
     processed.weighted.ss += bonus;
     processed.weighted._2016 += bonus;
+
+    return processed;
+}
+
+async function calculatePackData(processed, scores) {
+    const packs = await getBeatmapPacks(processed.allowLoved);
+
+    processed.beatmap_packs = packs;
 
     return processed;
 }

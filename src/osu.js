@@ -1,15 +1,15 @@
 import axios from "axios";
 import config from "./config.json";
-import { mods } from "./helper";
+import { getAPIURL, mods } from "./helper";
 
-export function getBonusPerformance(clears){
-    return 416.6667 * (1-Math.pow(0.9994, clears));
+export function getBonusPerformance(clears) {
+    return 416.6667 * (1 - Math.pow(0.9994, clears));
 }
 
 export async function getUser(id) {
     let _user = null;
     try {
-        const res = await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}users/${id}`, { headers: { "Access-Control-Allow-Origin": "*" } });
+        const res = await axios.get(`${getAPIURL()}users/${id}`, { headers: { "Access-Control-Allow-Origin": "*" } });
         _user = res.data;
         if (_user.error !== undefined) {
             throw Error('Unable to get user at this time');
@@ -33,7 +33,7 @@ export async function getUser(id) {
 export async function getBeatmapCount() {
     let bmCount;
     try {
-        bmCount = await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/monthly`, { headers: { "Access-Control-Allow-Origin": "*" } });
+        bmCount = await axios.get(`${getAPIURL()}beatmaps/monthly`, { headers: { "Access-Control-Allow-Origin": "*" } });
     } catch (err) {
         return null;
     }
@@ -44,7 +44,7 @@ export async function getBeatmapCount() {
 export async function getBeatmap(beatmap_id) {
     let beatmap;
     try {
-        beatmap = await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/${beatmap_id}`, { headers: { "Access-Control-Allow-Origin": "*" } });
+        beatmap = await axios.get(`${getAPIURL()}beatmaps/${beatmap_id}`, { headers: { "Access-Control-Allow-Origin": "*" } });
     } catch (err) {
         return null;
     }
@@ -57,7 +57,7 @@ export async function getBeatmap(beatmap_id) {
 export async function getBeatmapMaxscore(beatmap_id) {
     let beatmap;
     try {
-        const url = `${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/${beatmap_id}/maxscore`;
+        const url = `${getAPIURL()}beatmaps/${beatmap_id}/maxscore`;
         beatmap = await axios.get(url, { headers: { "Access-Control-Allow-Origin": "*" } });
     } catch (err) {
         return null;
@@ -66,6 +66,19 @@ export async function getBeatmapMaxscore(beatmap_id) {
         throw Error('Beatmap not found');
     }
     return beatmap.data;
+}
+
+export async function getBeatmapPacks(include_loved = false) {
+    let packs;
+    try {
+        packs = await axios.get(`${getAPIURL()}beatmaps/packs?include_loved=${include_loved ? 'true' : 'false'}`, { headers: { "Access-Control-Allow-Origin": "*" } });
+    } catch (err) {
+        return null;
+    }
+    if (packs === undefined || packs.data === undefined || packs.data.length === 0) {
+        throw Error('Beatmap packs not found');
+    }
+    return packs.data;
 }
 
 export function isScoreRealistic(score) {
@@ -80,9 +93,9 @@ export function isScoreRealistic(score) {
     return false;
 }
 
-export function getLazerScore(score){
+export function getLazerScore(score) {
     const mul = getModMultiplier(score.enabled_mods);
-    return (((((50 * score.count50 + 100 * score.count100 + 300 * score.count300) / (300 * score.count50 + 300 * score.count100 + 300 * score.count300 + 300 * score.countmiss))* 300000) + ((score.combo / score.maxcombo) * 700000)) * mul);
+    return (((((50 * score.count50 + 100 * score.count100 + 300 * score.count300) / (300 * score.count50 + 300 * score.count100 + 300 * score.count300 + 300 * score.countmiss)) * 300000) + ((score.combo / score.maxcombo) * 700000)) * mul);
 }
 
 export function getGrade(score) {
@@ -116,7 +129,7 @@ export function getGrade(score) {
     return grade;
 }
 
-export function getModMultiplier(enabled_mods){
+export function getModMultiplier(enabled_mods) {
     let multiplier = 1.0;
     if (enabled_mods & mods.HD) {
         multiplier *= 1.06;

@@ -111,6 +111,10 @@ export const mod_strings_long = {
     1073741824: "Mirror"
 }
 
+export function getAPIURL() {
+    return (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API;
+}
+
 export function formatNumber(n, decimals = 0, short = false){
     if(n>999999999){
         return (n/1000000000).toFixed(decimals)+(short?'b':' billion');
@@ -207,7 +211,6 @@ export function calculatePP2016(scores){
 
     var index = 0;
     scores.forEach(score => { if (!isNaN(score.pp_2016.total)) { score.pp_2016.weight = Math.pow(0.95, index); index++; } else { score.pp_2016.weight = 0 } });
-    console.log(scores.slice(0, 100));
 
     return scores;
 }

@@ -11,14 +11,14 @@ import CompletionCardLength from "./CompletionCards/CompletionCardLength";
 function PageCompletion(props) {
     return (
         <>
-            <FluidGrid>
-                <Grid><CompletionCardYear data={props.data} /></Grid>
-                <Grid><CompletionCardStars data={props.data} /></Grid>
-                <Grid><CompletionCardAR data={props.data} /></Grid>
-                <Grid><CompletionCardOD data={props.data} /></Grid>
-                <Grid><CompletionCardCS data={props.data} /></Grid>
-                <Grid><CompletionCardLength data={props.data} /></Grid>
-            </FluidGrid>
+            <Grid container spacing={1}>
+                <Grid item xs={12/4}><CompletionCardStars data={props.data} /></Grid>
+                <Grid item xs={12/4}><CompletionCardAR data={props.data} /></Grid>
+                <Grid item xs={12/4}><CompletionCardOD data={props.data} /></Grid>
+                <Grid item xs={12/4}><CompletionCardCS data={props.data} /></Grid>
+                <Grid item xs={12/4}><CompletionCardLength data={props.data} /></Grid>
+                <Grid item xs={12/4}><CompletionCardYear data={props.data} /></Grid>
+            </Grid>
         </>
     );
 }

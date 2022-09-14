@@ -4,10 +4,13 @@ import React, { useEffect } from "react";
 import ErrorIcon from '@mui/icons-material/Error';
 import axios from "axios";
 import config from '../../config.json';
+import { getAPIURL } from "../../helper";
 
 function CompletionCardOD(props) {
     const [working, setWorkingState] = React.useState(true);
     const [failed, setFailedState] = React.useState(false);
+
+    const rowSize = 9;
 
     useEffect(() => {
         if (props.data.processed.completion === undefined || props.data.processed.completion.od === undefined) {
@@ -23,38 +26,35 @@ function CompletionCardOD(props) {
 
                 var _scores = JSON.parse(JSON.stringify(props.data.scores));
 
-                var __data = [];
-                try {
-                    __data[0] = parseFloat((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?include_loved=${props.data.processed.allowLoved ? 'true' : 'false'}&od_min=0&od_max=1`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
-                    __data[1] = parseFloat((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?include_loved=${props.data.processed.allowLoved ? 'true' : 'false'}&od_min=1&od_max=2`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
-                    __data[2] = parseFloat((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?include_loved=${props.data.processed.allowLoved ? 'true' : 'false'}&od_min=2&od_max=3`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
-                    __data[3] = parseFloat((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?include_loved=${props.data.processed.allowLoved ? 'true' : 'false'}&od_min=3&od_max=4`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
-                    __data[4] = parseFloat((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?include_loved=${props.data.processed.allowLoved ? 'true' : 'false'}&od_min=4&od_max=5`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
-                    __data[5] = parseFloat((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?include_loved=${props.data.processed.allowLoved ? 'true' : 'false'}&od_min=5&od_max=6`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
-                    __data[6] = parseFloat((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?include_loved=${props.data.processed.allowLoved ? 'true' : 'false'}&od_min=6&od_max=7`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
-                    __data[7] = parseFloat((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?include_loved=${props.data.processed.allowLoved ? 'true' : 'false'}&od_min=7&od_max=8`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
-                    __data[8] = parseFloat((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?include_loved=${props.data.processed.allowLoved ? 'true' : 'false'}&od_min=8&od_max=9`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
-                    __data[9] = parseFloat((await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/count?include_loved=${props.data.processed.allowLoved ? 'true' : 'false'}&od_min=9&od_max=11`, { headers: { "Access-Control-Allow-Origin": "*" } })).data);
-                } catch (err) {
-                    setFailedState(true);
-                    setWorkingState(false);
-                    return;
-                }
+                var __data = (await axios.get(`${getAPIURL()}beatmaps/ranges/od?include_loved=${props.data.processed.allowLoved ? 'true' : 'false'}`)).data;
+                __data.forEach(rangeData=>{
+                    rangeData.invisibleMax = rangeData.max;
+                });
+                let visible = __data.slice(0, rowSize + 1);
+                let remainder = __data.slice(rowSize + 1, __data.length);
 
-                const _data = [];
-                Object.entries(__data).forEach(entry => {
-                    const [key, value] = entry;
-                    const min_od = parseFloat(key);
-                    const maps = value;
+                remainder.forEach((rangeData, index) => {
+                    visible[rowSize].amount += rangeData.amount;
+                    if (rangeData.max > visible[rowSize].max && (visible[rowSize].invisibleMax === undefined || rangeData.max > visible[rowSize].invisibleMax)) {
+                        visible[rowSize].invisibleMax = rangeData.max;
+                    }
+                });
 
-                    const __scores = _scores.filter(score => score.od >= min_od && score.od < min_od + (min_od === 9 ? 1.01 : 1));
-                    _data.push({ od: min_od, clears: __scores.length, total_maps: maps });
+                let processed = [];
+                visible.forEach((rangeData, index) => {
+                    const scoreSlice = _scores.filter(score => score.od >= rangeData.min && (index === rowSize ? score.od <= rangeData.invisibleMax : score.od < rangeData.invisibleMax));
+                    processed.push({
+                        min: rangeData.min,
+                        max: rangeData.max,
+                        clears: scoreSlice.length,
+                        total: rangeData.amount
+                    });
                 });
 
                 setWorkingState(false);
-                props.data.processed.completion.od = _data;
+                props.data.processed.completion.od = processed;
             })();
-        }else{
+        } else {
             setWorkingState(false);
         }
     }, [props.data]);
@@ -91,10 +91,10 @@ function CompletionCardOD(props) {
                                                 {
                                                     props.data.processed.completion.od.map(data => (
                                                         <TableRow>
-                                                            <TableCell>OD {data.od} to {data.od + 1}</TableCell>
+                                                            <TableCell>OD {data.min} to {data.max}</TableCell>
                                                             <TableCell align="right">{data.clears}</TableCell>
-                                                            <TableCell>{data.total_maps}</TableCell>
-                                                            <TableCell>{(100 / data.total_maps * data.clears).toFixed(1)}%</TableCell>
+                                                            <TableCell>{data.total}</TableCell>
+                                                            <TableCell>{(100 / data.total * data.clears).toFixed(1)}%</TableCell>
                                                         </TableRow>
                                                     ))
                                                 }

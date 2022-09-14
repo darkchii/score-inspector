@@ -4,6 +4,7 @@ import ErrorIcon from '@mui/icons-material/Error';
 import axios from "axios";
 import config from '../../config.json';
 import moment from "moment";
+import { getAPIURL } from "../../helper";
 
 function CompletionCardYear(props) {
     const [working, setWorkingState] = React.useState(true);
@@ -20,8 +21,7 @@ function CompletionCardYear(props) {
 
                 await new Promise(r => setTimeout(r, 1000));
 
-                const res = await axios.get(`${(!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API}beatmaps/yearly`, { headers: { "Access-Control-Allow-Origin": "*" } });
-                console.log(res);
+                const res = await axios.get(`${getAPIURL()}beatmaps/yearly`, { headers: { "Access-Control-Allow-Origin": "*" } });
                 if (res.data.length > 0) {
                     const __data = [];
                     res.data.forEach(yearData => {
@@ -29,7 +29,7 @@ function CompletionCardYear(props) {
                         const maps = yearData.amount;
                         var count = 0;
 
-                        const scores = props.data.scores.filter(score => {
+                        props.data.scores.forEach(score => {
                             const approval = moment(score.approved_date);
                             if (approval.isSame(y, 'year')) {
                                 count++;

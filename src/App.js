@@ -15,6 +15,7 @@ import PageCompletion from './Tabs/PageCompletion';
 import PageChangelog from './Tabs/PageChangelog';
 import PageIndividualDate from './Tabs/PageIndividualDate';
 import DefaultTheme from './Themes/Default';
+import PagePacks from './Tabs/PagePacks';
 
 const darkTheme = createTheme(DefaultTheme);
 
@@ -83,10 +84,11 @@ function App() {
           <Toolbar />
           <Tab label="General" {...a11yProps(0)} />
           <Tab label="Completion" {...a11yProps(1)} />
-          <Tab label="Scores" {...a11yProps(2)} />
-          <Tab label="Per Day" {...a11yProps(3)} />
-          <Tab label="Per Month" {...a11yProps(4)} />
-          <Tab label="Changelog" {...a11yProps(5)} />
+          <Tab label="Packs" {...a11yProps(2)} />
+          <Tab label="Scores" {...a11yProps(3)} />
+          <Tab label="Per Day" {...a11yProps(4)} />
+          <Tab label="Per Month" {...a11yProps(5)} />
+          <Tab label="Changelog" {...a11yProps(6)} />
         </Tabs>
         <Box component="main" sx={{ flexGrow: 1 }}>
           <Toolbar />
@@ -138,18 +140,22 @@ function App() {
               </TabPanel>
               <TabPanel value={tabValue} index={3}>
                 <br />
-                <PageScores data={{ scores: scoreData, user: user, processed: processedData }} />
+                <PagePacks data={{ scores: scoreData, user: user, processed: processedData }} />
               </TabPanel>
               <TabPanel value={tabValue} index={4}>
                 <br />
-                <PageIndividualDate data={{ scores: scoreData, user: user, processed: processedData }} />
+                <PageScores data={{ scores: scoreData, user: user, processed: processedData }} />
               </TabPanel>
               <TabPanel value={tabValue} index={5}>
+                <br />
+                <PageIndividualDate data={{ scores: scoreData, user: user, processed: processedData }} />
+              </TabPanel>
+              <TabPanel value={tabValue} index={6}>
                 <br />
                 <PagePerDay data={{ scores: scoreData, user: user, processed: processedData, format: 'month' }} />
               </TabPanel>
             </> : <></>}
-            <TabPanel value={tabValue} index={6}>
+            <TabPanel value={tabValue} index={7}>
                 <br />
                 <PageChangelog data={{ scores: scoreData, user: user, processed: processedData }} />
               </TabPanel>
