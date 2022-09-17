@@ -24,7 +24,7 @@ function FileSelector(props) {
     return (
         <>
             <Box sx={props.sx}>
-                <Paper sx={{ px: 5 }} alignItems="center" justifyContent="center" direction="column">
+                <Paper sx={{ pl: 5 }} alignItems="center" justifyContent="center" direction="column">
                     <Grid container>
                         <Grid item xs={12} md={6} lg={6}>
                             <Typography sx={{ mt: 2, mb: 1 }}>Upload the downloaded <code>scores.csv</code> file here:<br />

@@ -4,12 +4,14 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { getBeatmapPackMaps } from "../osu";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
+import ScoreModal from "../Components/ScoreModal";
 
 const chunkSize = 50;
 function PagePacks(props) {
     const [packChunks, setPackChunks] = useState([]);
     const [selectedPack, setSelectedPack] = useState(null);
     const [isWorking, setWorkingState] = useState(false);
+    const [modalData, setModalData] = useState({ active: false });
 
     useEffect(() => {
         const chunks = [];
@@ -39,6 +41,7 @@ function PagePacks(props) {
 
     return (
         <>
+            <ScoreModal data={modalData} />
             <Card>
                 <CardContent>
                     <Typography variant='h5'>Beatmap pack completion</Typography>
@@ -97,21 +100,31 @@ function PagePacks(props) {
                                                             {
                                                                 selectedPack.beatmaps.map((map) => (
                                                                     <TableRow sx={{ maxHeight: '20px' }}>
-                                                                        <TableCell sx={{ width: '8px' }}>
+                                                                        <TableCell sx={{ width: '5%' }}>
                                                                             {
                                                                                 map.cleared ? <CheckCircleIcon color='success' /> : <CancelIcon color='error' />
                                                                             }
                                                                         </TableCell>
-                                                                        <TableCell sx={{ width: '10px' }}>
+                                                                        <TableCell sx={{ width: '5%' }}>
                                                                             <Typography>{map.star_rating.toFixed(2)}*</Typography>
                                                                         </TableCell>
-                                                                        <TableCell>
+                                                                        <TableCell sx={{ width: '60%' }}>
                                                                             <Typography>{map.artist} - {map.title} [{map.version}]</Typography>
                                                                         </TableCell>
-                                                                        <TableCell>
+                                                                        <TableCell sx={{ width: '30%' }}>
                                                                             <ButtonGroup size='small'>
                                                                                 <Button href={`https://osu.ppy.sh/beatmaps/${map.beatmap_id}`} target='_blank'>Website</Button>
                                                                                 <Button href={`osu://b/${map.beatmap_id}`}>Direct</Button>
+                                                                                {
+                                                                                    map.cleared ? <>
+                                                                                        <Button onClick={() => {
+                                                                                            setModalData({
+                                                                                                active: true,
+                                                                                                score: props.data.scores.find(score => parseInt(score.beatmap_id) === parseInt(map.beatmap_id))
+                                                                                            })
+                                                                                        }}>Show</Button>
+                                                                                    </> : <></>
+                                                                                }
                                                                             </ButtonGroup>
                                                                         </TableCell>
                                                                     </TableRow>

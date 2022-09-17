@@ -17,6 +17,7 @@ import PageIndividualDate from './Tabs/PageIndividualDate';
 import DefaultTheme from './Themes/Default';
 import PagePacks from './Tabs/PagePacks';
 import PageLanding from './Tabs/PageLanding';
+import { updates } from './updates';
 
 const darkTheme = createTheme(DefaultTheme);
 
@@ -85,7 +86,7 @@ function App() {
               component="div"
               sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
             >
-              osu! scores visualizer
+              osu! scores visualizer {updates[0].version}
             </Typography>
           </Toolbar>
         </AppBar>
@@ -121,8 +122,16 @@ function App() {
               spacing={0}
               direction="column"
               alignItems="center"
-              justifyContent="center"
-              sx={{ py: 2, backgroundSize: "cover", backgroundRepeat: "no-repeat", backgroundPositionY: "center", backgroundImage: `url("${(user !== undefined && user !== null ? user.cover_url : "null")}")` }}
+              justifyContent="top"
+              sx={{ 
+                py: 2, 
+                backgroundSize: "cover", 
+                backgroundRepeat: "no-repeat", 
+                backgroundPositionY: "center", 
+                backgroundImage: `url("${(user !== undefined && user !== null ? user.cover_url : "null")}")` ,
+                minHeight: `${(user !== undefined && user !== null ? '30vh' : '0vh')}`
+              }
+              }
             >
               <FileSelector sx={{ width: '60%' }} data={{ hasProcessedData: processedData !== null }} handleScoresUpload={handleScoresUpload} loadState={loadState} />
             </Grid>
