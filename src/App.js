@@ -1,4 +1,4 @@
-import { CssBaseline, Box, AppBar, Toolbar, Typography, Paper, Grid, CircularProgress, Tabs, Tab, Alert, AlertTitle } from '@mui/material';
+import { CssBaseline, Box, AppBar, Toolbar, Typography, Paper, Grid, CircularProgress, Tabs, Tab, Alert, AlertTitle, Divider } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import React from 'react';
 import './App.css';
@@ -16,6 +16,7 @@ import PageChangelog from './Tabs/PageChangelog';
 import PageIndividualDate from './Tabs/PageIndividualDate';
 import DefaultTheme from './Themes/Default';
 import PagePacks from './Tabs/PagePacks';
+import PageLanding from './Tabs/PageLanding';
 
 const darkTheme = createTheme(DefaultTheme);
 
@@ -35,9 +36,19 @@ function App() {
 
   const [tabValue, setTabValue] = React.useState(1);
 
+  const tabs = [
+    { name: 'Home', component: <PageLanding /> },
+    { name: 'Changelog', component: <PageChangelog /> },
+    { name: 'General', component: <PageGeneral data={{ scores: scoreData, user: user, processed: processedData }} />, useData: true },
+    { name: 'Scores', component: <PageScores data={{ scores: scoreData, user: user, processed: processedData }} />, useData: true },
+    { name: 'Completion', component: <PageCompletion data={{ scores: scoreData, user: user, processed: processedData }} />, useData: true },
+    { name: 'Packs', component: <PagePacks data={{ scores: scoreData, user: user, processed: processedData }} />, useData: true },
+    { name: 'Per Day', component: <PagePerDay data={{ scores: scoreData, user: user, processed: processedData }} />, useData: true },
+    { name: 'Per Month', component: <PageIndividualDate data={{ scores: scoreData, user: user, processed: processedData, format: 'month' }} />, useData: true },
+  ]
+
   const tabHandleChange = (event, newValue) => {
     setTabValue(newValue);
-    console.log(newValue);
   };
 
   const handleScoresUpload = async (file, allowLoved) => {
@@ -55,7 +66,12 @@ function App() {
         setUserProcessing(user.isWorking);
       },
       scores => { setScoreData(scores); },
-      () => { complete++; if (complete === 3) { setLoadState(false); } });
+      () => {
+        complete++; if (complete === 3) {
+          setLoadState(false);
+          if (tabValue === 1) setTabValue(3);
+        }
+      });
   }
 
   return (
@@ -82,13 +98,19 @@ function App() {
           sx={{ borderRight: 1, borderColor: 'divider', minHeight: '100%', minWidth: '10rem' }}
         >
           <Toolbar />
-          <Tab label="General" {...a11yProps(0)} />
-          <Tab label="Completion" {...a11yProps(1)} />
-          <Tab label="Packs" {...a11yProps(2)} />
-          <Tab label="Scores" {...a11yProps(3)} />
-          <Tab label="Per Day" {...a11yProps(4)} />
-          <Tab label="Per Month" {...a11yProps(5)} />
-          <Tab label="Changelog" {...a11yProps(6)} />
+          {
+            tabs.map((tab, index) => (
+              <Tab label={tab.name} {...a11yProps(index)} disabled={tab.useData ? !(scoreData != null && user != null && processedData != null) : false} />
+            ))
+          }
+          {/* <Tab label="Home" {...a11yProps(0)} />
+          <Tab label="Changelog" {...a11yProps(1)} />
+          <Tab disabled={!(scoreData != null && user != null && processedData != null)} label="General" {...a11yProps(2)} />
+          <Tab disabled={!(scoreData != null && user != null && processedData != null)} label="Completion" {...a11yProps(3)} />
+          <Tab disabled={!(scoreData != null && user != null && processedData != null)} label="Packs" {...a11yProps(4)} />
+          <Tab disabled={!(scoreData != null && user != null && processedData != null)} label="Scores" {...a11yProps(5)} />
+          <Tab disabled={!(scoreData != null && user != null && processedData != null)} label="Per Day" {...a11yProps(6)} />
+          <Tab disabled={!(scoreData != null && user != null && processedData != null)} label="Per Month" {...a11yProps(7)} /> */}
         </Tabs>
         <Box component="main" sx={{ flexGrow: 1 }}>
           <Toolbar />
@@ -129,36 +151,50 @@ function App() {
             </> : <></>
           }
           <Grid>
+            {
+              tabs.map((tab, index) => (
+                <TabPanel value={tabValue} index={index+1}>
+                  <br />
+                  {
+                    (tab.useData ? (scoreData != null && user != null && processedData != null) : true) ? tab.component : <></>
+                  }
+                </TabPanel>
+              ))
+            }
+            {/* <TabPanel value={tabValue} index={1}>
+              <br />
+              <PageLanding />
+            </TabPanel>
+            <TabPanel value={tabValue} index={2}>
+              <br />
+              <PageChangelog />
+            </TabPanel>
             {(scoreData != null && user != null && processedData != null) ? <>
-              <TabPanel value={tabValue} index={1}>
+              <TabPanel value={tabValue} index={3}>
                 <br />
                 <PageGeneral data={{ scores: scoreData, user: user, processed: processedData }} />
               </TabPanel>
-              <TabPanel value={tabValue} index={2}>
+              <TabPanel value={tabValue} index={4}>
                 <br />
                 <PageCompletion data={{ scores: scoreData, user: user, processed: processedData }} />
               </TabPanel>
-              <TabPanel value={tabValue} index={3}>
+              <TabPanel value={tabValue} index={5}>
                 <br />
                 <PagePacks data={{ scores: scoreData, user: user, processed: processedData }} />
               </TabPanel>
-              <TabPanel value={tabValue} index={4}>
+              <TabPanel value={tabValue} index={6}>
                 <br />
                 <PageScores data={{ scores: scoreData, user: user, processed: processedData }} />
               </TabPanel>
-              <TabPanel value={tabValue} index={5}>
+              <TabPanel value={tabValue} index={7}>
                 <br />
                 <PageIndividualDate data={{ scores: scoreData, user: user, processed: processedData }} />
               </TabPanel>
-              <TabPanel value={tabValue} index={6}>
+              <TabPanel value={tabValue} index={8}>
                 <br />
                 <PagePerDay data={{ scores: scoreData, user: user, processed: processedData, format: 'month' }} />
               </TabPanel>
-            </> : <></>}
-            <TabPanel value={tabValue} index={7}>
-                <br />
-                <PageChangelog data={{ scores: scoreData, user: user, processed: processedData }} />
-              </TabPanel>
+            </> : <></>} */}
             <Footer sx={{ px: 3, my: 1 }} />
           </Grid>
         </Box>
