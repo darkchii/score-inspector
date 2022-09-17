@@ -90,7 +90,7 @@ function CompletionCardStars(props) {
                                                             <TableCell>
                                                                 {
                                                                     index === rowSize ? <>{data.min}*+</> : <>
-                                                                        {data.min}* to {data.max + 1}*
+                                                                        {data.min}* to {data.max}*
                                                                     </>
                                                                 }
                                                             </TableCell>
