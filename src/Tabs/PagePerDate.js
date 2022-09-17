@@ -5,8 +5,8 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import TimeGraph from "../Components/TimeGraph";
 import moment from "moment";
 import Zoom from "chartjs-plugin-zoom";
-ChartJS.register(ArcElement, Tooltip, Legend, Zoom);
 
+ChartJS.register(ArcElement, Tooltip, Legend, Zoom);
 const dataToList = [
     {
         outputValue: "count_scores",

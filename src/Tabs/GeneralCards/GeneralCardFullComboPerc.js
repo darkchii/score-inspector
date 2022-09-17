@@ -9,7 +9,7 @@ function GeneralCardFullComboPerc(props) {
                     <Grid container spacing={3} sx={{ justifyContent: 'space-between' }}>
                         <Grid item>
                             <Typography color="textPrimary" variant="h4"><NumberFormat displayType={'text'} thousandSeparator={true} value={props.data.processed.fc_rate.toFixed(0)} />%</Typography>
-                            <Typography color="textSecondary">of scores are full combo</Typography>
+                            <Typography color="textSecondary">full combo'd</Typography>
                         </Grid>
                     </Grid>
                 </CardContent>

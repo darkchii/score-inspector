@@ -1,9 +1,11 @@
 import moment from "moment";
 import Papa from "papaparse";
-import { calculatePPifFC, calculatePPifSS, getModString, getUserTrackerStatus, mods } from "./helper";
-import { getBeatmapCount, getBonusPerformance, getPerformance, getUser } from "./osu";
+import { calculatePP2016, calculatePPifFC, calculatePPifSS, getModString, getUserTrackerStatus, mods } from "./helper";
+import { getBeatmapCount, getBeatmapPacks, getBonusPerformance, getLazerScore, getUser } from "./osu";
+import { getPerformance2016 } from "./Performance/Performance2016";
+import { getPerformanceLive } from "./Performance/PerformanceLive";
 
-const processData = async (scores, cb, cbProc) => {
+const processData = async (scores, cb, cbProc, allowLoved) => {
     let _user;
 
     try {
@@ -19,6 +21,8 @@ const processData = async (scores, cb, cbProc) => {
     cb(_user);
 
     var processed = {};
+    processed.allowLoved = allowLoved;
+
 
     let bmCount = null;
     try {
@@ -52,6 +56,7 @@ const processData = async (scores, cb, cbProc) => {
     });
 
     processed = await CalculateData(processed, scores, _user);
+    processed = await calculatePackData(processed, scores);
     cbProc(processed);
 };
 
@@ -59,13 +64,13 @@ export async function processFile(file, allowLoved, cbProc, cbUser, cbScores, cb
     Papa.parse(file, {
         header: true,
         skipEmptyLines: true,
+        worker: true,
         complete: async function (results) {
             if (testScores(results.data)) {
                 if (!allowLoved) {
                     results.data = results.data.filter(score => parseInt(score.approved) < 4);
                 }
 
-                // console.log("Valid score dataset");
                 results.data.forEach(score => {
                     score = parseScore(score);
                 });
@@ -79,9 +84,8 @@ export async function processFile(file, allowLoved, cbProc, cbUser, cbScores, cb
                 }, res => {
                     cbProc(res);
                     cb();
-                }));
+                }, allowLoved));
             } else {
-                // console.log("Invalid score dataset!!!!!");
                 cbProc(false);
                 cb();
             }
@@ -129,9 +133,12 @@ function parseScore(score) {
 
     score.totalhits = score.count300 + score.count100 + score.count50 + score.countmiss;
 
-    score.pp_fc = getPerformance({ count300: score.count300 + score.countmiss, count100: score.count100, count50: score.count50, countmiss: 0, combo: score.maxcombo, score: score });
-    score.pp_ss = getPerformance({ count300: score.count300 + score.countmiss + score.count100 + score.count50, count100: 0, count50: 0, countmiss: 0, combo: score.maxcombo, score: score });
-    score.pp_cur = getPerformance({ score: score });
+    score.pp_fc = getPerformanceLive({ count300: score.count300 + score.countmiss, count100: score.count100, count50: score.count50, countmiss: 0, combo: score.maxcombo, score: score });
+    score.pp_ss = getPerformanceLive({ count300: score.count300 + score.countmiss + score.count100 + score.count50, count100: 0, count50: 0, countmiss: 0, combo: score.maxcombo, score: score });
+    score.pp_cur = getPerformanceLive({ score: score });
+    score.pp_2016 = getPerformance2016({ score: score });
+
+    score.scoreLazer = getLazerScore(score);
 
     return score;
 }
@@ -184,7 +191,6 @@ async function CalculateData(processed, scores, _user) {
 
         if (score.tags.length > 0) {
             score.tags.replace(/\s+/g, ' ').trim().split(" ").forEach(tag => {
-                // console.log(tag);
                 const _tag = tag.trim().replaceAll('"', '').toString();
                 if (tags[_tag] !== undefined) {
                     tags[_tag]++;
@@ -245,6 +251,8 @@ async function CalculateData(processed, scores, _user) {
     var total_sr = 0;
     var total_fc = 0;
     var total_length = 0;
+    processed.ranked_score = 0;
+    processed.ranked_scorelazer = 0;
     for await (const score of scores) {
         if (!isNaN(score.length)) {
             total_length += score.length;
@@ -258,6 +266,8 @@ async function CalculateData(processed, scores, _user) {
         if (score.is_fc) {
             total_fc++;
         }
+        processed.ranked_score += score.score;
+        processed.ranked_scorelazer += score.scoreLazer;
     }
 
     processed.total_pp = total_pp;
@@ -276,7 +286,33 @@ async function CalculateData(processed, scores, _user) {
     });
     processed.activeDays = activeDays;
 
+    processed.topScores = getBestScores(scores);
+
     return processed;
+}
+
+function getBestScores(scores) {
+    let _scores = {
+        best_pp: null,
+        best_sr: null,
+        best_score: null,
+    };
+
+    scores.forEach(score => {
+        if (_scores.best_pp === null || score.pp > _scores.best_pp.pp) {
+            _scores.best_pp = score;
+        }
+        if ((score.enabled_mods & mods.NF) === 0) {
+            if ((_scores.best_sr === null || score.star_rating > _scores.best_sr.star_rating)) {
+                _scores.best_sr = score;
+            }
+        }
+        if (_scores.best_score === null || score.score > _scores.best_score.score) {
+            _scores.best_score = score;
+        }
+    });
+
+    return _scores;
 }
 
 function calculatePPdata(processed, scores) {
@@ -291,6 +327,7 @@ function calculatePPdata(processed, scores) {
 
     scores = calculatePPifFC(scores);
     scores = calculatePPifSS(scores);
+    scores = calculatePP2016(scores);
 
     scores.sort((a, b) => {
         if (a.pp > b.pp) { return -1; }
@@ -298,8 +335,12 @@ function calculatePPdata(processed, scores) {
         return 0;
     });
 
-    processed.fc_pp_weighted = 0;
-    processed.ss_pp_weighted = 0;
+    processed.weighted = {};
+
+    processed.weighted.fc = 0;
+    processed.weighted.ss = 0;
+    processed.weighted.xexxar = 0;
+    processed.weighted._2016 = 0;
 
     let xexxar_score_pp = 0;
     let xexxar_total_pp = 0;
@@ -307,20 +348,57 @@ function calculatePPdata(processed, scores) {
         xexxar_score_pp += score.pp * Math.pow(0.95, index);
         xexxar_total_pp += score.pp;
     });
-    processed.xexxar_weighted = ((2 - 1) * xexxar_score_pp + 0.75 * xexxar_score_pp * (Math.log(xexxar_total_pp) / Math.log(xexxar_score_pp))) / 2;
+    processed.weighted.xexxar = ((2 - 1) * xexxar_score_pp + 0.75 * xexxar_score_pp * (Math.log(xexxar_total_pp) / Math.log(xexxar_score_pp))) / 2;
 
     scores.forEach(score => {
         if (!isNaN(score.pp_fc.total)) {
-            processed.fc_pp_weighted += score.pp_fc.total * score.pp_fc.weight;
+            processed.weighted.fc += score.pp_fc.total * score.pp_fc.weight;
         }
         if (!isNaN(score.pp_ss.total)) {
-            processed.ss_pp_weighted += score.pp_ss.total * score.pp_ss.weight;
+            processed.weighted.ss += score.pp_ss.total * score.pp_ss.weight;
+        }
+        if (!isNaN(score.pp_2016.total)) {
+            processed.weighted._2016 += score.pp_2016.total * score.pp_2016.weight;
         }
     });
     const bonus = getBonusPerformance(scores.length);
-    processed.fc_pp_weighted += bonus;
-    processed.ss_pp_weighted += bonus;
+    processed.weighted.fc += bonus;
+    processed.weighted.ss += bonus;
+    processed.weighted._2016 += bonus;
 
+    return processed;
+}
+
+async function calculatePackData(processed, scores) {
+    const packs = await getBeatmapPacks(processed.allowLoved);
+
+    processed.beatmap_packs = [];
+    processed.beatmap_packs.individual = packs;
+
+    processed.beatmap_packs.individual.forEach(pack => {
+        pack.cleared = 0;
+    });
+
+    scores.forEach(score => {
+        if(score.pack_id.length===0) return;
+        const _packs = score.pack_id.split(',');
+
+        _packs.forEach(pack => {
+            const index = processed.beatmap_packs.individual.findIndex(p => p.name === pack);
+            if(index===-1){
+                console.log('beatmap pack missing???');
+                return;
+            }
+
+            processed.beatmap_packs.individual[index].cleared++;
+        });
+    });
+
+    processed.beatmap_packs.individual.sort((a, b) => {
+        if (a.name > b.name) { return 1; }
+        if (a.name < b.name) { return -1; }
+        return 0;
+    });
 
     return processed;
 }

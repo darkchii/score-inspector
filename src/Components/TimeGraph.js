@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import RotateLeftIcon from '@mui/icons-material/RotateLeft';
 import { Button, FormControlLabel, FormGroup, Grid, Switch } from "@mui/material";
 import { Line } from "react-chartjs-2";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
@@ -157,7 +158,7 @@ function TimeGraph(props) {
         <>
             <Grid sx={{ height: 600, position: "relative" }}>
                 <FormGroup sx={{ position: "absolute", left: "5rem", top: 5 }}>
-                    <Button variant="contained" onClick={resetZoom}>Reset Zoom</Button>
+                    <Button startIcon={<RotateLeftIcon />} variant="contained" onClick={resetZoom}>Reset Zoom</Button>
                     {
                         data.datasets.length > 1 ?
                             data.datasets.map(_data => (

@@ -2,25 +2,5 @@
     "OSU_API": "http://darkchii.nl/score/api/",
     "OSU_TEST_API": "https://darkchii.nl/score/test_api/",
     "SCORE_API": "https://score.respektive.pw/u/",
-    "DONATE_URL": "https://www.buymeacoffee.com/darkchii",
-    "theme": {
-        "palette": {
-            "mode": "dark",
-            "primary": {
-                "main": "#C8598A"
-            },
-            "background": {
-                "default": "#2A2226",
-                "dark": "#fff",
-                "paper": "#382E32"
-            }
-        },
-        "shape": {
-            "borderRadius": 0
-        },
-        "typography": {
-            "fontFamily": "Comfortaa",
-            "fontWeight": 700
-        }
-    }
+    "DONATE_URL": "https://www.buymeacoffee.com/darkchii"
 }
