@@ -14,13 +14,13 @@ const updates = [
         changes: [
             [CHANGETYPES.NEW, 'Added 2016 performance calculator and topplays for it', '06004fa8a6e36633da4f6d8146544515d5a1a1fa'],
             [CHANGETYPES.NEW, 'Added pp difference on \'if\' cards on general', '4e3f7fa1f05aa92686cbed3c8c7577a72ed9b191'],
-            [CHANGETYPES.FIX, 'Fixed wrong combo on 100% accuracy pp calc on scoreview'],
+            [CHANGETYPES.NEW, 'New landing page', '7c6bc20ee434f553c9c111f3758007e6f5c1cb9d'],
+            [CHANGETYPES.FIX, 'Fixed wrong combo on 100% accuracy pp calc on scoreview', 'a9cfb42967c46813f30b53e5f2b6524733eb4645'],
             [CHANGETYPES.FIX, 'Fixed some scores showing outside any activity area', '1b11696749deec3fa26a4f9637fea54f87857204'],
-            [CHANGETYPES.FIX, 'Fixed completion cards missing the highest value (AR10, OD10, CS10)'],
-            [CHANGETYPES.FIX, 'Fixed completion cards missing loved data'],
-            [CHANGETYPES.MISC, 'Now able to select a start and end day for the daily graph', '53c3730debc4231d1080d51a60669bb0a03d7bc7'],
+            [CHANGETYPES.FIX, 'Fixed completion cards missing the highest value (AR10, OD10, CS10)', '830aadb7a69cc9c0de1a6a5f2ef480753e5aad53'],
+            [CHANGETYPES.FIX, 'Fixed completion cards missing loved data', '830aadb7a69cc9c0de1a6a5f2ef480753e5aad53'],
             [CHANGETYPES.MISC, 'Design overhaul', '4740f58373862be6fe41cca6adae275c143270f0'],
-            [CHANGETYPES.MISC, 'Dependencies version bumping'],
+            [CHANGETYPES.MISC, 'Dependencies version bumping', 'c9fd4dedfebcd430d6f584859c52c3b96128d5ac'],
         ]
     },
     {

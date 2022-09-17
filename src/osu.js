@@ -6,6 +6,21 @@ export function getBonusPerformance(clears) {
     return 416.6667 * (1 - Math.pow(0.9994, clears));
 }
 
+export async function getBeatmapPackMaps(pack, sets_only = false) {
+    let maps = null;
+    try {
+        const res = await axios.get(`${getAPIURL()}/beatmaps/${sets_only ? 'allsets' : 'all'}?pack=${pack}`);
+        maps = res.data;
+        if (maps.error !== undefined) {
+            throw Error('Unable to get beatmap pack data right now');
+        }
+    } catch (err) {
+        return null;
+    }
+
+    return maps;
+}
+
 export async function getUser(id) {
     let _user = null;
     try {

@@ -372,7 +372,33 @@ function calculatePPdata(processed, scores) {
 async function calculatePackData(processed, scores) {
     const packs = await getBeatmapPacks(processed.allowLoved);
 
-    processed.beatmap_packs = packs;
+    processed.beatmap_packs = [];
+    processed.beatmap_packs.individual = packs;
+
+    processed.beatmap_packs.individual.forEach(pack => {
+        pack.cleared = 0;
+    });
+
+    scores.forEach(score => {
+        if(score.pack_id.length===0) return;
+        const _packs = score.pack_id.split(',');
+
+        _packs.forEach(pack => {
+            const index = processed.beatmap_packs.individual.findIndex(p => p.name === pack);
+            if(index===-1){
+                console.log('beatmap pack missing???');
+                return;
+            }
+
+            processed.beatmap_packs.individual[index].cleared++;
+        });
+    });
+
+    processed.beatmap_packs.individual.sort((a, b) => {
+        if (a.name > b.name) { return 1; }
+        if (a.name < b.name) { return -1; }
+        return 0;
+    });
 
     return processed;
 }
