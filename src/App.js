@@ -43,8 +43,8 @@ function App() {
     { name: 'Scores', component: <PageScores data={{ scores: scoreData, user: user, processed: processedData }} />, useData: true },
     { name: 'Completion', component: <PageCompletion data={{ scores: scoreData, user: user, processed: processedData }} />, useData: true },
     { name: 'Packs', component: <PagePacks data={{ scores: scoreData, user: user, processed: processedData }} />, useData: true },
-    { name: 'Per Day', component: <PagePerDay data={{ scores: scoreData, user: user, processed: processedData }} />, useData: true },
-    { name: 'Per Month', component: <PageIndividualDate data={{ scores: scoreData, user: user, processed: processedData, format: 'month' }} />, useData: true },
+    { name: 'Per Day', component: <PageIndividualDate data={{ scores: scoreData, user: user, processed: processedData }} />, useData: true },
+    { name: 'Per Month', component: <PagePerDay data={{ scores: scoreData, user: user, processed: processedData, format: 'month' }} />, useData: true },
   ]
 
   const tabHandleChange = (event, newValue) => {
