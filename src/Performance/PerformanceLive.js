@@ -40,7 +40,7 @@ function getTotalValue(data) {
     var total = Math.pow(
         Math.pow(data.aim, 1.1) + Math.pow(data.speed, 1.1) +
         Math.pow(data.acc, 1.1) + Math.pow(data.flashlight, 1.1),
-        1.0 / 1.1
+        0.90909090909
     ) * mul;
 
     return total;
@@ -89,44 +89,35 @@ function getAimValue(data) {
 
     aimValue *= getAccuracy(data);
 
-    aimValue *= 0.98 + (Math.pow(data.score.modded_od, 2) / 2500.0);
+    aimValue *= 0.98 + ((data.score.modded_od * data.score.modded_od) / 2500.0);
     return aimValue;
 }
 
 function getSpeedValue(data) {
     var speedValue = Math.pow(5.0 * Math.max(1.0, data.score.speed_diff / 0.0675) - 4.0, 3.0) / 100000.0;
-    // console.log("TEST SPEED: "+speedValue);
 
     var lengthBonus = 0.95 + 0.4 * Math.min(1, data.totalhits / 2000.0) +
         (data.totalhits > 2000 ? (Math.log10(data.totalhits / 2000.0) * 0.5) : 0.0);
 
     speedValue *= lengthBonus;
-    // console.log("TEST SPEED LENGTH: "+speedValue);
 
     if (data.effectiveMissCount > 0) {
         speedValue *= 0.97 * Math.pow(1.0 - Math.pow(data.effectiveMissCount / data.totalhits, 0.775), Math.pow(data.effectiveMissCount, 0.875));
     }
-    // console.log("TEST SPEED MISS: "+speedValue);
 
     speedValue *= getComboScalingFactor(data.combo, data.score.maxcombo);
-    // console.log("TEST SPEED COMBO: "+speedValue);
 
     var approachRateFactor = 0.0;
     if (data.score.modded_ar > 10.33) {
         approachRateFactor = 0.3 * (data.score.modded_ar - 10.33);
     }
     speedValue *= 1.0 + approachRateFactor * lengthBonus;
-    // console.log("TEST SPEED AR: "+speedValue);
 
     if ((data.score.enabled_mods & mods.HD) !== 0) {
         speedValue *= (1.0 + 0.04 * (12 - data.score.modded_ar));
     }
-    // console.log("TEST SPEED HD: "+speedValue);
-
-    speedValue *= (0.95 + Math.pow(data.score.modded_od, 2) / 750) * Math.pow(getAccuracy(data), (14.5 - Math.max(data.score.modded_od, 8.0)) / 2);
-    // console.log("TEST SPEED OD: "+speedValue);
+    speedValue *= (0.95 + (data.score.modded_od * data.score.modded_od) / 750) * Math.pow(getAccuracy(data), (14.5 - Math.max(data.score.modded_od, 8.0)) / 2);
     speedValue *= Math.pow(0.98, (data.count50 < data.totalhits / 500) ? 0.0 : (data.count50 - data.totalhits / 500));
-    // console.log("TEST SPEED #50: "+speedValue);
 
     return speedValue;
 }
@@ -172,7 +163,7 @@ function getFlashlightValue(data) {
             rawFlashlight = Math.pow(rawFlashlight, 0.8);
         }
 
-        flashlightValue = Math.pow(rawFlashlight, 2.0) * 25.0;
+        flashlightValue = (rawFlashlight * rawFlashlight) * 25.0;
 
         if (data.effectiveMissCount > 0) {
             flashlightValue *= 0.97 * Math.pow(1 - Math.pow(data.effectiveMissCount / data.totalhits, 0.775), Math.pow(data.effectiveMissCount, 0.875));
@@ -184,7 +175,7 @@ function getFlashlightValue(data) {
             (data.totalhits > 200 ? (0.2 * Math.min(1.0, (data.totalhits - 200) / 200)) : 0.0);
 
         flashlightValue *= (0.5 + getAccuracy(data) / 2.0);
-        flashlightValue *= 0.98 + Math.pow(data.score.modded_od, 2.0) / 2500.0;
+        flashlightValue *= 0.98 + (data.score.modded_od * data.score.modded_od) / 2500.0;
     }
 
     return flashlightValue;

@@ -1,7 +1,7 @@
 import axios from "axios";
 import moment from "moment";
 import config from "./config.json";
-import { getAPIURL, mods } from "./helper";
+import { getAPIURL, getUnix, mods } from "./helper";
 
 export function getBonusPerformance(clears) {
     return 416.6667 * (1 - Math.pow(0.9994, clears));
@@ -173,7 +173,7 @@ export function getModMultiplier(enabled_mods) {
 
 const ACTIVITY_THRESHOLD = 60 * 60 * 1.5; //this value dictates a new activity region
 export function getSessions(scores) {
-    scores.sort((a, b) => moment(a.date_played).valueOf() - moment(b.date_played).valueOf());
+    scores.sort((a, b) => a.date_played_object - b.date_played_object);
 
     let activities = [];
     let currentActivity = {
@@ -183,20 +183,20 @@ export function getSessions(scores) {
     }
     scores.forEach((score, index) => {
         if (currentActivity.start === null) {
-            currentActivity.start = moment(score.date_played).unix() - score.modded_length;
+            currentActivity.start = getUnix(score.date_played) - score.modded_length;
         }
 
-        currentActivity.end = moment(score.date_played).unix();
+        currentActivity.end = getUnix(score.date_played);
 
         if (index < scores.length - 1) {
-            const diff = Math.abs(moment(score.date_played).unix() - moment(scores[index + 1].date_played).unix());
+            const diff = Math.abs(getUnix(score.date_played) - getUnix(scores[index + 1].date_played));
 
             if (diff >= ACTIVITY_THRESHOLD) {
-                currentActivity.end = moment(score.date_played).unix();
+                currentActivity.end = getUnix(score.date_played);
                 currentActivity.done = true;
             }
         } else if (index === scores.length - 1) {
-            currentActivity.end = moment(score.date_played).unix();
+            currentActivity.end = getUnix(score.date_played);
             currentActivity.done = true;
         }
 
@@ -205,7 +205,7 @@ export function getSessions(scores) {
             activities.push(currentActivity);
             if (index < scores.length - 1) {
                 currentActivity = {
-                    start: moment(scores[index + 1].date_played).unix() - score.modded_length,
+                    start: getUnix(scores[index + 1].date_played) - score.modded_length,
                     end: null,
                     length: null,
                     done: false

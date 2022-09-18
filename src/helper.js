@@ -176,6 +176,10 @@ export function numToMod(num) {
     return mod_list
 }
 
+export function getUnix(date_string){
+    return Math.floor(new Date(date_string).getTime() / 1000);
+}
+
 export function calculatePPifFC(scores) {
     scores.sort((a, b) => {
         if (a.pp_fc.total > b.pp_fc.total) { return -1; }

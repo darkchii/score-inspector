@@ -125,11 +125,13 @@ function parseScore(score) {
     score.circles = parseInt(score.circles);
     score.spinners = parseInt(score.spinners);
     score.modded_length = score.length;
+    score.date_played_object = new Date(score.date_played);
     if (score.enabled_mods & mods.DT || score.enabled_mods & mods.NC) {
         score.modded_length /= 1.5;
     } else if (score.enabled_mods & mods.HT) {
         score.modded_length /= 0.75;
     }
+    score.modString = getModString(score.enabled_mods).toString();
 
     score.totalhits = score.count300 + score.count100 + score.count50 + score.countmiss;
 
@@ -170,7 +172,7 @@ async function CalculateData(processed, scores, _user) {
 
     processed = calculatePPdata(processed, scores);
 
-    for await (const score of scores) {
+    scores.forEach(score => {
 
         var is_fc = score.perfect === "1";
 
@@ -200,15 +202,14 @@ async function CalculateData(processed, scores, _user) {
             });
         }
 
-        const _m = getModString(score.enabled_mods).toString();
-        if (used_mods.findIndex(m => m.mods === _m) === -1) {
+        if (used_mods.findIndex(m => m.mods === score.modString) === -1) {
             used_mods.push({
-                mods: _m,
+                mods: score.modString,
                 value: 1
             });
         } else {
             used_mods.forEach((m) => {
-                if (m.mods === _m) {
+                if (m.mods === score.modString) {
                     m.value++;
                 }
             })
@@ -217,7 +218,7 @@ async function CalculateData(processed, scores, _user) {
         if (!(score.enabled_mods & mods.NF) && score.star_rating > highest_sr) {
             highest_sr = score.star_rating;
         }
-    }
+    });
 
     used_mods.sort((a, b) => {
         if (a.value > b.value) { return -1; }
@@ -281,8 +282,9 @@ async function CalculateData(processed, scores, _user) {
 
     const activeDays = new Set();
     scores.forEach(score => {
-        const cur = moment(score.date_played);
-        activeDays.add(cur.format("YYYY-MM-DD"));
+        // const cur = moment(score.date_played);
+        // activeDays.add(cur.format("YYYY-MM-DD"));
+        activeDays.add(new Date(score.date_played).toISOString().slice(0, 10));
     });
     processed.activeDays = activeDays;
 
@@ -372,7 +374,15 @@ function calculatePPdata(processed, scores) {
 }
 
 async function calculatePackData(processed, scores) {
-    const packs = await getBeatmapPacks(processed.allowLoved);
+    const fetched_packs = await getBeatmapPacks(processed.allowLoved);
+    let packs = [];
+    
+    Object.keys(fetched_packs).forEach(key => {
+        packs.push({
+            name: key,
+            count: fetched_packs[key]
+        });
+    });
 
     processed.beatmap_packs = [];
     processed.beatmap_packs.individual = packs;

@@ -83,9 +83,9 @@ function getAimValue(data) {
         aim *= 1.45 * lengthBonus;
     }
 
-    aim *= 0.5 + getAccuracy(data) / 2.0;
+    aim *= 0.5 + getAccuracy(data) * 0.5;
 
-    aim *= 0.98 + (Math.pow(data.score.modded_od, 2) / 2500);
+    aim *= 0.98 + ((data.score.modded_od * data.score.modded_od) / 2500);
 
     return aim;
 }
@@ -104,8 +104,8 @@ function getSpeedValue(data) {
         speed *= Math.min(Math.pow(data.combo, 0.8) / Math.pow(data.score.maxcombo, 0.8), 1.0);
     }
 
-    speed *= 0.5 + getAccuracy(data) / 2.0;
-    speed *= 0.98 + (Math.pow(data.score.modded_od, 2) / 2500);
+    speed *= 0.5 + getAccuracy(data) * 0.5;
+    speed *= 0.98 + ((data.score.modded_od * data.score.modded_od) / 2500);
     return speed;
 }
 
