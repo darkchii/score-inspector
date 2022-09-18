@@ -10,6 +10,8 @@ export function getPerformanceLive(data) {
     data.totalhits = data.count300 + data.count100 + data.count50 + data.countmiss;
     data.accuracy = getAccuracy(data);
 
+    data.lengthBonus = 0.95 + 0.4 * Math.min(1, data.totalhits * 0.0005) + (data.totalhits > 2000 ? (Math.log10(data.totalhits * 0.0005) * 0.5) : 0.0);
+    data.comboScalingFactor = getComboScalingFactor(data.combo, data.score.maxcombo);
     data.effectiveMissCount = getEffectiveMissCount(data);
     data.aim = getAimValue(data);
     data.speed = getSpeedValue(data);
@@ -40,7 +42,7 @@ function getTotalValue(data) {
     var total = Math.pow(
         Math.pow(data.aim, 1.1) + Math.pow(data.speed, 1.1) +
         Math.pow(data.acc, 1.1) + Math.pow(data.flashlight, 1.1),
-        0.90909090909
+        0.90909090909 // 1.0 / 1.1
     ) * mul;
 
     return total;
@@ -53,18 +55,15 @@ function getAimValue(data) {
         raw_aim = Math.pow(raw_aim, 0.8);
     }
 
-    var aimValue = Math.pow(5.0 * Math.max(1.0, raw_aim / 0.0675) - 4.0, 3.0) / 100000.0;
+    var aimValue = Math.pow(5.0 * Math.max(1.0, raw_aim * 14.8148148148) - 4.0, 3.0) * 0.00001;
 
-    var lengthBonus = 0.95 + 0.4 * Math.min(1, data.totalhits / 2000.0) +
-        (data.totalhits > 2000 ? (Math.log10(data.totalhits / 2000.0) * 0.5) : 0.0);
-
-    aimValue *= lengthBonus;
+    aimValue *= data.lengthBonus;
 
     if (data.effectiveMissCount > 0) {
         aimValue *= 0.97 * Math.pow(1.0 - Math.pow(data.effectiveMissCount / data.totalhits, 0.775), data.effectiveMissCount);
     }
 
-    aimValue *= getComboScalingFactor(data.combo, data.score.maxcombo);
+    aimValue *= data.comboScalingFactor;
 
     var approachRateFactor = 0.0;
     if (data.score.modded_ar > 10.33) {
@@ -73,7 +72,7 @@ function getAimValue(data) {
         approachRateFactor = 0.1 * (8.0 - data.score.modded_ar);
     }
 
-    aimValue *= 1.0 + approachRateFactor * lengthBonus;
+    aimValue *= 1.0 + approachRateFactor * data.lengthBonus;
 
     if (data.score.enabled_mods & mods.HD) {
         aimValue *= 1.0 + 0.04 * (12.0 - data.score.modded_ar);
@@ -87,37 +86,34 @@ function getAimValue(data) {
         aimValue *= sliderNerfFactor;
     }
 
-    aimValue *= getAccuracy(data);
+    aimValue *= data.accuracy;
 
-    aimValue *= 0.98 + ((data.score.modded_od * data.score.modded_od) / 2500.0);
+    aimValue *= 0.98 + ((data.score.modded_od * data.score.modded_od) * 0.0004);
     return aimValue;
 }
 
 function getSpeedValue(data) {
-    var speedValue = Math.pow(5.0 * Math.max(1.0, data.score.speed_diff / 0.0675) - 4.0, 3.0) / 100000.0;
+    var speedValue = Math.pow(5.0 * Math.max(1.0, data.score.speed_diff * 14.8148148148) - 4.0, 3.0) * 0.00001;
 
-    var lengthBonus = 0.95 + 0.4 * Math.min(1, data.totalhits / 2000.0) +
-        (data.totalhits > 2000 ? (Math.log10(data.totalhits / 2000.0) * 0.5) : 0.0);
-
-    speedValue *= lengthBonus;
+    speedValue *= data.lengthBonus;
 
     if (data.effectiveMissCount > 0) {
         speedValue *= 0.97 * Math.pow(1.0 - Math.pow(data.effectiveMissCount / data.totalhits, 0.775), Math.pow(data.effectiveMissCount, 0.875));
     }
 
-    speedValue *= getComboScalingFactor(data.combo, data.score.maxcombo);
+    speedValue *= data.comboScalingFactor;
 
     var approachRateFactor = 0.0;
     if (data.score.modded_ar > 10.33) {
         approachRateFactor = 0.3 * (data.score.modded_ar - 10.33);
     }
-    speedValue *= 1.0 + approachRateFactor * lengthBonus;
+    speedValue *= 1.0 + approachRateFactor * data.lengthBonus;
 
     if ((data.score.enabled_mods & mods.HD) !== 0) {
         speedValue *= (1.0 + 0.04 * (12 - data.score.modded_ar));
     }
-    speedValue *= (0.95 + (data.score.modded_od * data.score.modded_od) / 750) * Math.pow(getAccuracy(data), (14.5 - Math.max(data.score.modded_od, 8.0)) / 2);
-    speedValue *= Math.pow(0.98, (data.count50 < data.totalhits / 500) ? 0.0 : (data.count50 - data.totalhits / 500));
+    speedValue *= (0.95 + (data.score.modded_od * data.score.modded_od) * 0.00133333333) * Math.pow(data.accuracy, (14.5 - Math.max(data.score.modded_od, 8.0)) * 0.5);
+    speedValue *= Math.pow(0.98, (data.count50 < data.totalhits * 0.002) ? 0.0 : (data.count50 - data.totalhits * 0.002));
 
     return speedValue;
 }
@@ -140,7 +136,7 @@ function getAccuracyValue(data) {
     }
 
     var accValue = Math.pow(1.52163, data.score.modded_od) * Math.pow(betterAccuracyPercentage, 24) * 2.83;
-    accValue *= Math.min(1.15, Math.pow(numHitObjectsWithAccuracy / 1000.0, 0.3));
+    accValue *= Math.min(1.15, Math.pow(numHitObjectsWithAccuracy * 0.001, 0.3));
 
     if ((data.score.enabled_mods & mods.HD) !== 0) {
         accValue *= 1.08;
@@ -169,13 +165,13 @@ function getFlashlightValue(data) {
             flashlightValue *= 0.97 * Math.pow(1 - Math.pow(data.effectiveMissCount / data.totalhits, 0.775), Math.pow(data.effectiveMissCount, 0.875));
         }
 
-        flashlightValue *= getComboScalingFactor(data.combo, data.score.maxcombo);
+        flashlightValue *= data.comboScalingFactor;
 
-        flashlightValue *= 0.7 + 0.1 * Math.min(1.0, data.totalhits / 200) +
-            (data.totalhits > 200 ? (0.2 * Math.min(1.0, (data.totalhits - 200) / 200)) : 0.0);
+        flashlightValue *= 0.7 + 0.1 * Math.min(1.0, data.totalhits * 0.005) +
+            (data.totalhits > 200 ? (0.2 * Math.min(1.0, (data.totalhits - 200) * 0.005)) : 0.0);
 
-        flashlightValue *= (0.5 + getAccuracy(data) / 2.0);
-        flashlightValue *= 0.98 + (data.score.modded_od * data.score.modded_od) / 2500.0;
+        flashlightValue *= (0.5 + data.accuracy / 0.5);
+        flashlightValue *= 0.98 + (data.score.modded_od * data.score.modded_od) * 0.0004;
     }
 
     return flashlightValue;

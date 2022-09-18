@@ -182,9 +182,7 @@ export function getUnix(date_string){
 
 export function calculatePPifFC(scores) {
     scores.sort((a, b) => {
-        if (a.pp_fc.total > b.pp_fc.total) { return -1; }
-        if (a.pp_fc.total < b.pp_fc.total) { return 1; }
-        return 0;
+        return b.pp_fc.total - a.pp_fc.total;
     });
 
     var index = 0;
@@ -195,9 +193,7 @@ export function calculatePPifFC(scores) {
 
 export function calculatePPifSS(scores) {
     scores.sort((a, b) => {
-        if (a.pp_ss.total > b.pp_ss.total) { return -1; }
-        if (a.pp_ss.total < b.pp_ss.total) { return 1; }
-        return 0;
+        return b.pp_ss.total - a.pp_ss.total;
     });
 
     var index = 0;
@@ -208,9 +204,7 @@ export function calculatePPifSS(scores) {
 
 export function calculatePP2016(scores) {
     scores.sort((a, b) => {
-        if (a.pp_2016.total > b.pp_2016.total) { return -1; }
-        if (a.pp_2016.total < b.pp_2016.total) { return 1; }
-        return 0;
+        return b.pp_2016.total - a.pp_2016.total;
     });
 
     var index = 0;

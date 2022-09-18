@@ -55,8 +55,10 @@ const processData = async (scores, cb, cbProc, allowLoved) => {
         processed.beatmapInfo.monthlyCumulative[key] = o;
     });
 
+    // console.time('start calc');
     processed = await CalculateData(processed, scores, _user);
     processed = await calculatePackData(processed, scores);
+    // console.timeEnd('start calc');
     cbProc(processed);
 };
 
@@ -192,8 +194,8 @@ async function CalculateData(processed, scores, _user) {
         }
 
         if (score.tags.length > 0) {
-            score.tags.replace(/\s+/g, ' ').trim().split(" ").forEach(tag => {
-                const _tag = tag.trim().replaceAll('"', '').toString();
+            score.tags.trim().split(" ").forEach(tag => {
+                const _tag = tag.trim().toString();
                 if (tags[_tag] !== undefined) {
                     tags[_tag]++;
                 } else {
@@ -320,24 +322,15 @@ function getBestScores(scores) {
 }
 
 function calculatePPdata(processed, scores) {
-    scores.sort((a, b) => {
-        if (a.pp > b.pp) { return -1; }
-        if (a.pp < b.pp) { return 1; }
-        return 0;
-    });
-
-    var index = 0;
-    scores.forEach(score => { score.pp_weight = Math.pow(0.95, index); index++; });
-
     scores = calculatePPifFC(scores);
     scores = calculatePPifSS(scores);
     scores = calculatePP2016(scores);
 
     scores.sort((a, b) => {
-        if (a.pp > b.pp) { return -1; }
-        if (a.pp < b.pp) { return 1; }
-        return 0;
+        return b.pp - a.pp;
     });
+    scores.forEach(score => { score.pp_weight = Math.pow(0.95, index); index++; });
+    var index = 0;
 
     processed.weighted = {};
 
@@ -376,7 +369,7 @@ function calculatePPdata(processed, scores) {
 async function calculatePackData(processed, scores) {
     const fetched_packs = await getBeatmapPacks(processed.allowLoved);
     let packs = [];
-    
+
     Object.keys(fetched_packs).forEach(key => {
         packs.push({
             name: key,
@@ -398,7 +391,6 @@ async function calculatePackData(processed, scores) {
         _packs.forEach(pack => {
             const index = processed.beatmap_packs.individual.findIndex(p => p.name === pack);
             if (index === -1) {
-                console.log('beatmap pack missing???');
                 return;
             }
 
