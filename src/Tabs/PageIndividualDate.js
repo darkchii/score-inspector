@@ -18,9 +18,8 @@ import Annotations from "chartjs-plugin-annotation";
 import CircleIcon from '@mui/icons-material/Circle';
 import SquareIcon from '@mui/icons-material/Square';
 import { getGradeIcon, SVG_GRADE_A, SVG_GRADE_S, SVG_GRADE_SH, SVG_GRADE_X, SVG_GRADE_XH } from "../Assets";
+import { getSessions } from "../osu";
 ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend, Annotations);
-
-const ACTIVITY_THRESHOLD = 60 * 60 * 1.5; //this value dictates a new activity region
 
 const heightDefiners = [
     { value: 'pp', label: 'Performance' },
@@ -54,39 +53,7 @@ function PageIndividualDate(props) {
             let annotations = {};
 
             if (scores !== null) {
-                let activities = [];
-                let currentActivity = {
-                    start: null,
-                    end: null,
-                    done: false
-                }
-                scores.forEach((score, index) => {
-                    if (currentActivity.start === null) {
-                        currentActivity.start = moment(score.date_played).unix() - score.modded_length;
-                    }
-
-                    currentActivity.end = moment(score.date_played).unix();
-
-                    if (index > 0 || index === scores.length - 1) {
-                        if (index === scores.length - 1) {
-                            currentActivity.done = true;
-                        } else {
-                            if (moment(score.date_played).unix() - moment(scores[index - 1].date_played).unix() > ACTIVITY_THRESHOLD) {
-                                currentActivity.end = moment(scores[index - 1].date_played).unix();
-                                currentActivity.done = true;
-                            }
-                        }
-                    }
-
-                    if (currentActivity.done) {
-                        activities.push(currentActivity);
-                        currentActivity = {
-                            start: moment(score.date_played).unix() - score.modded_length,
-                            end: null,
-                            done: false
-                        }
-                    }
-                });
+                let activities = getSessions(scores);
 
                 setTotalSessionLength(0);
                 setSessionCount(0);

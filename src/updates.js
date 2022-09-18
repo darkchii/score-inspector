@@ -7,10 +7,11 @@ const CHANGETYPES = {
 
 const updates = [
     {
-        version: '1.0.2.1',
+        version: '1.0.3',
         date: '2022-09-17',
         changes: [
             [CHANGETYPES.FIX, 'Fixed incorrect attribute display values', '858e36bbb4ae19e99db3237b2e96f47eae7187c8'],
+            [CHANGETYPES.FIX, 'Fixed incorrect sessions with lone scores'],
         ]
     },
     {

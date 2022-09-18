@@ -1,4 +1,5 @@
 import axios from "axios";
+import moment from "moment";
 import config from "./config.json";
 import { getAPIURL, mods } from "./helper";
 
@@ -168,4 +169,60 @@ export function getModMultiplier(enabled_mods) {
         multiplier *= 1.06;
     }
     return multiplier;
+}
+
+const ACTIVITY_THRESHOLD = 60 * 60 * 1.5; //this value dictates a new activity region
+export function getSessions(scores) {
+    let activities = [];
+    let currentActivity = {
+        start: null,
+        end: null,
+        done: false
+    }
+    console.log(`Scores size: ${scores.length}`);
+    scores.forEach((score, index) => {
+        if (currentActivity.start === null) {
+            currentActivity.start = moment(score.date_played).unix() - score.modded_length;
+        }
+
+        currentActivity.end = moment(score.date_played).unix();
+
+        if (index > 0) {
+            console.log(`${index}: time difference: ${moment(score.date_played).unix() - moment(scores[index - 1].date_played).unix()} seconds`);
+        }
+
+        // if (index > 0 || index === scores.length - 1) {
+        //     if (index === scores.length - 1) {
+        //         currentActivity.done = true;
+        //     } else {
+        //         if ((moment(score.date_played).unix() - moment(scores[index - 1].date_played).unix()) > ACTIVITY_THRESHOLD) {
+        //             currentActivity.end = moment(scores[index - 1].date_played).unix();
+        //             currentActivity.done = true;
+        //         }
+        //     }
+        // }
+        if (index < scores.length - 1) {
+            const diff = Math.abs(moment(score.date_played).unix() - moment(scores[index + 1].date_played).unix());
+
+            if (diff >= ACTIVITY_THRESHOLD) {
+                currentActivity.end = moment(score.date_played).unix();
+                currentActivity.done = true;
+            }
+        } else if (index === scores.length - 1) {
+            currentActivity.end = moment(score.date_played).unix();
+            currentActivity.done = true;
+        }
+
+        if (currentActivity.done) {
+            activities.push(currentActivity);
+            if (index < scores.length - 1) {
+                currentActivity = {
+                    start: moment(scores[index + 1].date_played).unix() - score.modded_length,
+                    end: null,
+                    done: false
+                }
+            }
+        }
+    });
+    return activities;
 }

@@ -1,6 +1,6 @@
 import moment from "moment";
 import Papa from "papaparse";
-import { calculatePP2016, calculatePPifFC, calculatePPifSS, getModString, getUserTrackerStatus, mods } from "./helper";
+import { calculatePP2016, calculatePPifFC, calculatePPifSS, getModString, getUserTrackerStatus, mods, naturalSorter } from "./helper";
 import { getBeatmapCount, getBeatmapPacks, getBonusPerformance, getLazerScore, getUser } from "./osu";
 import { getPerformance2016 } from "./Performance/Performance2016";
 import { getPerformanceLive } from "./Performance/PerformanceLive";
@@ -380,12 +380,12 @@ async function calculatePackData(processed, scores) {
     });
 
     scores.forEach(score => {
-        if(score.pack_id.length===0) return;
+        if (score.pack_id.length === 0) return;
         const _packs = score.pack_id.split(',');
 
         _packs.forEach(pack => {
             const index = processed.beatmap_packs.individual.findIndex(p => p.name === pack);
-            if(index===-1){
+            if (index === -1) {
                 console.log('beatmap pack missing???');
                 return;
             }

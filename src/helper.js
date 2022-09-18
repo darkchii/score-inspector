@@ -115,12 +115,12 @@ export function getAPIURL() {
     return (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API;
 }
 
-export function formatNumber(n, decimals = 0, short = false){
-    if(n>999999999){
-        return (n/1000000000).toFixed(decimals)+(short?'b':' billion');
+export function formatNumber(n, decimals = 0, short = false) {
+    if (n > 999999999) {
+        return (n / 1000000000).toFixed(decimals) + (short ? 'b' : ' billion');
     }
-    if(n>999999){
-        return (n/1000000).toFixed(decimals)+(short?'m':' million');
+    if (n > 999999) {
+        return (n / 1000000).toFixed(decimals) + (short ? 'm' : ' million');
     }
     return n;
 }
@@ -202,7 +202,7 @@ export function calculatePPifSS(scores) {
     return scores;
 }
 
-export function calculatePP2016(scores){
+export function calculatePP2016(scores) {
     scores.sort((a, b) => {
         if (a.pp_2016.total > b.pp_2016.total) { return -1; }
         if (a.pp_2016.total < b.pp_2016.total) { return 1; }
