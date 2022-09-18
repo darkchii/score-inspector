@@ -173,13 +173,14 @@ export function getModMultiplier(enabled_mods) {
 
 const ACTIVITY_THRESHOLD = 60 * 60 * 1.5; //this value dictates a new activity region
 export function getSessions(scores) {
+    scores.sort((a, b) => moment(a.date_played).valueOf() - moment(b.date_played).valueOf());
+
     let activities = [];
     let currentActivity = {
         start: null,
         end: null,
         done: false
     }
-    console.log(`Scores size: ${scores.length}`);
     scores.forEach((score, index) => {
         if (currentActivity.start === null) {
             currentActivity.start = moment(score.date_played).unix() - score.modded_length;
@@ -187,20 +188,6 @@ export function getSessions(scores) {
 
         currentActivity.end = moment(score.date_played).unix();
 
-        if (index > 0) {
-            console.log(`${index}: time difference: ${moment(score.date_played).unix() - moment(scores[index - 1].date_played).unix()} seconds`);
-        }
-
-        // if (index > 0 || index === scores.length - 1) {
-        //     if (index === scores.length - 1) {
-        //         currentActivity.done = true;
-        //     } else {
-        //         if ((moment(score.date_played).unix() - moment(scores[index - 1].date_played).unix()) > ACTIVITY_THRESHOLD) {
-        //             currentActivity.end = moment(scores[index - 1].date_played).unix();
-        //             currentActivity.done = true;
-        //         }
-        //     }
-        // }
         if (index < scores.length - 1) {
             const diff = Math.abs(moment(score.date_played).unix() - moment(scores[index + 1].date_played).unix());
 
@@ -214,11 +201,13 @@ export function getSessions(scores) {
         }
 
         if (currentActivity.done) {
+            currentActivity.length = Math.ceil(Math.abs(currentActivity.end - currentActivity.start));
             activities.push(currentActivity);
             if (index < scores.length - 1) {
                 currentActivity = {
                     start: moment(scores[index + 1].date_played).unix() - score.modded_length,
                     end: null,
+                    length: null,
                     done: false
                 }
             }

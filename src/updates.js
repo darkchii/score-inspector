@@ -11,7 +11,7 @@ const updates = [
         date: '2022-09-17',
         changes: [
             [CHANGETYPES.FIX, 'Fixed incorrect attribute display values', '858e36bbb4ae19e99db3237b2e96f47eae7187c8'],
-            [CHANGETYPES.FIX, 'Fixed incorrect sessions with lone scores'],
+            [CHANGETYPES.FIX, 'Fixed incorrect sessions with lone scores', 'f7a4807824f578b61ac4613a55d5674e8c804e94'],
         ]
     },
     {

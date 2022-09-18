@@ -1,7 +1,7 @@
 import moment from "moment";
 import Papa from "papaparse";
 import { calculatePP2016, calculatePPifFC, calculatePPifSS, getModString, getUserTrackerStatus, mods, naturalSorter } from "./helper";
-import { getBeatmapCount, getBeatmapPacks, getBonusPerformance, getLazerScore, getUser } from "./osu";
+import { getBeatmapCount, getBeatmapPacks, getBonusPerformance, getLazerScore, getSessions, getUser } from "./osu";
 import { getPerformance2016 } from "./Performance/Performance2016";
 import { getPerformanceLive } from "./Performance/PerformanceLive";
 
@@ -287,6 +287,8 @@ async function CalculateData(processed, scores, _user) {
     processed.activeDays = activeDays;
 
     processed.topScores = getBestScores(scores);
+
+    processed.sessions = getSessions(scores);
 
     return processed;
 }

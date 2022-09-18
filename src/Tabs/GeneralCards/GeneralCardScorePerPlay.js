@@ -9,7 +9,7 @@ function GeneralCardScorePerPlay(props) {
                     <Grid container spacing={3} sx={{ justifyContent: 'space-between' }}>
                         <Grid item>
                             <Typography color="textPrimary" variant="h4"><NumberFormat displayType={'text'} thousandSeparator={true} value={props.data.processed.average_score.toFixed(0)} /></Typography>
-                            <Typography color="textSecondary">ranked score per play</Typography>
+                            <Typography color="textSecondary">score per play</Typography>
                         </Grid>
                     </Grid>
                 </CardContent>

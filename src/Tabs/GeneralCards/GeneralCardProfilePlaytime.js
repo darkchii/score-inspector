@@ -1,14 +1,15 @@
 import { Card, CardContent, Typography, Grid } from '@mui/material';
+import moment from 'moment';
 
-function GeneralCardTotalLengthPlayed(props) {
+function GeneralCardProfilePlaytime(props) {
     return (
         <>
             <Card>
                 <CardContent>
                     <Grid container spacing={3} sx={{ justifyContent: 'space-between' }}>
                         <Grid item>
-                            <Typography color="textPrimary" variant="h4">{(props.data.processed.total_length / 60 / 60).toFixed(1)} hours</Typography>
-                            <Typography color="textSecondary">score length</Typography>
+                            <Typography color="textPrimary" variant="h4">{(moment.duration(props.data.user.statistics.play_time, "seconds")).asHours().toFixed(1)} hours</Typography>
+                            <Typography color="textSecondary">profile playtime</Typography>
                         </Grid>
                     </Grid>
                 </CardContent>
@@ -16,4 +17,4 @@ function GeneralCardTotalLengthPlayed(props) {
         </>
     );
 }
-export default GeneralCardTotalLengthPlayed;
+export default GeneralCardProfilePlaytime;
