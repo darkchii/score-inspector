@@ -10,7 +10,7 @@
     "@fontsource/roboto": "^4.5.8",
     "@koale/useworker": "^4.0.2",
     "@mui/icons-material": "^5.10.3",
-    "@mui/material": "^5.10.5",
+    "@mui/material": "^5.10.6",
     "@mui/x-data-grid": "^5.17.2",
     "@mui/x-date-pickers": "^5.0.2",
     "@testing-library/jest-dom": "^5.16.5",
