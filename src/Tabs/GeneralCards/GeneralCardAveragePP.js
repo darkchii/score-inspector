@@ -1,5 +1,5 @@
 import { Card, CardContent, Typography, Grid } from '@mui/material';
-import NumberFormat from 'react-number-format';
+import { toFixedNumber } from '../../helper';
 
 function GeneralCardAveragePP(props) {
     return (
@@ -8,7 +8,7 @@ function GeneralCardAveragePP(props) {
                 <CardContent>
                     <Grid container spacing={3} sx={{ justifyContent: 'space-between' }}>
                         <Grid item>
-                            <Typography color="textPrimary" variant="h4"><NumberFormat displayType={'text'} thousandSeparator={true} value={props.data.processed.average_pp.toFixed(2)} /></Typography>
+                            <Typography color="textPrimary" variant="h4">{toFixedNumber(props.data.processed.average_pp, 2)}</Typography>
                             <Typography color="textSecondary">average pp</Typography>
                         </Grid>
                     </Grid>

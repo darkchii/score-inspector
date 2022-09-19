@@ -81,8 +81,8 @@ function CompletionCardYear(props) {
                                                     props.data.processed.completion.years.map(data => (
                                                         <TableRow>
                                                             <TableCell>{data.year}</TableCell>
-                                                            <TableCell align="right">{data.clears}</TableCell>
-                                                            <TableCell>{data.total_maps}</TableCell>
+                                                            <TableCell align="right">{data.clears.toLocaleString('en-US')}</TableCell>
+                                                            <TableCell>{data.total_maps.toLocaleString('en-US')}</TableCell>
                                                             <TableCell>{(100 / data.total_maps * data.clears).toFixed(1)}%</TableCell>
                                                         </TableRow>
                                                     ))

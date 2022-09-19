@@ -111,6 +111,11 @@ export const mod_strings_long = {
     1073741824: "Mirror"
 }
 
+export function toFixedNumber(num, digits, base) {
+    var pow = Math.pow(base || 10, digits);
+    return Math.round(num * pow) / pow;
+}
+
 export function getAPIURL() {
     return (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API;
 }
@@ -176,7 +181,7 @@ export function numToMod(num) {
     return mod_list
 }
 
-export function getUnix(date_string){
+export function getUnix(date_string) {
     return Math.floor(new Date(date_string).getTime() / 1000);
 }
 

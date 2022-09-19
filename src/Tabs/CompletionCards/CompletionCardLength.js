@@ -94,8 +94,8 @@ function CompletionCardLength(props) {
                                                                     </>
                                                                 }
                                                             </TableCell>
-                                                            <TableCell align="right">{data.clears}</TableCell>
-                                                            <TableCell>{data.total}</TableCell>
+                                                            <TableCell align="right">{data.clears.toLocaleString('en-US')}</TableCell>
+                                                            <TableCell>{data.total.toLocaleString('en-US')}</TableCell>
                                                             <TableCell>{(100 / data.total * data.clears).toFixed(1)}%</TableCell>
                                                         </TableRow>
                                                     ))

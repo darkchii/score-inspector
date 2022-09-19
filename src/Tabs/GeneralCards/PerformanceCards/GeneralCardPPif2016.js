@@ -1,9 +1,9 @@
 import { Card, CardContent, Typography, Grid, Button, Box } from '@mui/material';
 import { useEffect, useState } from 'react';
-import NumberFormat from 'react-number-format';
 import TopplaysModal from '../../../Components/TopplaysModal';
 import { getGrade, getPerformance } from '../../../osu';
 import AutoGraphIcon from '@mui/icons-material/AutoGraph';
+import { toFixedNumber } from '../../../helper';
 
 function GeneralCardPPif2016(props) {
     const [modalData, setModalData] = useState({ active: false });
@@ -39,7 +39,7 @@ function GeneralCardPPif2016(props) {
                     <Grid container spacing={3} sx={{ justifyContent: 'space-between' }}>
                         <Grid item>
                             <Typography component="div" color="textPrimary" variant="h4">
-                                <NumberFormat displayType={'text'} thousandSeparator={true} value={props.data.processed.weighted._2016.toFixed(0)} />pp <Typography color={'' + (ppDiff >= 0 ? '#11cb5f' : 'error')} variant='subtitle2' display="inline">{(ppDiff >= 0 ? '+' : '')}{ppDiff.toFixed(1)}pp</Typography>
+                                {toFixedNumber(props.data.processed.weighted._2016, 0).toLocaleString('en-US')}pp <Typography color={'' + (ppDiff >= 0 ? '#11cb5f' : 'error')} variant='subtitle2' display="inline">{(ppDiff >= 0 ? '+' : '')}{ppDiff.toFixed(1)}pp</Typography>
                             </Typography>
                             <Typography color="textSecondary">using 2016 ppv2</Typography>
                             <Button startIcon={<AutoGraphIcon />} onClick={openModal} variant='contained' sx={{ mt: 2 }}>See top plays</Button>

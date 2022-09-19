@@ -1,5 +1,5 @@
 import { Card, CardContent, Typography, Grid } from '@mui/material';
-import NumberFormat from 'react-number-format';
+import { toFixedNumber } from '../../helper';
 
 function GeneralCardFullComboPerc(props) {
     return (
@@ -8,7 +8,7 @@ function GeneralCardFullComboPerc(props) {
                 <CardContent>
                     <Grid container spacing={3} sx={{ justifyContent: 'space-between' }}>
                         <Grid item>
-                            <Typography color="textPrimary" variant="h4"><NumberFormat displayType={'text'} thousandSeparator={true} value={props.data.processed.fc_rate.toFixed(0)} />%</Typography>
+                            <Typography color="textPrimary" variant="h4">{toFixedNumber(props.data.processed.fc_rate, 0)}</Typography>
                             <Typography color="textSecondary">full combo'd</Typography>
                         </Grid>
                     </Grid>

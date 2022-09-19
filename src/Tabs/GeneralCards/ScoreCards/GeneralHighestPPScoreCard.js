@@ -1,6 +1,5 @@
 import { Card, CardContent, Typography, Grid, Button, Chip, Stack } from '@mui/material';
 import React, { useState } from 'react';
-import NumberFormat from 'react-number-format';
 import TopplaysModal from '../../../Components/TopplaysModal';
 import { getGrade, getPerformance } from '../../../osu';
 import LaunchIcon from '@mui/icons-material/Launch';

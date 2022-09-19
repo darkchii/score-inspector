@@ -1,6 +1,5 @@
 import { Tooltip, Box, Card, CardContent, CardMedia, Chip, Modal, Typography, Grid, Paper, Table, TableContainer, TableHead, TableRow, TableCell, TableBody, tableCellClasses, CardHeader } from "@mui/material";
 import React, { useEffect } from "react";
-import NumberFormat from "react-number-format";
 import TimeGraph from "./TimeGraph";
 import { Doughnut, Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip as ChartTooltip, Legend } from 'chart.js';

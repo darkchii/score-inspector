@@ -27,7 +27,6 @@
     "react-chartjs-2": "^4.3.1",
     "react-dom": "^18.2.0",
     "react-fluid-grid": "^1.0.9",
-    "react-number-format": "^4.9.4",
     "react-scripts": "5.0.1",
     "react-virtualized": "^9.22.3",
     "web-vitals": "^3.0.2"

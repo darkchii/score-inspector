@@ -1,6 +1,5 @@
 import { Card, CardContent, Typography, Grid } from '@mui/material';
 import { useEffect, useState } from 'react';
-import NumberFormat from 'react-number-format';
 
 function GeneralCardScoreRank(props) {
     const [rank, setRank] = useState(0);

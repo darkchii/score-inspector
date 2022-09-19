@@ -1,5 +1,4 @@
 import { Card, CardContent, Typography, Grid, Tooltip } from '@mui/material';
-import NumberFormat from 'react-number-format';
 import { formatNumber } from '../../helper';
 
 function GeneralCardRankedScore(props) {

@@ -1,11 +1,10 @@
 import { Tooltip, Box, Card, CardContent, CardMedia, Chip, Modal, Typography, Grid, Paper, Table, TableContainer, TableHead, TableRow, TableCell, TableBody, tableCellClasses, CardHeader, Link } from "@mui/material";
 import React, { useEffect } from "react";
-import NumberFormat from "react-number-format";
 import TimeGraph from "./TimeGraph";
 import { Doughnut, Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip as ChartTooltip, Legend } from 'chart.js';
 import { getGradeIcon, getModIcon } from "../Assets";
-import { getModString, mods, mod_strings_long } from "../helper";
+import { getModString, mods, mod_strings_long, toFixedNumber } from "../helper";
 import { getBeatmapMaxscore } from "../osu";
 import moment from "moment";
 import { getPerformanceLive } from "../Performance/PerformanceLive";
@@ -116,7 +115,7 @@ function ScoreView(props) {
                                 <Grid item sx={{ width: '75%', minHeight: '100%' }}>
                                     <Box height="100%" direction="column" display="flex" alignItems="center">
                                         <Grid>
-                                            <Typography variant="h3" sx={{ mt: 0 }}><NumberFormat displayType={'text'} thousandSeparator={true} value={score} /></Typography>
+                                            <Typography variant="h3" sx={{ mt: 0 }}>{toFixedNumber(score, 0).toLocaleString('en-US')}</Typography>
                                             <Typography variant="subtitle1" display="flex" alignItems="center" sx={{ mt: 0 }} spacing="5">{getGradeIcon(props.data.score.rank)}&nbsp;<b>{props.data.score.accuracy.toFixed(2)}%</b>&nbsp;★&nbsp;<b>{props.data.score.pp.toFixed(2)}pp</b>&nbsp;★&nbsp;<b>{props.data.score.combo}x/{props.data.score.maxcombo}x</b>
                                             </Typography>
                                             <Typography variant="subtitle1" display="flex" alignItems="center" sx={{ mt: 0 }} spacing="5">

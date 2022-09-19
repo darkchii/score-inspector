@@ -1,7 +1,7 @@
 import { Box, Button, Card, CardContent, CircularProgress, Collapse, Grid, IconButton, LinearProgress, Paper, Table, TableBody, TableCell, tableCellClasses, TableContainer, Tooltip, Typography } from "@mui/material";
 import React, { useEffect } from "react";
 import { getGradeIcon, getModIcon } from "../Assets";
-import { getModString, mods, mod_strings_long } from "../helper";
+import { getModString, mods, mod_strings_long, toFixedNumber } from "../helper";
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import ScoreView from "./ScoreView";
@@ -48,8 +48,8 @@ function ScoreTableRow(props) {
                                     <Typography variant="subtitle1">{score.accuracy.toFixed(2)}%</Typography>
                                 </Grid>
                                 <Grid item xs={1} sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
-                                    <Tooltip title={`Weight: ${(score.weight * 100).toFixed(0)}% ${(score.pp * score.weight).toFixed(0)}pp`}>
-                                        <Typography variant="h5">{score.pp.toFixed(0)}pp</Typography>
+                                    <Tooltip title={`Weight: ${(score.weight * 100).toFixed(0)}% ${toFixedNumber(score.pp * score.weight, 0).toLocaleString('en-US')}pp`}>
+                                        <Typography variant="h5">{toFixedNumber(score.pp, 0).toLocaleString('en-US')}pp</Typography>
                                     </Tooltip>
                                 </Grid>
                                 <Grid item xs={0.5} sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
