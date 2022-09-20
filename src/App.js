@@ -34,6 +34,7 @@ function App() {
   const [processedData, setProcessedData] = React.useState(null);
   const [loadState, setLoadState] = React.useState(false);
   const [isUserProcessing, setUserProcessing] = React.useState(false);
+  const [processError, setProcessError] = React.useState(null);
 
   const [tabValue, setTabValue] = React.useState(1);
 
@@ -59,19 +60,18 @@ function App() {
     setScoreData(null);
     setUserProcessing(false);
 
-    var complete = 0;
     await processFile(file, allowLoved,
-      processed => { setProcessedData(processed); },
-      user => {
-        setUser(user);
-        setUserProcessing(user.isWorking);
+      (data) => {
+        setUser(data.user);
+        setUserProcessing(data.user.isWorking);
+        setProcessedData(data.processed);
+        setScoreData(data.scores);
+        setLoadState(false);
+        if (tabValue === 1) setTabValue(3);
       },
-      scores => { setScoreData(scores); },
-      () => {
-        complete++; if (complete === 3) {
-          setLoadState(false);
-          if (tabValue === 1) setTabValue(3);
-        }
+      (error) => {
+        setLoadState(false);
+        setProcessError(error);
       });
   }
 
@@ -104,14 +104,6 @@ function App() {
               <Tab label={tab.name} {...a11yProps(index)} disabled={tab.useData ? !(scoreData != null && user != null && processedData != null) : false} />
             ))
           }
-          {/* <Tab label="Home" {...a11yProps(0)} />
-          <Tab label="Changelog" {...a11yProps(1)} />
-          <Tab disabled={!(scoreData != null && user != null && processedData != null)} label="General" {...a11yProps(2)} />
-          <Tab disabled={!(scoreData != null && user != null && processedData != null)} label="Completion" {...a11yProps(3)} />
-          <Tab disabled={!(scoreData != null && user != null && processedData != null)} label="Packs" {...a11yProps(4)} />
-          <Tab disabled={!(scoreData != null && user != null && processedData != null)} label="Scores" {...a11yProps(5)} />
-          <Tab disabled={!(scoreData != null && user != null && processedData != null)} label="Per Day" {...a11yProps(6)} />
-          <Tab disabled={!(scoreData != null && user != null && processedData != null)} label="Per Month" {...a11yProps(7)} /> */}
         </Tabs>
         <Box component="main" sx={{ flexGrow: 1 }}>
           <Toolbar />
@@ -123,17 +115,29 @@ function App() {
               direction="column"
               alignItems="center"
               justifyContent="top"
-              sx={{ 
-                py: 2, 
-                backgroundSize: "cover", 
-                backgroundRepeat: "no-repeat", 
-                backgroundPositionY: "center", 
-                backgroundImage: `url("${(user !== undefined && user !== null ? user.cover_url : "null")}")` ,
+              sx={{
+                py: 2,
+                backgroundSize: "cover",
+                backgroundRepeat: "no-repeat",
+                backgroundPositionY: "center",
+                backgroundImage: `url("${(user !== undefined && user !== null ? user.cover_url : "null")}")`,
                 minHeight: `${(user !== undefined && user !== null ? '30vh' : '0vh')}`
               }
               }
             >
-              <FileSelector sx={{ width: '60%' }} data={{ hasProcessedData: processedData !== null }} handleScoresUpload={handleScoresUpload} loadState={loadState} />
+              <Grid sx={{ width: '60%' }}>
+                <FileSelector sx={{ width: '100%' }} data={{ hasProcessedData: processedData !== null }} handleScoresUpload={handleScoresUpload} loadState={loadState} />
+                {
+                  processError ? <>
+                    <Grid sx={{width:'100%'}}>
+                      <Alert severity="error">
+                        <AlertTitle>Something went wrong</AlertTitle>
+                        {processError}
+                      </Alert>
+                    </Grid>
+                  </> : <></>
+                }
+              </Grid>
             </Grid>
             {loadState ? <>
               <br />
@@ -162,7 +166,7 @@ function App() {
           <Grid>
             {
               tabs.map((tab, index) => (
-                <TabPanel value={tabValue} index={index+1}>
+                <TabPanel value={tabValue} index={index + 1}>
                   <br />
                   {
                     (tab.useData ? (scoreData != null && user != null && processedData != null) : true) ? tab.component : <></>
@@ -170,40 +174,6 @@ function App() {
                 </TabPanel>
               ))
             }
-            {/* <TabPanel value={tabValue} index={1}>
-              <br />
-              <PageLanding />
-            </TabPanel>
-            <TabPanel value={tabValue} index={2}>
-              <br />
-              <PageChangelog />
-            </TabPanel>
-            {(scoreData != null && user != null && processedData != null) ? <>
-              <TabPanel value={tabValue} index={3}>
-                <br />
-                <PageGeneral data={{ scores: scoreData, user: user, processed: processedData }} />
-              </TabPanel>
-              <TabPanel value={tabValue} index={4}>
-                <br />
-                <PageCompletion data={{ scores: scoreData, user: user, processed: processedData }} />
-              </TabPanel>
-              <TabPanel value={tabValue} index={5}>
-                <br />
-                <PagePacks data={{ scores: scoreData, user: user, processed: processedData }} />
-              </TabPanel>
-              <TabPanel value={tabValue} index={6}>
-                <br />
-                <PageScores data={{ scores: scoreData, user: user, processed: processedData }} />
-              </TabPanel>
-              <TabPanel value={tabValue} index={7}>
-                <br />
-                <PageIndividualDate data={{ scores: scoreData, user: user, processed: processedData }} />
-              </TabPanel>
-              <TabPanel value={tabValue} index={8}>
-                <br />
-                <PagePerDay data={{ scores: scoreData, user: user, processed: processedData, format: 'month' }} />
-              </TabPanel>
-            </> : <></>} */}
             <Footer sx={{ px: 3, my: 1 }} />
           </Grid>
         </Box>

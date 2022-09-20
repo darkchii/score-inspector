@@ -5,34 +5,36 @@ import { getBeatmapCount, getBeatmapPacks, getBonusPerformance, getLazerScore, g
 import { getPerformance2016 } from "./Performance/Performance2016";
 import { getPerformanceLive } from "./Performance/PerformanceLive";
 
-const processData = async (scores, cb, cbProc, allowLoved) => {
+const processData = async (scores, callback_success, callback_error, allowLoved) => {
     let _user;
 
     try {
         _user = await getUser(scores[0].user_id);
     } catch (err) {
-        alert(err);
-        cb(false);
-        return;
+        _user = null;
     }
+
+    if (_user === null || _user === undefined || _user.id === undefined) {
+        callback_error('Unable to get user data, is osu! api down?');
+        return;
+    };
 
     _user.isWorking = await getUserTrackerStatus(_user.id);
 
-    cb(_user);
-
-    var processed = {};
-    processed.allowLoved = allowLoved;
-
-
-    let bmCount = null;
+    let bmCount;
     try {
         bmCount = await getBeatmapCount();
     } catch (err) {
-        alert(`Unable to get beatmap information right now`);
-        cb(false);
+        bmCount = null;
+    }
+
+    if (bmCount === null || bmCount === undefined) {
+        callback_error('Unable to get beatmap information right now');
         return;
     }
 
+    var processed = {};
+    processed.allowLoved = allowLoved;
     processed.beatmapInfo = {};
     processed.beatmapInfo.monthly = [];
 
@@ -56,13 +58,22 @@ const processData = async (scores, cb, cbProc, allowLoved) => {
     });
 
     // console.time('start calc');
-    processed = await CalculateData(processed, scores, _user);
-    processed = await calculatePackData(processed, scores);
+    try{
+        processed = await CalculateData(processed, scores, _user);
+        processed = await calculatePackData(processed, scores);
+    }catch(err){
+        callback_error(err);
+        return;
+    }
     // console.timeEnd('start calc');
-    cbProc(processed);
+    callback_success({
+        user: _user,
+        processed: processed,
+        scores: scores
+    });
 };
 
-export async function processFile(file, allowLoved, cbProc, cbUser, cbScores, cb) {
+export async function processFile(file, allowLoved, callback_success, callback_error) {
     Papa.parse(file, {
         header: true,
         skipEmptyLines: true,
@@ -77,19 +88,13 @@ export async function processFile(file, allowLoved, cbProc, cbUser, cbScores, cb
                     score = parseScore(score);
                 });
 
-                cbScores(results.data);
-                cb();
-
-                Promise.resolve(processData(results.data, res => {
-                    cbUser(res);
-                    cb();
-                }, res => {
-                    cbProc(res);
-                    cb();
+                Promise.resolve(processData(results.data, (data) => {
+                    callback_success(data);
+                }, (error) => {
+                    callback_error(error);
                 }, allowLoved));
             } else {
-                cbProc(false);
-                cb();
+                callback_error('Invalid scores file');
             }
         }
     });
