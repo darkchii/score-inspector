@@ -58,10 +58,10 @@ const processData = async (scores, callback_success, callback_error, allowLoved)
     });
 
     // console.time('start calc');
-    try{
+    try {
         processed = await CalculateData(processed, scores, _user);
         processed = await calculatePackData(processed, scores);
-    }catch(err){
+    } catch (err) {
         callback_error(err);
         return;
     }
@@ -131,6 +131,7 @@ function parseScore(score) {
     score.sliders = parseInt(score.sliders);
     score.circles = parseInt(score.circles);
     score.spinners = parseInt(score.spinners);
+    score.objects = score.sliders + score.circles + score.spinners;
     score.modded_length = score.length;
     score.date_played_object = new Date(score.date_played);
     if (score.enabled_mods & mods.DT || score.enabled_mods & mods.NC) {
@@ -147,7 +148,7 @@ function parseScore(score) {
     score.pp_cur = getPerformanceLive({ score: score });
     score.pp_2016 = getPerformance2016({ score: score });
 
-    score.scoreLazer = getLazerScore(score);
+    score.scoreLazer = Math.floor(getLazerScore(score));
 
     return score;
 }
@@ -261,7 +262,9 @@ async function CalculateData(processed, scores, _user) {
     var total_length = 0;
     processed.ranked_score = 0;
     processed.ranked_scorelazer = 0;
-    for await (const score of scores) {
+    scores.forEach(score => {
+        processed.ranked_score += score.score;
+        processed.ranked_scorelazer += score.scoreLazer;
         if (!isNaN(score.length)) {
             total_length += score.length;
         }
@@ -274,9 +277,8 @@ async function CalculateData(processed, scores, _user) {
         if (score.is_fc) {
             total_fc++;
         }
-        processed.ranked_score += score.score;
-        processed.ranked_scorelazer += score.scoreLazer;
     }
+    );
 
     processed.total_pp = total_pp;
     processed.average_pp = total_pp / scores.length;

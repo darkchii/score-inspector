@@ -11,7 +11,7 @@ function GeneralCardRankedScore(props) {
                             <Tooltip title={`${props.data.processed.ranked_score.toLocaleString('en-US')} ranked score`}>
                                 <Typography color="textPrimary" variant="h4">{formatNumber(props.data.processed.ranked_score)} score</Typography>
                             </Tooltip>
-                            <Tooltip title={`${Math.round(props.data.processed.ranked_scorelazer).toLocaleString('en-US')} lazer standardised score`}>
+                            <Tooltip title={`${Math.round(props.data.processed.ranked_scorelazer).toLocaleString('en-US')} lazer classic score`}>
                                 <Typography color="textSecondary">{formatNumber(props.data.processed.ranked_scorelazer)} lazer score</Typography>
                             </Tooltip>
                         </Grid>

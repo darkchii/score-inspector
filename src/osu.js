@@ -109,9 +109,17 @@ export function isScoreRealistic(score) {
     return false;
 }
 
-export function getLazerScore(score) {
+const MAX_SCORE = 1000000;
+export function getLazerScore(score, classic = true) {
     const mul = getModMultiplier(score.enabled_mods);
-    return (((((50 * score.count50 + 100 * score.count100 + 300 * score.count300) / (300 * score.count50 + 300 * score.count100 + 300 * score.count300 + 300 * score.countmiss)) * 300000) + ((score.combo / score.maxcombo) * 700000)) * mul);
+    let val = ((((
+        (50 * score.count50 + 100 * score.count100 + 300 * score.count300) / (300 * score.count50 + 300 * score.count100 + 300 * score.count300 + 300 * score.countmiss)) *
+        300000) + ((score.combo / score.maxcombo) * 700000)) * mul);
+
+    if (classic) {
+        val = Math.pow(((val/MAX_SCORE)*score.objects), 2) * 36;
+    }
+    return val;
 }
 
 export function getGrade(score) {
