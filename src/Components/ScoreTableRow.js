@@ -26,7 +26,8 @@ function ScoreTableRow(props) {
                         <Box component={Card} display="flex" sx={{ margin: 0, width: '100%', height: '2.5rem', bgcolor: 'background.default', borderBottomLeftRadius: viewerOpen ? 0 : null, borderBottomRightRadius: viewerOpen ? 0 : null }} >
                             <Grid container sx={{ margin: 1 }}>
                                 <Grid item xs={0.5} sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
-                                    {getGradeIcon(score.rank)}
+                                    {/* {getGradeIcon(score.rank)} */}
+                                    <img src={getGradeIcon(score.rank)} />
                                 </Grid>
                                 <Grid item xs={7.5} sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
                                     <Tooltip title={`${score.artist} - ${score.title} [${score.diffname}]`}>

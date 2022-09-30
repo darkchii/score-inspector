@@ -80,18 +80,48 @@ export function getPossibleMods() {
     ]
 }
 
+const _GRADE_ICON_XH = <SVG_GRADE_XH />;
+const _GRADE_ICON_X = <SVG_GRADE_X />;
+const _GRADE_ICON_SH = <SVG_GRADE_SH />;
+const _GRADE_ICON_S = <SVG_GRADE_S />;
+const _GRADE_ICON_A = <SVG_GRADE_A />;
+const _GRADE_ICON_B = <SVG_GRADE_B />;
+const _GRADE_ICON_C = <SVG_GRADE_C />;
+const _GRADE_ICON_D = <SVG_GRADE_D />;
+
+const _GRADE_ICONS = [];
+_GRADE_ICONS['XH'] = <SVG_GRADE_XH />;
+_GRADE_ICONS['X'] = <SVG_GRADE_X />;
+_GRADE_ICONS['SH'] = <SVG_GRADE_SH />;
+_GRADE_ICONS['S'] = <SVG_GRADE_S />;
+_GRADE_ICONS['A'] = <SVG_GRADE_A />;
+_GRADE_ICONS['B'] = <SVG_GRADE_B />;
+_GRADE_ICONS['C'] = <SVG_GRADE_C />;
+_GRADE_ICONS['D'] = <SVG_GRADE_D />;
+
+const _GRADE_ICONS_IMG = [];
+_GRADE_ICONS_IMG['XH'] = IMG_SVG_GRADE_XH;
+_GRADE_ICONS_IMG['X'] = IMG_SVG_GRADE_X;
+_GRADE_ICONS_IMG['SH'] = IMG_SVG_GRADE_SH;
+_GRADE_ICONS_IMG['S'] = IMG_SVG_GRADE_S;
+_GRADE_ICONS_IMG['A'] = IMG_SVG_GRADE_A;
+_GRADE_ICONS_IMG['B'] = IMG_SVG_GRADE_B;
+_GRADE_ICONS_IMG['C'] = IMG_SVG_GRADE_C;
+_GRADE_ICONS_IMG['D'] = IMG_SVG_GRADE_D;
+
 function getGradeIcon(grade) {
-    switch (grade) {
-        case 'XH': return <SVG_GRADE_XH />
-        case 'X': return <SVG_GRADE_X />
-        case 'SH': return <SVG_GRADE_SH />
-        case 'S': return <SVG_GRADE_S />
-        case 'A': return <SVG_GRADE_A />
-        case 'B': return <SVG_GRADE_B />
-        case 'C': return <SVG_GRADE_C />
-        case 'D': return <SVG_GRADE_D />
-        default: return null
-    }
+    return _GRADE_ICONS_IMG[grade];
+    // switch (grade) {
+    //     case 'XH': return _GRADE_ICON_XH
+    //     case 'X': return _GRADE_ICON_X
+    //     case 'SH': return _GRADE_ICON_SH
+    //     case 'S': return _GRADE_ICON_S
+    //     case 'A': return _GRADE_ICON_A
+    //     case 'B': return _GRADE_ICON_B
+    //     case 'C': return _GRADE_ICON_C
+    //     case 'D': return _GRADE_ICON_D
+    //     default: return null
+    // }
 }
 
 export {

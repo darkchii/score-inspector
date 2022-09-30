@@ -1,3 +1,5 @@
+import { Link } from "@mui/material";
+
 const CHANGETYPES = {
     NEW: 0,
     FIX: 1,
@@ -14,6 +16,9 @@ const updates = [
             [CHANGETYPES.FIX, 'Fixed incorrect attribute display values', '858e36bbb4ae19e99db3237b2e96f47eae7187c8'],
             [CHANGETYPES.FIX, 'Fixed incorrect sessions with lone scores', 'f7a4807824f578b61ac4613a55d5674e8c804e94'],
             [CHANGETYPES.FIX, 'Optimized some processing', '77d8c808f2f7afddabed619a38f9f9b3e863ee94'],
+            [CHANGETYPES.FIX, 'Better failure feedback (API down for example)', 'f6111badf7c29002a54ec7a87962d7483a46aba1'],
+            [CHANGETYPES.FIX, 'Fixed incorrect grade icons'],
+            [CHANGETYPES.MISC, 'Star rating updates'],
             [CHANGETYPES.MISC, 'Dependencies version bumping'],
         ]
     },
