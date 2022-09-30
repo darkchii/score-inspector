@@ -116,7 +116,8 @@ function ScoreView(props) {
                                     <Box height="100%" direction="column" display="flex" alignItems="center">
                                         <Grid>
                                             <Typography variant="h3" sx={{ mt: 0 }}>{toFixedNumber(score, 0).toLocaleString('en-US')}</Typography>
-                                            <Typography variant="subtitle1" display="flex" alignItems="center" sx={{ mt: 0 }} spacing="5">{getGradeIcon(props.data.score.rank)}&nbsp;<b>{props.data.score.accuracy.toFixed(2)}%</b>&nbsp;★&nbsp;<b>{props.data.score.pp.toFixed(2)}pp</b>&nbsp;★&nbsp;<b>{props.data.score.combo}x/{props.data.score.maxcombo}x</b>
+                                            <Typography variant="subtitle1" display="flex" alignItems="center" sx={{ mt: 0 }} spacing="5">
+                                                <img alt={props.data.score.rank} src={getGradeIcon(props.data.score.rank)} />&nbsp;<b>{props.data.score.accuracy.toFixed(2)}%</b>&nbsp;★&nbsp;<b>{props.data.score.pp.toFixed(2)}pp</b>&nbsp;★&nbsp;<b>{props.data.score.combo}x/{props.data.score.maxcombo}x</b>
                                             </Typography>
                                             <Typography variant="subtitle1" display="flex" alignItems="center" sx={{ mt: 0 }} spacing="5">
                                                 Played&nbsp;<b><Tooltip title={'' + props.data.score.date_played}><Grid>{moment(props.data.score.date_played).fromNow()}</Grid></Tooltip></b>&nbsp;★ Ranked&nbsp;<b><Tooltip title={'' + props.data.score.approved_date}><Grid>{moment(props.data.score.approved_date).fromNow()}</Grid></Tooltip></b>
