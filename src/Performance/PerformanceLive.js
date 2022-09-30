@@ -29,7 +29,7 @@ function getTotalValue(data) {
         return 0;
     }
 
-    var mul = 1.12;
+    var mul = 1.14;
 
     if ((data.score.enabled_mods & mods.NF) !== 0) {
         mul *= Math.max(0.9, 1.0 - 0.02 * data.effectiveMissCount);
@@ -51,10 +51,6 @@ function getTotalValue(data) {
 function getAimValue(data) {
     var raw_aim = data.score.aim_diff;
 
-    if ((data.score.enabled_mods & mods.TD) !== 0) {
-        raw_aim = Math.pow(raw_aim, 0.8);
-    }
-
     var aimValue = Math.pow(5.0 * Math.max(1.0, raw_aim * 14.8148148148) - 4.0, 3.0) * 0.00001;
 
     aimValue *= data.lengthBonus;
@@ -69,7 +65,7 @@ function getAimValue(data) {
     if (data.score.modded_ar > 10.33) {
         approachRateFactor = 0.3 * (data.score.modded_ar - 10.33);
     } else if (data.score.modded_ar < 8) {
-        approachRateFactor = 0.1 * (8.0 - data.score.modded_ar);
+        approachRateFactor = 0.05 * (8.0 - data.score.modded_ar);
     }
 
     aimValue *= 1.0 + approachRateFactor * data.lengthBonus;
@@ -113,7 +109,7 @@ function getSpeedValue(data) {
         speedValue *= (1.0 + 0.04 * (12 - data.score.modded_ar));
     }
     speedValue *= (0.95 + (data.score.modded_od * data.score.modded_od) * 0.00133333333) * Math.pow(data.accuracy, (14.5 - Math.max(data.score.modded_od, 8.0)) * 0.5);
-    speedValue *= Math.pow(0.98, (data.count50 < data.totalhits * 0.002) ? 0.0 : (data.count50 - data.totalhits * 0.002));
+    speedValue *= Math.pow(0.99, (data.count50 < data.totalhits * 0.002) ? 0.0 : (data.count50 - data.totalhits * 0.002));
 
     return speedValue;
 }
@@ -155,10 +151,6 @@ function getFlashlightValue(data) {
     if ((data.score.enabled_mods & mods.FL) !== 0) {
         var rawFlashlight = data.score.fl_diff;
 
-        if ((data.score.enabled_mods & mods.TD) !== 0) {
-            rawFlashlight = Math.pow(rawFlashlight, 0.8);
-        }
-
         flashlightValue = (rawFlashlight * rawFlashlight) * 25.0;
 
         if (data.effectiveMissCount > 0) {
@@ -187,7 +179,7 @@ function getEffectiveMissCount(data) {
         }
     }
 
-    comboBasedMissCount = Math.min(comboBasedMissCount, data.totalhits);
+    comboBasedMissCount = Math.min(comboBasedMissCount, data.count100+data.count50+data.countmiss);
     return Math.max(data.countmiss, comboBasedMissCount);
 }
 
