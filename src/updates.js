@@ -1,5 +1,3 @@
-import { Link } from "@mui/material";
-
 const CHANGETYPES = {
     NEW: 0,
     FIX: 1,
@@ -10,9 +8,10 @@ const CHANGETYPES = {
 const updates = [
     {
         version: '1.0.3',
-        date: '2022-09-17',
+        date: 'n/a',
         changes: [
             [CHANGETYPES.NEW, 'Added approximate real playtime calculation', '28178946d7a240be48322460b9306b272af4a31a'],
+            [CHANGETYPES.NEW, 'Added total pp to monthly graph', '0650c62ee8abbc078d4a903cd947af9207145c98'],
             [CHANGETYPES.FIX, 'Fixed incorrect attribute display values', '858e36bbb4ae19e99db3237b2e96f47eae7187c8'],
             [CHANGETYPES.FIX, 'Fixed incorrect sessions with lone scores', 'f7a4807824f578b61ac4613a55d5674e8c804e94'],
             [CHANGETYPES.FIX, 'Optimized some processing', '77d8c808f2f7afddabed619a38f9f9b3e863ee94'],
