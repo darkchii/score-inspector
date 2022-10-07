@@ -71,20 +71,20 @@ export async function processUser(username, allowLoved, callback_success, callba
     }
 
     if (_user === null || _user === undefined || _user.id === undefined) {
-        callback_error('Unable to get user data, is osu! api down?');
+        callback_error('Unable to get user data, is api down?');
         return;
     };
 
     //check if user is registered
     const registered = await isUserRegistered(_user.id);
     if (!registered) {
-        callback_error('User is not registered on osu!alternative! Follow the guide below to register.');
+        callback_error('User is not registered on osu!alternative! Follow the guide below to register. Otherwise the API is probably down.');
         return;
     }
     const _scores = await getUserScores(_user.id, allowLoved);
 
     if (_scores === null || _scores.length === 0) {
-        callback_error('User has no scores on osu!alternative!');
+        callback_error('User has no scores on osu!alternative! Or the API is down.');
         return;
     }
 
@@ -94,33 +94,6 @@ export async function processUser(username, allowLoved, callback_success, callba
 
     //process data
     await processData(_scores, callback_success, callback_error, allowLoved, _user);
-}
-
-export async function processFile(file, allowLoved, callback_success, callback_error) {
-    Papa.parse(file, {
-        header: true,
-        skipEmptyLines: true,
-        worker: true,
-        complete: async function (results) {
-            if (testScores(results.data)) {
-                if (!allowLoved) {
-                    results.data = results.data.filter(score => parseInt(score.approved) < 4);
-                }
-
-                results.data.forEach(score => {
-                    score = parseScore(score);
-                });
-
-                Promise.resolve(processData(results.data, (data) => {
-                    callback_success(data);
-                }, (error) => {
-                    callback_error(error);
-                }, allowLoved));
-            } else {
-                callback_error('Invalid scores file');
-            }
-        }
-    });
 }
 
 function parseScore(score) {

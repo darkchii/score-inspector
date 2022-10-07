@@ -1,10 +1,28 @@
-import { Button, Card, CardContent, CardMedia, Chip, Grid, Link, List, ListItem, ListItemIcon, ListItemText, Stack, Table, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
+import { Alert, AlertTitle, Button, Card, CardContent, CardMedia, Chip, Grid, Link, List, ListItem, ListItemIcon, ListItemText, Stack, Table, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
 import POINTING_KIRINO from '../Assets/Other/pointing_kirino.jpg';
+import FileSelector from "../Components/FileSelector";
 
 function PageLanding(props) {
     return (
         <>
             <Grid container spacing={2}>
+                <Grid item xs={12} md={12}>
+                    <Card>
+                        <CardContent>
+                            <FileSelector sx={{ width: '100%' }} data={{ hasProcessedData: props.data.processedData !== null }} handleScoresFetch={props.handleScoresFetch} loadState={props.loadState} />
+                        </CardContent>
+                    </Card>
+                    {
+                        props.data.processError ? <>
+                            <Grid sx={{ width: '100%' }}>
+                                <Alert severity="error">
+                                    <AlertTitle>Something went wrong</AlertTitle>
+                                    {props.data.processError}
+                                </Alert>
+                            </Grid>
+                        </> : <></>
+                    }
+                </Grid>
                 <Grid item xs={12} md={3}>
                     <Card>
                         <CardContent>
@@ -33,8 +51,7 @@ function PageLanding(props) {
                                     <TableRow><TableCell>1.</TableCell><TableCell>Join the <Button href='https://discord.gg/VZWRZZXcW4' target="_blank" variant="contained" size='small'>osu!alternative</Button> discord</TableCell></TableRow>
                                     <TableRow><TableCell>2.</TableCell><TableCell>Follow the guide to fetch your scores (<i>#info</i> channel)</TableCell></TableRow>
                                     <TableRow><TableCell>3.</TableCell><TableCell>Wait a few hours. When done, you generally don't need to run it anymore</TableCell></TableRow>
-                                    <TableRow><TableCell>4.</TableCell><TableCell>Run the following command: <code>!getfile -type scores -u username</code></TableCell></TableRow>
-                                    <TableRow><TableCell>5.</TableCell><TableCell>Upload the resulting file above</TableCell></TableRow>
+                                    <TableRow><TableCell>5.</TableCell><TableCell>Enter your username above and fetch</TableCell></TableRow>
                                 </Table>
                             </TableContainer>
                         </CardContent>

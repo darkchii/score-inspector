@@ -38,21 +38,6 @@ function App() {
 
   const [tabValue, setTabValue] = React.useState(1);
 
-  const tabs = [
-    { name: 'Home', component: <PageLanding /> },
-    { name: 'Changelog', component: <PageChangelog /> },
-    { name: 'General', component: <PageGeneral data={{ scores: scoreData, user: user, processed: processedData }} />, useData: true },
-    { name: 'Scores', component: <PageScores data={{ scores: scoreData, user: user, processed: processedData }} />, useData: true },
-    { name: 'Completion', component: <PageCompletion data={{ scores: scoreData, user: user, processed: processedData }} />, useData: true },
-    { name: 'Packs', component: <PagePacks data={{ scores: scoreData, user: user, processed: processedData }} />, useData: true },
-    { name: 'Per Day', component: <PageIndividualDate data={{ scores: scoreData, user: user, processed: processedData }} />, useData: true },
-    { name: 'Per Month', component: <PagePerDay data={{ scores: scoreData, user: user, processed: processedData, format: 'month' }} />, useData: true },
-  ]
-
-  const tabHandleChange = (event, newValue) => {
-    setTabValue(newValue);
-  };
-
   const handleScoresFetch = async (username, allowLoved) => {
     setLoadState(true);
     setUser(null);
@@ -74,6 +59,21 @@ function App() {
         setProcessError(error);
       });
   }
+
+  const tabs = [
+    { name: 'Home', component: <PageLanding data={{ hasProcessedData: processedData !== null, processError: processError }} handleScoresFetch={handleScoresFetch} loadState={loadState} /> },
+    { name: 'Changelog', component: <PageChangelog /> },
+    { name: 'General', component: <PageGeneral data={{ scores: scoreData, user: user, processed: processedData }} />, useData: true },
+    { name: 'Scores', component: <PageScores data={{ scores: scoreData, user: user, processed: processedData }} />, useData: true },
+    { name: 'Completion', component: <PageCompletion data={{ scores: scoreData, user: user, processed: processedData }} />, useData: true },
+    { name: 'Packs', component: <PagePacks data={{ scores: scoreData, user: user, processed: processedData }} />, useData: true },
+    { name: 'Per Day', component: <PageIndividualDate data={{ scores: scoreData, user: user, processed: processedData }} />, useData: true },
+    { name: 'Per Month', component: <PagePerDay data={{ scores: scoreData, user: user, processed: processedData, format: 'month' }} />, useData: true },
+  ]
+
+  const tabHandleChange = (event, newValue) => {
+    setTabValue(newValue);
+  };
 
   return (
     <ThemeProvider theme={darkTheme}>
@@ -124,21 +124,7 @@ function App() {
                 minHeight: `${(user !== undefined && user !== null ? '30vh' : '0vh')}`
               }
               }
-            >
-              <Grid sx={{ width: '60%' }}>
-                <FileSelector sx={{ width: '100%' }} data={{ hasProcessedData: processedData !== null }} handleScoresFetch={handleScoresFetch} loadState={loadState} />
-                {
-                  processError ? <>
-                    <Grid sx={{width:'100%'}}>
-                      <Alert severity="error">
-                        <AlertTitle>Something went wrong</AlertTitle>
-                        {processError}
-                      </Alert>
-                    </Grid>
-                  </> : <></>
-                }
-              </Grid>
-            </Grid>
+            ></Grid>
             {loadState ? <>
               <br />
               <Grid container

@@ -8,15 +8,27 @@ export function getBonusPerformance(clears) {
 }
 
 export async function isUserRegistered(id) {
-    const url = `${getAltAPIURL()}users/registered/${id}`;
-    const res = await axios.get(url, { headers: { "Access-Control-Allow-Origin": "*" } });
-    return res.data.registered;
+    let _registered = false;
+    try{
+        const url = `${getAltAPIURL()}users/registered/${id}`;
+        const res = await axios.get(url, { headers: { "Access-Control-Allow-Origin": "*" } });
+        _registered = res.data.registered;
+    }catch(err){
+        _registered = false;
+    }
+    return _registered;
 }
 
 export async function getUserScores(id, allowLoved) {
-    const url = `${getAltAPIURL()}scores/${id}${allowLoved ? "?loved=true" : ""}`;
-    const res = await axios.get(url, { headers: { "Access-Control-Allow-Origin": "*" } });
-    return res.data;
+    let _scores = null;
+    try{
+        const url = `${getAltAPIURL()}scores/${id}${allowLoved ? "?loved=true" : ""}`;
+        const res = await axios.get(url, { headers: { "Access-Control-Allow-Origin": "*" } });
+        _scores = res.data;
+    }catch(err){
+        return null;
+    }
+    return _scores;
 }
 
 export async function getBeatmapPackMaps(pack, sets_only = false) {
