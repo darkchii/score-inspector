@@ -8,7 +8,7 @@ const CHANGETYPES = {
 const updates = [
     {
         version: '1.1.0',
-        date: 'n/a',
+        date: '2022-10-07',
         changes: [
             [CHANGETYPES.NEW, 'Added a new theme', '43a14924e83cf5ddb65ec30f4d9be9bc03257e58'],
             [CHANGETYPES.NEW, 'Fetching is now done through an API instead of requiring a .csv file', '46c0976c731b8b8f7fd24f63dbdb1cf2041acc7d'],
