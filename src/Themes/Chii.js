@@ -16,14 +16,15 @@ const DefaultTheme = {
             default: '#16212e',
             dark: '#fff',
             paper: '#1b283877',
+            paper2: '#1b2838FF',
         },
     },
     shape: {
-        borderRadius: borderSize
+        borderRadius: borderSize,
     },
     typography: {
         fontFamily: 'Comfortaa',
-        fontWeight: 700,
+        fontWeight: 700
     },
     components: {
         MuiCssBaseline: {

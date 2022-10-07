@@ -15,6 +15,7 @@ const DefaultTheme = {
             default: '#2A2226',
             dark: '#fff',
             paper: '#382E32',
+            paper2: '#382E32',
         },
     },
     shape: {

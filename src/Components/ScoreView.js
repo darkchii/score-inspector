@@ -67,7 +67,7 @@ function ScoreView(props) {
                         height="140"
                         image={`https://assets.ppy.sh/beatmaps/${props.data.score.set_id}/covers/cover.jpg`}
                     />
-                    <CardContent sx={{ px: 0, py: 0 }}>
+                    <CardContent sx={{ px: 0, py: 0, backgroundColor: 'background.paper2' }}>
                         <Card sx={{ borderRadius: 0, backgroundColor: '#2E293D' }}>
                             <CardContent>
                                 <Typography id="modal-modal-title" variant="h6" component="h2"><Chip sx={{ mr: 1 }} size='small' label={`${props.data.score.star_rating.toFixed(2)}★`} variant="outlined" /> {props.data.score.artist} - {props.data.score.title} [{props.data.score.diffname}] {`${props.data.score.enabled_mods > 0 ? '+' : ''}${getModString(props.data.score.enabled_mods)}`}</Typography>
