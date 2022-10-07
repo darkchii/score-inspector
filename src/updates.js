@@ -7,6 +7,14 @@ const CHANGETYPES = {
 
 const updates = [
     {
+        version: '1.1.1',
+        date: '2022-10-07',
+        changes: [
+            [CHANGETYPES.FIX, 'Step 4 was numbered incorrectly', '7b3de344fac1ce677abb3190b1a2324684b75755'],
+            [CHANGETYPES.FIX, 'Fixed incorrect PP if x% acc', '0baa79c09d90a7a4486477bb89565ffa41ac773d'],
+        ]
+    },
+    {
         version: '1.1.0',
         date: '2022-10-07',
         changes: [
