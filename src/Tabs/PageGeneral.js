@@ -31,33 +31,33 @@ function PageGeneral(props) {
     return (
         <>
             <Grid2 container spacing={1}>
-                <Grid2 item xs={12} md={3} lg={3}><GeneralCardUser data={props.data} /></Grid2>
-                <Grid2 item xs={12} md={1.5} lg={1.5}><GeneralCardClears data={props.data} /></Grid2>
-                <Grid2 item xs={12} md={1.5} lg={1.5}><GeneralCardTotalPP data={props.data} /></Grid2>
-                <Grid2 item xs={12} md={1} lg={1}><GeneralCardAveragePP data={props.data} /></Grid2>
-                <Grid2 item xs={12} md={1} lg={1}><GeneralCardAverageSR data={props.data} /></Grid2>
-                <Grid2 item xs={12} md={2} lg={2}><GeneralCardHighestSR data={props.data} /></Grid2>
-                <Grid2 item xs={6} md={1} lg={1}><GeneralCardFullComboPerc data={props.data} /></Grid2>
-                <Grid2 item xs={6} md={1} lg={1}><GeneralCardScoreRank data={props.data} /></Grid2>
-                <Grid2 item xs={12} md={1.5} lg={1.5}><GeneralCardScorePerPlay data={props.data} /></Grid2>
-                <Grid2 item xs={12} md={2} lg={2}><GeneralCardAverageLengthPlayed data={props.data} /></Grid2>
-                <Grid2 item xs={12} md={2.5} lg={2.5}><GeneralCardRankedScore data={props.data} /></Grid2>
-                <Grid2 item xs={12} md={2} lg={2}><GeneralCardTotalLengthPlayed data={props.data} /></Grid2>
-                <Grid2 item xs={12} md={2} lg={2}><GeneralCardProfilePlaytime data={props.data} /></Grid2>
-                <Grid2 item xs={12} md={2} lg={2}><GeneralCardApproxPlaytime data={props.data} /></Grid2>
-                <Grid2 item xs={12} md={2} lg={2}><GeneralCardTagOccurances data={props.data} /></Grid2>
-                <Grid2 item xs={12} md={2.5} lg={2.5}><GeneralCardGradeSpread data={props.data} /></Grid2>
-                <Grid2 item xs={12} md={2} lg={2}><GeneralCardUsedModCombos data={props.data} /></Grid2>
+                <Grid2 item xs={12} md={12} lg={3}><GeneralCardUser data={props.data} /></Grid2>
+                <Grid2 item xs={12} md={12} lg={1.5}><GeneralCardClears data={props.data} /></Grid2>
+                <Grid2 item xs={12} md={12} lg={1.5}><GeneralCardTotalPP data={props.data} /></Grid2>
+                <Grid2 item xs={12} md={12} lg={1}><GeneralCardAveragePP data={props.data} /></Grid2>
+                <Grid2 item xs={12} md={12} lg={1}><GeneralCardAverageSR data={props.data} /></Grid2>
+                <Grid2 item xs={12} md={12} lg={2}><GeneralCardHighestSR data={props.data} /></Grid2>
+                <Grid2 item xs={6} md={6} lg={1}><GeneralCardFullComboPerc data={props.data} /></Grid2>
+                <Grid2 item xs={6} md={6} lg={1}><GeneralCardScoreRank data={props.data} /></Grid2>
+                <Grid2 item xs={12} md={12} lg={1.5}><GeneralCardScorePerPlay data={props.data} /></Grid2>
+                <Grid2 item xs={12} md={12} lg={2}><GeneralCardAverageLengthPlayed data={props.data} /></Grid2>
+                <Grid2 item xs={12} md={12} lg={2.5}><GeneralCardRankedScore data={props.data} /></Grid2>
+                <Grid2 item xs={12} md={12} lg={2}><GeneralCardTotalLengthPlayed data={props.data} /></Grid2>
+                <Grid2 item xs={12} md={12} lg={2}><GeneralCardProfilePlaytime data={props.data} /></Grid2>
+                <Grid2 item xs={12} md={12} lg={2}><GeneralCardApproxPlaytime data={props.data} /></Grid2>
+                <Grid2 item xs={12} md={12} lg={2}><GeneralCardTagOccurances data={props.data} /></Grid2>
+                <Grid2 item xs={12} md={12} lg={2.5}><GeneralCardGradeSpread data={props.data} /></Grid2>
+                <Grid2 item xs={12} md={12} lg={2}><GeneralCardUsedModCombos data={props.data} /></Grid2>
                 {
-                    config.DONATE_URL ? <><Grid2 item xs={12} md={2} lg={2}><GeneralCardDonation data={props.data} /></Grid2></> : <></>
+                    config.DONATE_URL ? <><Grid2 item xs={12} md={12} lg={2}><GeneralCardDonation data={props.data} /></Grid2></> : <></>
                 }
             </Grid2>
-            <Grid2 sx={{mt:1}} container spacing={1}>
+            <Grid2 sx={{ mt: 1 }} container spacing={1}>
                 <Grid2 item xs={12} md={4} lg={4}><GeneralHighestPPScoreCard valueTitle={'performance'} valueLabel={`${props.data.processed.topScores.best_pp.pp.toFixed(1)}pp`} score={props.data.processed.topScores.best_pp} /></Grid2>
                 <Grid2 item xs={12} md={4} lg={4}><GeneralHighestPPScoreCard valueTitle={'score'} valueLabel={`${props.data.processed.topScores.best_score.score.toLocaleString('en-US')} score`} score={props.data.processed.topScores.best_score} /></Grid2>
                 <Grid2 item xs={12} md={4} lg={4}><GeneralHighestPPScoreCard valueTitle={'stars'} valueLabel={`${props.data.processed.topScores.best_sr.star_rating.toFixed(1)}*`} score={props.data.processed.topScores.best_sr} /></Grid2>
             </Grid2>
-            <Grid2 sx={{mt:1}} container spacing={1}>
+            <Grid2 sx={{ mt: 1 }} container spacing={1}>
                 <Grid2 item xs={12} md={3} lg={3}><GeneralCardPPifFC data={props.data} /></Grid2>
                 <Grid2 item xs={12} md={3} lg={3}><GeneralCardPPifSS data={props.data} /></Grid2>
                 <Grid2 item xs={12} md={3} lg={3}><GeneralCardPPif2016 data={props.data} /></Grid2>

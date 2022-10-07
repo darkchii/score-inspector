@@ -1,8 +1,9 @@
 {
     "OSU_API": "http://darkchii.nl/score/api/",
-    "OSU_TEST_API": "https://darkchii.nl/score/test_api/",
+    "OSU_TEST_API": "http://localhost:5000/",
     "OSU_API_ALT": "https://darkchii.nl/score/alt_api/",
-    "OSU_TEST_API_ALT": "http://localhost:3000/",
+    "OSU_TEST_API_ALT": "http://localhost:3955/",
     "SCORE_API": "https://score.respektive.pw/u/",
-    "DONATE_URL": "https://www.buymeacoffee.com/darkchii"
+    "DONATE_URL": "https://www.buymeacoffee.com/darkchii",
+    "USE_DEV_API": true
 }
