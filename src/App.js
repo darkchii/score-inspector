@@ -19,8 +19,8 @@ import PageLanding from './Tabs/PageLanding';
 import { updates } from './updates';
 
 const themes = [
-  DefaultTheme,
-  ChiiTheme
+  ChiiTheme,
+  DefaultTheme
 ]
 
 function a11yProps(index) {
