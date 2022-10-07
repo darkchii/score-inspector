@@ -7,6 +7,32 @@ export function getBonusPerformance(clears) {
     return 416.6667 * (1 - Math.pow(0.9994, clears));
 }
 
+export function getHitsFromAccuracy(acc, nobjects, nmiss = 0){
+    let n300=0, n100=0, n50=0
+    const max300 = nobjects - nmiss
+    n100 = Math.round(
+        -3.0 * ((acc * 0.01 - 1.0) * nobjects + nmiss) * 0.5
+    )
+    
+    if (n100 > max300) {
+        // acc lower than all 100s, use 50s
+        n100 = 0;
+        n50 = Math.round(
+          -6.0 * ((acc * 0.01 - 1.0) * nobjects + nmiss) * 0.5
+        );
+        n50 = Math.min(max300, n50);
+    }
+
+    n300 = nobjects - n100 - n50 - nmiss;
+
+    return {
+        count300: n300,
+        count100: n100,
+        count50: n50,
+        countmiss: nmiss
+    }
+}
+
 export async function isUserRegistered(id) {
     let _registered = false;
     try{

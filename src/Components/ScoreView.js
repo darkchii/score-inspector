@@ -5,7 +5,7 @@ import { Doughnut, Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip as ChartTooltip, Legend } from 'chart.js';
 import { getGradeIcon, getModIcon } from "../Assets";
 import { getModString, mods, mod_strings_long, toFixedNumber } from "../helper";
-import { getBeatmapMaxscore } from "../osu";
+import { getBeatmapMaxscore, getHitsFromAccuracy } from "../osu";
 import moment from "moment";
 import { getPerformanceLive } from "../Performance/PerformanceLive";
 ChartJS.register(ArcElement, ChartTooltip, Legend);
@@ -44,13 +44,21 @@ function ScoreView(props) {
 
             setPerformance(null);
 
+            const accHits = [];
+            accHits["100%"] = getHitsFromAccuracy(100, props.data.score.objects, 0);
+            accHits["99%"] = getHitsFromAccuracy(99, props.data.score.objects, 0);
+            accHits["98%"] = getHitsFromAccuracy(98, props.data.score.objects, 0);
+            accHits["95%"] = getHitsFromAccuracy(95, props.data.score.objects, 0);
+            accHits["90%"] = getHitsFromAccuracy(90, props.data.score.objects, 0);
+            accHits["80%"] = getHitsFromAccuracy(80, props.data.score.objects, 0);
+
             const pp = [];
-            pp["100%"] = getPerformanceLive({ accuracy: 1, score: props.data.score, combo: props.data.score.maxcombo, count300: props.data.score.count300 + props.data.score.count100 + props.data.score.count50 + props.data.score.countmiss, count100: 0, count50: 0, countmiss: 0 });
-            pp["99%"] = getPerformanceLive({ accuracy: 0.99, score: props.data.score, combo: props.data.score.maxcombo, count300: props.data.score.count300 + props.data.score.count100 + props.data.score.count50 + props.data.score.countmiss, count100: 0, count50: 0, countmiss: 0 });
-            pp["98%"] = getPerformanceLive({ accuracy: 0.98, score: props.data.score, combo: props.data.score.maxcombo, count300: props.data.score.count300 + props.data.score.count100 + props.data.score.count50 + props.data.score.countmiss, count100: 0, count50: 0, countmiss: 0 });
-            pp["95%"] = getPerformanceLive({ accuracy: 0.95, score: props.data.score, combo: props.data.score.maxcombo, count300: props.data.score.count300 + props.data.score.count100 + props.data.score.count50 + props.data.score.countmiss, count100: 0, count50: 0, countmiss: 0 });
-            pp["90%"] = getPerformanceLive({ accuracy: 0.90, score: props.data.score, combo: props.data.score.maxcombo, count300: props.data.score.count300 + props.data.score.count100 + props.data.score.count50 + props.data.score.countmiss, count100: 0, count50: 0, countmiss: 0 });
-            pp["80%"] = getPerformanceLive({ accuracy: 0.80, score: props.data.score, combo: props.data.score.maxcombo, count300: props.data.score.count300 + props.data.score.count100 + props.data.score.count50 + props.data.score.countmiss, count100: 0, count50: 0, countmiss: 0 });
+            pp["100%"] = getPerformanceLive({ accuracy: 1, score: props.data.score, combo: props.data.score.maxcombo, count300: accHits["100%"].count300, count100: accHits["100%"].count100, count50: accHits["100%"].count50, countmiss: accHits["100%"].countmiss });
+            pp["99%"] = getPerformanceLive({ accuracy: 0.99, score: props.data.score, combo: props.data.score.maxcombo, count300: accHits["99%"].count300, count100: accHits["99%"].count100, count50: accHits["99%"].count50, countmiss: accHits["99%"].countmiss });
+            pp["98%"] = getPerformanceLive({ accuracy: 0.98, score: props.data.score, combo: props.data.score.maxcombo, count300: accHits["98%"].count300, count100: accHits["98%"].count100, count50: accHits["98%"].count50, countmiss: accHits["98%"].countmiss });
+            pp["95%"] = getPerformanceLive({ accuracy: 0.95, score: props.data.score, combo: props.data.score.maxcombo, count300: accHits["95%"].count300, count100: accHits["95%"].count100, count50: accHits["95%"].count50, countmiss: accHits["95%"].countmiss });
+            pp["90%"] = getPerformanceLive({ accuracy: 0.90, score: props.data.score, combo: props.data.score.maxcombo, count300: accHits["90%"].count300, count100: accHits["90%"].count100, count50: accHits["90%"].count50, countmiss: accHits["90%"].countmiss });
+            pp["80%"] = getPerformanceLive({ accuracy: 0.80, score: props.data.score, combo: props.data.score.maxcombo, count300: accHits["80%"].count300, count100: accHits["80%"].count100, count50: accHits["80%"].count50, countmiss: accHits["80%"].countmiss });
 
             console.log(pp["100%"]);
 
