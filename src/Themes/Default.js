@@ -5,6 +5,7 @@ import { shadows } from '@mui/system';
 import { IMG_TRIANGLES, SVG_TRIANGLES } from "../Assets";
 
 const DefaultTheme = {
+    themeName: "Default",
     palette: {
         mode: 'dark',
         primary: {

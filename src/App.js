@@ -1,6 +1,6 @@
-import { CssBaseline, Box, AppBar, Toolbar, Typography, Paper, Grid, CircularProgress, Tabs, Tab, Alert, AlertTitle, Divider } from '@mui/material';
+import { CssBaseline, Box, AppBar, Toolbar, Typography, Paper, Grid, CircularProgress, Tabs, Tab, Alert, AlertTitle, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import React from 'react';
+import React, { useEffect } from 'react';
 import './App.css';
 import './Tabs.js';
 import TabPanel from './Tabs.js';
@@ -8,18 +8,20 @@ import PagePerDay from './Tabs/PagePerDate';
 import PageGeneral from './Tabs/PageGeneral';
 import PageScores from './Tabs/PageScores';
 import Footer from './Components/Footer';
-import FileSelector from './Components/FileSelector';
-import config from './config.json';
-import { processFile, processUser } from './scoresProcessing';
+import { processUser } from './scoresProcessing';
 import PageCompletion from './Tabs/PageCompletion';
 import PageChangelog from './Tabs/PageChangelog';
 import PageIndividualDate from './Tabs/PageIndividualDate';
 import DefaultTheme from './Themes/Default';
+import ChiiTheme from './Themes/Chii';
 import PagePacks from './Tabs/PagePacks';
 import PageLanding from './Tabs/PageLanding';
 import { updates } from './updates';
 
-const darkTheme = createTheme(DefaultTheme);
+const themes = [
+  DefaultTheme,
+  ChiiTheme
+]
 
 function a11yProps(index) {
   return {
@@ -35,6 +37,7 @@ function App() {
   const [loadState, setLoadState] = React.useState(false);
   const [isUserProcessing, setUserProcessing] = React.useState(false);
   const [processError, setProcessError] = React.useState(null);
+  const [currentTheme, setCurrentTheme] = React.useState(0);
 
   const [tabValue, setTabValue] = React.useState(1);
 
@@ -76,8 +79,17 @@ function App() {
     setTabValue(newValue);
   };
 
+  const themeHandleChange = (event, newValue) => {
+    window.localStorage.setItem('themeID', JSON.stringify(newValue));
+    setCurrentTheme(newValue);
+  };
+
+  useEffect(() => {
+    themeHandleChange(null, JSON.parse(window.localStorage.getItem('themeID')) ?? 0);
+  }, []);
+
   return (
-    <ThemeProvider theme={darkTheme}>
+    <ThemeProvider theme={createTheme(themes[currentTheme])}>
       <CssBaseline />
       <Box sx={{ display: 'flex' }}>
         <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
@@ -89,6 +101,16 @@ function App() {
             >
               osu! scores visualizer {updates[0].version}
             </Typography>
+            <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+              <InputLabel>Theme</InputLabel>
+              <Select>
+                {
+                  themes.map((theme, index) => (
+                    <MenuItem key={index} value={index} onClick={(e) => themeHandleChange(e, index)}>{theme.themeName}</MenuItem>
+                  ))
+                }
+              </Select>
+            </FormControl>
           </Toolbar>
         </AppBar>
         <Tabs
