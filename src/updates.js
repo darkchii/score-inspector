@@ -7,8 +7,16 @@ const CHANGETYPES = {
 
 const updates = [
     {
-        version: '1.0.3',
+        version: '1.1.0',
         date: 'n/a',
+        changes: [
+            [CHANGETYPES.NEW, 'Fetching is now done through an API instead of requiring a .csv file', '46c0976c731b8b8f7fd24f63dbdb1cf2041acc7d'],
+            [CHANGETYPES.MISC, 'Moved the username input to landing page', '71ac695417a55251185500327e8a97641ca9e097'],
+        ]
+    },
+    {
+        version: '1.0.3',
+        date: '2022-09-17',
         changes: [
             [CHANGETYPES.NEW, 'Added approximate real playtime calculation', '28178946d7a240be48322460b9306b272af4a31a'],
             [CHANGETYPES.NEW, 'Added total pp to monthly graph', '0650c62ee8abbc078d4a903cd947af9207145c98'],
