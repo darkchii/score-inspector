@@ -1,24 +1,11 @@
 import moment from "moment";
 import Papa from "papaparse";
 import { calculatePP2016, calculatePPifFC, calculatePPifSS, getModString, getUserTrackerStatus, mods, naturalSorter } from "./helper";
-import { getBeatmapCount, getBeatmapPacks, getBonusPerformance, getLazerScore, getSessions, getUser } from "./osu";
+import { getBeatmapCount, getBeatmapPacks, getBonusPerformance, getLazerScore, getSessions, getUser, getUserScores, isUserRegistered } from "./osu";
 import { getPerformance2016 } from "./Performance/Performance2016";
 import { getPerformanceLive } from "./Performance/PerformanceLive";
 
-const processData = async (scores, callback_success, callback_error, allowLoved) => {
-    let _user;
-
-    try {
-        _user = await getUser(scores[0].user_id);
-    } catch (err) {
-        _user = null;
-    }
-
-    if (_user === null || _user === undefined || _user.id === undefined) {
-        callback_error('Unable to get user data, is osu! api down?');
-        return;
-    };
-
+const processData = async (scores, callback_success, callback_error, allowLoved, _user) => {
     _user.isWorking = await getUserTrackerStatus(_user.id);
 
     let bmCount;
@@ -72,6 +59,42 @@ const processData = async (scores, callback_success, callback_error, allowLoved)
         scores: scores
     });
 };
+
+export async function processUser(username, allowLoved, callback_success, callback_error) {
+    //get user from osu api
+    let _user;
+
+    try {
+        _user = await getUser(username);
+    } catch (err) {
+        _user = null;
+    }
+
+    if (_user === null || _user === undefined || _user.id === undefined) {
+        callback_error('Unable to get user data, is osu! api down?');
+        return;
+    };
+
+    //check if user is registered
+    const registered = await isUserRegistered(_user.id);
+    if (!registered) {
+        callback_error('User is not registered on osu!alternative! Follow the guide below to register.');
+        return;
+    }
+    const _scores = await getUserScores(_user.id, allowLoved);
+
+    if (_scores === null || _scores.length === 0) {
+        callback_error('User has no scores on osu!alternative!');
+        return;
+    }
+
+    _scores.forEach(score => {
+        score = parseScore(score);
+    });
+
+    //process data
+    await processData(_scores, callback_success, callback_error, allowLoved, _user);
+}
 
 export async function processFile(file, allowLoved, callback_success, callback_error) {
     Papa.parse(file, {

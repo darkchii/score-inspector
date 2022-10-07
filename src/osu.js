@@ -1,10 +1,22 @@
 import axios from "axios";
 import moment from "moment";
 import config from "./config.json";
-import { getAPIURL, getUnix, mods } from "./helper";
+import { getAltAPIURL, getAPIURL, getUnix, mods } from "./helper";
 
 export function getBonusPerformance(clears) {
     return 416.6667 * (1 - Math.pow(0.9994, clears));
+}
+
+export async function isUserRegistered(id) {
+    const url = `${getAltAPIURL()}users/registered/${id}`;
+    const res = await axios.get(url, { headers: { "Access-Control-Allow-Origin": "*" } });
+    return res.data.registered;
+}
+
+export async function getUserScores(id, allowLoved) {
+    const url = `${getAltAPIURL()}scores/${id}${allowLoved ? "?loved=true" : ""}`;
+    const res = await axios.get(url, { headers: { "Access-Control-Allow-Origin": "*" } });
+    return res.data;
 }
 
 export async function getBeatmapPackMaps(pack, sets_only = false) {
@@ -35,7 +47,7 @@ export async function getUser(id) {
     }
 
     try {
-        let _scoreRank = await fetch(`${config.SCORE_API}${id}`).then((res) => res.json());
+        let _scoreRank = await fetch(`${config.SCORE_API}${_user.id}`).then((res) => res.json());
         if (_scoreRank !== undefined) {
             _user.scoreRank = _scoreRank[0].rank;
         }
@@ -117,7 +129,7 @@ export function getLazerScore(score, classic = true) {
         300000) + ((score.combo / score.maxcombo) * 700000)) * mul);
 
     if (classic) {
-        val = Math.pow(((val/MAX_SCORE)*score.objects), 2) * 36;
+        val = Math.pow(((val / MAX_SCORE) * score.objects), 2) * 36;
     }
     return val;
 }

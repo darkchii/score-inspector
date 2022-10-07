@@ -10,7 +10,7 @@ import PageScores from './Tabs/PageScores';
 import Footer from './Components/Footer';
 import FileSelector from './Components/FileSelector';
 import config from './config.json';
-import { processFile } from './scoresProcessing';
+import { processFile, processUser } from './scoresProcessing';
 import PageCompletion from './Tabs/PageCompletion';
 import PageChangelog from './Tabs/PageChangelog';
 import PageIndividualDate from './Tabs/PageIndividualDate';
@@ -53,14 +53,14 @@ function App() {
     setTabValue(newValue);
   };
 
-  const handleScoresUpload = async (file, allowLoved) => {
+  const handleScoresFetch = async (username, allowLoved) => {
     setLoadState(true);
     setUser(null);
     setProcessedData(null);
     setScoreData(null);
     setUserProcessing(false);
 
-    await processFile(file, allowLoved,
+    await processUser(username, allowLoved,
       (data) => {
         setUser(data.user);
         setUserProcessing(data.user.isWorking);
@@ -126,7 +126,7 @@ function App() {
               }
             >
               <Grid sx={{ width: '60%' }}>
-                <FileSelector sx={{ width: '100%' }} data={{ hasProcessedData: processedData !== null }} handleScoresUpload={handleScoresUpload} loadState={loadState} />
+                <FileSelector sx={{ width: '100%' }} data={{ hasProcessedData: processedData !== null }} handleScoresFetch={handleScoresFetch} loadState={loadState} />
                 {
                   processError ? <>
                     <Grid sx={{width:'100%'}}>

@@ -1,11 +1,12 @@
-import { Alert, AlertTitle, Box, Button, Card, CardContent, FormControlLabel, Grid, Paper, Step, StepLabel, Stepper, Switch, Typography } from "@mui/material";
+import { Alert, AlertTitle, Box, Button, Card, CardContent, FormControlLabel, FormGroup, Grid, Paper, Step, StepLabel, Stepper, Switch, TextField, Typography } from "@mui/material";
 import React from "react";
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 
 function FileSelector(props) {
     const [useLoved, setLovedState] = React.useState(JSON.parse(window.localStorage.getItem('useLovedMaps')) ?? false);
     const [askReprocess, setReprocessState] = React.useState(false);
-    const [curFile, setFile] = React.useState(null);
+    const [curUsername, setUsername] = React.useState(null);
+    const usernameRef = React.useRef(null);
 
     const handleLovedToggle = (event) => {
         window.localStorage.setItem('useLovedMaps', JSON.stringify(event.target.checked));
@@ -15,11 +16,18 @@ function FileSelector(props) {
             setReprocessState(true);
         }
     }
-    const handleScoresUpload = async (file) => {
-        setFile(file);
+
+    const handleScoresFetch = async (username) => {
+        setUsername(username);
         setReprocessState(false);
-        await props.handleScoresUpload(file, useLoved);
+        await props.handleScoresFetch(username, useLoved);
     }
+
+    // const handleScoresUpload = async (file) => {
+    //     setFile(file);
+    //     setReprocessState(false);
+    //     await props.handleScoresUpload(file, useLoved);
+    // }
 
     return (
         <>
@@ -27,18 +35,19 @@ function FileSelector(props) {
                 <Paper sx={{ pl: 5 }} alignItems="center" justifyContent="center" direction="column">
                     <Grid container>
                         <Grid item xs={12} md={6} lg={6}>
-                            <Typography sx={{ mt: 2, mb: 1 }}>Upload the downloaded <code>scores.csv</code> file here:<br />
-                                <FormControlLabel onChange={handleLovedToggle} control={<Switch defaultChecked={useLoved} />} label="Use loved scores" />
-                                <Button startIcon={<InsertDriveFileIcon />} variant="contained" color="primary" component="label" disabled={props.loadState}>Upload scores<input onChange={e => handleScoresUpload(e.target.files[0])} hidden accept=".csv" type="file" /></Button>
-                            </Typography>
+                            <FormGroup sx={{m:1}} row={true}>
+                                <TextField size='small' inputRef={usernameRef} sx={{ pr: 1 }} label="Username" variant="standard" />
+                                <Button size='small' variant="contained" color="primary" onClick={(e) => handleScoresFetch(usernameRef.current.value)}>Fetch scores</Button>
+                            </FormGroup>
+                            <FormControlLabel onChange={handleLovedToggle} control={<Switch defaultChecked={useLoved} />} label="Use loved scores" />
                         </Grid>
-                        <Grid item xs={12} md={6} lg={6}>
+                        <Grid item xs={12} md={6} lg={6} sx={{minHeight:'100%'}}>
                             {
                                 askReprocess ? <>
-                                    <Alert severity="warning">
+                                    <Alert sx={{minHeight:'100%'}} severity="warning">
                                         <AlertTitle>Warning</AlertTitle>
                                         Changes require a reprocess
-                                        <Button onClick={() => handleScoresUpload(curFile)} variant="contained" sx={{ ml: 2 }}>Reprocess</Button>
+                                        <Button onClick={() => handleScoresFetch(curUsername)} variant="contained" sx={{ ml: 2 }}>Reprocess</Button>
                                     </Alert>
                                 </> : <></>
                             }

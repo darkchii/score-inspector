@@ -120,6 +120,10 @@ export function getAPIURL() {
     return (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API : config.OSU_API;
 }
 
+export function getAltAPIURL() {
+    return (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') ? config.OSU_TEST_API_ALT : config.OSU_API_ALT;
+}
+
 export function formatNumber(n, decimals = 0, short = false) {
     if (n > 999999999) {
         return (n / 1000000000).toFixed(decimals) + (short ? 'b' : ' billion');
