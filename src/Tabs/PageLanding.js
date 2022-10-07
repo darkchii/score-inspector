@@ -35,7 +35,7 @@ function PageLanding(props) {
                                 <Typography variant='body2'>Every user that has fetched their scores can be viewed here. The user in question has to fetch them themselves, others cannot do that.</Typography>
                                 <Typography variant='h5'>Where can I recommend changes</Typography>
                                 <Typography variant='body2'>The following two places are fine: </Typography>
-                                <Typography variant='body2'>- The <code>#feature-ideas</code> channel in the osu!alt discord (make sure to tag Amayakase#9198)</Typography>
+                                <Typography variant='body2'>- The <code>#feature-ideas</code> channel in the <Link href='https://discord.gg/VZWRZZXcW4' target="_blank">osu!alt discord</Link> (make sure to tag Amayakase#9198)</Typography>
                                 <Typography variant='body2'>- Opening an issue on the <Link href="https://github.com/darkchii/score-inspector" target="_blank">GitHub</Link></Typography>
                             </Stack>
                         </CardContent>
@@ -45,13 +45,13 @@ function PageLanding(props) {
                     <Card>
                         <CardContent>
                             <Typography variant='h5'>How to view your scores</Typography>
-                            <Typography>If you already ran the score fetcher, you can skip to step 4</Typography>
+                            <Typography>If you are registered and already ran the score fetcher, you can skip to step 4</Typography>
                             <TableContainer>
                                 <Table size='small'>
                                     <TableRow><TableCell>1.</TableCell><TableCell>Join the <Button href='https://discord.gg/VZWRZZXcW4' target="_blank" variant="contained" size='small'>osu!alternative</Button> discord</TableCell></TableRow>
                                     <TableRow><TableCell>2.</TableCell><TableCell>Follow the guide to fetch your scores (<i>#info</i> channel)</TableCell></TableRow>
                                     <TableRow><TableCell>3.</TableCell><TableCell>Wait a few hours. When done, you generally don't need to run it anymore</TableCell></TableRow>
-                                    <TableRow><TableCell>5.</TableCell><TableCell>Enter your username above and fetch</TableCell></TableRow>
+                                    <TableRow><TableCell>4.</TableCell><TableCell>Enter your username above and fetch</TableCell></TableRow>
                                 </Table>
                             </TableContainer>
                         </CardContent>
