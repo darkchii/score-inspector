@@ -7,6 +7,14 @@ const CHANGETYPES = {
 
 const updates = [
     {
+        version: '1.1.2',
+        date: '2022-10-08',
+        changes: [
+            [CHANGETYPES.FIX, 'Added pack_id null check to fix crash', '07829446856a929b2fccbcac36cd3d71d2717a2a'],
+            [CHANGETYPES.FIX, 'Fixed missing scores'],
+        ]
+    },
+    {
         version: '1.1.1',
         date: '2022-10-07',
         changes: [
