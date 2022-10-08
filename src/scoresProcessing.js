@@ -49,7 +49,7 @@ const processData = async (scores, callback_success, callback_error, allowLoved,
         processed = await CalculateData(processed, scores, _user);
         processed = await calculatePackData(processed, scores);
     } catch (err) {
-        callback_error(err);
+        callback_error(`Unable to calculate data right now: ${err}`);
         return;
     }
     // console.timeEnd('start calc');
@@ -388,7 +388,7 @@ async function calculatePackData(processed, scores) {
     });
 
     scores.forEach(score => {
-        if (score.pack_id.length === 0) return;
+        if (score.pack_id === null || score.pack_id.length === 0) return;
         const _packs = score.pack_id.split(',');
 
         _packs.forEach(pack => {
