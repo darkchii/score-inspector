@@ -30,7 +30,7 @@
     "react-fluid-grid": "^1.0.9",
     "react-scripts": "5.0.1",
     "react-virtualized": "^9.22.3",
-    "web-vitals": "^3.0.2"
+    "web-vitals": "^3.0.4"
   },
   "scripts": {
     "start": "set PORT=3006 && react-scripts start",
