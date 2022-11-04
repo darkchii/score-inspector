@@ -14,13 +14,15 @@ import PageChangelog from './Tabs/PageChangelog';
 import PageIndividualDate from './Tabs/PageIndividualDate';
 import DefaultTheme from './Themes/Default';
 import ChiiTheme from './Themes/Chii';
+import PinkTheme from './Themes/Pink';
 import PagePacks from './Tabs/PagePacks';
 import PageLanding from './Tabs/PageLanding';
 import { updates } from './updates';
 
 const themes = [
   ChiiTheme,
-  DefaultTheme
+  DefaultTheme,
+  PinkTheme,
 ]
 
 function a11yProps(index) {
