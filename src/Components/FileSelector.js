@@ -25,7 +25,8 @@ function FileSelector(props) {
         window.localStorage.setItem('useLovedMaps', JSON.stringify(event.target.checked));
         setLovedState(event.target.checked);
 
-        if (props.data.hasProcessedData) {
+        console.log(props.data);
+        if (props.data.processed !== undefined && props.data.processed !== null) {
             setReprocessState(true);
         }
     }

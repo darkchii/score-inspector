@@ -11,7 +11,7 @@ function PageLanding(props) {
                 <Grid item xs={12} md={12}>
                     <Card>
                         <CardContent>
-                            <FileSelector sx={{ width: '100%' }} data={{ persistentData: props.data.persistentData, hasProcessedData: props.data.processedData !== null }} handleScoresFetch={props.handleScoresFetch} loadState={props.loadState} />
+                            <FileSelector sx={{ width: '100%' }} data={{ persistentData: props.data.persistentData, processed: props.data.processed}} handleScoresFetch={props.handleScoresFetch} loadState={props.loadState} />
                         </CardContent>
                     </Card>
                     {

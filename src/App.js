@@ -68,7 +68,7 @@ function App() {
   }
 
   const tabs = [
-    { name: 'Home', component: <PageLanding data={{ hasProcessedData: processedData !== null, processError: processError, persistentData: persistentData }} handleScoresFetch={handleScoresFetch} loadState={loadState} /> },
+    { name: 'Home', component: <PageLanding data={{ hasProcessedData: processedData !== null, processError: processError, persistentData: persistentData, processed: processedData }} handleScoresFetch={handleScoresFetch} loadState={loadState} /> },
     { name: 'Changelog', component: <PageChangelog /> },
     { name: 'General', component: <PageGeneral data={{ scores: scoreData, user: user, processed: processedData }} />, useData: true },
     { name: 'Scores', component: <PageScores data={{ scores: scoreData, user: user, processed: processedData }} />, useData: true },
