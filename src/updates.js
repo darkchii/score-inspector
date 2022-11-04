@@ -10,7 +10,8 @@ const updates = [
         version: '1.2',
         date: 'n/a',
         changes: [
-            [CHANGETYPES.FIX, 'Added auto complete for registered users'],
+            [CHANGETYPES.NEW, 'Added auto complete for registered users'],
+            [CHANGETYPES.NEW, 'Added a pink color theme'],
         ]
     },
     {
