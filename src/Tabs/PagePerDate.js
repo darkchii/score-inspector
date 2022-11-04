@@ -365,7 +365,6 @@ function PagePerDate(props) {
         });
     };
 
-
     const graphButtons = [
         {
             title: `Per ${dateFormat}`, buttons: [
@@ -392,7 +391,6 @@ function PagePerDate(props) {
         }
     ]
 
-
     useEffect(() => {
         if (props.data.processed.scorePerDate === undefined || props.data.processed.scorePerDate[dateFormat] === undefined) {
             (async function () {
@@ -400,6 +398,8 @@ function PagePerDate(props) {
                 Promise.resolve(processData(scores)).then(() => { forceUpdate(); });
                 setIsReady(true);
             })();
+        }else{
+            createGraphs();
         }
     }, []);
 
