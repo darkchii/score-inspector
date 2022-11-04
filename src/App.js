@@ -38,6 +38,7 @@ function App() {
   const [isUserProcessing, setUserProcessing] = React.useState(false);
   const [processError, setProcessError] = React.useState(null);
   const [currentTheme, setCurrentTheme] = React.useState(0);
+  const [persistentData, setPersistentData] = React.useState([]); //this data remains the entire session, until refresh
 
   const [tabValue, setTabValue] = React.useState(1);
 
@@ -65,7 +66,7 @@ function App() {
   }
 
   const tabs = [
-    { name: 'Home', component: <PageLanding data={{ hasProcessedData: processedData !== null, processError: processError }} handleScoresFetch={handleScoresFetch} loadState={loadState} /> },
+    { name: 'Home', component: <PageLanding data={{ hasProcessedData: processedData !== null, processError: processError, persistentData: persistentData }} handleScoresFetch={handleScoresFetch} loadState={loadState} /> },
     { name: 'Changelog', component: <PageChangelog /> },
     { name: 'General', component: <PageGeneral data={{ scores: scoreData, user: user, processed: processedData }} />, useData: true },
     { name: 'Scores', component: <PageScores data={{ scores: scoreData, user: user, processed: processedData }} />, useData: true },

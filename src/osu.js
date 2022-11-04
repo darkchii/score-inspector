@@ -45,6 +45,18 @@ export async function isUserRegistered(id) {
     return _registered;
 }
 
+export async function getRegisteredUsers(){
+    let _users = [];
+    try{
+        const url = `${getAltAPIURL()}users/registered`;
+        const res = await axios.get(url, { headers: { "Access-Control-Allow-Origin": "*" } });
+        _users = res.data;
+    }catch(err){
+        _users = [];
+    }
+    return _users;
+}
+
 export async function getUserScores(id, allowLoved) {
     let _scores = null;
     try{

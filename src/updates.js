@@ -7,6 +7,13 @@ const CHANGETYPES = {
 
 const updates = [
     {
+        version: '1.2',
+        date: 'n/a',
+        changes: [
+            [CHANGETYPES.FIX, 'Added auto complete for registered users'],
+        ]
+    },
+    {
         version: '1.1.2',
         date: '2022-10-08',
         changes: [

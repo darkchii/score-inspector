@@ -1,6 +1,8 @@
 import { Alert, AlertTitle, Button, Card, CardContent, CardMedia, Chip, Grid, Link, List, ListItem, ListItemIcon, ListItemText, Stack, Table, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
 import POINTING_KIRINO from '../Assets/Other/pointing_kirino.jpg';
 import FileSelector from "../Components/FileSelector";
+import { getRegisteredUsers } from "../osu";
 
 function PageLanding(props) {
     return (
@@ -9,7 +11,7 @@ function PageLanding(props) {
                 <Grid item xs={12} md={12}>
                     <Card>
                         <CardContent>
-                            <FileSelector sx={{ width: '100%' }} data={{ hasProcessedData: props.data.processedData !== null }} handleScoresFetch={props.handleScoresFetch} loadState={props.loadState} />
+                            <FileSelector sx={{ width: '100%' }} data={{ persistentData: props.data.persistentData, hasProcessedData: props.data.processedData !== null }} handleScoresFetch={props.handleScoresFetch} loadState={props.loadState} />
                         </CardContent>
                     </Card>
                     {
