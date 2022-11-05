@@ -27,6 +27,12 @@ const dataToList = [
         }
     },
     {
+        outputValue: "highest_pp",
+        exec: function (output, score) {
+            return Math.max(output, (score.pp !== null && score.pp !== undefined ? score.pp : 0));
+        }
+    },
+    {
         outputValue: "total_sr",
         exec: function (output, score) {
             return output + score.stars;
@@ -345,6 +351,7 @@ function PagePerDate(props) {
                 { name: "Total D", set: props.data.processed.scorePerDate[dateFormat].map(x => x.cumulative_rank_d), color: { r: 243, g: 87, b: 90 } },
             ]} />,
             "ppPerPlay": <TimeGraph name="Average PP per play" labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Average PP", set: props.data.processed.scorePerDate[dateFormat].map(x => x.average_pp), color: { r: 255, g: 102, b: 158 } }]} />,
+            "highestPPPlay": <TimeGraph name="Highest PP play" labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Highest PP", set: props.data.processed.scorePerDate[dateFormat].map(x => x.highest_pp), color: { r: 255, g: 102, b: 158 } }]} />,
             "srPerPlay": <TimeGraph name="Average SR per play" labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Average SR", set: props.data.processed.scorePerDate[dateFormat].map(x => x.average_sr), color: { r: 255, g: 102, b: 158 } }]} />,
             "scorePerPlay": <TimeGraph name="Average score per play" labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Average score", set: props.data.processed.scorePerDate[dateFormat].map(x => x.average_score), color: { r: 255, g: 102, b: 158 } }]} />,
             "lengthPerPlay": <TimeGraph name="Average length per play" labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Average score", set: props.data.processed.scorePerDate[dateFormat].map(x => x.average_length), color: { r: 255, g: 102, b: 158 } }]} />,
@@ -372,10 +379,11 @@ function PagePerDate(props) {
         },
         {
             title: "Other", buttons: [
-                { id: "ppPerPlay", title: "Average PP" },
                 { id: "srPerPlay", title: "Average SR" },
                 { id: "scorePerPlay", title: "Average Score" },
                 { id: "lengthPerPlay", title: "Average Length" },
+                { id: "ppPerPlay", title: "Average PP" },
+                { id: "highestPPPlay", title: "Highest PP" },
                 { id: "completion", title: "Completion" },
             ]
         }
