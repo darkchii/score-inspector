@@ -23,7 +23,7 @@ const dataToList = [
     {
         outputValue: "total_pp",
         exec: function (output, score) {
-            return output + score.pp;
+            return output + (score.pp !== null && score.pp !== undefined ? score.pp : 0);
         }
     },
     {
@@ -315,7 +315,7 @@ function PagePerDate(props) {
     const createGraphs = () => {
         setGraphs({
             "clearsPerSection": <TimeGraph name={`Scores set per ${dateFormat}`} labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Scores set", set: props.data.processed.scorePerDate[dateFormat].map(x => x.count_scores), color: { r: 255, g: 102, b: 158 } }]} />,
-            "ppPerSection": <TimeGraph name={`Total PP per ${dateFormat}`} labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Total PP set", set: props.data.processed.scorePerDate[dateFormat].map(x => x.pp), color: { r: 255, g: 102, b: 158 } }]} />,
+            "ppPerSection": <TimeGraph name={`Total PP per ${dateFormat}`} labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Total PP set", set: props.data.processed.scorePerDate[dateFormat].map(x => x.total_pp), color: { r: 255, g: 102, b: 158 } }]} />,
             "lengthPerSection": <TimeGraph name={`Total length per ${dateFormat}`} labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Total length played", set: props.data.processed.scorePerDate[dateFormat].map(x => x.total_length), color: { r: 255, g: 102, b: 158 } }]} />,
             "totalscorePerSection": <TimeGraph name={`Total score per ${dateFormat}`} labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Total score gained", set: props.data.processed.scorePerDate[dateFormat].map(x => x.total_score), color: { r: 255, g: 102, b: 158 } }]} />,
             "completion": <TimeGraph name='Completion' labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[
