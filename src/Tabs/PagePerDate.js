@@ -87,15 +87,9 @@ const dataToList = [
         }
     },
     {
-        outputValue: "length",
+        outputValue: "total_length",
         exec: function (output, score) {
             return output + score.length;
-        }
-    },
-    {
-        outputValue: "pp",
-        exec: function (output, score) {
-            return output + score.pp;
         }
     }
 ];
@@ -167,6 +161,7 @@ function PagePerDate(props) {
             obj.average_pp = parseInt("" + (scoresPerDay[key].total_pp / scoresPerDay[key].count_scores));
             obj.average_sr = scoresPerDay[key].count_scores > 0 ? parseFloat((scoresPerDay[key].total_sr / scoresPerDay[key].count_scores).toFixed(2)) : 0;
             obj.average_score = scoresPerDay[key].count_scores > 0 ? parseFloat((scoresPerDay[key].total_score / scoresPerDay[key].count_scores).toFixed(0)) : 0;
+            obj.average_length = scoresPerDay[key].count_scores > 0 ? parseFloat((scoresPerDay[key].total_length / scoresPerDay[key].count_scores).toFixed(0)) : 0;
             realScoresPerDay.push(obj);
         });
 
@@ -231,9 +226,9 @@ function PagePerDate(props) {
 
             prev = i > 0 ? sorted[i - 1].cumulative_length : 0;
             if (prev) {
-                sorted[i].cumulative_length = sorted[i].length + prev;
+                sorted[i].cumulative_length = sorted[i].total_length + prev;
             } else {
-                sorted[i].cumulative_length = sorted[i].length;
+                sorted[i].cumulative_length = sorted[i].total_length;
             }
 
             prev = i > 0 ? sorted[i - 1].cumulative_plays : 0;
@@ -287,9 +282,9 @@ function PagePerDate(props) {
 
             prev = i > 0 ? sorted[i - 1].cumulative_total_pp : 0;
             if (prev) {
-                sorted[i].cumulative_total_pp = sorted[i].pp + prev;
+                sorted[i].cumulative_total_pp = sorted[i].total_pp + prev;
             } else {
-                sorted[i].cumulative_total_pp = sorted[i].pp;
+                sorted[i].cumulative_total_pp = sorted[i].total_pp;
             }
 
             console.log(`${sorted[i].actual_date.format("YYYY-M")}-01`);
@@ -321,6 +316,7 @@ function PagePerDate(props) {
         setGraphs({
             "clearsPerSection": <TimeGraph name={`Scores set per ${dateFormat}`} labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Scores set", set: props.data.processed.scorePerDate[dateFormat].map(x => x.count_scores), color: { r: 255, g: 102, b: 158 } }]} />,
             "ppPerSection": <TimeGraph name={`Total PP per ${dateFormat}`} labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Total PP set", set: props.data.processed.scorePerDate[dateFormat].map(x => x.pp), color: { r: 255, g: 102, b: 158 } }]} />,
+            "lengthPerSection": <TimeGraph name={`Total length per ${dateFormat}`} labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Total length played", set: props.data.processed.scorePerDate[dateFormat].map(x => x.total_length), color: { r: 255, g: 102, b: 158 } }]} />,
             "totalscorePerSection": <TimeGraph name={`Total score per ${dateFormat}`} labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Total score gained", set: props.data.processed.scorePerDate[dateFormat].map(x => x.total_score), color: { r: 255, g: 102, b: 158 } }]} />,
             "completion": <TimeGraph name='Completion' labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[
                 { name: "% Clear Completion", set: props.data.processed.scorePerDate[dateFormat].map(x => x.completion), color: { r: 255, g: 102, b: 158 } },
@@ -331,6 +327,7 @@ function PagePerDate(props) {
             "cumulativePP": <TimeGraph name="Total PP" labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Total PP", set: props.data.processed.scorePerDate[dateFormat].map(x => Math.floor(x.cumulative_total_pp)), color: { r: 255, g: 102, b: 158 } }]} />,
             "cumulativeScore": <TimeGraph name="Cumulative ranked score" labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Cumulative ranked score", set: props.data.processed.scorePerDate[dateFormat].map(x => x.cumulative_score), color: { r: 255, g: 102, b: 158 } }]} />,
             "cumulativeClears": <TimeGraph name="Cumulative plays" labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Cumulative plays", set: props.data.processed.scorePerDate[dateFormat].map(x => x.cumulative_plays), color: { r: 255, g: 102, b: 158 } }]} />,
+            "cumulativeLength": <TimeGraph name={`Cumulative length played`} labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Cumulative total length played", set: props.data.processed.scorePerDate[dateFormat].map(x => x.cumulative_length), color: { r: 255, g: 102, b: 158 } }]} />,
             "gradesPerSection": <TimeGraph name="Grades" labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[
                 { name: "Total SS", set: props.data.processed.scorePerDate[dateFormat].map(x => x.total_ss), color: { r: 197, g: 197, b: 197 } },
                 { name: "Total S", set: props.data.processed.scorePerDate[dateFormat].map(x => x.total_s), color: { r: 255, g: 186, b: 14 } },
@@ -350,6 +347,7 @@ function PagePerDate(props) {
             "ppPerPlay": <TimeGraph name="Average PP per play" labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Average PP", set: props.data.processed.scorePerDate[dateFormat].map(x => x.average_pp), color: { r: 255, g: 102, b: 158 } }]} />,
             "srPerPlay": <TimeGraph name="Average SR per play" labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Average SR", set: props.data.processed.scorePerDate[dateFormat].map(x => x.average_sr), color: { r: 255, g: 102, b: 158 } }]} />,
             "scorePerPlay": <TimeGraph name="Average score per play" labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Average score", set: props.data.processed.scorePerDate[dateFormat].map(x => x.average_score), color: { r: 255, g: 102, b: 158 } }]} />,
+            "lengthPerPlay": <TimeGraph name="Average length per play" labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Average score", set: props.data.processed.scorePerDate[dateFormat].map(x => x.average_length), color: { r: 255, g: 102, b: 158 } }]} />,
         });
     };
 
@@ -360,6 +358,7 @@ function PagePerDate(props) {
                 { id: "totalscorePerSection", title: "Score" },
                 { id: "gradesPerSection", title: "Grades" },
                 { id: "ppPerSection", title: "PP" },
+                { id: "lengthPerSection", title: "Length" },
             ]
         },
         {
@@ -368,6 +367,7 @@ function PagePerDate(props) {
                 { id: "cumulativeScore", title: "Score" },
                 { id: "cumulativeGrades", title: "Grades" },
                 { id: "cumulativePP", title: "PP" },
+                { id: "cumulativeLength", title: "Length" },
             ]
         },
         {
@@ -375,6 +375,7 @@ function PagePerDate(props) {
                 { id: "ppPerPlay", title: "Average PP" },
                 { id: "srPerPlay", title: "Average SR" },
                 { id: "scorePerPlay", title: "Average Score" },
+                { id: "lengthPerPlay", title: "Average Length" },
                 { id: "completion", title: "Completion" },
             ]
         }
