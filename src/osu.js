@@ -56,6 +56,19 @@ export async function getRegisteredUsers(){
     return _users;
 }
 
+const osustats_api = 'https://osustats.respektive.pw/counts/';
+export async function getUserLeaderboardStart(id){
+    let _stats = null;
+    try{
+        const url = `${osustats_api}${id}`;
+        const res = await axios.get(url, { headers: { "Access-Control-Allow-Origin": "*" } });
+        _stats = res.data;
+    }catch(err){
+        return null;
+    }
+    return _stats;
+}
+
 export async function getUserScores(id, allowLoved) {
     let _scores = null;
     try{

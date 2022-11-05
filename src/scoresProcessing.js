@@ -1,5 +1,5 @@
 import { calculatePP2016, calculatePPifFC, calculatePPifSS, getModString, getUserTrackerStatus, mods } from "./helper";
-import { getBeatmapCount, getBeatmapPacks, getBonusPerformance, getLazerScore, getSessions, getUser, getUserScores, isUserRegistered } from "./osu";
+import { getBeatmapCount, getBeatmapPacks, getBonusPerformance, getLazerScore, getSessions, getUser, getUserLeaderboardStart, getUserScores, isUserRegistered } from "./osu";
 import { getPerformance2016 } from "./Performance/Performance2016";
 import { getPerformanceLive } from "./Performance/PerformanceLive";
 
@@ -78,6 +78,12 @@ export async function processUser(username, allowLoved, callback_success, callba
         callback_error('User is not registered on osu!alternative! Follow the guide below to register. Otherwise the API is probably down.');
         return;
     }
+
+    //get osu stats from user (leaderboard data)
+    const _lb_stats = await getUserLeaderboardStart(_user.id);
+    _user.leaderboard_stats = _lb_stats;
+
+    //get user scores from osu alternative api
     const _scores = await getUserScores(_user.id, allowLoved);
 
     if (_scores === null || _scores.length === 0) {

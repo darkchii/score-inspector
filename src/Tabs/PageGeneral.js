@@ -24,6 +24,7 @@ import GeneralHighestPPScoreCard from "./GeneralCards/ScoreCards/GeneralHighestP
 import GeneralCardRankedScore from "./GeneralCards/GeneralCardRankedScore";
 import GeneralCardApproxPlaytime from "./GeneralCards/GeneralCardApproxPlaytime";
 import GeneralCardProfilePlaytime from "./GeneralCards/GeneralCardProfilePlaytime";
+import GeneralCardLeaderboardStats from './GeneralCards/GeneralCardLeaderboardStats';
 
 function PageGeneral(props) {
     return (
@@ -46,6 +47,7 @@ function PageGeneral(props) {
                 <Grid2 item xs={12} md={12} lg={2}><GeneralCardTagOccurances data={props.data} /></Grid2>
                 <Grid2 item xs={12} md={12} lg={2.5}><GeneralCardGradeSpread data={props.data} /></Grid2>
                 <Grid2 item xs={12} md={12} lg={2}><GeneralCardUsedModCombos data={props.data} /></Grid2>
+                <Grid2 item xs={12} md={12} lg={2}><GeneralCardLeaderboardStats data={props.data} /></Grid2>
                 {
                     config.DONATE_URL ? <><Grid2 item xs={12} md={12} lg={2}><GeneralCardDonation data={props.data} /></Grid2></> : <></>
                 }
