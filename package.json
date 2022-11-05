@@ -1,6 +1,6 @@
 {
   "name": "score-inspector",
-  "version": "1.0.3",
+  "version": "1.2.0",
   "private": true,
   "homepage": "https://darkchii.nl/score",
   "dependencies": {
