@@ -29,10 +29,7 @@ ChartJS.register(
 );
 
 function TimeGraph(props) {
-    var scoreData = props.data;
-    var name = props.name;
     var labels = props.labels;
-    var _data = props.data;
 
     const [data, setData] = useState({
         labels,
@@ -97,7 +94,6 @@ function TimeGraph(props) {
             labels,
             datasets: []
         }
-        var index = 0;
         props.data.forEach(_data => {
             var dataObject = {
                 label: _data.name,
@@ -114,7 +110,6 @@ function TimeGraph(props) {
                 tension: 0.3,
             };
             newData.datasets.push(dataObject);
-            index++;
         });
 
         setData(newData);
@@ -127,6 +122,7 @@ function TimeGraph(props) {
             };
         }
         setOptions(options);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props, labels]);
 
     var chart = useRef(null);

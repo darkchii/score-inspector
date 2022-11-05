@@ -1,8 +1,7 @@
-import { Box, Card, CardContent, Chip, CircularProgress, Grid, Typography, Table, TableContainer, TableHead, TableRow, TableCell, TableBody } from "@mui/material";
+import { Box, Card, CardContent, Chip, CircularProgress, Typography, Table, TableContainer, TableHead, TableRow, TableCell, TableBody } from "@mui/material";
 import React, { useEffect } from "react";
 import ErrorIcon from '@mui/icons-material/Error';
 import axios from "axios";
-import config from '../../config.json';
 import moment from "moment";
 import { getAPIURL } from "../../helper";
 

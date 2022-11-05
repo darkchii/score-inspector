@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardContent, CircularProgress, Collapse, Grid, IconButton, LinearProgress, Paper, Table, TableBody, TableCell, tableCellClasses, TableContainer, Tooltip, Typography } from "@mui/material";
+import { Box, Card, Collapse, Grid, IconButton, LinearProgress, Tooltip, Typography } from "@mui/material";
 import React, { useEffect } from "react";
 import { getGradeIcon, getModIcon } from "../Assets";
 import { getModString, mods, mod_strings_long, toFixedNumber } from "../helper";
@@ -27,7 +27,7 @@ function ScoreTableRow(props) {
                             <Grid container sx={{ margin: 1 }}>
                                 <Grid item xs={0.5} sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
                                     {/* {getGradeIcon(score.rank)} */}
-                                    <img src={getGradeIcon(score.rank)} />
+                                    <img src={getGradeIcon(score.rank)} alt={score.rank} />
                                 </Grid>
                                 <Grid item xs={7.5} sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
                                     <Tooltip title={`${score.artist} - ${score.title} [${score.diffname}]`}>

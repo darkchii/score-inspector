@@ -1,4 +1,4 @@
-import { Accordion, AccordionDetails, AccordionSummary, Box, Button, ButtonGroup, Card, CardContent, Chip, Grid, LinearProgress, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Box, Button, ButtonGroup, Card, CardContent, Grid, LinearProgress, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { getBeatmapPackMaps } from "../osu";
@@ -21,6 +21,7 @@ function PagePacks(props) {
         }
 
         setPackChunks(chunks);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const loadPack = async (pack) => {

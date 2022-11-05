@@ -1,5 +1,4 @@
 import axios from "axios";
-import moment from "moment";
 import config from "./config.json";
 import { getAltAPIURL, getAPIURL, getUnix, mods } from "./helper";
 

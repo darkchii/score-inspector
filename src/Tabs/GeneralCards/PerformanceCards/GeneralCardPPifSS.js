@@ -1,7 +1,7 @@
 import { Card, CardContent, Typography, Grid, Button } from '@mui/material';
 import { useEffect, useState } from 'react';
 import TopplaysModal from '../../../Components/TopplaysModal';
-import { getGrade, getPerformance } from '../../../osu';
+import { getGrade } from '../../../osu';
 import AutoGraphIcon from '@mui/icons-material/AutoGraph';
 import { toFixedNumber } from '../../../helper';
 
@@ -38,6 +38,7 @@ function GeneralCardPPifSS(props) {
 
     useEffect(() => {
         setPPDiff(props.data.processed.weighted.ss - props.data.user.statistics.pp);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (

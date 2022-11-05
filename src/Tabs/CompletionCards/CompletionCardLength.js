@@ -8,7 +8,6 @@ import { getAPIURL } from "../../helper";
 function CompletionCardLength(props) {
     const [working, setWorkingState] = React.useState(true);
     const [failed, setFailedState] = React.useState(false);
-    const [tableData, setData] = React.useState([]);
 
     const rowSize = 10;
 

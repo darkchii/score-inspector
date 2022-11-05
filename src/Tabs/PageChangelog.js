@@ -1,4 +1,4 @@
-import { Card, CardContent, Chip, Grid, Link, List, ListItem, ListItemIcon, ListItemText } from "@mui/material";
+import { Card, CardContent, Chip, Grid, Link, List, ListItem } from "@mui/material";
 import { CHANGETYPES, updates } from "../updates";
 
 function PageChangelog(props) {

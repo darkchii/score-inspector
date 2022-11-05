@@ -6,7 +6,9 @@ function GeneralCardScoreRank(props) {
 
     useEffect(() => {
         setRank(props.data.user.scoreRank);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+    
     return (
         <>
             <Card sx={{height:'100%'}}>

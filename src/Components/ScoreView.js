@@ -1,10 +1,9 @@
-import { Tooltip, Box, Card, CardContent, CardMedia, Chip, Modal, Typography, Grid, Paper, Table, TableContainer, TableHead, TableRow, TableCell, TableBody, tableCellClasses, CardHeader, Link } from "@mui/material";
+import { Tooltip, Box, Card, CardContent, CardMedia, Chip, Typography, Grid, Table, TableContainer, TableHead, TableRow, TableCell, TableBody, tableCellClasses, Link } from "@mui/material";
 import React, { useEffect } from "react";
-import TimeGraph from "./TimeGraph";
-import { Doughnut, Pie } from "react-chartjs-2";
+import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip as ChartTooltip, Legend } from 'chart.js';
-import { getGradeIcon, getModIcon } from "../Assets";
-import { getModString, mods, mod_strings_long, toFixedNumber } from "../helper";
+import { getGradeIcon } from "../Assets";
+import { getModString, mods, toFixedNumber } from "../helper";
 import { getBeatmapMaxscore, getHitsFromAccuracy } from "../osu";
 import moment from "moment";
 import { getPerformanceLive } from "../Performance/PerformanceLive";

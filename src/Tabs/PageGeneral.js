@@ -1,4 +1,3 @@
-import { Grid } from "@mui/material";
 import Grid2 from '@mui/material/Unstable_Grid2';
 import React from "react";
 import GeneralCardUser from "./GeneralCards/GeneralCardUser";
@@ -15,7 +14,6 @@ import GeneralCardAverageLengthPlayed from "./GeneralCards/GeneralCardAverageLen
 import GeneralCardTagOccurances from "./GeneralCards/GeneralCardTagOccurances";
 import GeneralCardGradeSpread from "./GeneralCards/GeneralCardGradeSpread";
 import GeneralCardUsedModCombos from "./GeneralCards/GeneralCardUsedModCombos";
-import FluidGrid from 'react-fluid-grid';
 import GeneralCardDonation from "./GeneralCards/GeneralCardDonation";
 import config from '../config.json';
 import GeneralCardPPifSS from "./GeneralCards/PerformanceCards/GeneralCardPPifSS";

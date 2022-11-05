@@ -80,15 +80,6 @@ export function getPossibleMods() {
     ]
 }
 
-const _GRADE_ICON_XH = <SVG_GRADE_XH />;
-const _GRADE_ICON_X = <SVG_GRADE_X />;
-const _GRADE_ICON_SH = <SVG_GRADE_SH />;
-const _GRADE_ICON_S = <SVG_GRADE_S />;
-const _GRADE_ICON_A = <SVG_GRADE_A />;
-const _GRADE_ICON_B = <SVG_GRADE_B />;
-const _GRADE_ICON_C = <SVG_GRADE_C />;
-const _GRADE_ICON_D = <SVG_GRADE_D />;
-
 const _GRADE_ICONS = [];
 _GRADE_ICONS['XH'] = <SVG_GRADE_XH />;
 _GRADE_ICONS['X'] = <SVG_GRADE_X />;

@@ -16,8 +16,7 @@ function PageScores(props) {
     const forceUpdate = React.useCallback(() => updateState({}), []);
     const [modalData, setModalData] = React.useState({ active: false });
     const [scoreCount, setScoreCount] = React.useState(0);
-    const [columns, setColumns] = React.useState(
-        [
+    const columns = [
             { field: 'title', flex: 1, headerName: 'Title', minWidth: 280 },
             { field: 'score', headerName: 'Score', minWidth: 170, type: "number", valueFormatter: (params) => { return `${params.value.toLocaleString('en-US')}`; } },
             { field: 'mods', headerName: 'Mods', minWidth: 180, type: "number", renderCell: (params) => { return modFormatter(params) }, onMouseEnter: (params) => { console.log(params) } },
@@ -37,8 +36,7 @@ function PageScores(props) {
             { field: 'bpm', headerName: 'BPM', minWidth: 100, type: "number" },
             { field: 'ppfc', headerName: 'FC PP', minWidth: 100, type: "number", hide: true },
             { field: 'ppss', headerName: 'SS PP', minWidth: 100, type: "number", hide: true },
-        ]
-    );
+        ];
 
     const [columnVisibilityModel, setColumnVisibilityModel] = React.useState({});
 

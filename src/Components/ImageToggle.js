@@ -1,7 +1,5 @@
-import { Box, Checkbox, Grid, Link, styled, Switch, Tooltip } from "@mui/material";
+import { Box } from "@mui/material";
 import React, { useEffect } from "react";
-import { getModIcon, getPossibleMods } from "../Assets";
-import { mods, mod_strings_long } from "../helper";
 
 function ImageToggle(props) {
     const [checked, setChecked] = React.useState(props.checkedDefault);
@@ -15,6 +13,7 @@ function ImageToggle(props) {
 
     useEffect(()=>{
         console.log(checked); 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (

@@ -1,9 +1,8 @@
-import { Card, CardContent, Grid, Typography } from "@mui/material";
+import { Grid } from "@mui/material";
 import React from "react";
 import CompletionCardAR from "./CompletionCards/CompletionCardAR";
 import CompletionCardStars from "./CompletionCards/CompletionCardStars";
 import CompletionCardYear from "./CompletionCards/CompletionCardYear";
-import FluidGrid from 'react-fluid-grid'
 import CompletionCardOD from "./CompletionCards/CompletionCardOD";
 import CompletionCardCS from "./CompletionCards/CompletionCardCS";
 import CompletionCardLength from "./CompletionCards/CompletionCardLength";

@@ -20,6 +20,7 @@ function GeneralCardApproxPlaytime(props) {
 
             setPlaytime(Math.round((totalPlaytime + playcountTime + idleTime * (Math.log10(idleTime) * 0.1)) * 0.5));
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (

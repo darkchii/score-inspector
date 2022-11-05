@@ -1,8 +1,6 @@
-import { Alert, AlertTitle, Button, Card, CardContent, CardMedia, Chip, Grid, Link, List, ListItem, ListItemIcon, ListItemText, Stack, Table, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { Alert, AlertTitle, Button, Card, CardContent, CardMedia, Grid, Link, Stack, Table, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
 import POINTING_KIRINO from '../Assets/Other/pointing_kirino.jpg';
 import FileSelector from "../Components/FileSelector";
-import { getRegisteredUsers } from "../osu";
 
 function PageLanding(props) {
     return (

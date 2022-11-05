@@ -12,12 +12,12 @@ import {
     Tooltip,
     Legend,
 } from 'chart.js';
-import { Scatter, Line } from 'react-chartjs-2';
+import { Scatter } from 'react-chartjs-2';
 import { getGradeColor, mods } from "../helper";
 import Annotations from "chartjs-plugin-annotation";
 import CircleIcon from '@mui/icons-material/Circle';
 import SquareIcon from '@mui/icons-material/Square';
-import { getGradeIcon, SVG_GRADE_A, SVG_GRADE_S, SVG_GRADE_SH, SVG_GRADE_X, SVG_GRADE_XH } from "../Assets";
+import { SVG_GRADE_A, SVG_GRADE_S, SVG_GRADE_X } from "../Assets";
 import { getSessions } from "../osu";
 ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend, Annotations);
 
@@ -151,6 +151,7 @@ function PageIndividualDate(props) {
             setGraphData(data);
         };
         updateGraph();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [scores, props.data.scores, heightDefiner]);
 
     useEffect(() => {

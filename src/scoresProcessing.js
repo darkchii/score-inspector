@@ -1,6 +1,4 @@
-import moment from "moment";
-import Papa from "papaparse";
-import { calculatePP2016, calculatePPifFC, calculatePPifSS, getModString, getUserTrackerStatus, mods, naturalSorter } from "./helper";
+import { calculatePP2016, calculatePPifFC, calculatePPifSS, getModString, getUserTrackerStatus, mods } from "./helper";
 import { getBeatmapCount, getBeatmapPacks, getBonusPerformance, getLazerScore, getSessions, getUser, getUserScores, isUserRegistered } from "./osu";
 import { getPerformance2016 } from "./Performance/Performance2016";
 import { getPerformanceLive } from "./Performance/PerformanceLive";
@@ -28,7 +26,6 @@ const processData = async (scores, callback_success, callback_error, allowLoved,
     bmCount.data.forEach(monthData => {
         const y = monthData.year;
         const m = monthData.month;
-        const c = monthData.amount;
         processed.beatmapInfo.monthly[`${y}-${m}-01`] = monthData;
     })
 
@@ -408,17 +405,4 @@ async function calculatePackData(processed, scores) {
     });
 
     return processed;
-}
-
-function testScores(scores) {
-    let valid = true;
-    scores.every(score => {
-        if (score.user_id === undefined || score.beatmap_id === undefined) {
-            valid = false;
-            return false;
-        }
-
-        return true;
-    });
-    return valid;
 }

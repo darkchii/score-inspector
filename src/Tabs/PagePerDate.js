@@ -1,6 +1,6 @@
 /* eslint-disable no-loop-func */
-import { BottomNavigation, BottomNavigationAction, Box, Button, ButtonGroup, Grid, Paper, Skeleton, Table, TableBody, TableCell, TableRow, Typography } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import { Button, ButtonGroup, Grid, Paper, Skeleton, Table, TableBody, TableCell, TableRow, Typography } from "@mui/material";
+import React, { useEffect } from "react";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import TimeGraph from "../Components/TimeGraph";
 import moment from "moment";
@@ -100,29 +100,17 @@ const dataToList = [
     }
 ];
 
-function useForceUpdate() {
-    const [value, setValue] = useState(0); // integer state
-    return () => setValue(value => value + 1); // update state to force render
-    // An function that increment 👆🏻 the previous state like here 
-    // is better than directly setting `value + 1`
-}
-
 function PagePerDate(props) {
     const [timeGraphValue, setTimeGraphValue] = React.useState("clearsPerSection");
-    const [isReady, setIsReady] = React.useState(false);
-    const [loadState, setLoadState] = React.useState(false);
-    const [processedData, setProcessedScoreData] = React.useState(null);
     const [graphs, setGraphs] = React.useState(null);
     const [, updateState] = React.useState();
     const forceUpdate = React.useCallback(() => updateState({}), []);
 
     var scores = props.data.scores;
-    var user = props.data.user;
     var dateFormat = props.data.format ?? "day";
 
     const processData = async (scores) => {
         var scoresPerDay = [];
-        var index = 0;
         var addDateFormat;
         switch (dateFormat) {
             default:
@@ -162,8 +150,6 @@ function PagePerDate(props) {
                 scoresPerDay[dateValue][val.outputValue] = val.exec(scoresPerDay[dateValue][val.outputValue], score);
             });
             scoresPerDay[dateValue].actual_date = _moment;
-
-            index++;
         };
         console.timeEnd("per section stats");
 
@@ -396,11 +382,11 @@ function PagePerDate(props) {
             (async function () {
                 await new Promise(r => setTimeout(r, 1000));
                 Promise.resolve(processData(scores)).then(() => { forceUpdate(); });
-                setIsReady(true);
             })();
         }else{
             createGraphs();
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (

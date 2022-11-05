@@ -1,7 +1,5 @@
 import { Card, CardContent, Typography, Grid, Button } from '@mui/material';
 import { useState } from 'react';
-import TopplaysModal from '../../../Components/TopplaysModal';
-import { getGrade, getPerformance } from '../../../osu';
 import LaunchIcon from '@mui/icons-material/Launch';
 import { useEffect } from 'react';
 import { toFixedNumber } from '../../../helper';
@@ -11,6 +9,7 @@ function GeneralCardPPifXexxar(props) {
 
     useEffect(() => {
         setPPDiff(props.data.processed.weighted.xexxar - props.data.user.statistics.pp);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (

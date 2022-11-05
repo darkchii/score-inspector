@@ -1,6 +1,5 @@
-import { Alert, AlertTitle, Autocomplete, Box, Button, Card, CardContent, Chip, FormControlLabel, FormGroup, Grid, Link, Paper, Step, StepLabel, Stepper, Switch, TextField, Typography } from "@mui/material";
+import { Alert, AlertTitle, Autocomplete, Box, Button, Chip, FormControlLabel, FormGroup, Grid, Link, Switch, TextField } from "@mui/material";
 import React from "react";
-import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import { getRegisteredUsers } from "../osu";
 
 function FileSelector(props) {
@@ -19,6 +18,7 @@ function FileSelector(props) {
             }
             setUsersAutoComplete(props.data.persistentData.registeredUsers);
         })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handleLovedToggle = (event) => {

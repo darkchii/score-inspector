@@ -1,8 +1,5 @@
-import { Card, CardContent, Typography, Grid, Button, Chip, Stack } from '@mui/material';
-import React, { useState } from 'react';
-import TopplaysModal from '../../../Components/TopplaysModal';
-import { getGrade, getPerformance } from '../../../osu';
-import LaunchIcon from '@mui/icons-material/Launch';
+import { Card, CardContent, Typography, Button, Chip, Stack } from '@mui/material';
+import React from 'react';
 import moment from 'moment';
 import ScoreModal from '../../../Components/ScoreModal';
 import VisibilityIcon from '@mui/icons-material/Visibility';

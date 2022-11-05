@@ -75,6 +75,7 @@ function BeatmapFilter(props) {
 
     useEffect(()=>{
         setColumns(props.columns);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, props.columns);
 
     const onApply = () => {

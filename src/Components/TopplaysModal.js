@@ -1,4 +1,4 @@
-import { Tooltip, Box, Card, CardContent, CardMedia, Chip, Modal, Typography, Grid, Paper, Table, TableContainer, TableHead, TableRow, TableCell, TableBody, tableCellClasses, CardHeader, List, ListItem } from "@mui/material";
+import { Card, CardContent, Modal, Typography, Grid, List, ListItem } from "@mui/material";
 import React, { useEffect } from "react";
 import ScoreTableRow from "./ScoreTableRow";
 
@@ -19,7 +19,6 @@ const style = {
 function TopplaysModal(props) {
     const [open, setOpen] = React.useState(false);
     const [scores, setScores] = React.useState(null);
-    const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
     useEffect(() => {

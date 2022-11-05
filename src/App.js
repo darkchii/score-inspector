@@ -40,7 +40,7 @@ function App() {
   const [isUserProcessing, setUserProcessing] = React.useState(false);
   const [processError, setProcessError] = React.useState(null);
   const [currentTheme, setCurrentTheme] = React.useState(0);
-  const [persistentData, setPersistentData] = React.useState([]); //this data remains the entire session, until refresh
+  const persistentData = []; //this data remains the entire session, until refresh
 
   const [tabValue, setTabValue] = React.useState(1);
 

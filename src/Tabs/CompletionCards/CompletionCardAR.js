@@ -1,9 +1,8 @@
-import { Card, CardContent, Chip, CircularProgress, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography } from "@mui/material";
+import { Card, CardContent, Chip, CircularProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import React, { useEffect } from "react";
 import ErrorIcon from '@mui/icons-material/Error';
 import axios from "axios";
-import config from '../../config.json';
 import { getAPIURL } from "../../helper";
 
 function CompletionCardAR(props) {

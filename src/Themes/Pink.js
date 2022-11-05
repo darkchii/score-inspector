@@ -1,8 +1,3 @@
-import {
-    experimental_sx as sx,
-} from '@mui/material/styles';
-import { shadows } from '@mui/system';
-
 const PinkTheme = {
     themeName: "Pink",
     palette: {
