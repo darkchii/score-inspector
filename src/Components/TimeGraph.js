@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import RotateLeftIcon from '@mui/icons-material/RotateLeft';
-import { Button, FormControlLabel, FormGroup, Grid, Switch } from "@mui/material";
+import { Button, Card, CardContent, FormControlLabel, FormGroup, Grid, Menu, MenuItem, Switch } from "@mui/material";
 import { Line } from "react-chartjs-2";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {
@@ -15,6 +15,7 @@ import {
     Filler
 } from 'chart.js';
 import Zoom from "chartjs-plugin-zoom";
+import styled from "@emotion/styled";
 ChartJS.register(
     CategoryScale,
     LinearScale,
@@ -85,7 +86,15 @@ function TimeGraph(props) {
         },
         maintainAspectRatio: false,
         animation: true,
-        spanGaps: true
+        spanGaps: true,
+        layout: {
+            padding: {
+                left: 0,
+                right: 40,
+                top: 0,
+                bottom: 0
+            }
+        }
     })
 
     useEffect(() => {
@@ -122,7 +131,7 @@ function TimeGraph(props) {
             };
         }
         setOptions(options);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props, labels]);
 
     var chart = useRef(null);
@@ -144,29 +153,39 @@ function TimeGraph(props) {
         // });
     };
 
-    const resetZoom = function(){
-        if(chart!==undefined && chart.current!==undefined){
+    const resetZoom = function () {
+        if (chart !== undefined && chart.current !== undefined) {
             chart.current.resetZoom();
         }
     }
 
     return (
         <>
-            <Grid sx={{ height: 600, position: "relative" }}>
-                <FormGroup sx={{ position: "absolute", left: "5rem", top: 5 }}>
-                    <Button startIcon={<RotateLeftIcon />} variant="contained" onClick={resetZoom}>Reset Zoom</Button>
-                    {
-                        data.datasets.length > 1 ?
-                            data.datasets.map(_data => (
-                                <FormControlLabel
-                                    control={
-                                        <Switch checked={!_data.hidden} onChange={handleDataToggleChange} name={_data.label} />
+            <Grid sx={{ height: 600, position: "relative", pt: 5 }}>
+                <Grid>
+                    <FormGroup row={true} sx={{ position: "absolute", left: 5, top: 5 }}>
+                        <Button startIcon={<RotateLeftIcon />} variant="contained" onClick={resetZoom}>Reset Zoom</Button>&nbsp;
+                        {
+                            data.datasets.length > 1 ?
+                                <>
+                                    {
+                                        data.datasets.map(_data => (
+                                            <>
+                                                <FormControlLabel
+                                                    control={
+                                                        <Switch checked={!_data.hidden} onChange={handleDataToggleChange} name={_data.label} />
+                                                    }
+                                                    label={_data.label}
+                                                />
+                                            </>
+                                        ))
                                     }
-                                    label={_data.label}
-                                />
-                            )) : <></>
-                    }
-                </FormGroup>
+                                </>
+                                :
+                                <></>
+                        }
+                    </FormGroup>
+                </Grid>
                 <Line ref={chart} options={options} data={data} />
             </Grid>
         </>
