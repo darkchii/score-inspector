@@ -46,12 +46,12 @@ function PageGeneral(props) {
                 <Grid2 item xs={12} md={12} lg={2}><GeneralCardTotalLengthPlayed data={props.data} /></Grid2>
                 <Grid2 item xs={12} md={12} lg={2}><GeneralCardProfilePlaytime data={props.data} /></Grid2>
                 <Grid2 item xs={12} md={12} lg={2}><GeneralCardApproxPlaytime data={props.data} /></Grid2>
-                <Grid2 item xs={12} md={12} lg={2}><GeneralCardTagOccurances data={props.data} /></Grid2>
+                <Grid2 item xs={12} md={12} lg={3}><GeneralCardTagOccurances data={props.data} /></Grid2>
                 <Grid2 item xs={12} md={12} lg={2.5}><GeneralCardGradeSpread data={props.data} /></Grid2>
                 <Grid2 item xs={12} md={12} lg={2}><GeneralCardUsedModCombos data={props.data} /></Grid2>
                 <Grid2 item xs={12} md={12} lg={2}><GeneralCardLeaderboardStats data={props.data} /></Grid2>
                 {
-                    config.DONATE_URL ? <><Grid2 item xs={12} md={12} lg={3}><GeneralCardDonation data={props.data} /></Grid2></> : <></>
+                    config.DONATE_URL ? <><Grid2 item xs={12} md={12} lg={2}><GeneralCardDonation data={props.data} /></Grid2></> : <></>
                 }
             </Grid2>
             <Grid2 sx={{ mt: 1 }} container spacing={1}>
