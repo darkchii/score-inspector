@@ -7,6 +7,16 @@ const CHANGETYPES = {
 
 const updates = [
     {
+        version: '1.3',
+        date: 'n/a',
+        changes: [
+            [CHANGETYPES.NEW, 'Added average accuracy to general tab', 'dcb8a3dd93516feb6004b6462d7acf461ed00302'],
+            [CHANGETYPES.NEW, 'Added average accuracy to monthly graph', '7e4e0a1dd16ce328754eb46ffd70e2249e92c233'],
+            [CHANGETYPES.MISC, 'Changed the tags list to a tag cloud', 'a2bb7f31d08a981e07cf9bbd57f5201d7c586517'],
+            [CHANGETYPES.MISC, 'Improved monthly graph controls', '7f2e83513a4f6c3f38277aa7282d60ca9d48b153'],
+        ]
+    },
+    {
         version: '1.2',
         date: '2022-11-05',
         changes: [
