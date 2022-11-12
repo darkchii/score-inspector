@@ -299,6 +299,9 @@ export function getSessions(scores) {
 }
 
 export function getAverageAccuracy(scores) {
+    if (scores===undefined || scores===null || !Array.isArray(scores) || scores.length === 0) {
+        return 0;
+    }
     let a = 0;
     let b = 0;
     scores.forEach(score => {

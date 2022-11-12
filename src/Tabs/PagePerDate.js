@@ -5,6 +5,7 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import TimeGraph from "../Components/TimeGraph";
 import moment from "moment";
 import Zoom from "chartjs-plugin-zoom";
+import { getAverageAccuracy } from "../osu";
 
 ChartJS.register(ArcElement, Tooltip, Legend, Zoom);
 const dataToList = [
@@ -145,6 +146,7 @@ function PagePerDate(props) {
 
             if (scoresPerDay[dateValue] === undefined) {
                 scoresPerDay[dateValue] = {};
+                scoresPerDay[dateValue].scores = [];
             }
             dataToList.forEach(val => {
                 if (scoresPerDay[dateValue][val.outputValue] === undefined || scoresPerDay[dateValue][val.outputValue] === null) {
@@ -153,6 +155,7 @@ function PagePerDate(props) {
                 scoresPerDay[dateValue][val.outputValue] = val.exec(scoresPerDay[dateValue][val.outputValue], score);
             });
             scoresPerDay[dateValue].actual_date = _moment;
+            scoresPerDay[dateValue].scores.push(score);
         };
 
         //convert it to a sortable array
@@ -164,6 +167,7 @@ function PagePerDate(props) {
                 obj[val.outputValue] = scoresPerDay[key][val.outputValue];
             });
             obj.date = key;
+            obj.scores = scoresPerDay[key].scores;
             obj.actual_date = scoresPerDay[key].actual_date;
             obj.average_pp = parseInt("" + (scoresPerDay[key].total_pp / scoresPerDay[key].count_scores));
             obj.average_sr = scoresPerDay[key].count_scores > 0 ? parseFloat((scoresPerDay[key].total_sr / scoresPerDay[key].count_scores).toFixed(2)) : 0;
@@ -215,6 +219,7 @@ function PagePerDate(props) {
         });
 
         sorted = r;
+        console.log(sorted);
 
         //calculate cumulative data
         for (var i = 0; i < sorted.length; i++) {
@@ -300,6 +305,8 @@ function PagePerDate(props) {
             sorted[i].completion = 100 / beatmaps.amount * sorted[i].cumulative_plays;
             sorted[i].completion_score = 100 / beatmaps.score * sorted[i].cumulative_score;
             sorted[i].completion_length = 100 / beatmaps.length * sorted[i].cumulative_length;
+
+            sorted[i].average_acc = getAverageAccuracy(sorted[i].scores);
         }
 
         if (props.data.processed.scorePerDate === undefined) {
@@ -356,6 +363,7 @@ function PagePerDate(props) {
             "srPerPlay": <TimeGraph name="Average SR per play" labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Average SR", set: props.data.processed.scorePerDate[dateFormat].map(x => x.average_sr), color: { r: 255, g: 102, b: 158 } }]} />,
             "scorePerPlay": <TimeGraph name="Average score per play" labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Average score", set: props.data.processed.scorePerDate[dateFormat].map(x => x.average_score), color: { r: 255, g: 102, b: 158 } }]} />,
             "lengthPerPlay": <TimeGraph name="Average length per play" labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Average score", set: props.data.processed.scorePerDate[dateFormat].map(x => x.average_length), color: { r: 255, g: 102, b: 158 } }]} />,
+            "accPerPlay": <TimeGraph name="Average accuracy per play" labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Average accuracy", set: props.data.processed.scorePerDate[dateFormat].map(x => x.average_acc), color: { r: 255, g: 102, b: 158 } }]} />,
         });
     };
 
@@ -386,6 +394,7 @@ function PagePerDate(props) {
                 { id: "scorePerPlay", title: "Average Score" },
                 { id: "lengthPerPlay", title: "Average Length" },
                 { id: "ppPerPlay", title: "Average PP" },
+                { id: "accPerPlay", title: "Average Accuracy" },
                 { id: "highestPPPlay", title: "Highest PP" },
                 { id: "completion", title: "Completion" },
             ]
