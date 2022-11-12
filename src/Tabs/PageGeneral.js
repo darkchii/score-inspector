@@ -25,21 +25,23 @@ import GeneralCardRankedScore from "./GeneralCards/GeneralCardRankedScore";
 import GeneralCardApproxPlaytime from "./GeneralCards/GeneralCardApproxPlaytime";
 import GeneralCardProfilePlaytime from "./GeneralCards/GeneralCardProfilePlaytime";
 import GeneralCardLeaderboardStats from './GeneralCards/GeneralCardLeaderboardStats';
+import GeneralCardAverageAccuracy from './GeneralCards/GeneralCardAverageAccuracy';
 
 function PageGeneral(props) {
     return (
         <>
             <Grid2 container spacing={1}>
                 <Grid2 item xs={12} md={12} lg={3}><GeneralCardUser data={props.data} /></Grid2>
-                <Grid2 item xs={12} md={12} lg={1.5}><GeneralCardClears data={props.data} /></Grid2>
+                <Grid2 item xs={12} md={12} lg={1}><GeneralCardClears data={props.data} /></Grid2>
                 <Grid2 item xs={12} md={12} lg={1.5}><GeneralCardTotalPP data={props.data} /></Grid2>
                 <Grid2 item xs={12} md={12} lg={1}><GeneralCardAveragePP data={props.data} /></Grid2>
                 <Grid2 item xs={12} md={12} lg={1}><GeneralCardAverageSR data={props.data} /></Grid2>
-                <Grid2 item xs={12} md={12} lg={2}><GeneralCardHighestSR data={props.data} /></Grid2>
+                <Grid2 item xs={12} md={12} lg={1}><GeneralCardHighestSR data={props.data} /></Grid2>
                 <Grid2 item xs={6} md={6} lg={1}><GeneralCardFullComboPerc data={props.data} /></Grid2>
                 <Grid2 item xs={6} md={6} lg={1}><GeneralCardScoreRank data={props.data} /></Grid2>
+                <Grid2 item xs={6} md={6} lg={1}><GeneralCardAverageAccuracy data={props.data} /></Grid2>
                 <Grid2 item xs={12} md={12} lg={1.5}><GeneralCardScorePerPlay data={props.data} /></Grid2>
-                <Grid2 item xs={12} md={12} lg={2}><GeneralCardAverageLengthPlayed data={props.data} /></Grid2>
+                <Grid2 item xs={12} md={12} lg={1.5}><GeneralCardAverageLengthPlayed data={props.data} /></Grid2>
                 <Grid2 item xs={12} md={12} lg={2.5}><GeneralCardRankedScore data={props.data} /></Grid2>
                 <Grid2 item xs={12} md={12} lg={2}><GeneralCardTotalLengthPlayed data={props.data} /></Grid2>
                 <Grid2 item xs={12} md={12} lg={2}><GeneralCardProfilePlaytime data={props.data} /></Grid2>
@@ -49,7 +51,7 @@ function PageGeneral(props) {
                 <Grid2 item xs={12} md={12} lg={2}><GeneralCardUsedModCombos data={props.data} /></Grid2>
                 <Grid2 item xs={12} md={12} lg={2}><GeneralCardLeaderboardStats data={props.data} /></Grid2>
                 {
-                    config.DONATE_URL ? <><Grid2 item xs={12} md={12} lg={2}><GeneralCardDonation data={props.data} /></Grid2></> : <></>
+                    config.DONATE_URL ? <><Grid2 item xs={12} md={12} lg={3}><GeneralCardDonation data={props.data} /></Grid2></> : <></>
                 }
             </Grid2>
             <Grid2 sx={{ mt: 1 }} container spacing={1}>

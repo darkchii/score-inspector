@@ -7,7 +7,7 @@ function GeneralCardClears(props) {
                 <CardContent>
                     <Grid container spacing={3} sx={{ justifyContent: 'space-between' }}>
                         <Grid item>
-                            <Typography color="textPrimary" variant="h4">{props.data.processed.scoreCount.toLocaleString('en-US')}</Typography>
+                            <Typography color="textPrimary" variant="h5">{props.data.processed.scoreCount.toLocaleString('en-US')}</Typography>
                             <Typography color="textSecondary">clears</Typography>
                         </Grid>
                     </Grid>

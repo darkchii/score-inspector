@@ -6,18 +6,18 @@ export function getBonusPerformance(clears) {
     return 416.6667 * (1 - Math.pow(0.9994, clears));
 }
 
-export function getHitsFromAccuracy(acc, nobjects, nmiss = 0){
-    let n300=0, n100=0, n50=0
+export function getHitsFromAccuracy(acc, nobjects, nmiss = 0) {
+    let n300 = 0, n100 = 0, n50 = 0
     const max300 = nobjects - nmiss
     n100 = Math.round(
         -3.0 * ((acc * 0.01 - 1.0) * nobjects + nmiss) * 0.5
     )
-    
+
     if (n100 > max300) {
         // acc lower than all 100s, use 50s
         n100 = 0;
         n50 = Math.round(
-          -6.0 * ((acc * 0.01 - 1.0) * nobjects + nmiss) * 0.5
+            -6.0 * ((acc * 0.01 - 1.0) * nobjects + nmiss) * 0.5
         );
         n50 = Math.min(max300, n50);
     }
@@ -34,36 +34,36 @@ export function getHitsFromAccuracy(acc, nobjects, nmiss = 0){
 
 export async function isUserRegistered(id) {
     let _registered = false;
-    try{
+    try {
         const url = `${getAltAPIURL()}users/registered/${id}`;
         const res = await axios.get(url, { headers: { "Access-Control-Allow-Origin": "*" } });
         _registered = res.data.registered;
-    }catch(err){
+    } catch (err) {
         _registered = false;
     }
     return _registered;
 }
 
-export async function getRegisteredUsers(){
+export async function getRegisteredUsers() {
     let _users = [];
-    try{
+    try {
         const url = `${getAltAPIURL()}users/registered`;
         const res = await axios.get(url, { headers: { "Access-Control-Allow-Origin": "*" } });
         _users = res.data;
-    }catch(err){
+    } catch (err) {
         _users = [];
     }
     return _users;
 }
 
 const osustats_api = 'https://osustats.respektive.pw/counts/';
-export async function getUserLeaderboardStart(id){
+export async function getUserLeaderboardStart(id) {
     let _stats = null;
-    try{
+    try {
         const url = `${osustats_api}${id}`;
         const res = await axios.get(url, { headers: { "Access-Control-Allow-Origin": "*" } });
         _stats = res.data;
-    }catch(err){
+    } catch (err) {
         return null;
     }
     return _stats;
@@ -71,11 +71,11 @@ export async function getUserLeaderboardStart(id){
 
 export async function getUserScores(id, allowLoved) {
     let _scores = null;
-    try{
+    try {
         const url = `${getAltAPIURL()}scores/${id}${allowLoved ? "?loved=true" : ""}`;
         const res = await axios.get(url, { headers: { "Access-Control-Allow-Origin": "*" } });
         _scores = res.data;
-    }catch(err){
+    } catch (err) {
         return null;
     }
     return _scores;
@@ -296,4 +296,14 @@ export function getSessions(scores) {
         }
     });
     return activities;
+}
+
+export function getAverageAccuracy(scores) {
+    let a = 0;
+    let b = 0;
+    scores.forEach(score => {
+        a += (score.count300 + score.count100 * 0.3333 + score.count50 * 0.1667);
+        b += (score.count300 + score.count100 + score.count50 + score.countmiss);
+    });
+    return a * Math.pow(b, -1) * 100;
 }

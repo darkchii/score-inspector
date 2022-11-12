@@ -9,7 +9,7 @@ function GeneralCardUser(props) {
                 <CardContent>
                     <Grid container spacing={3} sx={{ justifyContent: 'space-between' }}>
                         <Grid item>
-                            <Typography color="textPrimary" variant="h4">{props.data.user.username}</Typography>
+                            <Typography color="textPrimary" variant="h5">{props.data.user.username}</Typography>
                             <Tooltip title={`Highest rank: #${props.data.user.rank_highest.rank}, ${moment(props.data.user.rank_highest.updated_at).fromNow()}`}>
                                 <Typography color="textSecondary">{toFixedNumber(props.data.user.statistics.pp, 0).toLocaleString('en-US')}pp #{props.data.user.statistics.global_rank.toLocaleString('en-US')}</Typography>
                             </Tooltip>

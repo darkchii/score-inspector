@@ -11,11 +11,11 @@ function GeneralCardScoreRank(props) {
     
     return (
         <>
-            <Card sx={{height:'100%'}}>
+            <Card>
                 <CardContent>
                     <Grid container spacing={3} sx={{ justifyContent: 'space-between' }}>
                         <Grid item>
-                            <Typography color="textPrimary" variant={rank < 10000 ? 'h4' : 'h5'}>
+                            <Typography color="textPrimary" variant='h5'>
                                 {rank <= 10000 ?
                                     <>#{props.data.user.scoreRank.toLocaleString("en-US")}</>
                                     : <>&gt;#10,000</>}

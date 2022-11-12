@@ -29,7 +29,7 @@ function GeneralCardApproxPlaytime(props) {
                 <CardContent>
                     <Grid container spacing={3} sx={{ justifyContent: 'space-between' }}>
                         <Grid item>
-                            <Typography color="textPrimary" variant="h4">{(moment.duration(playtime ?? 0, "seconds").asHours()).toFixed(1)} hours</Typography>
+                            <Typography color="textPrimary" variant="h5">{(moment.duration(playtime ?? 0, "seconds").asHours()).toFixed(1)} hours</Typography>
                             <Typography sx={{ display: 'flex' }} color="textSecondary">approximate playtime <Tooltip title={infoText}><InfoOutlinedIcon sx={{ ml: 1 }} /></Tooltip></Typography>
                         </Grid>
                     </Grid>
