@@ -128,9 +128,6 @@ function PagePerDate(props) {
                 break;
         }
 
-        console.log(moment(scores[0].date_played));
-
-        console.time("per section stats");
         for (const score of scores) {
             // var date = new Date(score.date_played);
             var _moment = moment(score.date_played);
@@ -157,9 +154,7 @@ function PagePerDate(props) {
             });
             scoresPerDay[dateValue].actual_date = _moment;
         };
-        console.timeEnd("per section stats");
 
-        console.time("sorting");
         //convert it to a sortable array
         var realScoresPerDay = [];
         //(async function () { setLoadTitle("Sorting statistics"); })();
@@ -182,9 +177,7 @@ function PagePerDate(props) {
             return a.actual_date.valueOf() - b.actual_date.valueOf();
         });
 
-        console.timeEnd("sorting");
 
-        console.time("generating dates");
         //fill empty gaps
         let dates = [];
         var _start = moment(sorted[0].actual_date);
@@ -193,9 +186,7 @@ function PagePerDate(props) {
         for (var m = moment(_start); (m.isBefore(_end) || m.isSame(_end, addDateFormat)); m.add(1, `${addDateFormat}s`)) {
             dates.push(moment(m));
         }
-        console.timeEnd("generating dates");
 
-        console.time("filling empty spots");
         const referenceObject = JSON.parse(JSON.stringify(sorted[0]));
         for (var p in referenceObject) {
             referenceObject[p] = 0;
@@ -224,9 +215,7 @@ function PagePerDate(props) {
         });
 
         sorted = r;
-        console.timeEnd("filling empty spots");
 
-        console.time("generating cumulative stuff");
         //calculate cumulative data
         for (var i = 0; i < sorted.length; i++) {
             var prev = i > 0 ? sorted[i - 1].cumulative_score : 0;
@@ -313,8 +302,6 @@ function PagePerDate(props) {
             sorted[i].completion_length = 100 / beatmaps.length * sorted[i].cumulative_length;
         }
 
-        console.log(sorted);
-
         if (props.data.processed.scorePerDate === undefined) {
             props.data.processed.scorePerDate = [];
         }
@@ -326,7 +313,6 @@ function PagePerDate(props) {
             props.data.processed.scorePerDate[dateFormat] = sorted;
             props.data.processed.scorePerDateLabels[dateFormat] = props.data.processed.scorePerDate[dateFormat].map(x => x.date);
         }
-        console.timeEnd("generating cumulative stuff");
 
         createGraphs();
     }
