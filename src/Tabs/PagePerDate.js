@@ -104,6 +104,18 @@ const dataToList = [
         exec: function (output, score) {
             return output + score.count300 + score.count100 + score.count50;
         }
+    },
+    {
+        outputValue: "total_base_score",
+        exec: function (output, score) {
+            return output + (score.count300 + score.count100*0.3333 + score.count50*0.1667);
+        }
+    },
+    {
+        outputValue: "total_max_base_score",
+        exec: function (output, score) {
+            return output + (score.count300 + score.count100 + score.count50 + score.countmiss);
+        }
     }
 ];
 
@@ -175,6 +187,8 @@ function PagePerDate(props) {
             obj.average_length = scoresPerDay[key].count_scores > 0 ? parseFloat((scoresPerDay[key].total_length / scoresPerDay[key].count_scores).toFixed(0)) : 0;
             realScoresPerDay.push(obj);
         });
+
+        console.log(realScoresPerDay);
 
         //sort array
         var sorted = realScoresPerDay.sort((a, b) => {
@@ -300,13 +314,28 @@ function PagePerDate(props) {
                 sorted[i].cumulative_total_hits = sorted[i].total_hits;
             }
 
+            prev = i > 0 ? sorted[i - 1].cumulative_total_base_score : 0;
+            if (prev) {
+                sorted[i].cumulative_total_base_score = sorted[i].total_base_score + prev;
+            } else {
+                sorted[i].cumulative_total_base_score = sorted[i].total_base_score;
+            }
+
+            prev = i > 0 ? sorted[i - 1].cumulative_total_max_base_score : 0;
+            if (prev) {
+                sorted[i].cumulative_total_max_base_score = sorted[i].total_max_base_score + prev;
+            } else {
+                sorted[i].cumulative_total_max_base_score = sorted[i].total_max_base_score;
+            }
+            sorted[i].total_average_acc = sorted[i].total_base_score*Math.pow(sorted[i].total_max_base_score, -1) * 100;
+            sorted[i].cumulative_average_acc = sorted[i].cumulative_total_base_score*Math.pow(sorted[i].cumulative_total_max_base_score, -1) * 100;
+
             console.log(`${sorted[i].actual_date.format("YYYY-M")}-01`);
             const beatmaps = props.data.processed.beatmapInfo.monthlyCumulative[`${sorted[i].actual_date.format("YYYY-M")}-01`];
             sorted[i].completion = 100 / beatmaps.amount * sorted[i].cumulative_plays;
             sorted[i].completion_score = 100 / beatmaps.score * sorted[i].cumulative_score;
             sorted[i].completion_length = 100 / beatmaps.length * sorted[i].cumulative_length;
-
-            sorted[i].average_acc = getAverageAccuracy(sorted[i].scores);
+            // sorted[i].average_acc = getAverageAccuracy(sorted[i].scores);
         }
 
         if (props.data.processed.scorePerDate === undefined) {
@@ -331,6 +360,7 @@ function PagePerDate(props) {
             "lengthPerSection": <TimeGraph name={`Total length per ${dateFormat}`} labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Total length played", set: props.data.processed.scorePerDate[dateFormat].map(x => x.total_length), color: { r: 255, g: 102, b: 158 } }]} />,
             "totalscorePerSection": <TimeGraph name={`Total score per ${dateFormat}`} labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Total score gained", set: props.data.processed.scorePerDate[dateFormat].map(x => x.total_score), color: { r: 255, g: 102, b: 158 } }]} />,
             "totalhitsPerSection": <TimeGraph name={`Total hits per ${dateFormat}`} labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Total hits", set: props.data.processed.scorePerDate[dateFormat].map(x => x.total_hits), color: { r: 255, g: 102, b: 158 } }]} />,
+            "totalAverageAcc": <TimeGraph name={`Average accuracy per ${dateFormat}`} labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Average accuracy", set: props.data.processed.scorePerDate[dateFormat].map(x => x.total_average_acc), color: { r: 255, g: 102, b: 158 } }]} />,
             "completion": <TimeGraph name='Completion' labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[
                 { name: "% Clear Completion", set: props.data.processed.scorePerDate[dateFormat].map(x => x.completion), color: { r: 255, g: 102, b: 158 } },
                 { name: "% Score Completion", set: props.data.processed.scorePerDate[dateFormat].map(x => x.completion_score), color: { r: 244, g: 67, b: 54 } },
@@ -342,6 +372,7 @@ function PagePerDate(props) {
             "cumulativeClears": <TimeGraph name="Cumulative plays" labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Cumulative plays", set: props.data.processed.scorePerDate[dateFormat].map(x => x.cumulative_plays), color: { r: 255, g: 102, b: 158 } }]} />,
             "cumulativeLength": <TimeGraph name={`Cumulative length played`} labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Cumulative total length played", set: props.data.processed.scorePerDate[dateFormat].map(x => x.cumulative_length), color: { r: 255, g: 102, b: 158 } }]} />,
             "cumulativeHits": <TimeGraph name={`Cumulative note hits`} labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Cumulative note hits", set: props.data.processed.scorePerDate[dateFormat].map(x => x.cumulative_total_hits), color: { r: 255, g: 102, b: 158 } }]} />,
+            "cumulativeAcc": <TimeGraph name={`Overall average accuracy`} labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Overall average accuracy", set: props.data.processed.scorePerDate[dateFormat].map(x => x.cumulative_average_acc), color: { r: 255, g: 102, b: 158 } }]} />,
             "gradesPerSection": <TimeGraph name="Grades" labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[
                 { name: "Total SS", set: props.data.processed.scorePerDate[dateFormat].map(x => x.total_ss), color: { r: 197, g: 197, b: 197 } },
                 { name: "Total S", set: props.data.processed.scorePerDate[dateFormat].map(x => x.total_s), color: { r: 255, g: 186, b: 14 } },
@@ -363,7 +394,7 @@ function PagePerDate(props) {
             "srPerPlay": <TimeGraph name="Average SR per play" labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Average SR", set: props.data.processed.scorePerDate[dateFormat].map(x => x.average_sr), color: { r: 255, g: 102, b: 158 } }]} />,
             "scorePerPlay": <TimeGraph name="Average score per play" labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Average score", set: props.data.processed.scorePerDate[dateFormat].map(x => x.average_score), color: { r: 255, g: 102, b: 158 } }]} />,
             "lengthPerPlay": <TimeGraph name="Average length per play" labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Average score", set: props.data.processed.scorePerDate[dateFormat].map(x => x.average_length), color: { r: 255, g: 102, b: 158 } }]} />,
-            "accPerPlay": <TimeGraph name="Average accuracy per play" labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Average accuracy", set: props.data.processed.scorePerDate[dateFormat].map(x => x.average_acc), color: { r: 255, g: 102, b: 158 } }]} />,
+            //"accPerPlay": <TimeGraph name="Average accuracy per play" labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Average accuracy", set: props.data.processed.scorePerDate[dateFormat].map(x => x.average_acc), color: { r: 255, g: 102, b: 158 } }]} />,
         });
     };
 
@@ -376,6 +407,7 @@ function PagePerDate(props) {
                 { id: "ppPerSection", title: "PP" },
                 { id: "lengthPerSection", title: "Length" },
                 { id: "totalhitsPerSection", title: "Hits" },
+                { id: "totalAverageAcc", title: "Accuracy" },
             ]
         },
         {
@@ -386,6 +418,7 @@ function PagePerDate(props) {
                 { id: "cumulativePP", title: "PP" },
                 { id: "cumulativeLength", title: "Length" },
                 { id: "cumulativeHits", title: "Hits" },
+                { id: "cumulativeAcc", title: "Accuracy" },
             ]
         },
         {
@@ -394,7 +427,7 @@ function PagePerDate(props) {
                 { id: "scorePerPlay", title: "Average Score" },
                 { id: "lengthPerPlay", title: "Average Length" },
                 { id: "ppPerPlay", title: "Average PP" },
-                { id: "accPerPlay", title: "Average Accuracy" },
+                //{ id: "accPerPlay", title: "Average Accuracy" },
                 { id: "highestPPPlay", title: "Highest PP" },
                 { id: "completion", title: "Completion" },
             ]
