@@ -117,6 +117,15 @@ export async function getUser(id) {
         return null;
     }
 
+    try {
+        let _dailyUser = await axios.get(`${getAPIURL()}daily/${_user.id}`, { headers: { "Access-Control-Allow-Origin": "*" } });
+        if(_dailyUser !== undefined && _dailyUser.data.error===undefined) {
+            _user.daily = _dailyUser.data;
+        }
+    }catch (err) {
+        _user.daily = null;
+    }
+
     return _user;
 }
 

@@ -60,9 +60,9 @@ function TimeGraph(props) {
                 anchor: 'end',
                 align: 'end',
                 backgroundColor: '#00000088',
-                formatter: (value, context) => {
+                formatter: props.formatter ?? ((value, context) => {
                     return `${value.toLocaleString("en-US")}`;
-                }
+                })
             },
             zoom: {
                 zoom: {
@@ -94,7 +94,7 @@ function TimeGraph(props) {
                 top: 0,
                 bottom: 0
             }
-        }
+        },
     })
 
     useEffect(() => {

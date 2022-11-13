@@ -108,7 +108,7 @@ const dataToList = [
     {
         outputValue: "total_base_score",
         exec: function (output, score) {
-            return output + (score.count300 + score.count100*0.3333 + score.count50*0.1667);
+            return output + (score.count300 + score.count100 * 0.3333 + score.count50 * 0.1667);
         }
     },
     {
@@ -188,8 +188,6 @@ function PagePerDate(props) {
             realScoresPerDay.push(obj);
         });
 
-        console.log(realScoresPerDay);
-
         //sort array
         var sorted = realScoresPerDay.sort((a, b) => {
             return a.actual_date.valueOf() - b.actual_date.valueOf();
@@ -233,7 +231,7 @@ function PagePerDate(props) {
         });
 
         sorted = r;
-        console.log(sorted);
+        // console.log(sorted);
 
         //calculate cumulative data
         for (var i = 0; i < sorted.length; i++) {
@@ -327,15 +325,44 @@ function PagePerDate(props) {
             } else {
                 sorted[i].cumulative_total_max_base_score = sorted[i].total_max_base_score;
             }
-            sorted[i].total_average_acc = sorted[i].total_base_score*Math.pow(sorted[i].total_max_base_score, -1) * 100;
-            sorted[i].cumulative_average_acc = sorted[i].cumulative_total_base_score*Math.pow(sorted[i].cumulative_total_max_base_score, -1) * 100;
+            sorted[i].total_average_acc = sorted[i].total_base_score * Math.pow(sorted[i].total_max_base_score, -1) * 100;
+            sorted[i].cumulative_average_acc = sorted[i].cumulative_total_base_score * Math.pow(sorted[i].cumulative_total_max_base_score, -1) * 100;
 
-            console.log(`${sorted[i].actual_date.format("YYYY-M")}-01`);
+            // console.log(`${sorted[i].actual_date.format("YYYY-M")}-01`);
             const beatmaps = props.data.processed.beatmapInfo.monthlyCumulative[`${sorted[i].actual_date.format("YYYY-M")}-01`];
             sorted[i].completion = 100 / beatmaps.amount * sorted[i].cumulative_plays;
             sorted[i].completion_score = 100 / beatmaps.score * sorted[i].cumulative_score;
             sorted[i].completion_length = 100 / beatmaps.length * sorted[i].cumulative_length;
             // sorted[i].average_acc = getAverageAccuracy(sorted[i].scores);
+
+            //get highest rank at this time point
+            let rank = null;
+            let c_rank = null;
+            let raw_pp = null;
+            if (props.data.user.daily !== null) {
+                const dailyPoints = props.data.user.daily.modes[0].lines;
+                for (var j = 0; j < dailyPoints.length; j++) {
+                    const point = dailyPoints[j];
+                    const date = moment(point.date);
+                    if (date.isSame(sorted[i].actual_date, addDateFormat)) {
+                        //perDatePoints.push(dailyPoints[j]);
+                        if (rank === null || point.rankworld < rank) {
+                            rank = point.rankworld;
+                        }
+
+                        if (c_rank === null || point.rankcountry < c_rank) {
+                            c_rank = point.rankcountry;
+                        }
+                        if(raw_pp === null || point.pp < raw_pp){
+                            raw_pp = point.pp;
+                        }
+                    }
+                }
+                // console.log(dailyPoints);
+            }
+            sorted[i].global_rank = rank !== null ? -rank : null;
+            sorted[i].country_rank = c_rank !== null ? -c_rank : null;
+            sorted[i].raw_pp = raw_pp;
         }
 
         if (props.data.processed.scorePerDate === undefined) {
@@ -394,6 +421,11 @@ function PagePerDate(props) {
             "srPerPlay": <TimeGraph name="Average SR per play" labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Average SR", set: props.data.processed.scorePerDate[dateFormat].map(x => x.average_sr), color: { r: 255, g: 102, b: 158 } }]} />,
             "scorePerPlay": <TimeGraph name="Average score per play" labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Average score", set: props.data.processed.scorePerDate[dateFormat].map(x => x.average_score), color: { r: 255, g: 102, b: 158 } }]} />,
             "lengthPerPlay": <TimeGraph name="Average length per play" labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Average score", set: props.data.processed.scorePerDate[dateFormat].map(x => x.average_length), color: { r: 255, g: 102, b: 158 } }]} />,
+            "globalRank": <TimeGraph formatter={(value, context) => { return `#${Math.abs(value).toLocaleString("en-US")}`; }} name="Rank" labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[
+                { name: "Global Rank", set: props.data.processed.scorePerDate[dateFormat].map(x => x.global_rank), color: { r: 255, g: 102, b: 158 } },
+                { name: "Country Rank", set: props.data.processed.scorePerDate[dateFormat].map(x => x.country_rank), color: { r: 82, g: 158, b: 250 } },
+            ]} />,
+            "rawPP": <TimeGraph name="Raw PP" labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Raw PP", set: props.data.processed.scorePerDate[dateFormat].map(x => x.raw_pp), color: { r: 255, g: 102, b: 158 } }]} />,
             //"accPerPlay": <TimeGraph name="Average accuracy per play" labels={props.data.processed.scorePerDateLabels[dateFormat]} data={[{ name: "Average accuracy", set: props.data.processed.scorePerDate[dateFormat].map(x => x.average_acc), color: { r: 255, g: 102, b: 158 } }]} />,
         });
     };
@@ -429,20 +461,22 @@ function PagePerDate(props) {
                 { id: "ppPerPlay", title: "Average PP" },
                 //{ id: "accPerPlay", title: "Average Accuracy" },
                 { id: "highestPPPlay", title: "Highest PP" },
+                { id: "rawPP", title: "Raw PP" },
+                { id: "globalRank", title: "Rank" },
                 { id: "completion", title: "Completion" },
             ]
         }
     ]
 
     useEffect(() => {
-        if (props.data.processed.scorePerDate === undefined || props.data.processed.scorePerDate[dateFormat] === undefined) {
-            (async function () {
-                await new Promise(r => setTimeout(r, 1000));
-                Promise.resolve(processData(scores)).then(() => { forceUpdate(); });
-            })();
-        } else {
-            createGraphs();
-        }
+        // if (props.data.processed.scorePerDate === undefined || props.data.processed.scorePerDate[dateFormat] === undefined) {
+        (async function () {
+            await new Promise(r => setTimeout(r, 1000));
+            Promise.resolve(processData(scores)).then(() => { forceUpdate(); });
+        })();
+        // } else {
+        //     createGraphs();
+        // }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
