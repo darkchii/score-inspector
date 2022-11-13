@@ -469,15 +469,15 @@ function PagePerDate(props) {
     ]
 
     useEffect(() => {
-        // if (props.data.processed.scorePerDate === undefined || props.data.processed.scorePerDate[dateFormat] === undefined) {
+        if (props.data.processed.scorePerDate === undefined || props.data.processed.scorePerDate[dateFormat] === undefined) {
         (async function () {
             await new Promise(r => setTimeout(r, 1000));
             Promise.resolve(processData(scores)).then(() => { forceUpdate(); });
         })();
-        // } else {
-        //     createGraphs();
-        // }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        } else {
+            createGraphs();
+        }
+        //eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
