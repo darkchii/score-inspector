@@ -9,7 +9,7 @@
     "@fontsource/comfortaa": "^4.5.10",
     "@fontsource/roboto": "^4.5.8",
     "@mui/icons-material": "^5.10.9",
-    "@mui/material": "^5.10.8",
+    "@mui/material": "^5.10.13",
     "@mui/x-data-grid": "^5.17.10",
     "@mui/x-date-pickers": "^5.0.6",
     "axios": "^1.1.3",
