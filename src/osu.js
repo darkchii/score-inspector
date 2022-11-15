@@ -84,7 +84,7 @@ export async function getUserScores(id, allowLoved) {
 export async function getBeatmapPackMaps(pack, sets_only = false) {
     let maps = null;
     try {
-        const res = await axios.get(`${getAPIURL()}/beatmaps/${sets_only ? 'allsets' : 'all'}?pack=${pack}`);
+        const res = await axios.get(`${getAPIURL()}beatmaps/${sets_only ? 'allsets' : 'all'}?pack=${pack}`);
         maps = res.data;
         if (maps.error !== undefined) {
             throw Error('Unable to get beatmap pack data right now');
