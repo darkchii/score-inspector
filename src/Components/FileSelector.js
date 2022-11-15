@@ -18,7 +18,7 @@ function FileSelector(props) {
             }
             setUsersAutoComplete(props.data.persistentData.registeredUsers);
         })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handleLovedToggle = (event) => {
