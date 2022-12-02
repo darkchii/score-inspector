@@ -18,6 +18,7 @@ import PinkTheme from './Themes/Pink';
 import PagePacks from './Tabs/PagePacks';
 import PageLanding from './Tabs/PageLanding';
 import { updates } from './updates';
+import PageBeatmaps from './Tabs/PageBeatmaps';
 
 const themes = [
   ChiiTheme,
@@ -70,6 +71,7 @@ function App() {
   const tabs = [
     { name: 'Home', component: <PageLanding data={{ hasProcessedData: processedData !== null, processError: processError, persistentData: persistentData, processed: processedData }} handleScoresFetch={handleScoresFetch} loadState={loadState} /> },
     { name: 'Changelog', component: <PageChangelog /> },
+    { name: 'Beatmaps', component: <PageBeatmaps data={{ persistentData: persistentData }} /> },
     { name: 'General', component: <PageGeneral data={{ scores: scoreData, user: user, processed: processedData }} />, useData: true },
     { name: 'Scores', component: <PageScores data={{ scores: scoreData, user: user, processed: processedData }} />, useData: true },
     { name: 'Completion', component: <PageCompletion data={{ scores: scoreData, user: user, processed: processedData }} />, useData: true },

@@ -96,6 +96,17 @@ export async function getBeatmapPackMaps(pack, sets_only = false) {
     return maps;
 }
 
+export async function getBeatmapStats(){
+    let data = null;
+    try {
+        const res = await axios.get(`${getAPIURL()}beatmaps/stats?include_loved=true`);
+        data = res.data;
+    } catch (err) {
+        return null;
+    }
+    return data;
+}
+
 export async function getUser(id) {
     let _user = null;
     try {
