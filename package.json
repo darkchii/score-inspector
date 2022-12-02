@@ -11,7 +11,7 @@
     "@mui/icons-material": "^5.10.9",
     "@mui/material": "^5.10.14",
     "@mui/x-data-grid": "^5.17.13",
-    "@mui/x-date-pickers": "^5.0.8",
+    "@mui/x-date-pickers": "^5.0.9",
     "axios": "^1.2.0",
     "chart.js": "^3.9.1",
     "chartjs-plugin-annotation": "^2.1.0",
