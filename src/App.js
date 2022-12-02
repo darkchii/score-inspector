@@ -97,7 +97,7 @@ function App() {
     setSnowMode(event.target.checked);
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     window.localStorage.setItem('snowMode', JSON.stringify(snowMode));
   }, [snowMode]);
 
@@ -107,111 +107,117 @@ function App() {
   }, []);
 
   return (
-    <ThemeProvider theme={createTheme(themes[currentTheme])}>
-      <CssBaseline />
+    <>
       {
-        snowMode && <Snowfall />
+        snowMode && <Snowfall style={{
+          position: 'fixed',
+          width: '100vw',
+          height: '100vh',
+        }} />
       }
-      <Box sx={{ display: 'flex' }}>
-        <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
-          <Toolbar>
-            <Typography
-              variant="h6"
-              component="div"
-              sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
-            >
-              osu! scores visualizer {updates[0].version}
-            </Typography>
-            <FormGroup>
-              <FormControlLabel control={<Switch onChange={snowHandleChange} checked={snowMode} />} label="Snow" />
-            </FormGroup>
-            <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-              <InputLabel>Theme</InputLabel>
-              <Select>
-                {
-                  themes.map((theme, index) => (
-                    <MenuItem key={index} value={index} onClick={(e) => themeHandleChange(e, index)}>{theme.themeName}</MenuItem>
-                  ))
-                }
-              </Select>
-            </FormControl>
-          </Toolbar>
-        </AppBar>
-        <Tabs
-          orientation="vertical"
-          position="fixed"
-          variant="scrollable"
-          value={tabValue}
-          onChange={tabHandleChange}
-          sx={{ borderRight: 1, borderColor: 'divider', minHeight: '100%', minWidth: '10rem' }}
-        >
-          <Toolbar />
-          {
-            tabs.map((tab, index) => (
-              <Tab label={tab.name} {...a11yProps(index)} disabled={tab.useData ? !(scoreData != null && user != null && processedData != null) : false} />
-            ))
-          }
-        </Tabs>
-        <Box component="main" sx={{ flexGrow: 1 }}>
-          <Toolbar />
+      <ThemeProvider theme={createTheme(themes[currentTheme])}>
+        <CssBaseline />
+        <Box sx={{ display: 'flex' }}>
+          <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+            <Toolbar>
+              <Typography
+                variant="h6"
+                component="div"
+                sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
+              >
+                osu! scores visualizer {updates[0].version}
+              </Typography>
+              <FormGroup>
+                <FormControlLabel control={<Switch onChange={snowHandleChange} checked={snowMode} />} label="Snow" />
+              </FormGroup>
+              <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                <InputLabel>Theme</InputLabel>
+                <Select>
+                  {
+                    themes.map((theme, index) => (
+                      <MenuItem key={index} value={index} onClick={(e) => themeHandleChange(e, index)}>{theme.themeName}</MenuItem>
+                    ))
+                  }
+                </Select>
+              </FormControl>
+            </Toolbar>
+          </AppBar>
+          <Tabs
+            orientation="vertical"
+            position="fixed"
+            variant="scrollable"
+            value={tabValue}
+            onChange={tabHandleChange}
+            sx={{ borderRight: 1, borderColor: 'divider', minHeight: '100%', minWidth: '10rem' }}
+          >
+            <Toolbar />
+            {
+              tabs.map((tab, index) => (
+                <Tab label={tab.name} {...a11yProps(index)} disabled={tab.useData ? !(scoreData != null && user != null && processedData != null) : false} />
+              ))
+            }
+          </Tabs>
+          <Box component="main" sx={{ flexGrow: 1 }}>
+            <Toolbar />
 
 
-          <Paper>
-            <Grid container
-              spacing={0}
-              direction="column"
-              alignItems="center"
-              justifyContent="top"
-              sx={{
-                py: 2,
-                backgroundSize: "cover",
-                backgroundRepeat: "no-repeat",
-                backgroundPositionY: "center",
-                backgroundImage: `url("${(user !== undefined && user !== null ? user.cover_url : "null")}")`,
-                minHeight: `${(user !== undefined && user !== null ? '30vh' : '0vh')}`
-              }
-              }
-            ></Grid>
-            {loadState ? <>
-              <br />
+            <Paper>
               <Grid container
                 spacing={0}
                 direction="column"
                 alignItems="center"
-                justifyContent="center"
-                sx={{ pb: 1 }}>
-                <CircularProgress />
-              </Grid>
-            </> : <></>}
-          </Paper>
-          {
-            isUserProcessing ? <>
-              <Grid container sx={{ p: 2 }} direction="column" alignItems="center">
-                <Grid item xs={12} md={6} lg={6}>
-                  <Alert severity="warning">
-                    <AlertTitle>Warning</AlertTitle>
-                    The scorefetcher isn't done checking all of your scores yet! The data is most likely incomplete. ({isUserProcessing.percentage.toFixed(2)}% done)
-                  </Alert>
+                justifyContent="top"
+                sx={{
+                  py: 2,
+                  backgroundSize: "cover",
+                  backgroundRepeat: "no-repeat",
+                  backgroundPositionY: "center",
+                  backgroundImage: `url("${(user !== undefined && user !== null ? user.cover_url : "null")}")`,
+                  minHeight: `${(user !== undefined && user !== null ? '30vh' : '0vh')}`
+                }
+                }
+              ></Grid>
+              {loadState ? <>
+                <br />
+                <Grid container
+                  spacing={0}
+                  direction="column"
+                  alignItems="center"
+                  justifyContent="center"
+                  sx={{ pb: 1 }}>
+                  <CircularProgress />
                 </Grid>
-              </Grid>
-            </> : <></>
-          }
-          <Grid>
+              </> : <></>}
+            </Paper>
             {
-              tabs.map((tab, index) => (
-                <TabPanel value={tabValue} index={index + 1}>
-                  <br />
-                  {
-                    (tab.useData ? (scoreData != null && user != null && processedData != null) : true) ? tab.component : <></>
-                  }
-                </TabPanel>
-              ))
+              isUserProcessing ? <>
+                <Grid container sx={{ p: 2 }} direction="column" alignItems="center">
+                  <Grid item xs={12} md={6} lg={6}>
+                    <Alert severity="warning">
+                      <AlertTitle>Warning</AlertTitle>
+                      The scorefetcher isn't done checking all of your scores yet! The data is most likely incomplete. ({isUserProcessing.percentage.toFixed(2)}% done)
+                    </Alert>
+                  </Grid>
+                </Grid>
+              </> : <></>
             }
-            <Footer sx={{ px: 3, my: 1 }} />
-          </Grid>
+            <Grid>
+              {
+                tabs.map((tab, index) => (
+                  <TabPanel value={tabValue} index={index + 1}>
+                    <br />
+                    {
+                      (tab.useData ? (scoreData != null && user != null && processedData != null) : true) ? tab.component : <></>
+                    }
+                  </TabPanel>
+                ))
+              }
+              <Footer sx={{ px: 3, my: 1 }} />
+            </Grid>
+          </Box>
         </Box>
-      </Box>
-    </ThemeProvider>
+      </ThemeProvider>
+    </>
   );
 }
 
