@@ -13,6 +13,7 @@ function FileSelector(props) {
     React.useEffect(() => {
         (async () => {
             if (props.data.persistentData.registeredUsers === null || props.data.persistentData.registeredUsers === undefined) {
+                props.data.persistentData.registeredUsers = [];
                 const users = await getRegisteredUsers();
                 props.data.persistentData.registeredUsers = users;
             }
