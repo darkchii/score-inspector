@@ -7,6 +7,13 @@ const CHANGETYPES = {
 
 const updates = [
     {
+        version: '1.3.1',
+        date: '2022-12-02',
+        changes: [
+            [CHANGETYPES.FIX, 'Redirect to correct tab', '35c1b2c0523668fab313b3fe8facba2a73e4123b']
+        ]
+    },
+    {
         version: '1.3',
         date: '2022-12-02',
         changes: [
