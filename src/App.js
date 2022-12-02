@@ -1,4 +1,4 @@
-import { CssBaseline, Box, AppBar, Toolbar, Typography, Paper, Grid, CircularProgress, Tabs, Tab, Alert, AlertTitle, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { CssBaseline, Box, AppBar, Toolbar, Typography, Paper, Grid, CircularProgress, Tabs, Tab, Alert, AlertTitle, FormControl, InputLabel, Select, MenuItem, FormGroup, FormControlLabel, Switch } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import React, { useEffect } from 'react';
 import ReactDOM from 'react-dom';
@@ -44,6 +44,8 @@ function App() {
   const [processError, setProcessError] = React.useState(null);
   const [currentTheme, setCurrentTheme] = React.useState(0);
   const persistentData = []; //this data remains the entire session, until refresh
+
+  const [snowMode, setSnowMode] = React.useState(JSON.parse(window.localStorage.getItem('snowMode')));
 
   const [tabValue, setTabValue] = React.useState(1);
 
@@ -91,14 +93,25 @@ function App() {
     setCurrentTheme(newValue);
   };
 
+  const snowHandleChange = (event) => {
+    setSnowMode(event.target.checked);
+  };
+
+  useEffect(()=>{
+    window.localStorage.setItem('snowMode', JSON.stringify(snowMode));
+  }, [snowMode]);
+
   useEffect(() => {
     themeHandleChange(null, JSON.parse(window.localStorage.getItem('themeID')) ?? 0);
+    setSnowMode(JSON.parse(window.localStorage.getItem('snowMode')));
   }, []);
 
   return (
     <ThemeProvider theme={createTheme(themes[currentTheme])}>
       <CssBaseline />
-      <Snowfall />
+      {
+        snowMode && <Snowfall />
+      }
       <Box sx={{ display: 'flex' }}>
         <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
           <Toolbar>
@@ -109,6 +122,9 @@ function App() {
             >
               osu! scores visualizer {updates[0].version}
             </Typography>
+            <FormGroup>
+              <FormControlLabel control={<Switch onChange={snowHandleChange} checked={snowMode} />} label="Snow" />
+            </FormGroup>
             <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
               <InputLabel>Theme</InputLabel>
               <Select>
