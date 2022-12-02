@@ -1,6 +1,7 @@
 import { CssBaseline, Box, AppBar, Toolbar, Typography, Paper, Grid, CircularProgress, Tabs, Tab, Alert, AlertTitle, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import React, { useEffect } from 'react';
+import ReactDOM from 'react-dom';
 import './App.css';
 import './Tabs.js';
 import TabPanel from './Tabs.js';
@@ -19,6 +20,7 @@ import PagePacks from './Tabs/PagePacks';
 import PageLanding from './Tabs/PageLanding';
 import { updates } from './updates';
 import PageBeatmaps from './Tabs/PageBeatmaps';
+import Snowfall from 'react-snowfall';
 
 const themes = [
   ChiiTheme,
@@ -96,6 +98,7 @@ function App() {
   return (
     <ThemeProvider theme={createTheme(themes[currentTheme])}>
       <CssBaseline />
+      <Snowfall />
       <Box sx={{ display: 'flex' }}>
         <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
           <Toolbar>
