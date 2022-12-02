@@ -64,7 +64,7 @@ function App() {
         setScoreData(data.scores);
         setLoadState(false);
         setProcessError(null);
-        if (tabValue === 1) setTabValue(3);
+        if (tabValue === 1) setTabValue(4);
       },
       (error) => {
         setLoadState(false);
