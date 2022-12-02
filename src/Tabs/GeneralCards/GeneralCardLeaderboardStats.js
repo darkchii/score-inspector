@@ -39,6 +39,11 @@ function GeneralCardLeaderboardStats(props) {
                                                         <TableCell>{props.data.user.leaderboard_stats.top50s.toLocaleString('en-US')}</TableCell>
                                                         <TableCell>{props.data.user.leaderboard_stats.top50s_rank !== null ? `#${props.data.user.leaderboard_stats.top50s_rank.toLocaleString('en-US')}` : '-'}</TableCell>
                                                     </TableRow>
+                                                    <TableRow>
+                                                        <TableCell>Top 100s</TableCell>
+                                                        <TableCell>{props.data.user.leaderboard_stats.top100s.toLocaleString('en-US')}</TableCell>
+                                                        <TableCell>{props.data.user.leaderboard_stats.top100s_rank !== null ? `#${props.data.user.leaderboard_stats.top100s_rank.toLocaleString('en-US')}` : '-'}</TableCell>
+                                                    </TableRow>
                                                 </TableBody>
                                             </Table>
                                         </TableContainer>

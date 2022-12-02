@@ -65,6 +65,23 @@ function PageLanding(props) {
                         <CardMedia component="img" height="450" image={POINTING_KIRINO} />
                     </Card>
                 </Grid>
+                <Grid item xs={12} md={3}>
+                    <Card>
+                        <CardContent>
+                            <Typography variant='h5'>Datasets</Typography>
+                        </CardContent>
+                        <CardContent>
+                            <TableContainer>
+                                <Table size='small'>
+                                    <TableRow><TableCell>scores dataset</TableCell><TableCell><Link href="https://discord.gg/VZWRZZXcW4" target="_blank">osu!alternative</Link></TableCell></TableRow>
+                                    <TableRow><TableCell>top50s dataset</TableCell><TableCell><Link href="https://github.com/respektive/osustats" target="_blank">respektive</Link></TableCell></TableRow>
+                                    <TableRow><TableCell>score ranking</TableCell><TableCell><Link href="https://github.com/respektive/osu-score-rank-api" target="_blank">respektive</Link></TableCell></TableRow>
+                                    <TableRow><TableCell>raw pp and rank data</TableCell><TableCell><Link href="https://osudaily.net/" target="_blank">osu!daily</Link></TableCell></TableRow>
+                                </Table>
+                            </TableContainer>
+                        </CardContent>
+                    </Card>
+                </Grid>
             </Grid>
         </>
     );
