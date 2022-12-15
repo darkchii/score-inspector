@@ -1,4 +1,4 @@
-import { IMG_TRIANGLES } from "../Assets";
+import { IMG_TRIANGLES } from "./Assets";
 
 const DefaultTheme = {
     themeName: "osu!",
@@ -8,10 +8,9 @@ const DefaultTheme = {
             main: '#C8598A',
         },
         background: {
-            default: '#2A2226',
+            default: '#18171C',
             dark: '#fff',
-            paper: '#382E32',
-            paper2: '#382E32',
+            paper: '#221F2E',
         },
     },
     shape: {
@@ -20,6 +19,11 @@ const DefaultTheme = {
     typography: {
         fontFamily: 'Comfortaa',
         fontWeight: 700,
+        title: {
+            color: '#C2B8E0',
+            fontSize: 26,
+            fontWeight: 500,
+        },
     },
     components: {
         MuiButton: {

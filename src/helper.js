@@ -2,21 +2,6 @@ import axios from "axios";
 import { isScoreRealistic } from "./osu";
 import config from "./config.json";
 
-export async function getUserTrackerStatus(user_id) {
-    const currentlyTracking = await axios.get(`${(config.USE_DEV_API) ? config.OSU_TEST_API : config.OSU_API}proxy/aHR0cHM6Ly9vc3VhbHQucmVzcGVrdGl2ZS5wdy9hcGkvY3VycmVudA==`, { headers: { "Access-Control-Allow-Origin": "*" } });
-
-    if (currentlyTracking.data === undefined || currentlyTracking.data.length === 0) {
-        return false;
-    }
-
-    const existing = currentlyTracking.data.filter(user => parseInt(user.user_id) === parseInt(user_id));
-    if (existing.length > 0) {
-        return existing[0];
-    }
-
-    return false;
-}
-
 export function getGradeColor(grade) {
     switch (grade) {
         default:
@@ -114,14 +99,6 @@ export const mod_strings_long = {
 export function toFixedNumber(num, digits, base) {
     var pow = Math.pow(base || 10, digits);
     return Math.round(num * pow) / pow;
-}
-
-export function getAPIURL() {
-    return (config.USE_DEV_API) ? config.OSU_TEST_API : config.OSU_API;
-}
-
-export function getAltAPIURL() {
-    return (config.USE_DEV_API) ? config.OSU_TEST_API_ALT : config.OSU_API_ALT;
 }
 
 export function formatNumber(n, decimals = 0, short = false) {

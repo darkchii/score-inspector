@@ -7,6 +7,13 @@ const CHANGETYPES = {
 
 const updates = [
     {
+        version: '2.0.0',
+        date: 'n/a',
+        changes: [
+            [CHANGETYPES.MISC, 'Complete project overhaul']
+        ]
+    },
+    {
         version: '1.3.1',
         date: '2022-12-02',
         changes: [
