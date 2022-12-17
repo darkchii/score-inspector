@@ -2,7 +2,7 @@
   "name": "score-inspector",
   "version": "1.2.0",
   "private": true,
-  "homepage": "https://darkchii.nl/score",
+  "homepage": "https://darkchii.nl/",
   "dependencies": {
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",

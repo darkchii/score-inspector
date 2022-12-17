@@ -1,4 +1,4 @@
-import { IMG_TRIANGLES } from "./Assets";
+import { IMG_TRIANGLES } from "./Helpers/Assets";
 
 const DefaultTheme = {
     themeName: "osu!",

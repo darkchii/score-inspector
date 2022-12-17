@@ -125,7 +125,7 @@ export async function getUser(id) {
             _user.scoreRank = _scoreRank[0].rank;
         }
     } catch (err) {
-        return null;
+        _user.scoreRank = null;
     }
 
     try {

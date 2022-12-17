@@ -13,7 +13,7 @@ function Update() {
 
     useEffect(() => {
         if (updates[updates.length - params.id] !== undefined) {
-            setUpdate(updates[updates.length - params.updateId]);
+            setUpdate(updates[updates.length - params.id]);
         }
     }, []);
 
