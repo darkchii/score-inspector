@@ -66,19 +66,48 @@ function Leaders() {
     const [leaderboard, setLeaderboard] = useState(null);
     const navigate = useNavigate();
 
+    //if stat portion of url changes
+    useEffect(() => {
+        if (params.stat) {
+            const _stat = RANKED_STATISTICS.find((stat) => stat.name === params.stat);
+            if (_stat) setStatistic(_stat);
+            else setStatistic(RANKED_STATISTICS[0]);
+        } else {
+            setStatistic(RANKED_STATISTICS[0]);
+        }
+    }, [params.stat]);
+
+    //if page portion of url changes
+    useEffect(() => {
+        if (params.page) {
+            setPage(parseInt(params.page));
+        }
+    }, [params.page]);
+
+    useEffect(() => {
+        update(true);
+    }, [statistic]);
+
+    useEffect(() => {
+        update(false);
+    }, [page]);
+
     const update = (resetPage) => {
         if (isLoading) return;
+        let _page = page;
+        if (resetPage) {
+            _page = 1;
+        }
+        console.log('update');
         setIsLoading(true);
-        if (resetPage) setPage(1);
         (async () => {
-            let _page = params.page ? parseInt(params.page) : 1;
-            if (resetPage) _page = 1;
+            setLeaderboard(null);
             const lb = await getLeaderboard(statistic.name, ROWS_PER_PAGE, _page - 1, country);
             if (lb === null || lb.error !== undefined) {
-                setLeaderboard(null);
                 setIsLoading(false);
                 return;
             }
+
             const pages = Math.ceil(lb.result_users / ROWS_PER_PAGE);
             setTotalPages(pages);
             setLeaderboard(lb.leaderboard);
@@ -86,15 +115,47 @@ function Leaders() {
         })();
     };
 
-    useEffect(() => {
-        update(false);
-        setPage(params.page ? parseInt(params.page) : 1);
-    }, [params.page]);
+    // const update = (resetPage) => {
+    //     if (isLoading) return;
+    //     setIsLoading(true);
+    //     if (resetPage) setPage(1);
+    //     (async () => {
+    //         let _page = params.page ? parseInt(params.page) : 1;
+    //         if (resetPage) _page = 1;
+    //         const lb = await getLeaderboard(statistic.name, ROWS_PER_PAGE, _page - 1, country);
+    //         if (lb === null || lb.error !== undefined) {
+    //             setLeaderboard(null);
+    //             setIsLoading(false);
+    //             return;
+    //         }
+    //         const pages = Math.ceil(lb.result_users / ROWS_PER_PAGE);
+    //         setTotalPages(pages);
+    //         setLeaderboard(lb.leaderboard);
+    //         setIsLoading(false);
+    //     })();
+    // };
 
-    useEffect(() => {
-        update(true);
-        setStatistic(params.stat ? RANKED_STATISTICS.find((stat) => stat.name === params.stat) : RANKED_STATISTICS[0]);
-    }, [params.stat]);
+    // useEffect(() => {
+    //     update(false);
+    //     setPage(params.page ? parseInt(params.page) : 1);
+    // }, [params.page]);
+
+    // useEffect(() => {
+    //     let _stat = null;
+    //     if (params.stat) {
+    //         _stat = RANKED_STATISTICS.find((stat) => stat.name === params.stat);
+    //     }
+    //     if (_stat === null || _stat === undefined) {
+    //         _stat = RANKED_STATISTICS[0];
+    //     }
+    //     setStatistic(_stat);
+    // }, [params.stat]);
+
+    // useEffect(() => {
+    //     update(true);
+    // }, [statistic]);
+
+    if (statistic === undefined || statistic === null) return (<></>);
 
     return (
         <>
