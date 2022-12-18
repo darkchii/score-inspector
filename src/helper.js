@@ -106,26 +106,6 @@ export function formatNumber(n, decimals = 0, short = false) {
     return n;
 }
 
-export function getModString(value) {
-    var data = [];
-
-    if (value & mods.NC) {
-        value &= ~mods.DT;
-    }
-
-    if (value & mods.PF) {
-        value &= ~mods.SD;
-    }
-
-    for (const modVal in mod_strings) {
-        if (value & modVal) {
-            data.push(mod_strings[modVal]);
-            continue;
-        }
-    }
-    return data;
-}
-
 export function numToMod(num) {
     let number = parseInt(num)
     let mod_list = []
