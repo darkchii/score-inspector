@@ -42,7 +42,13 @@ function App() {
                 <Route path="update/:id" element={<Update />} />
                 <Route path="*" element={<Error />} />
                 <Route path="user/:id" element={<User />} />
-                <Route path="leaderboard" element={<Leaders />} />
+                <Route path="leaderboard" element={<Leaders />}>
+                  <Route index element={<Leaders />} />
+                  <Route path="stat/:stat" element={<Leaders />}>
+                    <Route index element={<Leaders />} />
+                    <Route path="page/:page" element={<Leaders />} />
+                  </Route>
+                </Route>
               </Routes>
             </CardContent>
           </Card>

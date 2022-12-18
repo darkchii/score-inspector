@@ -3,7 +3,7 @@ import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import ReactCountryFlag from 'react-country-flag';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { getLeaderboard } from '../Helpers/OsuAlt';
 import VerifiedIcon from '@mui/icons-material/Verified';
 import moment from 'moment/moment';
@@ -47,7 +47,7 @@ const RANKED_STATISTICS = [
     },
     {
         name: 'scores_first_count', title: 'First Places'
-    },{
+    }, {
         name: 'post_count', title: 'Forum Posts'
     }, {
         name: 'ranked_beatmapset_count', title: 'Ranked Beatmaps'
@@ -56,9 +56,11 @@ const RANKED_STATISTICS = [
 
 const ROWS_PER_PAGE = 50;
 function Leaders() {
+    const params = useParams();
+
     const [isLoading, setIsLoading] = useState(false);
-    const [statistic, setStatistic] = useState(RANKED_STATISTICS[0]);
-    const [page, setPage] = useState(1);
+    const [statistic, setStatistic] = useState(params.stat ? RANKED_STATISTICS.find((stat) => stat.name === params.stat) : RANKED_STATISTICS[0]);
+    const [page, setPage] = useState(params.page ? parseInt(params.page) : 1);
     const [totalPages, setTotalPages] = useState(0);
     const [country, setCountry] = useState(null);
     const [leaderboard, setLeaderboard] = useState(null);
@@ -69,7 +71,7 @@ function Leaders() {
         setIsLoading(true);
         if (resetPage) setPage(1);
         (async () => {
-            let _page = page;
+            let _page = params.page ? parseInt(params.page) : 1;
             if (resetPage) _page = 1;
             const lb = await getLeaderboard(statistic.name, ROWS_PER_PAGE, _page - 1, country);
             if (lb === null || lb.error !== undefined) {
@@ -86,11 +88,13 @@ function Leaders() {
 
     useEffect(() => {
         update(false);
-    }, [page]);
+        setPage(params.page ? parseInt(params.page) : 1);
+    }, [params.page]);
 
     useEffect(() => {
         update(true);
-    }, [statistic]);
+        setStatistic(params.stat ? RANKED_STATISTICS.find((stat) => stat.name === params.stat) : RANKED_STATISTICS[0]);
+    }, [params.stat]);
 
     return (
         <>
@@ -98,7 +102,7 @@ function Leaders() {
                 {
                     RANKED_STATISTICS.map((stat) => {
                         return (
-                            <Button disabled={isLoading} size='small' variant={stat.name === statistic.name ? 'contained' : 'outlined'} onClick={() => setStatistic(stat)}>{stat.title}</Button>
+                            <Button disabled={isLoading} size='small' variant={stat.name === statistic.name ? 'contained' : 'outlined'} onClick={() => navigate(`stat/${stat.name}/page/1`)}>{stat.title}</Button>
                         );
                     })
                 }
@@ -106,7 +110,7 @@ function Leaders() {
             {
                 totalPages > 1 ? <>
                     <Box sx={{ pb: 2, justifyContent: 'center', display: 'flex' }}>
-                        <Pagination color="primary" boundaryCount={1} siblingCount={4} width='100%' disabled={isLoading} page={page} onChange={(e, v) => setPage(v)} count={totalPages} />
+                        <Pagination color="primary" boundaryCount={1} siblingCount={4} width='100%' disabled={isLoading} page={page} onChange={(e, v) => navigate(`stat/${statistic.name}/page/${v}`)} count={totalPages} />
                     </Box>
                 </> : <></>
             }
