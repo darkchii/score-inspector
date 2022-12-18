@@ -1,14 +1,22 @@
-import { Avatar, Box, Button, CircularProgress, Pagination, Paper, Stack, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { Avatar, Box, Button, CircularProgress, Pagination, Paper, Stack, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableHead, TableRow, Tooltip, Typography } from '@mui/material';
 import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import ReactCountryFlag from 'react-country-flag';
 import { useNavigate } from 'react-router-dom';
 import { getLeaderboard } from '../Helpers/OsuAlt';
+import VerifiedIcon from '@mui/icons-material/Verified';
+import moment from 'moment/moment';
 
 const RANKED_STATISTICS = [
     {
-        name: 'pp', title: 'PP',
+        name: 'pp', title: 'PP', customFormat: (value) => (Math.round(value)).toLocaleString('en-US') + 'pp'
+    },
+    {
+        name: 'ranked_score', title: 'Ranked Score'
+    },
+    {
+        name: 'total_score', title: 'Total Score'
     },
     {
         name: 'ss', title: 'Total SS',
@@ -21,6 +29,28 @@ const RANKED_STATISTICS = [
     },
     {
         name: 'clears', title: 'Clears',
+    },
+    {
+        name: 'total_hits', title: 'Hit Count'
+    },
+    {
+        name: 'playcount', title: 'Play Count',
+    },
+    {
+        name: 'playtime', title: 'Play Time', customFormat: (value) => (Math.round(moment.duration(value, 'seconds').asHours())).toLocaleString('en-US') + ' hours'
+    },
+    {
+        name: 'followers', title: 'Followers'
+    },
+    {
+        name: 'replays_watched', title: 'Replays Watched'
+    },
+    {
+        name: 'scores_first_count', title: 'First Places'
+    },{
+        name: 'post_count', title: 'Forum Posts'
+    }, {
+        name: 'ranked_beatmapset_count', title: 'Ranked Beatmaps'
     }
 ]
 
@@ -68,7 +98,7 @@ function Leaders() {
                 {
                     RANKED_STATISTICS.map((stat) => {
                         return (
-                            <Button disabled={isLoading} variant={stat.name === statistic.name ? 'contained' : 'outlined'} onClick={() => setStatistic(stat)}>{stat.title}</Button>
+                            <Button disabled={isLoading} size='small' variant={stat.name === statistic.name ? 'contained' : 'outlined'} onClick={() => setStatistic(stat)}>{stat.title}</Button>
                         );
                     })
                 }
@@ -129,19 +159,36 @@ function Leaders() {
                                                         </TableCell>
                                                         <TableCell width={'5%'}>
                                                             <ReactCountryFlag
-                                                                style={{ lineHeight: '1em', fontSize: '1.2em', borderRadius: '5px' }}
+                                                                style={{ lineHeight: '1em', fontSize: '1.8em', borderRadius: '5px' }}
                                                                 cdnUrl="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/"
                                                                 countryCode={user.country_code}
                                                             />
                                                         </TableCell>
                                                         <TableCell>
-                                                            <Typography variant='subtitles1' noWrap>
-                                                                {user.username}
-                                                            </Typography>
+                                                            <Stack direction='row' spacing={1} alignItems='center'>
+                                                                <Typography variant='subtitles1' noWrap>
+                                                                    {user.username}
+                                                                </Typography>
+                                                                {
+                                                                    user.tracked ?
+                                                                        <Tooltip title='This user is tracked by osu!alternative and can be viewed'>
+                                                                            <VerifiedIcon color='primary' fontSize='small' />
+                                                                        </Tooltip>
+                                                                        : <></>
+                                                                }
+                                                            </Stack>
                                                         </TableCell>
                                                         <TableCell>
                                                             <Typography variant='subtitles1' noWrap>
-                                                                {user.stat.toLocaleString('en-US')}
+                                                                {
+                                                                    (statistic.customFormat !== undefined && statistic.customFormat != null) ?
+                                                                        <>
+                                                                            {statistic.customFormat(user.stat)}
+                                                                        </> : <>
+                                                                            {Math.round(user.stat).toLocaleString('en-US')}
+                                                                        </>
+
+                                                                }
                                                             </Typography>
                                                         </TableCell>
                                                     </TableRow>
