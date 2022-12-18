@@ -1,4 +1,5 @@
-export async function processScores(scores) {
+export async function processScores(scores, onScoreProcessUpdate) {
+    onScoreProcessUpdate('Preparation');
     scores = prepareScores(scores);
 
     const data = {
@@ -28,6 +29,7 @@ export async function processScores(scores) {
         }
     };
 
+    onScoreProcessUpdate('Misc data');
     for (const score of scores) {
         const grade = score.rank;
         data.grades[grade]++;
@@ -38,6 +40,7 @@ export async function processScores(scores) {
         data.total.length += score.length ?? 0;
     }
 
+    onScoreProcessUpdate('Average data');
     if (data.clears > 0) {
         data.average.pp = data.total.pp / data.clears;
         data.average.score = data.total.score / data.clears;

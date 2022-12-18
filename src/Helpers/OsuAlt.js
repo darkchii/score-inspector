@@ -38,11 +38,16 @@ export async function getUser(user_id) {
     return user;
 }
 
-export async function getUserScores(user_id, allowLoved) {
+export async function getUserScores(user_id, allowLoved, onScoreDownloadProgress) {
     let _scores = null;
     try {
         const url = `${getAltAPIURL()}scores/${user_id}${allowLoved ? "?loved=true" : ""}`;
-        const res = await axios.get(url, { headers: { "Access-Control-Allow-Origin": "*" } });
+        const config = {
+            onDownloadProgress: (progressEvent) => {
+                onScoreDownloadProgress?.(progressEvent);
+            }
+        }
+        const res = await axios.get(url, { headers: { "Access-Control-Allow-Origin": "*" }, ...config });
         _scores = res.data;
     } catch (err) {
         return null;

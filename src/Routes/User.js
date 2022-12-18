@@ -14,6 +14,7 @@ import SectionCards from '../Components/UserPage/SectionCards';
 function User() {
     const [user, setUser] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [loadingState, setLoadingState] = useState('Test message');
     const params = useParams();
 
     useEffect(() => {
@@ -22,6 +23,7 @@ function User() {
             setUser(null);
             const user_out = {};
             const user_in = params.id;
+            setLoadingState('Fetching user data');
             const alt_user = await getAltUser(user_in);
 
             if (alt_user === null || alt_user.error !== undefined) {
@@ -39,7 +41,12 @@ function User() {
             }
             user_out.osu = osu_user;
 
-            const _scores = await getUserScores(user_out.alt.user_id, true);
+            const onScoreDownloadProgress = (progress) => {
+                setLoadingState(`Fetching user scores (${parseInt(Math.round(progress.loaded*100)/progress.total)}%)`);
+            };
+
+            setLoadingState('Fetching user scores');
+            const _scores = await getUserScores(user_out.alt.user_id, true, onScoreDownloadProgress);
             if (_scores === null || _scores.error !== undefined) {
                 setUser(null);
                 setIsLoading(false);
@@ -47,10 +54,13 @@ function User() {
             }
             user_out.scores = _scores;
 
-            const _data = await processScores(user_out.scores);
-            user_out.data = _data;
+            const onScoreProcessUpdate = (progress) => {
+                setLoadingState(`Processing user scores (${progress})`);
+            };
 
-            console.log(user_out);
+            setLoadingState('Processing user scores');
+            const _data = await processScores(user_out.scores, onScoreProcessUpdate);
+            user_out.data = _data;
 
             setUser(user_out);
             setIsLoading(false);
@@ -62,7 +72,10 @@ function User() {
             {
                 isLoading ? <>
                     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
-                        <CircularProgress />
+                        <Stack spacing={2} direction='column' alignItems='center'>
+                            <CircularProgress />
+                            <Typography variant='subtitle1' sx={{ ml: 2 }}>{loadingState}</Typography>
+                        </Stack>
                     </Box>
                 </> : user === null || !user ? <>
                     <Stack spacing={2} direction='column'>
