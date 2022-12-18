@@ -19,7 +19,8 @@ function Header() {
                                 textDecoration: 'none',
                             }}>osu! scores inspector</Typography>
                             <Box sx={{ flexGrow: 1 }}>
-                                <Button onClick={() => searchElement.current.setOpen(true)} variant='contained'>Search</Button>
+                                <Button onClick={() => searchElement.current.setOpen(true)}>Search</Button>
+                                <Button component={Link} to={'/leaderboard'}>Leaderboards</Button>
                             </Box>
                         </Toolbar>
                     </Container>

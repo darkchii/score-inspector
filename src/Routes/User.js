@@ -1,4 +1,4 @@
-import { Avatar, Box, Card, CardContent, Chip, CircularProgress, Grid, Stack, Tooltip, Typography } from '@mui/material';
+import { Avatar, Box, Card, CardContent, Chip, CircularProgress, Grid, Link, Stack, Tooltip, Typography } from '@mui/material';
 import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
@@ -65,7 +65,14 @@ function User() {
                         <CircularProgress />
                     </Box>
                 </> : user === null || !user ? <>
-                    <Typography variant='h4'>User not found</Typography>
+                    <Stack spacing={2} direction='column'>
+                        <Typography variant='h4'>User not found</Typography>
+                        <Typography variant='subtitle1'>This user is most likely not registered on osu!alt</Typography>
+                        <Link sx={{ textDecoration: 'none' }} href={`https://osu.ppy.sh/users/${params.id}`} target='_blank'>
+                            <Typography variant='title' sx={{ fontSize: '1em' }}>Try osu! profile ....</Typography>
+                        </Link>
+                    </Stack>
+
                 </> : <>
                     <Stack spacing={2} direction='column'>
                         <SectionHeader user={user} />

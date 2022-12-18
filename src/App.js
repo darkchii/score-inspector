@@ -12,6 +12,7 @@ import Footer from './Components/Footer';
 import Update from './Routes/Update';
 import { Route, Routes } from 'react-router-dom/dist';
 import User from './Routes/User';
+import Leaders from './Routes/Leaders';
 
 const router = createBrowserRouter([
   {
@@ -41,6 +42,7 @@ function App() {
                 <Route path="update/:id" element={<Update />} />
                 <Route path="*" element={<Error />} />
                 <Route path="user/:id" element={<User />} />
+                <Route path="leaderboard" element={<Leaders />} />
               </Routes>
             </CardContent>
           </Card>
