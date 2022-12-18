@@ -96,11 +96,6 @@ export const mod_strings_long = {
     1073741824: "Mirror"
 }
 
-export function toFixedNumber(num, digits, base) {
-    var pow = Math.pow(base || 10, digits);
-    return Math.round(num * pow) / pow;
-}
-
 export function formatNumber(n, decimals = 0, short = false) {
     if (n > 999999999) {
         return (n / 1000000000).toFixed(decimals) + (short ? 'b' : ' billion');

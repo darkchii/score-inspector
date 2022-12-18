@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, CircularProgress, Pagination, Paper, Stack, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableHead, TableRow, Tooltip, Typography } from '@mui/material';
+import { Avatar, Box, Button, Card, CircularProgress, Pagination, Paper, Stack, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableHead, TableRow, tableRowClasses, Tooltip, Typography } from '@mui/material';
 import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
@@ -115,46 +115,6 @@ function Leaders() {
         })();
     };
 
-    // const update = (resetPage) => {
-    //     if (isLoading) return;
-    //     setIsLoading(true);
-    //     if (resetPage) setPage(1);
-    //     (async () => {
-    //         let _page = params.page ? parseInt(params.page) : 1;
-    //         if (resetPage) _page = 1;
-    //         const lb = await getLeaderboard(statistic.name, ROWS_PER_PAGE, _page - 1, country);
-    //         if (lb === null || lb.error !== undefined) {
-    //             setLeaderboard(null);
-    //             setIsLoading(false);
-    //             return;
-    //         }
-    //         const pages = Math.ceil(lb.result_users / ROWS_PER_PAGE);
-    //         setTotalPages(pages);
-    //         setLeaderboard(lb.leaderboard);
-    //         setIsLoading(false);
-    //     })();
-    // };
-
-    // useEffect(() => {
-    //     update(false);
-    //     setPage(params.page ? parseInt(params.page) : 1);
-    // }, [params.page]);
-
-    // useEffect(() => {
-    //     let _stat = null;
-    //     if (params.stat) {
-    //         _stat = RANKED_STATISTICS.find((stat) => stat.name === params.stat);
-    //     }
-    //     if (_stat === null || _stat === undefined) {
-    //         _stat = RANKED_STATISTICS[0];
-    //     }
-    //     setStatistic(_stat);
-    // }, [params.stat]);
-
-    // useEffect(() => {
-    //     update(true);
-    // }, [statistic]);
-
     if (statistic === undefined || statistic === null) return (<></>);
 
     return (
@@ -186,8 +146,11 @@ function Leaders() {
                             <TableContainer>
                                 <Table size='small' sx={{
                                     [`& .${tableCellClasses.root}`]: {
+                                        mb: 1,
                                         borderBottom: "none",
-                                        mb: 1
+                                    },
+                                    [`& .${tableRowClasses.root}`]: {
+                                        borderRadius: 10,
                                     },
                                     borderCollapse: 'separate',
                                     borderSpacing: '0 0.4em',
@@ -205,12 +168,10 @@ function Leaders() {
                                         {
                                             leaderboard.map((user) => {
                                                 return (
-                                                    <TableRow component={Paper}
+                                                    <TableRow component={Card}
                                                         sx={{
-                                                            p: 1,
-                                                            borderRadius: '5px',
                                                             "&:hover": {
-                                                                opacity: 0.9,
+                                                                opacity: 0.5,
                                                                 cursor: 'pointer'
                                                             }
                                                         }}

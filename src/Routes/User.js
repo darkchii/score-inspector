@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 import { useParams, useRouteError } from 'react-router-dom/dist';
 import { getUser as getAltUser, getUserScores } from '../Helpers/OsuAlt';
-import { getUser as getOsuUser } from '../Helpers/Osu';
+import { getUser as getOsuUser, getUserLeaderboardStats } from '../Helpers/Osu';
 import ReactCountryFlag from 'react-country-flag';
 import SectionHeader from '../Components/UserPage/SectionHeader';
 import SectionGrades from '../Components/UserPage/SectionGrades';
@@ -59,8 +59,14 @@ function User() {
             };
 
             setLoadingState('Processing user scores');
-            const _data = await processScores(user_out.scores, onScoreProcessUpdate);
+            const _data = await processScores(user_out, user_out.scores, onScoreProcessUpdate);
             user_out.data = _data;
+
+            setLoadingState('Fetching user leaderboard positions');
+            const _leaderboardStats = await getUserLeaderboardStats(user_out.alt.user_id);
+            user_out.data.leaderboardStats = (_leaderboardStats === null || _leaderboardStats.error !== undefined) ? null : _leaderboardStats;
+
+            console.log(user_out);
 
             setUser(user_out);
             setIsLoading(false);
@@ -87,7 +93,7 @@ function User() {
                     </Stack>
 
                 </> : <>
-                    <Stack spacing={2} direction='column'>
+                    <Stack spacing={1} direction='column'>
                         <SectionHeader user={user} />
                         <SectionGrades user={user} />
                         <SectionCards user={user} />

@@ -34,7 +34,7 @@ function App() {
         <CssBaseline />
         <Header />
         <Container>
-          <Card>
+          <Card sx={{borderRadius: 0}}>
             <CardContent>
               {/* <RouterProvider router={router} /> */}
               <Routes>

@@ -14,7 +14,7 @@ const DefaultTheme = {
         },
     },
     shape: {
-        borderRadius: 0
+        borderRadius: 10
     },
     typography: {
         fontFamily: 'Comfortaa',
