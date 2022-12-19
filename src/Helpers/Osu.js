@@ -26,6 +26,9 @@ export async function getUser(user_id) {
         let _dailyUser = await axios.get(`${getAPIURL()}daily/${user.id}`, { headers: { "Access-Control-Allow-Origin": "*" } });
         if (_dailyUser !== undefined && _dailyUser.data.error === undefined) {
             user.daily = _dailyUser.data;
+        } else {
+            user.daily = null;
+            console.log(_dailyUser.data);
         }
     } catch (err) {
         user.daily = null;
@@ -296,4 +299,15 @@ export function isScoreRealistic(score) {
 
 export function getBonusPerformance(clears) {
     return 416.6667 * (1 - Math.pow(0.9994, clears));
+}
+
+export async function getBeatmapCount() {
+    let bmCount;
+    try {
+        bmCount = await axios.get(`${getAPIURL()}beatmaps/monthly`, { headers: { "Access-Control-Allow-Origin": "*" } });
+    } catch (err) {
+        return null;
+    }
+
+    return bmCount;
 }

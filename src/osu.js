@@ -89,23 +89,15 @@ export async function getUser(id) {
         let _dailyUser = await axios.get(`${getAPIURL()}daily/${_user.id}`, { headers: { "Access-Control-Allow-Origin": "*" } });
         if(_dailyUser !== undefined && _dailyUser.data.error===undefined) {
             _user.daily = _dailyUser.data;
+        }else{
+            _user.daily = null;
+            console.log(_dailyUser.data);
         }
     }catch (err) {
         _user.daily = null;
     }
 
     return _user;
-}
-
-export async function getBeatmapCount() {
-    let bmCount;
-    try {
-        bmCount = await axios.get(`${getAPIURL()}beatmaps/monthly`, { headers: { "Access-Control-Allow-Origin": "*" } });
-    } catch (err) {
-        return null;
-    }
-
-    return bmCount;
 }
 
 export async function getBeatmap(beatmap_id) {

@@ -1,10 +1,26 @@
-import { calculatePP2016, calculatePPifFC, calculatePPifSS, getBonusPerformance, getLazerScore, getModString, mods } from "./Osu";
+import moment from "moment";
+import { dataToList } from "./MonthlyDataConfig";
+import { calculatePP2016, calculatePPifFC, calculatePPifSS, getBeatmapCount, getBonusPerformance, getLazerScore, getModString, mods } from "./Osu";
 import { getPerformance2016 } from "./Performance/Performance2016";
 import { getPerformanceLive } from "./Performance/PerformanceLive";
+import { getPeriodicData } from "./ScoresPeriodProcessor";
 import { getSessions } from "./Session";
 
-export async function processScores(user, scores, onScoreProcessUpdate) {
-    onScoreProcessUpdate('Preparation');
+export async function processScores(user, scores, onCallbackError, onScoreProcessUpdate) {
+    onScoreProcessUpdate('Fetching beatmaps');
+    let bmCount;
+    try {
+        bmCount = await getBeatmapCount();
+    } catch (err) {
+        bmCount = null;
+    }
+
+    if(bmCount === null) {
+        onCallbackError('Error fetching beatmap count');
+        return null;
+    }
+
+    onScoreProcessUpdate('Preparing scores');
     scores = prepareScores(scores, onScoreProcessUpdate);
 
     const data = {
@@ -37,6 +53,9 @@ export async function processScores(user, scores, onScoreProcessUpdate) {
             star_rating: 0
         }
     };
+
+    onScoreProcessUpdate('Generate monthly beatmap data');
+    data.beatmapInfo = getMonthlyBeatmapData(bmCount);
 
     onScoreProcessUpdate('Misc data');
     for (const score of scores) {
@@ -88,10 +107,13 @@ export async function processScores(user, scores, onScoreProcessUpdate) {
 
     data.performance = weighPerformance(scores, onScoreProcessUpdate);
 
+    onScoreProcessUpdate('Monthly data')
+    data.monthly = getPeriodicData(scores, data, user);
+
     return data;
 }
 
-function weighPerformance(scores, onScoreProcessUpdate){
+function weighPerformance(scores, onScoreProcessUpdate) {
     onScoreProcessUpdate('Fullcombo performance');
     scores = calculatePPifFC(scores);
 
@@ -224,6 +246,31 @@ function getBestScores(scores) {
     });
 
     return _scores;
+}
+
+function getMonthlyBeatmapData(beatmaps){
+    var beatmapInfo = {};
+    beatmapInfo.monthly = [];
+
+    beatmaps.data.forEach(monthData => {
+        const y = monthData.year;
+        const m = monthData.month;
+        beatmapInfo.monthly[`${y}-${m}-01`] = monthData;
+    });
+
+    var bm_maps = 0;
+    var bm_score = 0;
+    var bm_length = 0;
+    beatmapInfo.monthlyCumulative = [];
+    Object.keys(beatmapInfo.monthly).forEach(key => {
+        const o = JSON.parse(JSON.stringify(beatmapInfo.monthly[key]));
+        o.amount = bm_maps += o.amount;
+        o.score = bm_score += o.score;
+        o.length = bm_length += o.length;
+        beatmapInfo.monthlyCumulative[key] = o;
+    });
+
+    return beatmapInfo;
 }
 
 function isScoreFullcombo(score) {

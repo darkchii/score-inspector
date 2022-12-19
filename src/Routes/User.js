@@ -1,4 +1,4 @@
-import { Avatar, Box, Card, CardContent, Chip, CircularProgress, Grid, Link, Stack, Tooltip, Typography } from '@mui/material';
+import { Avatar, Box, Card, CardContent, Chip, CircularProgress, Grid, Link, Stack, Tab, Tabs, Tooltip, Typography } from '@mui/material';
 import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
@@ -8,9 +8,10 @@ import { getUser as getOsuUser, getUserLeaderboardStats } from '../Helpers/Osu';
 import ReactCountryFlag from 'react-country-flag';
 import SectionHeader from '../Components/UserPage/SectionHeader';
 import SectionGrades from '../Components/UserPage/SectionGrades';
-import { processScores } from '../Helpers/Scores';
+import { processScores } from '../Helpers/ScoresProcessor';
 import SectionCards from '../Components/UserPage/SectionCards';
 import { Helmet } from 'react-helmet';
+import UserDataContainer from '../Components/UserPage/UserDataContainer';
 
 function User() {
     const [user, setUser] = useState(null);
@@ -59,8 +60,27 @@ function User() {
                 setLoadingState(`Processing user scores (${progress})`);
             };
 
+            const onCallbackError = (error) => {
+                console.error(error);
+            };
+
             setLoadingState('Processing user scores');
-            const _data = await processScores(user_out, user_out.scores, onScoreProcessUpdate);
+            let _data;
+            try {
+                _data = await processScores(user_out, user_out.scores, onCallbackError, onScoreProcessUpdate);
+            } catch (e) {
+                console.error(e);
+                setUser(null);
+                setIsLoading(false);
+                return;
+            }
+
+            if (_data === null || _data === undefined) {
+                setUser(null);
+                setIsLoading(false);
+                return;
+            }
+
             user_out.data = _data;
 
             setLoadingState('Fetching user leaderboard positions');
@@ -113,8 +133,7 @@ function User() {
                     }
                     <Stack spacing={1} direction='column'>
                         <SectionHeader user={user} />
-                        <SectionGrades user={user} />
-                        <SectionCards user={user} />
+                        <UserDataContainer user={user} />
                     </Stack>
                 </>
             }
