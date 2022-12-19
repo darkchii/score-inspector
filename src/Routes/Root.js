@@ -93,6 +93,15 @@ function Root() {
                                 </CardContent>
                             </Card>
                         </Grid>
+                        <Grid item xs={12}>
+                            <Card elevation={2}>
+                                <CardContent>
+                                    <Typography variant='title'>Loved scores</Typography>
+                                    <Typography>Loved scores are by default not included.</Typography>
+                                    <Typography>To include them, add <code>?loved</code> at the end of the profile URL</Typography>
+                                </CardContent>
+                            </Card>
+                        </Grid>
                     </Grid>
                 </Grid>
             </Grid>

@@ -2,7 +2,7 @@ import { Avatar, Box, Card, CardContent, Chip, CircularProgress, Grid, Link, Sta
 import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
-import { useParams, useRouteError } from 'react-router-dom/dist';
+import { useLocation, useParams, useRouteError } from 'react-router-dom/dist';
 import { getUser as getAltUser, getUserScores } from '../Helpers/OsuAlt';
 import { getUser as getOsuUser, getUserLeaderboardStats } from '../Helpers/Osu';
 import ReactCountryFlag from 'react-country-flag';
@@ -18,9 +18,17 @@ function User() {
     const [isLoading, setIsLoading] = useState(true);
     const [loadingState, setLoadingState] = useState('Test message');
     const params = useParams();
+    const location = useLocation();
 
     useEffect(() => {
         (async () => {
+            const urlParams = new URLSearchParams(location.search);
+            let loved = urlParams.get('loved');
+            if(loved==='true' || loved==='1' || loved===true || loved===1 || loved===''){
+                loved = true;
+            }else{
+                loved = false;
+            }
             setIsLoading(true);
             setUser(null);
             const user_out = {};
@@ -48,7 +56,7 @@ function User() {
             };
 
             setLoadingState('Fetching user scores');
-            const _scores = await getUserScores(user_out.alt.user_id, true, onScoreDownloadProgress);
+            const _scores = await getUserScores(user_out.alt.user_id, loved === true, onScoreDownloadProgress);
             if (_scores === null || _scores.error !== undefined) {
                 setUser(null);
                 setIsLoading(false);
