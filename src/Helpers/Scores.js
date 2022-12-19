@@ -1,4 +1,5 @@
-import { getLazerScore, getModString, mods } from "./Osu";
+import { calculatePP2016, calculatePPifFC, calculatePPifSS, getBonusPerformance, getLazerScore, getModString, mods } from "./Osu";
+import { getPerformance2016 } from "./Performance/Performance2016";
 import { getPerformanceLive } from "./Performance/PerformanceLive";
 import { getSessions } from "./Session";
 
@@ -85,7 +86,62 @@ export async function processScores(user, scores, onScoreProcessUpdate) {
     onScoreProcessUpdate('Best scores');
     data.bestScores = getBestScores(scores);
 
+    data.performance = weighPerformance(scores, onScoreProcessUpdate);
 
+    return data;
+}
+
+function weighPerformance(scores, onScoreProcessUpdate){
+    onScoreProcessUpdate('Fullcombo performance');
+    scores = calculatePPifFC(scores);
+
+    onScoreProcessUpdate('SS performance');
+    scores = calculatePPifSS(scores);
+
+    onScoreProcessUpdate('2016 performance');
+    scores = calculatePP2016(scores);
+
+    onScoreProcessUpdate('2016 performance');
+    scores.sort((a, b) => {
+        return b.pp - a.pp;
+    });
+    scores.forEach(score => { score.pp_weight = Math.pow(0.95, index); index++; });
+    var index = 0;
+
+    const data = {};
+
+    data.weighted = {};
+
+    data.weighted.fc = 0;
+    data.weighted.ss = 0;
+    data.weighted.xexxar = 0;
+    data.weighted._2016 = 0;
+
+    let xexxar_score_pp = 0;
+    let xexxar_total_pp = 0;
+    scores.forEach((score, index) => {
+        xexxar_score_pp += score.pp * Math.pow(0.95, index);
+        xexxar_total_pp += score.pp;
+    });
+    data.weighted.xexxar = ((2 - 1) * xexxar_score_pp + 0.75 * xexxar_score_pp * (Math.log(xexxar_total_pp) / Math.log(xexxar_score_pp))) / 2;
+
+    scores.forEach(score => {
+        if (!isNaN(score.pp_fc.total)) {
+            data.weighted.fc += score.pp_fc.total * score.pp_fc.weight;
+        }
+        if (!isNaN(score.pp_ss.total)) {
+            data.weighted.ss += score.pp_ss.total * score.pp_ss.weight;
+        }
+        if (!isNaN(score.pp_2016.total)) {
+            data.weighted._2016 += score.pp_2016.total * score.pp_2016.weight;
+        }
+    });
+    const bonus = getBonusPerformance(scores.length);
+    data.weighted.fc += bonus;
+    data.weighted.ss += bonus;
+    data.weighted._2016 += bonus;
+
+    console.log(data);
 
     return data;
 }
@@ -137,6 +193,7 @@ function prepareScores(scores, onScoreProcessUpdate) {
         score.pp_fc = getPerformanceLive({ count300: score.count300 + score.countmiss, count100: score.count100, count50: score.count50, countmiss: 0, combo: score.maxcombo, score: score });
         score.pp_ss = getPerformanceLive({ count300: score.count300 + score.countmiss + score.count100 + score.count50, count100: 0, count50: 0, countmiss: 0, combo: score.maxcombo, score: score });
         score.pp_cur = getPerformanceLive({ score: score });
+        score.pp_2016 = getPerformance2016({ score: score });
 
         score.is_fc = isScoreFullcombo(score);
         score.scoreLazer = Math.floor(getLazerScore(score));

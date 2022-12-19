@@ -2,10 +2,6 @@ import axios from "axios";
 import config from "./config.json";
 import { getAltAPIURL, getAPIURL, getUnix, mods } from "./helper";
 
-export function getBonusPerformance(clears) {
-    return 416.6667 * (1 - Math.pow(0.9994, clears));
-}
-
 export async function isUserRegistered(id) {
     let _registered = false;
     try {
@@ -152,18 +148,6 @@ export async function getBeatmapPacks(include_loved = false) {
     return packs.data;
 }
 
-export function isScoreRealistic(score) {
-    const maxMissCount = (score.enabled_mods & mods.NF) ? 15 : 30; //max 15 misses on NF, max 30 on no NF
-    const minCombo = score.maxcombo / 100 * 80; //80% combo
-    const minAcc = (score.enabled_mods & mods.NF) ? 90 : 80; //90% acc required for NF, 80% for no NF
-
-    if (score.countmiss <= maxMissCount || score.combo > minCombo || score.accuracy > minAcc) {
-        return true;
-    }
-
-    return false;
-}
-
 const MAX_SCORE = 1000000;
 export function getLazerScore(score, classic = true) {
     const mul = getModMultiplier(score.enabled_mods);
@@ -175,37 +159,6 @@ export function getLazerScore(score, classic = true) {
         val = Math.pow(((val / MAX_SCORE) * score.objects), 2) * 36;
     }
     return val;
-}
-
-export function getGrade(score) {
-    var grade = 'D';
-
-    const totalhits = score.count300 + score.count100 + score.count50 + score.countmiss;
-
-    const perc300 = 100 / totalhits * score.count300;
-    const perc50 = 100 / totalhits * score.count50;
-
-
-    if (score.accuracy === 100) {
-        grade = "X";
-    } else if (perc300 > 90 && perc50 <= 1 && score.countmiss === 0) {
-        grade = "S";
-    } else if (perc300 > 80 && (score.countmiss === 0 || perc300 > 90)) {
-        grade = "A";
-    } else if (perc300 > 70 && (score.countmiss === 0 || perc300 > 80)) {
-        grade = "B";
-    } else if (perc300 > 60) {
-        grade = "C";
-    } else {
-        grade = "D";
-    }
-
-    if (grade === "X" || grade === "S") {
-        if (score.enabled_mods & mods.HD || score.enabled_mods & mods.FL) {
-            grade += "H";
-        }
-    }
-    return grade;
 }
 
 export function getModMultiplier(enabled_mods) {

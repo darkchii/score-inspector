@@ -3,6 +3,10 @@ import moment from "moment";
 import ReactCountryFlag from "react-country-flag";
 import { getGradeIcon, IMG_SVG_GRADE_X, IMG_SVG_GRADE_XH } from "../../Helpers/Assets";
 import BestScoreCard from "./BestScoreCard";
+import Performance2016 from "./Performance/Performance2016";
+import PerformanceFC from "./Performance/PerformanceFC";
+import PerformanceSS from "./Performance/PerformanceSS";
+import PerformanceXexxar from "./Performance/PerformanceXexxar";
 
 function SectionCards(props) {
     if (props.user == null) return (<></>);
@@ -105,9 +109,15 @@ function SectionCards(props) {
                 }
             </Grid>
             <Grid container>
-                <Grid sx={{ minHeight: '100%', p:0.5 }} item xs={4}><BestScoreCard valueTitle={'performance'} valueLabel={`${props.user.data.bestScores.best_pp.pp.toFixed(1)}pp`} score={props.user.data.bestScores.best_pp} /></Grid>
-                <Grid sx={{ minHeight: '100%', p:0.5 }} item xs={4}><BestScoreCard valueTitle={'score'} valueLabel={`${props.user.data.bestScores.best_score.score.toLocaleString('en-US')} score`} score={props.user.data.bestScores.best_score} /></Grid>
-                <Grid sx={{ minHeight: '100%', p:0.5 }} item xs={4}><BestScoreCard valueTitle={'stars'} valueLabel={`${props.user.data.bestScores.best_sr.star_rating.toFixed(1)}*`} score={props.user.data.bestScores.best_sr} /></Grid>
+                <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={4}><BestScoreCard valueTitle={'performance'} valueLabel={`${props.user.data.bestScores.best_pp.pp.toFixed(1)}pp`} score={props.user.data.bestScores.best_pp} /></Grid>
+                <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={4}><BestScoreCard valueTitle={'score'} valueLabel={`${props.user.data.bestScores.best_score.score.toLocaleString('en-US')} score`} score={props.user.data.bestScores.best_score} /></Grid>
+                <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={4}><BestScoreCard valueTitle={'stars'} valueLabel={`${props.user.data.bestScores.best_sr.star_rating.toFixed(1)}*`} score={props.user.data.bestScores.best_sr} /></Grid>
+            </Grid>
+            <Grid container>
+                <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={3}><PerformanceFC data={props.user} /></Grid>
+                <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={3}><PerformanceSS data={props.user} /></Grid>
+                <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={3}><Performance2016 data={props.user} /></Grid>
+                <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={3}><PerformanceXexxar data={props.user} /></Grid>
             </Grid>
         </>
     )

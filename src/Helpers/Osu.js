@@ -193,3 +193,107 @@ export const mods = {
     SV2: 536870912,
     MR: 1073741824
 }
+
+export function getGrade(score) {
+    var grade = 'D';
+
+    const totalhits = score.count300 + score.count100 + score.count50 + score.countmiss;
+
+    const perc300 = 100 / totalhits * score.count300;
+    const perc50 = 100 / totalhits * score.count50;
+
+
+    if (score.accuracy === 100) {
+        grade = "X";
+    } else if (perc300 > 90 && perc50 <= 1 && score.countmiss === 0) {
+        grade = "S";
+    } else if (perc300 > 80 && (score.countmiss === 0 || perc300 > 90)) {
+        grade = "A";
+    } else if (perc300 > 70 && (score.countmiss === 0 || perc300 > 80)) {
+        grade = "B";
+    } else if (perc300 > 60) {
+        grade = "C";
+    } else {
+        grade = "D";
+    }
+
+    if (grade === "X" || grade === "S") {
+        if (score.enabled_mods & mods.HD || score.enabled_mods & mods.FL) {
+            grade += "H";
+        }
+    }
+    return grade;
+}
+
+export const mod_strings_long = {
+    0: "Nomod",
+    1: "NoFail",
+    2: "Easy",
+    4: "Touch Device",
+    8: "Hidden",
+    16: "Hardrock",
+    32: "Sudden Death",
+    64: "Double Time",
+    128: "Relax",
+    256: "Half Time",
+    512: "Nightcore",
+    1024: "Flashlight",
+    2048: "Autoplay",
+    4096: "Spin-out",
+    16384: "Perfect",
+    1048576: "Fade In",
+    2097152: "Random",
+    4194304: "Cinema",
+    8388608: "Target Practice",
+    536870912: "Score V2",
+    1073741824: "Mirror"
+}
+
+export function calculatePPifFC(scores) {
+    scores.sort((a, b) => {
+        return b.pp_fc.total - a.pp_fc.total;
+    });
+
+    var index = 0;
+    scores.forEach(score => { if (isScoreRealistic(score) && !isNaN(score.pp_fc.total)) { score.pp_fc.weight = Math.pow(0.95, index); index++; } else { score.pp_fc.weight = 0 } });
+
+    return scores;
+}
+
+export function calculatePPifSS(scores) {
+    scores.sort((a, b) => {
+        return b.pp_ss.total - a.pp_ss.total;
+    });
+
+    var index = 0;
+    scores.forEach(score => { if (isScoreRealistic(score) && !isNaN(score.pp_ss.total)) { score.pp_ss.weight = Math.pow(0.95, index); index++; } else { score.pp_ss.weight = 0 } });
+
+    return scores;
+}
+
+export function calculatePP2016(scores) {
+    scores.sort((a, b) => {
+        return b.pp_2016.total - a.pp_2016.total;
+    });
+
+    var index = 0;
+    scores.forEach(score => { if (!isNaN(score.pp_2016.total)) { score.pp_2016.weight = Math.pow(0.95, index); index++; } else { score.pp_2016.weight = 0 } });
+
+    return scores;
+}
+
+export function isScoreRealistic(score) {
+    const maxMissCount = (score.enabled_mods & mods.NF) ? 15 : 30; //max 15 misses on NF, max 30 on no NF
+    const minCombo = score.maxcombo / 100 * 80; //80% combo
+    const minAcc = (score.enabled_mods & mods.NF) ? 90 : 80; //90% acc required for NF, 80% for no NF
+
+    if (score.countmiss <= maxMissCount || score.combo > minCombo || score.accuracy > minAcc) {
+        return true;
+    }
+
+    return false;
+}
+
+export function getBonusPerformance(clears) {
+    return 416.6667 * (1 - Math.pow(0.9994, clears));
+}

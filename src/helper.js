@@ -72,30 +72,6 @@ export const mod_strings = {
     1073741824: "MR"
 }
 
-export const mod_strings_long = {
-    0: "Nomod",
-    1: "NoFail",
-    2: "Easy",
-    4: "Touch Device",
-    8: "Hidden",
-    16: "Hardrock",
-    32: "Sudden Death",
-    64: "Double Time",
-    128: "Relax",
-    256: "Half Time",
-    512: "Nightcore",
-    1024: "Flashlight",
-    2048: "Autoplay",
-    4096: "Spin-out",
-    16384: "Perfect",
-    1048576: "Fade In",
-    2097152: "Random",
-    4194304: "Cinema",
-    8388608: "Target Practice",
-    536870912: "Score V2",
-    1073741824: "Mirror"
-}
-
 export function formatNumber(n, decimals = 0, short = false) {
     if (n > 999999999) {
         return (n / 1000000000).toFixed(decimals) + (short ? 'b' : ' billion');
