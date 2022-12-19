@@ -4,6 +4,7 @@ import { useState } from "react";
 import SectionCards from "./SectionCards";
 import SectionGrades from "./SectionGrades";
 import SectionGraphs from "./SectionGraphs";
+import SectionScores from "./SectionScores";
 
 function UserDataContainer(props) {
     const [tab, setTab] = useState('0');
@@ -34,7 +35,7 @@ function UserDataContainer(props) {
                     <SectionGraphs dataset={props.user.data.monthly} />
                 </TabPanel>
                 <TabPanel sx={{ p: 0 }} value={_IDs['scores']}>
-
+                    <SectionScores user={props.user} />
                 </TabPanel>
             </TabContext>
         </>
