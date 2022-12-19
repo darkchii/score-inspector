@@ -123,7 +123,7 @@ function Leaders() {
                 {
                     RANKED_STATISTICS.map((stat) => {
                         return (
-                            <Button disabled={isLoading} size='small' variant={stat.name === statistic.name ? 'contained' : 'outlined'} onClick={() => navigate(`stat/${stat.name}/page/1`)}>{stat.title}</Button>
+                            <Button sx={{ m: 0.3 }} disabled={isLoading} size='small' variant={stat.name === statistic.name ? 'contained' : 'outlined'} onClick={() => navigate(`stat/${stat.name}/page/1`)}>{stat.title}</Button>
                         );
                     })
                 }
