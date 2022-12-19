@@ -10,6 +10,7 @@ import SectionHeader from '../Components/UserPage/SectionHeader';
 import SectionGrades from '../Components/UserPage/SectionGrades';
 import { processScores } from '../Helpers/Scores';
 import SectionCards from '../Components/UserPage/SectionCards';
+import { Helmet } from 'react-helmet';
 
 function User() {
     const [user, setUser] = useState(null);
@@ -42,7 +43,7 @@ function User() {
             user_out.osu = osu_user;
 
             const onScoreDownloadProgress = (progress) => {
-                setLoadingState(`Fetching user scores (${parseInt(Math.round(progress.loaded*100)/progress.total)}%)`);
+                setLoadingState(`Fetching user scores (${parseInt(Math.round(progress.loaded * 100) / progress.total)}%)`);
             };
 
             setLoadingState('Fetching user scores');
@@ -93,6 +94,23 @@ function User() {
                     </Stack>
 
                 </> : <>
+                    {
+                        user.osu.id === 10153735 ? <>
+                            <Helmet>
+                                <style>
+                                    {`
+                            body { 
+                                background-image: url('https://cdn.donmai.us/original/a6/01/__megumin_kono_subarashii_sekai_ni_shukufuku_wo_drawn_by_sirokohi__a60163a9b4e6afc466c36cbe01277277.jpg'); 
+                                background-repeat: no-repeat;
+                                background-size: cover;
+                                background-position: center;
+                                background-attachment: fixed;
+                            }`}
+                                </style>
+                            </Helmet>
+
+                        </> : <></>
+                    }
                     <Stack spacing={1} direction='column'>
                         <SectionHeader user={user} />
                         <SectionGrades user={user} />

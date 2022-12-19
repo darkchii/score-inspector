@@ -10,7 +10,7 @@ const DefaultTheme = {
         background: {
             default: '#18171C',
             dark: '#fff',
-            paper: '#221F2E',
+            paper: '#221F2Edd',
         },
     },
     shape: {

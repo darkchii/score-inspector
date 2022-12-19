@@ -2,6 +2,7 @@ import { Card, CardContent, Grid, Link, Paper, Table, TableBody, TableCell, Tabl
 import React from 'react';
 import { updates } from '../updates';
 import { Link as RouterLink } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 
 function Root() {
     return (
