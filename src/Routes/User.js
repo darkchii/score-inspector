@@ -12,6 +12,7 @@ import { processScores } from '../Helpers/ScoresProcessor';
 import SectionCards from '../Components/UserPage/SectionCards';
 import { Helmet } from 'react-helmet';
 import UserDataContainer from '../Components/UserPage/UserDataContainer';
+import config from '../config.json';
 
 function User() {
     const [user, setUser] = useState(null);
@@ -24,9 +25,9 @@ function User() {
         (async () => {
             const urlParams = new URLSearchParams(location.search);
             let loved = urlParams.get('loved');
-            if(loved==='true' || loved==='1' || loved===true || loved===1 || loved===''){
+            if (loved === 'true' || loved === '1' || loved === true || loved === 1 || loved === '') {
                 loved = true;
-            }else{
+            } else {
                 loved = false;
             }
             setIsLoading(true);
@@ -123,21 +124,28 @@ function User() {
 
                 </> : <>
                     {
-                        user.osu.id === 10153735 ? <>
-                            <Helmet>
-                                <style>
-                                    {`
-                            body { 
-                                background-image: url('https://cdn.donmai.us/original/a6/01/__megumin_kono_subarashii_sekai_ni_shukufuku_wo_drawn_by_sirokohi__a60163a9b4e6afc466c36cbe01277277.jpg'); 
-                                background-repeat: no-repeat;
-                                background-size: cover;
-                                background-position: center;
-                                background-attachment: fixed;
-                            }`}
-                                </style>
-                            </Helmet>
+                        config.SPECIAL_USERS[user.osu.id] ? <>
+                            {
+                                config.SPECIAL_USERS[user.osu.id].background_image !== undefined ? <Helmet>
 
+                                    <style>
+                                        {`
+                                            body { 
+                                            background-image: url('${config.SPECIAL_USERS[user.osu.id].background_image}'); 
+                                            background-repeat: no-repeat;
+                                            background-size: cover;
+                                            background-position: center;
+                                            background-attachment: fixed;
+                                        }`}
+                                    </style>
+                                </Helmet> : <></>
+                            }
                         </> : <></>
+                        // user.osu.id === 10153735 ? <>
+                        //     <Helmet>
+                        //     </Helmet>
+
+                        // </> : <></>
                     }
                     <Stack spacing={1} direction='column'>
                         <SectionHeader user={user} />

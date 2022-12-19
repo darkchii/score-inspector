@@ -13,6 +13,7 @@ import Update from './Routes/Update';
 import { Route, Routes } from 'react-router-dom/dist';
 import User from './Routes/User';
 import Leaders from './Routes/Leaders';
+import Snowfall from 'react-snowfall';
 
 const router = createBrowserRouter([
   {
@@ -30,6 +31,11 @@ const router = createBrowserRouter([
 function App() {
   return (
     <>
+      <Snowfall style={{
+        position: 'fixed',
+        width: '100vw',
+        height: '100vh',
+      }} />
       <ThemeProvider theme={createTheme(Theme)}>
         <CssBaseline />
         <Header />

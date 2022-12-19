@@ -5,5 +5,11 @@
     "OSU_TEST_API_ALT": "http://localhost:3955/",
     "SCORE_API": "https://score.respektive.pw/u/",
     "DONATE_URL": "https://www.buymeacoffee.com/darkchii",
-    "USE_DEV_API": true
+    "USE_DEV_API": true,
+    "SPECIAL_USERS": {
+        "10153735": {
+            "name": "boob enjoyer",
+            "background_image": "https://images8.alphacoders.com/792/thumb-1920-792744.png"
+        }
+    }
 }
