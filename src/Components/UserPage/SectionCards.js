@@ -1,7 +1,5 @@
-import { Avatar, Box, Button, Card, CardContent, Chip, Container, Grid, Input, Modal, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Tooltip, Typography } from "@mui/material";
+import { Card, CardContent, Grid, Typography } from "@mui/material";
 import moment from "moment";
-import ReactCountryFlag from "react-country-flag";
-import { getGradeIcon, IMG_SVG_GRADE_X, IMG_SVG_GRADE_XH } from "../../Helpers/Assets";
 import BestScoreCard from "./BestScoreCard";
 import Performance2016 from "./Performance/Performance2016";
 import PerformanceFC from "./Performance/PerformanceFC";

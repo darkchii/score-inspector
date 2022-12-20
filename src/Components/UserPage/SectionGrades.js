@@ -1,6 +1,5 @@
-import { Avatar, Box, Button, Card, CardContent, Chip, Container, Grid, Input, Modal, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Tooltip, Typography } from "@mui/material";
-import ReactCountryFlag from "react-country-flag";
-import { getGradeIcon, IMG_SVG_GRADE_X, IMG_SVG_GRADE_XH } from "../../Helpers/Assets";
+import { Box, Card, CardContent, Grid, Typography } from "@mui/material";
+import { getGradeIcon } from "../../Helpers/Assets";
 
 function SectionGrades(props) {
     if (props.user == null) return (<></>);

@@ -1,9 +1,8 @@
-import { Avatar, Box, Button, Card, CardContent, Container, Input, Modal, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
+import { Avatar, Box, Card, CardContent, Container, Input, Modal, Paper, Stack, Typography } from "@mui/material";
 import { useEffect, useImperativeHandle } from "react";
 import { forwardRef } from "react";
 import { useState } from "react";
 import { findUsers } from "../../Helpers/OsuAlt";
-import { Link } from 'react-router-dom';
 import { useNavigate } from "react-router-dom/dist";
 import ReactCountryFlag from "react-country-flag";
 
@@ -28,7 +27,6 @@ function UserSearchModal(props, ref) {
                 setIsSearching(true);
                 (async () => {
                     const res = await findUsers(searchVal);
-                    console.log(res);
                     setResultList(res ?? []);
                     setIsSearching(false);
                 })();
@@ -36,6 +34,7 @@ function UserSearchModal(props, ref) {
 
             return () => clearTimeout(delayDebounceFn);
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [searchVal]);
 
     useImperativeHandle(ref, () => ({

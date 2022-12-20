@@ -1,11 +1,7 @@
-import { Avatar, Box, Button, Card, CardContent, Container, FormControl, FormControlLabel, FormGroup, Input, Modal, Paper, Stack, Switch, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
-import { useEffect, useImperativeHandle } from "react";
+import { Box, Button, Card, CardContent, Container, FormControl, FormControlLabel, FormGroup, Modal, Stack, Switch, Typography } from "@mui/material";
+import { useImperativeHandle } from "react";
 import { forwardRef } from "react";
 import { useState } from "react";
-import { findUsers } from "../../Helpers/OsuAlt";
-import { Link } from 'react-router-dom';
-import { useNavigate } from "react-router-dom/dist";
-import ReactCountryFlag from "react-country-flag";
 import { getSettings, saveSettings } from "../../Helpers/Settings";
 
 const style = {
@@ -17,7 +13,6 @@ const style = {
 
 function SettingsModal(props, ref) {
     const [open, setOpen] = useState(false);
-    const navigate = useNavigate();
 
     const [settings, setSettings] = useState(getSettings());
 

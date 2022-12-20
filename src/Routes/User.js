@@ -1,15 +1,12 @@
-import { Avatar, Box, Card, CardContent, Chip, CircularProgress, Grid, Link, Stack, Tab, Tabs, Tooltip, Typography } from '@mui/material';
+import { Box, CircularProgress, Link, Stack, Typography } from '@mui/material';
 import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
-import { useLocation, useParams, useRouteError } from 'react-router-dom/dist';
+import { useLocation, useParams } from 'react-router-dom/dist';
 import { getUser as getAltUser, getUserScores } from '../Helpers/OsuAlt';
 import { getUser as getOsuUser, getUserLeaderboardStats } from '../Helpers/Osu';
-import ReactCountryFlag from 'react-country-flag';
 import SectionHeader from '../Components/UserPage/SectionHeader';
-import SectionGrades from '../Components/UserPage/SectionGrades';
 import { processScores } from '../Helpers/ScoresProcessor';
-import SectionCards from '../Components/UserPage/SectionCards';
 import { Helmet } from 'react-helmet';
 import UserDataContainer from '../Components/UserPage/UserDataContainer';
 import config from '../config.json';
@@ -99,6 +96,7 @@ function User() {
             setUser(user_out);
             setIsLoading(false);
         })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [params.id]);
 
     return (

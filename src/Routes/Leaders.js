@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, Card, CircularProgress, Pagination, Paper, Stack, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableHead, TableRow, tableRowClasses, Tooltip, Typography } from '@mui/material';
+import { Avatar, Box, Button, Card, CircularProgress, Pagination, Stack, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableHead, TableRow, tableRowClasses, Tooltip, Typography } from '@mui/material';
 import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
@@ -62,7 +62,7 @@ function Leaders() {
     const [statistic, setStatistic] = useState(params.stat ? RANKED_STATISTICS.find((stat) => stat.name === params.stat) : RANKED_STATISTICS[0]);
     const [page, setPage] = useState(params.page ? parseInt(params.page) : 1);
     const [totalPages, setTotalPages] = useState(0);
-    const [country, setCountry] = useState(null);
+    // const [country, setCountry] = useState(null);
     const [leaderboard, setLeaderboard] = useState(null);
     const navigate = useNavigate();
 
@@ -86,10 +86,12 @@ function Leaders() {
 
     useEffect(() => {
         update(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [statistic]);
 
     useEffect(() => {
         update(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [page]);
 
     const update = (resetPage) => {
@@ -98,11 +100,10 @@ function Leaders() {
         if (resetPage) {
             _page = 1;
         }
-        console.log('update');
         setIsLoading(true);
         (async () => {
             setLeaderboard(null);
-            const lb = await getLeaderboard(statistic.name, ROWS_PER_PAGE, _page - 1, country);
+            const lb = await getLeaderboard(statistic.name, ROWS_PER_PAGE, _page - 1);
             if (lb === null || lb.error !== undefined) {
                 setIsLoading(false);
                 return;

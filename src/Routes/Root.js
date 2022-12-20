@@ -1,8 +1,7 @@
-import { Card, CardContent, Grid, Link, Paper, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from '@mui/material';
+import { Card, CardContent, Grid, Link, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from '@mui/material';
 import React from 'react';
 import { updates } from '../updates';
 import { Link as RouterLink } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
 
 function Root() {
     return (

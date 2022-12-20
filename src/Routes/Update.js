@@ -1,10 +1,9 @@
-import { AppBar, Box, Chip, Container, Grid, Link, List, ListItem, Toolbar, Typography } from '@mui/material';
+import { Chip, Grid, Link, List, ListItem, Typography } from '@mui/material';
 import moment from 'moment/moment';
 import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { redirect } from 'react-router-dom/dist';
 import { CHANGETYPES, updates } from '../updates';
 
 function Update() {
@@ -15,6 +14,7 @@ function Update() {
         if (updates[updates.length - params.id] !== undefined) {
             setUpdate(updates[updates.length - params.id]);
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import RotateLeftIcon from '@mui/icons-material/RotateLeft';
-import { Button, Card, CardContent, FormControlLabel, FormGroup, Grid, Menu, MenuItem, Switch } from "@mui/material";
+import { Button, FormControlLabel, FormGroup, Grid, Switch } from "@mui/material";
 import { Line } from "react-chartjs-2";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {
@@ -15,7 +15,6 @@ import {
     Filler
 } from 'chart.js';
 import Zoom from "chartjs-plugin-zoom";
-import styled from "@emotion/styled";
 ChartJS.register(
     CategoryScale,
     LinearScale,

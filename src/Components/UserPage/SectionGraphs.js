@@ -1,10 +1,8 @@
 import { Button, ButtonGroup, Grid, Paper, Skeleton, Table, TableBody, TableCell, TableRow, Typography } from "@mui/material";
 import { useState } from "react";
-import { useEffect } from "react";
 
 function SectionGraphs(props) {
     const [timeGraphValue, setTimeGraphValue] = useState("clearsPerSection");
-    const [graphs, setGraphs] = useState(null);
 
     const graphButtons = [
         {

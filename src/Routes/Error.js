@@ -1,6 +1,5 @@
 import { Typography } from '@mui/material';
 import React from 'react';
-import { useRouteError } from 'react-router-dom/dist';
 
 function Error() {
     return (

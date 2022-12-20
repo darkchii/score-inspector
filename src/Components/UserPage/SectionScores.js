@@ -16,7 +16,6 @@ function SectionScores(props) {
     const [, updateState] = useState();
     const forceUpdate = useCallback(() => updateState({}), []);
     const [modalData, setModalData] = useState({ active: false });
-    const [scoreCount, setScoreCount] = useState(0);
     const columns = [
             { field: 'title', flex: 1, headerName: 'Title', minWidth: 280 },
             { field: 'score', headerName: 'Score', minWidth: 170, type: "number", valueFormatter: (params) => { return `${params.value.toLocaleString('en-US')}`; } },
@@ -100,7 +99,6 @@ function SectionScores(props) {
     }
 
     const rowHandleClick = (params, event, details) => {
-        //console.log(params.row.beatmap_id);
         const score = params.row.score_object;
         setModalData({
             active: true,
@@ -140,15 +138,10 @@ function SectionScores(props) {
         });
 
         props.user.scoreRows = rows;
-        setScoreCount(scores.length);
         forceUpdate();
-
-        console.log(props.user.scores.filter(x => scores.includes(x)));
     }
 
     const handleFilter = (c, filter) => {
-        // setColumns(c);
-        // console.log(c);
         let _cProc = {};
         c.forEach(col => {
             _cProc[col.field] = !col.hide;
@@ -206,6 +199,7 @@ function SectionScores(props) {
             setScores(props.user.scores);
         }
         handleFilter(columns, null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (

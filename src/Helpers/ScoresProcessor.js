@@ -1,5 +1,3 @@
-import moment from "moment";
-import { dataToList } from "./MonthlyDataConfig";
 import { calculatePP2016, calculatePPifFC, calculatePPifSS, getBeatmapCount, getBonusPerformance, getLazerScore, getModString, mods } from "./Osu";
 import { getPerformance2016 } from "./Performance/Performance2016";
 import { getPerformanceLive } from "./Performance/PerformanceLive";

@@ -1,8 +1,6 @@
 import { Card, CardContent, Container, CssBaseline } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import React, { useEffect, useReducer, useState } from 'react';
-import { createBrowserRouter, Router, RouterProvider } from 'react-router-dom';
-import ReactDOM from 'react-dom';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 import Theme from './Theme';
 import Root from './Routes/Root';
@@ -16,21 +14,8 @@ import Leaders from './Routes/Leaders';
 import Snowfall from 'react-snowfall';
 import { getSettings, loadSettings } from './Helpers/Settings';
 
-const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <Root />,
-    errorElement: <Error />,
-  },
-  {
-    path: 'update/:updateId',
-    element: <Update />,
-    errorElement: <Error />,
-  }
-]);
-
 function App() {
-  const [refresher, setRefresher] = useState(0);
+  const [, setRefresher] = useState(0);
 
   useEffect(() => {
     loadSettings();
