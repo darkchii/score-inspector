@@ -26,14 +26,6 @@ function App() {
 
   return (
     <>
-      {
-        getSettings().snowFall ?
-          <Snowfall style={{
-            position: 'fixed',
-            width: '100vw',
-            height: '100vh',
-          }} /> : <></>
-      }
       <ThemeProvider theme={createTheme(Theme)}>
         <CssBaseline />
         <Header />
@@ -59,6 +51,14 @@ function App() {
           <Footer />
         </Container>
       </ThemeProvider>
+      {
+        getSettings().snowFall ?
+          <Snowfall style={{
+            position: 'fixed',
+            width: '100vw',
+            height: '100vh',
+          }} /> : <></>
+      }
     </>
   );
 }
