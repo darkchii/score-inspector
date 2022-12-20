@@ -211,7 +211,6 @@ function getCumulative(chunks, user, data, f = 'm') {
         chunks[i].total_average_acc = chunks[i].total_base_score * Math.pow(chunks[i].total_max_base_score, -1) * 100;
         chunks[i].cumulative_average_acc = chunks[i].cumulative_total_base_score * Math.pow(chunks[i].cumulative_total_max_base_score, -1) * 100;
 
-        // console.log(`${sorted[i].actual_date.format("YYYY-M")}-01`);
         const beatmaps = data.beatmapInfo.monthlyCumulative[`${chunks[i].actual_date.format("YYYY-M")}-01`];
         chunks[i].completion = 100 / beatmaps.amount * chunks[i].cumulative_plays;
         chunks[i].completion_score = 100 / beatmaps.score * chunks[i].cumulative_score;
@@ -241,7 +240,6 @@ function getCumulative(chunks, user, data, f = 'm') {
                     }
                 }
             }
-            // console.log(dailyPoints);
         }
         chunks[i].global_rank = rank !== null ? -rank : null;
         chunks[i].country_rank = c_rank !== null ? -c_rank : null;

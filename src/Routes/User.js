@@ -96,8 +96,6 @@ function User() {
             const _leaderboardStats = await getUserLeaderboardStats(user_out.alt.user_id);
             user_out.data.leaderboardStats = (_leaderboardStats === null || _leaderboardStats.error !== undefined) ? null : _leaderboardStats;
 
-            console.log(user_out);
-
             setUser(user_out);
             setIsLoading(false);
         })();

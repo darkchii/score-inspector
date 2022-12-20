@@ -2,13 +2,17 @@ import { AppBar, Box, Button, Container, Menu, MenuItem, Toolbar, Typography } f
 import React from 'react';
 import { useRef } from 'react';
 import { Link } from 'react-router-dom';
-import UserSearch from './UserSearch';
+import SettingsModal from './Modals/SettingsModal';
+import UserSearchModal from './Modals/UserSearchModal';
 
 function Header() {
     const searchElement = useRef(null);
+    const settingsElement = useRef(null);
+
     return (
         <>
-            <UserSearch ref={searchElement} />
+            <UserSearchModal ref={searchElement} />
+            <SettingsModal ref={settingsElement} />
             <Box>
                 <AppBar position="static">
                     <Container>
@@ -21,6 +25,7 @@ function Header() {
                             <Box sx={{ flexGrow: 1 }}>
                                 <Button onClick={() => searchElement.current.setOpen(true)}>Search</Button>
                                 <Button component={Link} to={'/leaderboard'}>Leaderboards</Button>
+                                <Button onClick={() => settingsElement.current.setOpen(true)}>Settings</Button>
                             </Box>
                         </Toolbar>
                     </Container>

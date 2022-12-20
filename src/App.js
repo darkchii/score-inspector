@@ -1,6 +1,6 @@
 import { Card, CardContent, Container, CssBaseline } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import React from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 import { createBrowserRouter, Router, RouterProvider } from 'react-router-dom';
 import ReactDOM from 'react-dom';
 import './App.css';
@@ -14,6 +14,7 @@ import { Route, Routes } from 'react-router-dom/dist';
 import User from './Routes/User';
 import Leaders from './Routes/Leaders';
 import Snowfall from 'react-snowfall';
+import { getSettings, loadSettings } from './Helpers/Settings';
 
 const router = createBrowserRouter([
   {
@@ -29,18 +30,30 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
+  const [refresher, setRefresher] = useState(0);
+
+  useEffect(() => {
+    loadSettings();
+    const onSettings = () => { setRefresher(Math.random()); };
+    window.addEventListener('settings', onSettings);
+    return () => { window.removeEventListener('settings', onSettings); };
+  }, []);
+
   return (
     <>
-      <Snowfall style={{
-        position: 'fixed',
-        width: '100vw',
-        height: '100vh',
-      }} />
+      {
+        getSettings().snowFall ?
+          <Snowfall style={{
+            position: 'fixed',
+            width: '100vw',
+            height: '100vh',
+          }} /> : <></>
+      }
       <ThemeProvider theme={createTheme(Theme)}>
         <CssBaseline />
         <Header />
         <Container>
-          <Card sx={{borderRadius: 0}}>
+          <Card sx={{ borderRadius: 0 }}>
             <CardContent>
               {/* <RouterProvider router={router} /> */}
               <Routes>

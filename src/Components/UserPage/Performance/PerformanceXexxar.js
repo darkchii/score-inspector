@@ -19,7 +19,7 @@ function PerformanceXexxar(props) {
                 <CardContent>
                     <Grid container spacing={3} sx={{ justifyContent: 'space-between' }}>
                         <Grid item>
-                            <Typography component="div" color="textPrimary" variant="h4">
+                            <Typography component="div" color="textPrimary" variant="h6">
                                 {toFixedNumber(props.data.data.performance.weighted.xexxar, 0).toLocaleString('en-US')}pp <Typography color={'' + (ppDiff >= 0 ? '#11cb5f' : 'error')} variant='subtitle2' display="inline">{(ppDiff >= 0 ? '+' : '')}{ppDiff.toFixed(1)}pp</Typography>
                             </Typography>
                             <Marquee speed={40} gradient={false}>

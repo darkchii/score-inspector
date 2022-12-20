@@ -1,6 +1,6 @@
 import { Card, CardContent, Modal, Typography, Grid, List, ListItem } from "@mui/material";
 import React, { useEffect } from "react";
-import ScoreTableRow from "./ScoreTableRow";
+import ScoreTableRow from "../ScoreTableRow";
 
 const style = {
     position: 'absolute',

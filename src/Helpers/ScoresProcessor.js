@@ -163,8 +163,6 @@ function weighPerformance(scores, onScoreProcessUpdate) {
     data.weighted.ss += bonus;
     data.weighted._2016 += bonus;
 
-    console.log(data);
-
     return data;
 }
 

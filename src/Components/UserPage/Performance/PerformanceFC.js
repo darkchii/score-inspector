@@ -4,7 +4,7 @@ import { useState } from "react";
 import { toFixedNumber } from "../../../Helpers/Misc";
 import { getGrade } from "../../../Helpers/Osu";
 import AutoGraphIcon from '@mui/icons-material/AutoGraph';
-import TopplaysModal from "../../TopplaysModal";
+import TopplaysModal from "../../Modals/TopplaysModal";
 
 function PerformanceFC(props) {
     const [modalData, setModalData] = useState({ active: false });
@@ -48,7 +48,7 @@ function PerformanceFC(props) {
                 <CardContent>
                     <Grid container sx={{ justifyContent: 'space-between' }}>
                         <Grid item>
-                            <Typography component="div" color="textPrimary" variant="h4">
+                            <Typography component="div" color="textPrimary" variant="h5">
                                 {toFixedNumber(props.data.data.performance.weighted.fc, 0).toLocaleString('en-US')}pp <Typography color={'' + (ppDiff >= 0 ? '#11cb5f' : 'error')} variant='subtitle2' display="inline">{(ppDiff >= 0 ? '+' : '')}{ppDiff.toFixed(1)}pp</Typography>
                             </Typography>
                             <Typography color="textSecondary">if everything fullcombo</Typography>

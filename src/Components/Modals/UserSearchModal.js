@@ -2,7 +2,7 @@ import { Avatar, Box, Button, Card, CardContent, Container, Input, Modal, Paper,
 import { useEffect, useImperativeHandle } from "react";
 import { forwardRef } from "react";
 import { useState } from "react";
-import { findUsers } from "../Helpers/OsuAlt";
+import { findUsers } from "../../Helpers/OsuAlt";
 import { Link } from 'react-router-dom';
 import { useNavigate } from "react-router-dom/dist";
 import ReactCountryFlag from "react-country-flag";
@@ -14,7 +14,7 @@ const style = {
     transform: 'translate(0, -50%)',
 };
 
-function UserSearch(props, ref) {
+function UserSearchModal(props, ref) {
     const [open, setOpen] = useState(false);
     const [resultList, setResultList] = useState([]);
     const [searchVal, setSearchVal] = useState('');
@@ -96,4 +96,4 @@ function UserSearch(props, ref) {
     )
 }
 
-export default forwardRef(UserSearch);
+export default forwardRef(UserSearchModal);
