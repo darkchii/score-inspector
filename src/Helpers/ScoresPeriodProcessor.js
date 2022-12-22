@@ -221,8 +221,8 @@ function getCumulative(chunks, user, data, f = 'm') {
         let rank = null;
         let c_rank = null;
         let raw_pp = null;
-        if (user.osu.daily !== null) {
-            const dailyPoints = user.osu.daily.modes[0].lines;
+        if (user.daily !== null) {
+            const dailyPoints = user.daily.modes[0].lines;
             for (var j = 0; j < dailyPoints.length; j++) {
                 const point = dailyPoints[j];
                 const date = moment(point.date);

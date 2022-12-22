@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom/dist';
 import { getUser as getAltUser, getUserScores } from '../Helpers/OsuAlt';
-import { getUser as getOsuUser, getUserLeaderboardStats } from '../Helpers/Osu';
+import { getFullUser, getUser as getOsuUser, getUserLeaderboardStats } from '../Helpers/Osu';
 import SectionHeader from '../Components/UserPage/SectionHeader';
 import { processScores } from '../Helpers/ScoresProcessor';
 import { Helmet } from 'react-helmet';
@@ -29,25 +29,9 @@ function User() {
             }
             setIsLoading(true);
             setUser(null);
-            const user_out = {};
             const user_in = params.id;
             setLoadingState('Fetching user data');
-            const alt_user = await getAltUser(user_in);
-
-            if (alt_user === null || alt_user.error !== undefined) {
-                setUser(null);
-                setIsLoading(false);
-                return;
-            }
-            user_out.alt = (alt_user === null || alt_user.error !== undefined) ? null : alt_user;
-
-            const osu_user = await getOsuUser(user_out.alt.user_id);
-            if (osu_user === null || osu_user.error !== undefined) {
-                setUser(null);
-                setIsLoading(false);
-                return;
-            }
-            user_out.osu = osu_user;
+            const user_out = await getFullUser(user_in);
 
             const onScoreDownloadProgress = (progress) => {
                 setLoadingState(`Fetching user scores (${parseInt(Math.round(progress.loaded * 100) / progress.total)}%)`);

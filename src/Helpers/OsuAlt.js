@@ -1,14 +1,11 @@
 import axios from "axios";
 import config from "../config.json";
-
-export function getAltAPIURL() {
-    return (config.USE_DEV_API) ? config.OSU_TEST_API_ALT : config.OSU_API_ALT;
-}
+import { GetAPI } from "./Misc";
 
 export async function findUsers(query) {
     let users = [];
     try {
-        const _users = await axios.get(`${getAltAPIURL()}users/find/${query}`);
+        const _users = await axios.get(`${GetAPI()}users/alt/find/${query}`);
         users = _users.data;
     } catch (e) {
     }
@@ -18,7 +15,7 @@ export async function findUsers(query) {
 export async function getLeaderboard(stat, limit, offset, country){
     let leaderboard = null;
     try {
-        const url = `${getAltAPIURL()}leaderboards/${stat}?limit=${limit}&offset=${offset}${country ? `&country=${country}` : ""}`;
+        const url = `${GetAPI()}leaderboards/${stat}?limit=${limit}&offset=${offset}${country ? `&country=${country}` : ""}`;
         const res = await axios.get(url, { headers: { "Access-Control-Allow-Origin": "*" } });
         console.log(res);
         leaderboard = res.data;
@@ -31,7 +28,7 @@ export async function getLeaderboard(stat, limit, offset, country){
 export async function getUser(user_id) {
     let user = null;
     try {
-        const _user = await axios.get(`${getAltAPIURL()}users/find/${user_id}?single=true`);
+        const _user = await axios.get(`${GetAPI()}users/find/${user_id}?single=true`);
         user = _user.data;
     } catch (e) {
     }
@@ -41,7 +38,7 @@ export async function getUser(user_id) {
 export async function getUserScores(user_id, allowLoved, onScoreDownloadProgress) {
     let _scores = null;
     try {
-        const url = `${getAltAPIURL()}scores/${user_id}${allowLoved ? "?loved=true" : ""}`;
+        const url = `${GetAPI()}scores/${user_id}${allowLoved ? "?loved=true" : ""}`;
         const config = {
             onDownloadProgress: (progressEvent) => {
                 onScoreDownloadProgress?.(progressEvent);
@@ -56,7 +53,7 @@ export async function getUserScores(user_id, allowLoved, onScoreDownloadProgress
 }
 
 export async function getUserTrackerStatus(user_id) {
-    const currentlyTracking = await axios.get(`${(config.USE_DEV_API) ? config.OSU_TEST_API : config.OSU_API}proxy/aHR0cHM6Ly9vc3VhbHQucmVzcGVrdGl2ZS5wdy9hcGkvY3VycmVudA==`, { headers: { "Access-Control-Allow-Origin": "*" } });
+    const currentlyTracking = await axios.get(`${(config.USE_DEV_API) ? config.API_DEV : config.API}proxy/aHR0cHM6Ly9vc3VhbHQucmVzcGVrdGl2ZS5wdy9hcGkvY3VycmVudA==`, { headers: { "Access-Control-Allow-Origin": "*" } });
 
     if (currentlyTracking.data === undefined || currentlyTracking.data.length === 0) {
         return false;

@@ -1,14 +1,34 @@
 import axios from "axios";
 import config from "../config.json";
+import { GetAPI } from "./Misc";
 
-export function getAPIURL() {
-    return (config.USE_DEV_API) ? config.OSU_TEST_API : config.OSU_API;
+export async function getFullUser(user_id) {
+    let user = null;
+    try {
+        const _user = await axios.get(`${GetAPI()}users/full/${user_id}`);
+        user = _user.data;
+    } catch (e) { }
+
+    if (user === null || user === undefined || user.error !== undefined) {
+        return null;
+    }
+
+    try {
+        let _scoreRank = await fetch(`${config.SCORE_API}${user.id}`).then((res) => res.json());
+        if (_scoreRank !== undefined) {
+            user.osu.scoreRank = _scoreRank[0].rank;
+        }
+    } catch (err) {
+        return null;
+    }
+
+    return user;
 }
 
 export async function getUser(user_id) {
     let user = null;
     try {
-        const _user = await axios.get(`${getAPIURL()}users/${user_id}`);
+        const _user = await axios.get(`${GetAPI()}users/osu/${user_id}`);
         user = _user.data;
     } catch (e) {
     }
@@ -23,7 +43,7 @@ export async function getUser(user_id) {
     }
 
     try {
-        let _dailyUser = await axios.get(`${getAPIURL()}daily/${user.id}`, { headers: { "Access-Control-Allow-Origin": "*" } });
+        let _dailyUser = await axios.get(`${GetAPI()}users/daily/${user.id}`, { headers: { "Access-Control-Allow-Origin": "*" } });
         if (_dailyUser !== undefined && _dailyUser.data.error === undefined) {
             user.daily = _dailyUser.data;
         } else {
@@ -100,7 +120,7 @@ export function getModString(value) {
 export async function getBeatmapMaxscore(beatmap_id) {
     let beatmap;
     try {
-        const url = `${getAPIURL()}beatmaps/${beatmap_id}/maxscore`;
+        const url = `${GetAPI()}beatmaps/${beatmap_id}/maxscore`;
         beatmap = await axios.get(url, { headers: { "Access-Control-Allow-Origin": "*" } });
     } catch (err) {
         return null;
@@ -304,7 +324,7 @@ export function getBonusPerformance(clears) {
 export async function getBeatmapCount() {
     let bmCount;
     try {
-        bmCount = await axios.get(`${getAPIURL()}beatmaps/monthly`, { headers: { "Access-Control-Allow-Origin": "*" } });
+        bmCount = await axios.get(`${GetAPI()}beatmaps/monthly`, { headers: { "Access-Control-Allow-Origin": "*" } });
     } catch (err) {
         return null;
     }
