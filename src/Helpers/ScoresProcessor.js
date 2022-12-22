@@ -13,7 +13,7 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
         bmCount = null;
     }
 
-    if(bmCount === null) {
+    if (bmCount === null) {
         onCallbackError('Error fetching beatmap count');
         return null;
     }
@@ -105,8 +105,11 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
 
     data.performance = weighPerformance(scores, onScoreProcessUpdate);
 
-    onScoreProcessUpdate('Monthly data')
+    onScoreProcessUpdate('Monthly data');
     data.monthly = getPeriodicData(scores, data, user);
+
+    onScoreProcessUpdate('Active days');
+    data.activeDays = getActiveDays(scores);
 
     return data;
 }
@@ -244,7 +247,15 @@ function getBestScores(scores) {
     return _scores;
 }
 
-function getMonthlyBeatmapData(beatmaps){
+function getActiveDays(scores) {
+    const activeDays = new Set();
+    scores.forEach(score => {
+        activeDays.add(new Date(score.date_played).toISOString().slice(0, 10));
+    });
+    return activeDays;
+}
+
+function getMonthlyBeatmapData(beatmaps) {
     var beatmapInfo = {};
     beatmapInfo.monthly = [];
 

@@ -2,29 +2,6 @@ import axios from "axios";
 import { isScoreRealistic } from "./osu";
 import config from "./config.json";
 
-export function getGradeColor(grade) {
-    switch (grade) {
-        default:
-            return '#ffffff';
-        case 'XH':
-            return '#C0C0C0';
-        case 'X':
-            return '#C0C0C0';
-        case 'SH':
-            return '#E8BF3F';
-        case 'S':
-            return '#E8BF3F';
-        case 'A':
-            return '#72B75D';
-        case 'B':
-            return '#8B6996';
-        case 'C':
-            return '#8B6996';
-        case 'D':
-            return '#8B6996';
-    }
-}
-
 export const mods = {
     None: 0,
     NF: 1,
