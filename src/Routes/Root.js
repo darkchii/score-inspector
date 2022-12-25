@@ -1,11 +1,70 @@
-import { Alert, Box, Card, CardContent, Grid, Link, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from '@mui/material';
-import React from 'react';
+import { Alert, Box, Card, CardContent, CircularProgress, Grid, Link, Modal, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from '@mui/material';
 import { updates } from '../updates';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useSearchParams } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { MODAL_STYLE, parseReadableStreamToJson, showNotification } from '../Helpers/Misc';
+import { LoginUser } from '../Helpers/Account';
+import { toast, ToastContainer } from 'react-toastify';
+import config from '../config.json';
 
 function Root() {
+    const [isModalOpen, setIsModalOpen] = useState(true);
+    const [osuAuthCode, setOsuAuthCode] = useState(null);
+    const [searchParams, setSearchParams] = useSearchParams();
+    const [loginStatus, setLoginStatus] = useState(null);
+
+    useEffect(() => {
+        const _osuAuthCode = searchParams.get("code");
+
+        if (_osuAuthCode !== null) {
+            setOsuAuthCode(_osuAuthCode);
+
+            (async () => {
+                const res = await LoginUser(_osuAuthCode);
+                const body = await parseReadableStreamToJson(res.body);
+                if (body !== null && body !== undefined) {
+                    const user_id = body.user_id;
+                    const username = body.username;
+                    const token = body.token;
+
+                    if(user_id !== null && username !== null && token !== null && user_id !== undefined && username !== undefined && token !== undefined) {
+                        localStorage.setItem('auth_osu_id', user_id);
+                        localStorage.setItem('auth_username', username);
+                        localStorage.setItem('auth_token', token);
+                        const redirect = window.location.href.split('?')[0];
+                        window.location.href = redirect;
+                        // window.location.reload()
+                        // window.dispatchEvent(new Event('auth_token'));
+                        //showNotification('Logged in', `Welcome, ${username}`, 'success');
+                    }else{
+                        setIsModalOpen(false);
+                        showNotification('Error', 'Something went wrong while logging in. Please try again.', 'error');
+                    }
+                } else {
+                    setIsModalOpen(false);
+                    showNotification('Error', 'Something went wrong while logging in. Please try again.', 'error');
+                }
+            })();
+        }
+    }, []);
+
     return (
         <>
+            {
+                osuAuthCode !== null ?
+                    <>
+                        <Modal open={isModalOpen}>
+                            <Card sx={MODAL_STYLE}>
+                                <CardContent>
+                                    <Stack spacing={2} sx={{ width: '100%', height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                        <Typography variant="h6" sx={{ color: 'white' }}>Logging in...</Typography>
+                                        <CircularProgress />
+                                    </Stack>
+                                </CardContent>
+                            </Card>
+                        </Modal>
+                    </> : <></>
+            }
             <Box sx={{ mb: 1 }}>
                 <Alert severity='warning'>This website is still in development, and is not yet ready for public use.</Alert>
             </Box>

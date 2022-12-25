@@ -3,7 +3,13 @@
     "API_DEV": "http://localhost:3863/",
     "SCORE_API": "https://score.respektive.pw/u/",
     "DONATE_URL": "https://www.buymeacoffee.com/darkchii",
+    "OSU_CLIENT_ID": 19537,
+    "OSU_CLIENT_ID_DEV": 19559,
     "USE_DEV_API": true,
+    "NOTIFICATIONS": {
+        "position": "top-right",
+        "theme": "dark"
+    },
     "SPECIAL_USERS": {
         "10153735": {
             "name": "boob enjoyer",

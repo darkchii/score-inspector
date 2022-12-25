@@ -27,7 +27,8 @@
     "react-helmet": "^6.1.0",
     "react-router-dom": "^6.4.5",
     "react-scripts": "^5.0.1",
-    "react-snowfall": "^1.2.1"
+    "react-snowfall": "^1.2.1",
+    "react-toastify": "^9.1.1"
   },
   "scripts": {
     "start": "set PORT=3006 && react-scripts start",

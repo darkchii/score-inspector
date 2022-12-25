@@ -38,6 +38,8 @@ import PNG_MOD_HR from "../Assets/MOD_HR.png";
 import PNG_MOD_TD from "../Assets/MOD_TD.png";
 import PNG_MOD_NM from "../Assets/MOD_NM.png";
 
+import PNG_GUEST from "../Assets/Guest.png";
+
 function getModIcon(modString) {
     switch (modString) {
         default: return null;
@@ -153,5 +155,6 @@ export {
     IMG_SVG_GRADE_C,
     IMG_SVG_GRADE_D,
     IMG_TRIANGLES,
-    SVG_TRIANGLES
+    SVG_TRIANGLES,
+    PNG_GUEST
 };

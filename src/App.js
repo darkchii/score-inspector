@@ -1,4 +1,4 @@
-import { Card, CardContent, Container, CssBaseline } from '@mui/material';
+import { Box, Card, CardContent, Container, CssBaseline, Modal, Typography } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import React, { useEffect, useState } from 'react';
 import './App.css';
@@ -8,7 +8,7 @@ import Header from './Components/Header';
 import Error from './Routes/Error';
 import Footer from './Components/Footer';
 import Update from './Routes/Update';
-import { Route, Routes } from 'react-router-dom/dist';
+import { Route, Routes, useSearchParams } from 'react-router-dom/dist';
 import User from './Routes/User';
 import Leaders from './Routes/Leaders';
 import Snowfall from 'react-snowfall';
@@ -16,11 +16,29 @@ import { getSettings, loadSettings } from './Helpers/Settings';
 import Top from './Routes/Top';
 import Stats from './Routes/Stats';
 import Beatmaps from './Routes/Beatmaps';
+import { GetUser, IsUserLoggedIn, IsUserLoggedInUnsafe } from './Helpers/Account';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { showNotification } from './Helpers/Misc';
+import Logout from './Routes/Logout';
 
 function App() {
+  const [loginData, setLoginData] = useState(null);
   const [, setRefresher] = useState(0);
 
   useEffect(() => {
+    (async () => {
+      if (await IsUserLoggedIn()) {
+        setLoginData({
+          token: localStorage.getItem('auth_token'),
+          user_id: localStorage.getItem('auth_osu_id'),
+          username: localStorage.getItem('auth_username'),
+        });
+
+        showNotification('Logged in!', `Welcome, ${localStorage.getItem('auth_username')}!`, 'success');
+      }
+    })();
+
     loadSettings();
     const onSettings = () => { setRefresher(Math.random()); };
     window.addEventListener('settings', onSettings);
@@ -31,8 +49,9 @@ function App() {
     <>
       <ThemeProvider theme={createTheme(Theme)}>
         <CssBaseline />
-        <Header />
+        <Header account={loginData} />
         <Container>
+          <ToastContainer hideProgressBar />
           <Card sx={{ borderRadius: 0 }}>
             <CardContent>
               {/* <RouterProvider router={router} /> */}
@@ -44,6 +63,7 @@ function App() {
                 <Route path="top" element={<Top />} />
                 <Route path="stats" element={<Stats />} />
                 <Route path="beatmaps" element={<Beatmaps />} />
+                <Route path="logout" element={<Logout />} />
                 <Route path="leaderboard" element={<Leaders />}>
                   <Route index element={<Leaders />} />
                   <Route path="stat/:stat" element={<Leaders />}>

@@ -1,4 +1,4 @@
-import { AppBar, Box, Button, Container, Stack, Toolbar, Typography } from '@mui/material';
+import { AppBar, Avatar, Box, Button, Container, IconButton, Menu, Stack, Toolbar, Typography } from '@mui/material';
 import React from 'react';
 import { useRef } from 'react';
 import { Link } from 'react-router-dom';
@@ -10,10 +10,15 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import StarIcon from '@mui/icons-material/Star';
 import QueryStatsIcon from '@mui/icons-material/QueryStats';
+import Login from './Navigation/Login';
+import { PNG_GUEST } from '../Helpers/Assets';
+import AccountDropdown from './Navigation/AccountDropdown';
 
-function Header() {
+function Header(props) {
     const searchElement = useRef(null);
     const settingsElement = useRef(null);
+
+    const [showMenu, setShowMenu] = React.useState(null);
 
     return (
         <>
@@ -36,7 +41,38 @@ function Header() {
                                     <Button size='small' startIcon={<SportsEsportsIcon />} component={Link} to={'/beatmaps'}>Beatmaps</Button>
                                     <Button size='small' startIcon={<StarIcon />} component={Link} to={'/top'}>Top Scores</Button>
                                     <Button size='small' startIcon={<SettingsIcon />} onClick={() => settingsElement.current.setOpen(true)}>Settings</Button>
-                                </Stack> 
+                                </Stack>
+                            </Box>
+                            <Box sx={{ flexGrow: 0 }}>
+                                <IconButton onClick={(e) => setShowMenu(e.currentTarget)} sx={{ p: 0 }}>
+                                    <Avatar alt='' src={props.account ? `https://a.ppy.sh/${props.account.user_id}` : PNG_GUEST} />
+                                </IconButton>
+                                <Menu
+                                    id="menu-appbar"
+                                    sx={{ mt: '45px' }}
+                                    keepMounted
+                                    anchorEl={showMenu}
+                                    anchorOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'right',
+                                    }}
+                                    transformOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'right',
+                                    }}
+                                    open={Boolean(showMenu)}
+                                    onClose={() => setShowMenu(null)}
+                                >
+                                    <Box sx={{ width: '20em' }}>
+                                        {
+                                            props.account !== null ? <>
+                                                <AccountDropdown account={props.account} />
+                                            </> : <>
+                                                <Login />
+                                            </>
+                                        }
+                                    </Box>
+                                </Menu>
                             </Box>
                         </Toolbar>
                     </Container>
