@@ -221,7 +221,7 @@ function getCumulative(chunks, user, data, f = 'm') {
         let rank = null;
         let c_rank = null;
         let raw_pp = null;
-        if (user.daily !== null) {
+        if (user.daily !== null && user.daily.error === undefined) {
             const dailyPoints = user.daily.modes[0].lines;
             for (var j = 0; j < dailyPoints.length; j++) {
                 const point = dailyPoints[j];

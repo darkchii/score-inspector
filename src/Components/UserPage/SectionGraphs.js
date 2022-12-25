@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, Grid, Paper, Skeleton, Table, TableBody, TableCell, TableRow, Typography } from "@mui/material";
+import { Button, ButtonGroup, Grid, Paper, Skeleton, Table, TableBody, TableCell, TableRow, Tooltip, Typography } from "@mui/material";
 import { useState } from "react";
 
 function SectionGraphs(props) {
@@ -37,8 +37,8 @@ function SectionGraphs(props) {
                 { id: "ppPerPlay", title: "Average PP" },
                 //{ id: "accPerPlay", title: "Average Accuracy" },
                 { id: "highestPPPlay", title: "Highest PP" },
-                { id: "rawPP", title: "Raw PP" },
-                { id: "globalRank", title: "Rank" },
+                { id: "rawPP", title: "Raw PP", isDailyApi: true },
+                { id: "globalRank", title: "Rank", isDailyApi: true },
                 { id: "completion", title: "Completion" },
             ]
         }
@@ -68,9 +68,23 @@ function SectionGraphs(props) {
                                                 <TableCell>
                                                     <ButtonGroup size='small'>
                                                         {
-                                                            group.buttons.map((button, j) => (
-                                                                <Button variant={timeGraphValue === button.id ? 'contained' : 'outlined'} key={j} onClick={() => { setTimeGraphValue(button.id); }}>{button.title}</Button>
-                                                            )
+                                                            group.buttons.map((button, j) => {
+                                                                const disableButton = button.isDailyApi ? (props.user.daily === null || props.user.daily === undefined || props.user.daily.error !== undefined) : false;
+
+                                                                return (
+                                                                    <>
+                                                                        {
+                                                                            disableButton ?
+                                                                                <Tooltip title='No data available from osu!daily api for this user'>
+                                                                                    <Button disabled={true} variant={timeGraphValue === button.id ? 'contained' : 'outlined'} key={j} onClick={() => { setTimeGraphValue(button.id); }}>{button.title}</Button>
+                                                                                </Tooltip> :
+                                                                                <>
+                                                                                    <Button disabled={false} variant={timeGraphValue === button.id ? 'contained' : 'outlined'} key={j} onClick={() => { setTimeGraphValue(button.id); }}>{button.title}</Button>
+                                                                                </>
+                                                                        }
+                                                                    </>
+                                                                )
+                                                            }
                                                             )
                                                         }
                                                     </ButtonGroup>
