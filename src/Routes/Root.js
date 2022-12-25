@@ -1,4 +1,4 @@
-import { Card, CardContent, Grid, Link, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from '@mui/material';
+import { Alert, Box, Card, CardContent, Grid, Link, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from '@mui/material';
 import React from 'react';
 import { updates } from '../updates';
 import { Link as RouterLink } from 'react-router-dom';
@@ -6,6 +6,9 @@ import { Link as RouterLink } from 'react-router-dom';
 function Root() {
     return (
         <>
+            <Box sx={{ mb: 1 }}>
+                <Alert severity='warning'>This website is still in development, and is not yet ready for public use.</Alert>
+            </Box>
             <Grid container spacing={2}>
                 <Grid item xs={12} md={8}>
                     <Grid container spacing={2}>

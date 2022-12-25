@@ -13,6 +13,9 @@ import User from './Routes/User';
 import Leaders from './Routes/Leaders';
 import Snowfall from 'react-snowfall';
 import { getSettings, loadSettings } from './Helpers/Settings';
+import Top from './Routes/Top';
+import Stats from './Routes/Stats';
+import Beatmaps from './Routes/Beatmaps';
 
 function App() {
   const [, setRefresher] = useState(0);
@@ -38,6 +41,9 @@ function App() {
                 <Route path="update/:id" element={<Update />} />
                 <Route path="*" element={<Error />} />
                 <Route path="user/:id" element={<User />} />
+                <Route path="top" element={<Top />} />
+                <Route path="stats" element={<Stats />} />
+                <Route path="beatmaps" element={<Beatmaps />} />
                 <Route path="leaderboard" element={<Leaders />}>
                   <Route index element={<Leaders />} />
                   <Route path="stat/:stat" element={<Leaders />}>

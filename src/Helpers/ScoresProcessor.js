@@ -167,7 +167,7 @@ function weighPerformance(scores, onScoreProcessUpdate) {
     return data;
 }
 
-function prepareScores(scores, onScoreProcessUpdate) {
+export function prepareScores(scores, onScoreProcessUpdate) {
     scores.forEach(score => {
         onScoreProcessUpdate?.('' + score.id);
         score.pp = Math.max(0, parseFloat(score.pp));

@@ -96,7 +96,7 @@ function User() {
                 </> : user === null || !user ? <>
                     <Stack spacing={2} direction='column'>
                         <Typography variant='h4'>User not found</Typography>
-                        <Typography variant='subtitle1'>This user is most likely not registered on osu!alt</Typography>
+                        <Typography variant='subtitle1'>This user is most likely not registered on osu!alt or something went wrong</Typography>
                         <Link sx={{ textDecoration: 'none' }} href={`https://osu.ppy.sh/users/${params.id}`} target='_blank'>
                             <Typography variant='title' sx={{ fontSize: '1em' }}>Try osu! profile ....</Typography>
                         </Link>

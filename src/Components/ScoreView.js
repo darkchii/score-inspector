@@ -61,6 +61,8 @@ function ScoreView(props) {
             pp["80%"] = getPerformanceLive({ accuracy: 0.80, score: props.data.score, combo: props.data.score.maxcombo, count300: accHits["80%"].count300, count100: accHits["80%"].count100, count50: accHits["80%"].count50, countmiss: accHits["80%"].countmiss });
 
             setPerformance(pp);
+
+            console.log(props.data.score);
         }
     }, [props.data, props.data.score.score]);
 
@@ -204,7 +206,9 @@ function ScoreView(props) {
                                     : <></>
                             }
                             <Typography id="modal-modal-description" sx={{ mt: 0 }}>
-                                Mapped by <Link href={`https://osu.ppy.sh/users/${props.data.score.creator_id}`} target='_blank' rel='noreferrer'>{props.data.score.creator}</Link> - Go to <Link href={`https://osu.ppy.sh/beatmaps/${props.data.score.beatmap_id}`} target='_blank' rel='noreferrer'>Beatmap</Link>
+                                Mapped by <Link href={`https://osu.ppy.sh/users/${props.data.score.creator_id}`} target='_blank' rel='noreferrer'>{props.data.score.creator}</Link> 
+                                &nbsp;- Go to <Link href={`https://osu.ppy.sh/beatmaps/${props.data.score.beatmap_id}`} target='_blank' rel='noreferrer'>Beatmap</Link> 
+                                &nbsp;- Played by <Link href={`https://osu.ppy.sh/users/${props.data.score.user_id}`} target='_blank' rel='noreferrer'>{props.data.score.username}</Link>
                             </Typography>
                         </Box>
                     </CardContent>

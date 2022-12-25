@@ -12,7 +12,7 @@ export async function findUsers(query) {
     return users;
 }
 
-export async function getLeaderboard(stat, limit, offset, country){
+export async function getLeaderboard(stat, limit, offset, country) {
     let leaderboard = null;
     try {
         const url = `${GetAPI()}leaderboards/${stat}?limit=${limit}&offset=${offset}${country ? `&country=${country}` : ""}`;
@@ -38,7 +38,7 @@ export async function getUser(user_id) {
 export async function getUserScores(user_id, allowLoved, onScoreDownloadProgress) {
     let _scores = null;
     try {
-        const url = `${GetAPI()}scores/${user_id}${allowLoved ? "?loved=true" : ""}`;
+        const url = `${GetAPI()}scores/user/${user_id}${allowLoved ? "?loved=true" : ""}`;
         const config = {
             onDownloadProgress: (progressEvent) => {
                 onScoreDownloadProgress?.(progressEvent);
@@ -65,4 +65,20 @@ export async function getUserTrackerStatus(user_id) {
     }
 
     return false;
+}
+
+export async function getBestScores(period, stat, limit, loved) {
+    let scores = null;
+    const url = `${GetAPI()}scores/best?stat=${stat}&limit=${limit}&period=${period}${loved ? "&loved=true" : ""}`;
+    const res = await axios.get(url, { headers: { "Access-Control-Allow-Origin": "*" } });
+    scores = res?.data;
+    return scores;
+}
+
+export async function getScoreStats() {
+    let stats = null;
+    const url = `${GetAPI()}scores/stats`;
+    const res = await axios.get(url, { headers: { "Access-Control-Allow-Origin": "*" } });
+    stats = res?.data;
+    return stats;
 }
