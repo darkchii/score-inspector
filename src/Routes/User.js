@@ -33,6 +33,8 @@ function User() {
             setLoadingState('Fetching user data');
             const user_out = await getFullUser(user_in);
 
+            console.log(user_out);
+
             const onScoreDownloadProgress = (progress) => {
                 setLoadingState(`Fetching user scores (${parseInt(Math.round(progress.loaded * 100) / progress.total)}%)`);
             };
@@ -80,7 +82,7 @@ function User() {
             setUser(user_out);
             setIsLoading(false);
         })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [params.id]);
 
     return (
@@ -104,21 +106,20 @@ function User() {
 
                 </> : <>
                     {
-                        config.SPECIAL_USERS[user.osu.id] ? <>
+                        user.inspector !== null && user.inspector!==undefined && user.inspector.background_image !== null ? <>
                             {
-                                config.SPECIAL_USERS[user.osu.id].background_image !== undefined ? <Helmet>
-
+                                <Helmet>
                                     <style>
                                         {`
                                             body { 
-                                            background-image: url('${config.SPECIAL_USERS[user.osu.id].background_image}'); 
+                                            background-image: url('${user.inspector.background_image}'); 
                                             background-repeat: no-repeat;
                                             background-size: cover;
                                             background-position: center;
                                             background-attachment: fixed;
                                         }`}
                                     </style>
-                                </Helmet> : <></>
+                                </Helmet>
                             }
                         </> : <></>
                         // user.osu.id === 10153735 ? <>

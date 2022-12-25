@@ -66,7 +66,7 @@ function Header(props) {
                                     <Box sx={{ width: '20em' }}>
                                         {
                                             props.account !== null ? <>
-                                                <AccountDropdown account={props.account} />
+                                                <AccountDropdown onClose={() => setShowMenu(null)} account={props.account} />
                                             </> : <>
                                                 <Login />
                                             </>

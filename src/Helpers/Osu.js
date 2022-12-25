@@ -1,5 +1,6 @@
 import axios from "axios";
 import config from "../config.json";
+import { GetUser as GetInspectorUser } from "./Account";
 import { GetAPI } from "./Misc";
 
 export async function getFullUser(user_id) {
@@ -20,6 +21,15 @@ export async function getFullUser(user_id) {
         }
     } catch (err) {
         return null;
+    }
+
+    try{
+        const _inspectorUser = await GetInspectorUser(user.osu.id);
+        if(_inspectorUser !== null){
+            user.inspector = _inspectorUser;
+        }
+    }catch(err){
+        
     }
 
     return user;
