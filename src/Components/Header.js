@@ -13,15 +13,22 @@ import QueryStatsIcon from '@mui/icons-material/QueryStats';
 import Login from './Navigation/Login';
 import { PNG_GUEST } from '../Helpers/Assets';
 import AccountDropdown from './Navigation/AccountDropdown';
+import CustomizeModal from './Modals/CustomizeModal';
 
 function Header(props) {
     const searchElement = useRef(null);
     const settingsElement = useRef(null);
+    const customizeElement = useRef(null);
 
     const [showMenu, setShowMenu] = React.useState(null);
 
     return (
         <>
+            {
+                props.account !== null ? <>
+                    <CustomizeModal account={props.account} ref={customizeElement} />
+                </> : <></>
+            }
             <UserSearchModal ref={searchElement} />
             <SettingsModal ref={settingsElement} />
             <Box>
@@ -66,7 +73,7 @@ function Header(props) {
                                     <Box sx={{ width: '20em' }}>
                                         {
                                             props.account !== null ? <>
-                                                <AccountDropdown onClose={() => setShowMenu(null)} account={props.account} />
+                                                <AccountDropdown customizeModal={customizeElement} onClose={() => setShowMenu(null)} account={props.account} />
                                             </> : <>
                                                 <Login />
                                             </>
