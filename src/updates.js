@@ -10,7 +10,17 @@ const updates = [
         version: '2.0.0',
         date: 'n/a',
         changes: [
-            [CHANGETYPES.MISC, 'Complete project overhaul']
+            [CHANGETYPES.MISC, 'Complete project overhaul'],
+            [CHANGETYPES.NEW, 'Showing user load status'],
+            [CHANGETYPES.NEW, 'Added react.js routing'],
+            [CHANGETYPES.NEW, 'New search modal with improved autocomplete'],
+            [CHANGETYPES.NEW, 'Leaderboards added'],
+            [CHANGETYPES.NEW, 'Top scores added'],
+            [CHANGETYPES.NEW, 'User profile customization added'],
+            [CHANGETYPES.NEW, 'Logging in through osu! added'],
+            [CHANGETYPES.NEW, 'Special inspector user roles added'],
+            [CHANGETYPES.FIX, 'Much faster scores processing'],
+            [CHANGETYPES.MISC, 'Rewritten API endpoints to a single server instead of seperated ones (osu, osu!alt were dealt with seperately)'],
         ]
     },
     {

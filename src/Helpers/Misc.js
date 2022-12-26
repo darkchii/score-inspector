@@ -1,6 +1,8 @@
 import { toast } from "react-toastify";
 import config from "../config.json";
 
+export const sleep = ms => new Promise(r => setTimeout(r, ms));
+
 export const MODAL_STYLE = {
     position: 'absolute',
     top: '50%',

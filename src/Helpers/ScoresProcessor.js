@@ -1,10 +1,13 @@
+import { sleep } from "./Misc";
 import { calculatePP2016, calculatePPifFC, calculatePPifSS, getBeatmapCount, getBonusPerformance, getLazerScore, getModString, mods } from "./Osu";
 import { getPerformance2016 } from "./Performance/Performance2016";
 import { getPerformanceLive } from "./Performance/PerformanceLive";
 import { getPeriodicData } from "./ScoresPeriodProcessor";
 import { getSessions } from "./Session";
 
+const FEEDBACK_SLEEP_TIME = 100; // give the browser bit of breathing room to update the UI before each intensive task
 export async function processScores(user, scores, onCallbackError, onScoreProcessUpdate) {
+    await sleep(FEEDBACK_SLEEP_TIME);
     onScoreProcessUpdate('Fetching beatmaps');
     let bmCount;
     try {
@@ -18,6 +21,7 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
         return null;
     }
 
+    await sleep(FEEDBACK_SLEEP_TIME);
     onScoreProcessUpdate('Preparing scores');
     scores = prepareScores(scores, onScoreProcessUpdate);
 
@@ -52,9 +56,11 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
         }
     };
 
+    await sleep(FEEDBACK_SLEEP_TIME);
     onScoreProcessUpdate('Generate monthly beatmap data');
     data.beatmapInfo = getMonthlyBeatmapData(bmCount);
 
+    await sleep(FEEDBACK_SLEEP_TIME);
     onScoreProcessUpdate('Misc data');
     for (const score of scores) {
         const grade = score.rank;
@@ -69,6 +75,7 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
         data.total.is_fc += score.is_fc ?? 0;
     }
 
+    await sleep(FEEDBACK_SLEEP_TIME);
     onScoreProcessUpdate('Average data');
     if (data.clears > 0) {
         data.average.pp = data.total.pp / data.clears;
@@ -79,6 +86,7 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
     }
 
     //session data
+    await sleep(FEEDBACK_SLEEP_TIME);
     onScoreProcessUpdate('Sessions');
     data.sessions = getSessions(scores);
     data.approximatePlaytime = 0;
@@ -96,34 +104,42 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
     //end session data
 
     //fc rate
+    await sleep(FEEDBACK_SLEEP_TIME);
     onScoreProcessUpdate('Fullcombo rate');
     data.fcRate = data.total.is_fc / data.clears;
 
     //best scores
+    await sleep(FEEDBACK_SLEEP_TIME);
     onScoreProcessUpdate('Best scores');
     data.bestScores = getBestScores(scores);
 
-    data.performance = weighPerformance(scores, onScoreProcessUpdate);
+    data.performance = await weighPerformance(scores, onScoreProcessUpdate);
 
+    await sleep(FEEDBACK_SLEEP_TIME);
     onScoreProcessUpdate('Monthly data');
     data.monthly = getPeriodicData(scores, data, user);
 
+    await sleep(FEEDBACK_SLEEP_TIME);
     onScoreProcessUpdate('Active days');
     data.activeDays = getActiveDays(scores);
 
     return data;
 }
 
-function weighPerformance(scores, onScoreProcessUpdate) {
+async function weighPerformance(scores, onScoreProcessUpdate) {
+    await sleep(FEEDBACK_SLEEP_TIME);
     onScoreProcessUpdate('Fullcombo performance');
     scores = calculatePPifFC(scores);
 
+    await sleep(FEEDBACK_SLEEP_TIME);
     onScoreProcessUpdate('SS performance');
     scores = calculatePPifSS(scores);
 
+    await sleep(FEEDBACK_SLEEP_TIME);
     onScoreProcessUpdate('2016 performance');
     scores = calculatePP2016(scores);
 
+    await sleep(FEEDBACK_SLEEP_TIME);
     onScoreProcessUpdate('2016 performance');
     scores.sort((a, b) => {
         return b.pp - a.pp;
@@ -131,6 +147,8 @@ function weighPerformance(scores, onScoreProcessUpdate) {
     scores.forEach(score => { score.pp_weight = Math.pow(0.95, index); index++; });
     var index = 0;
 
+    await sleep(FEEDBACK_SLEEP_TIME);
+    onScoreProcessUpdate('Weighing scores');
     const data = {};
 
     data.weighted = {};
@@ -159,6 +177,8 @@ function weighPerformance(scores, onScoreProcessUpdate) {
             data.weighted._2016 += score.pp_2016.total * score.pp_2016.weight;
         }
     });
+    await sleep(FEEDBACK_SLEEP_TIME);
+    onScoreProcessUpdate('Bonus PP');
     const bonus = getBonusPerformance(scores.length);
     data.weighted.fc += bonus;
     data.weighted.ss += bonus;
