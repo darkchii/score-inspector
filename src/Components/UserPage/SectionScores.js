@@ -210,7 +210,7 @@ function SectionScores(props) {
                     <Card>
                         <CardContent>
                             <BeatmapFilter columns={columns} onApply={handleFilter} />
-                            <Typography variant="h6" style={{ marginBottom: 10 }}>Scores: {props.user.scoreRows.length}</Typography>
+                            <Typography variant="h6" style={{ marginBottom: 10 }}>Scores: {props.user.scoreRows.length.toLocaleString('en-US')}</Typography>
                             <DataGrid
                                 onRowClick={rowHandleClick}
                                 autoHeight
