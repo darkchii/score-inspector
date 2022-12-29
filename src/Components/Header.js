@@ -43,9 +43,9 @@ function Header(props) {
                             <Box sx={{ flexGrow: 1 }}>
                                 <Stack direction="row" spacing={2} sx={{ display: 'flex' }}>
                                     <Button size='small' startIcon={<SearchIcon />} onClick={() => searchElement.current.setOpen(true)}>Search</Button>
-                                    <Button size='small' startIcon={<QueryStatsIcon />} component={Link} to={'/stats'}>Stats</Button>
+                                    {/* <Button size='small' startIcon={<QueryStatsIcon />} component={Link} to={'/stats'}>Stats</Button> */}
                                     <Button size='small' startIcon={<LeaderboardIcon />} component={Link} to={'/leaderboard'}>Leaderboards</Button>
-                                    <Button size='small' startIcon={<SportsEsportsIcon />} component={Link} to={'/beatmaps'}>Beatmaps</Button>
+                                    {/* <Button size='small' startIcon={<SportsEsportsIcon />} component={Link} to={'/beatmaps'}>Beatmaps</Button> */}
                                     <Button size='small' startIcon={<StarIcon />} component={Link} to={'/top'}>Top Scores</Button>
                                     <Button size='small' startIcon={<SettingsIcon />} onClick={() => settingsElement.current.setOpen(true)}>Settings</Button>
                                 </Stack>

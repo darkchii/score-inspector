@@ -3,7 +3,7 @@ import { useEffect, useImperativeHandle } from "react";
 import { forwardRef } from "react";
 import { useState } from "react";
 import { GetUser as GetInspectorUser } from "../../Helpers/Account";
-import { showNotification } from "../../Helpers/Misc";
+import { showNotification, validateImage } from "../../Helpers/Misc";
 
 const style = {
     position: 'absolute',
@@ -43,7 +43,14 @@ function CustomizeModal(props, ref) {
     }, [open]);
 
     const save = () => {
-        setOpen(false);
+        // setOpen(false);
+        (async () => {
+            const validBackground = validateImage(backgroundUrl);
+            if (!validBackground) {
+                showNotification('Error', 'Invalid background image', 'error');
+                return;
+            }
+        })();
     }
 
     return (
@@ -60,7 +67,12 @@ function CustomizeModal(props, ref) {
                                             <img src={backgroundUrl} alt="Background" style={{ maxWidth: '300px', borderRadius: '10px' }} />
                                         </>
                                     }
-                                    <TextField disabled={isWorking} onChange={(e) => setBackgroundUrl(e.target.value)} value={backgroundUrl} label="Background Image" variant="standard" />
+                                    <TextField
+                                        disabled={isWorking}
+                                        onChange={(e) => setBackgroundUrl(e.target.value)}
+                                        value={backgroundUrl}
+                                        label="Background Image (URL)"
+                                        variant="standard" />
                                     <Button onClick={save}>Save</Button>
                                 </Stack>
                             </CardContent>

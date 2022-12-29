@@ -17,6 +17,10 @@ export const MODAL_STYLE = {
     },
 }
 
+export function validateImage(url) {
+    return (url.match(/\.(jpeg|jpg|gif|png)$/) != null);
+}
+
 export function getUnix(date_string) {
     return Math.floor(new Date(date_string).getTime() / 1000);
 }
@@ -35,9 +39,7 @@ export function GetOsuClientID() {
 }
 
 export function GetOsuApiRedirect() {
-    const redirect = 'http://localhost:3006/score_test/';
-
-    return redirect;
+    return `${config.USE_DEV_API ? config.BASE_URL_DEV : config.BASE_URL}${process.env.PUBLIC_URL}/`;
 }
 
 export function GetOsuAuthUrl() {
