@@ -16,7 +16,7 @@ function BestScoreCard(props) {
                     <Stack spacing={1}>
                         <Typography variant='h6' sx={{ fontSize: '0.9em' }}>Top {props.valueTitle} play</Typography>
                         <Marquee speed={40} gradient={false}>
-                            <Typography variant='title' sx={{ fontSize: '1em' }}>{props.score.title} [{props.score.diffname}]&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </Typography>
+                            <Typography variant='title' sx={{ fontSize: '1em' }}>{props.score.artist} - {props.score.title} [{props.score.diffname}]&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </Typography>
                         </Marquee>
                         <Typography variant='h5' sx={{ fontSize: '1.1em' }}>{props.valueLabel}</Typography>
                         <Typography sx={{ fontSize: '1em' }}>Played <Chip color="primary" label={moment(props.score.date_played).fromNow()} size="small"></Chip></Typography>
