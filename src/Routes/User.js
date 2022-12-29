@@ -10,6 +10,7 @@ import { processScores } from '../Helpers/ScoresProcessor';
 import { Helmet } from 'react-helmet';
 import UserDataContainer from '../Components/UserPage/UserDataContainer';
 import config from '../config.json';
+import { GetLoginID, GetVisitors, UpdateVisitor } from '../Helpers/Account';
 
 function User() {
     const [user, setUser] = useState(null);
@@ -33,7 +34,6 @@ function User() {
             setLoadingState('Fetching user data');
             const user_out = await getFullUser(user_in);
 
-            console.log(user_out);
 
             const onScoreDownloadProgress = (progress) => {
                 setLoadingState(`Fetching user scores (${parseInt(Math.round(progress.loaded * 100) / progress.total)}%)`);
@@ -79,6 +79,14 @@ function User() {
             const _leaderboardStats = await getUserLeaderboardStats(user_out.alt.user_id);
             user_out.data.leaderboardStats = (_leaderboardStats === null || _leaderboardStats.error !== undefined) ? null : _leaderboardStats;
 
+            setLoadingState('Server side stuff');
+
+            await UpdateVisitor(user_out.osu.id);
+
+            const visitors = await GetVisitors(user_out.osu.id);
+            user_out.visitors = visitors;
+
+            console.log(user_out);
             setUser(user_out);
             setIsLoading(false);
         })();
