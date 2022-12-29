@@ -151,9 +151,14 @@ function Top(props) {
                 </Grid>
             </Grid>
             <Box sx={{ pt: 1 }}>
-                <Alert severity='info'>
-                    Getting this data can take a minute sometimes, it most likely isn't broken. If you think it is, check the browser console for any errors and forward them to me (Amayakase).
-                </Alert>
+                <Stack direction='column' spacing={2}>
+                    <Alert severity='info'>
+                        Getting this data can take a minute sometimes, it most likely isn't broken. If you think it is, check the browser console for any errors and forward them to me (Amayakase).
+                    </Alert>
+                    <Alert severity='warning'>
+                        These scores are ones from tracked osu!alternative users. If theres a missing score, it likely gets added when the monthly data dump is released.
+                    </Alert>
+                </Stack>
             </Box>
         </>
     );
