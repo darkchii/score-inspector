@@ -164,3 +164,21 @@ export async function GetVisitors(osu_id) {
     const res = await axios.get(`${GetAPI()}login/visitors/${osu_id}`);
     return res?.data;
 }
+
+export async function UpdateProfile(data){
+    if(!await IsUserLoggedIn()) return null;
+
+    const res = await fetch(`${GetAPI()}login/update_profile`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            token: localStorage.getItem('auth_token'),
+            user_id: localStorage.getItem('auth_osu_id'),
+            data: data
+        })
+    });
+
+    return res;
+}

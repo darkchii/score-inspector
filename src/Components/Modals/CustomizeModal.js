@@ -2,7 +2,7 @@ import { Box, Button, Card, CardContent, Container, FormControl, FormControlLabe
 import { useEffect, useImperativeHandle } from "react";
 import { forwardRef } from "react";
 import { useState } from "react";
-import { GetUser as GetInspectorUser } from "../../Helpers/Account";
+import { GetUser as GetInspectorUser, UpdateProfile } from "../../Helpers/Account";
 import { showNotification, validateImage } from "../../Helpers/Misc";
 
 const style = {
@@ -44,12 +44,28 @@ function CustomizeModal(props, ref) {
 
     const save = () => {
         // setOpen(false);
+        if(isWorking){
+            return;
+        }
+        setIsWorking(false);
         (async () => {
             const validBackground = validateImage(backgroundUrl);
             if (!validBackground) {
                 showNotification('Error', 'Invalid background image', 'error');
                 return;
             }
+
+            const res = await UpdateProfile({
+                background_image: backgroundUrl
+            });
+
+            if (res!==null && res.status === 200) {
+                showNotification('Success', 'Profile updated', 'success');
+                setOpen(false);
+            } else {
+                showNotification('Error', 'Failed to update profile', 'error');
+            }
+            setIsWorking(false);
         })();
     }
 
