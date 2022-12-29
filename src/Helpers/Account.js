@@ -28,6 +28,20 @@ export async function LoginUser(code) {
     return response;
 }
 
+export async function LogoutUser(token, osu_id) {
+    const response = await fetch(`${GetAPI()}login/logout`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            token: token,
+            user_id: osu_id
+        })
+    });
+    return response;
+}
+
 export async function IsUserLoggedIn() {
     const token = localStorage.getItem('auth_token');
     const user_id = localStorage.getItem('auth_osu_id');
