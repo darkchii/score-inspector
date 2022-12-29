@@ -1,4 +1,4 @@
-import { Alert, Box, Card, CardContent, CircularProgress, Grid, Link, Modal, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from '@mui/material';
+import { Alert, Box, Button, Card, CardContent, CircularProgress, Grid, Link, Modal, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from '@mui/material';
 import { updates } from '../updates';
 import { Link as RouterLink, useSearchParams } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
@@ -27,7 +27,7 @@ function Root() {
                     const username = body.username;
                     const token = body.token;
 
-                    if(user_id !== null && username !== null && token !== null && user_id !== undefined && username !== undefined && token !== undefined) {
+                    if (user_id !== null && username !== null && token !== null && user_id !== undefined && username !== undefined && token !== undefined) {
                         localStorage.setItem('auth_osu_id', user_id);
                         localStorage.setItem('auth_username', username);
                         localStorage.setItem('auth_token', token);
@@ -36,7 +36,7 @@ function Root() {
                         // window.location.reload()
                         // window.dispatchEvent(new Event('auth_token'));
                         //showNotification('Logged in', `Welcome, ${username}`, 'success');
-                    }else{
+                    } else {
                         setIsModalOpen(false);
                         showNotification('Error', 'Something went wrong while logging in. Please try again.', 'error');
                     }
@@ -66,7 +66,10 @@ function Root() {
                     </> : <></>
             }
             <Box sx={{ mb: 1 }}>
-                <Alert severity='warning'>This website is still in development, and is not yet ready for public use.</Alert>
+                <Alert severity='info'>
+                    <Typography>Join the osu!alternative Discord!</Typography>
+                    <Button size='small' variant='contained' component='a' href='https://discord.gg/VZWRZZXcW4' target='_blank'>Join</Button>
+                </Alert>
             </Box>
             <Grid container spacing={2}>
                 <Grid item xs={12} md={8}>
@@ -82,8 +85,8 @@ function Root() {
                                     <Typography>Every user that has fetched their scores can be viewed here. The user in question has to fetch them themselves, others cannot do that.</Typography>
                                     <Typography variant='title'>Where can I recommend changes</Typography>
                                     <Typography>The following two places are fine:</Typography>
-                                    <Typography>- The #feature-ideas channel in the osu!alt discord (make sure to tag Amayakase#9198)</Typography>
-                                    <Typography>- Opening an issue on the GitHub</Typography>
+                                    <Typography>- The #feature-ideas channel in the <Link href='https://discord.gg/VZWRZZXcW4' target='_blank'>osu!alt discord</Link> (make sure to tag Amayakase#9198)</Typography>
+                                    <Typography>- Opening an issue on the <Link href='https://github.com/darkchii/score-inspector' target='_blank'>GitHub</Link></Typography>
                                 </CardContent>
                             </Card>
                         </Grid>
