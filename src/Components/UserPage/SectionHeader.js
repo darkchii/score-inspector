@@ -2,7 +2,7 @@ import { Alert, Avatar, Box, Chip, Grid, Paper, Stack, Table, TableBody, TableCe
 import moment from "moment";
 import { useEffect, useState } from "react";
 import ReactCountryFlag from "react-country-flag";
-import { GetFormattedName } from "../../Helpers/Account";
+import { GetFormattedName, GetRoles, ROLES } from "../../Helpers/Account";
 
 const MAX_VISITORS = 5;
 function SectionHeader(props) {
@@ -18,7 +18,7 @@ function SectionHeader(props) {
             <Stack direction='column' spacing={1}>
                 <Box component={Paper} elevation={2} sx={{ p: 1 }}>
                     <Typography variant='body1' sx={{ m: 1 }}>
-                        Recent visitors ({visitorCount.toLocaleString('en-US')} total): {props.user.visitors===null || props.user.visitors.length===0?'Noone yet :(':''} {props.user.visitors.slice(0, MAX_VISITORS).map((visitor, index) => {
+                        Recent visitors ({visitorCount.toLocaleString('en-US')} total): {props.user.visitors === null || props.user.visitors.length === 0 ? 'Noone yet :(' : ''} {props.user.visitors.slice(0, MAX_VISITORS).map((visitor, index) => {
                             return (
                                 <>
                                     {GetFormattedName(visitor, `Last visit: ${moment(visitor.last_visit).fromNow()}`)}{index < MAX_VISITORS - 1 ? ' ' : ''}
@@ -43,7 +43,27 @@ function SectionHeader(props) {
                                 <Avatar src={`https://a.ppy.sh/${props.user.osu.id}`} alt='avatar' sx={{ height: '8rem', width: '8rem', m: 1 }} />
                             </Grid>
                             <Grid item xs={5}>
-                                <Typography variant='h4'>{props.user.osu.username}</Typography>
+                                <Stack direction='row' spacing={1} sx={{ m: 0.5 }}>
+                                    <Typography variant='h4'>{props.user.osu.username}{
+                                        props.user.inspector !== undefined ? <>
+                                            {
+                                                GetRoles(props.user.inspector).map((role, index) => {
+                                                    const _role = ROLES.find(r => r.id === role);
+                                                    if (_role === undefined) return <></>;
+                                                    return (
+                                                        <>
+                                                            <Box sx={{ display: 'inline-block' }}>
+                                                                <Tooltip title={_role.name}>
+                                                                    {_role.icon}
+                                                                </Tooltip>
+                                                            </Box>
+                                                        </>
+                                                    )
+                                                })
+                                            }
+                                        </> : <></>
+                                    }</Typography>
+                                </Stack>
                                 <Stack alignItems='center' direction='row' spacing={1}>
                                     <ReactCountryFlag style={{ lineHeight: '1em', fontSize: '1.4em', borderRadius: '5px' }} cdnUrl="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/" countryCode={props.user.osu.country.code} />
                                     <Typography variant='h6'>{props.user.osu.country.name}</Typography>

@@ -7,7 +7,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { green, pink } from "@mui/material/colors";
 
 const ROLE_PADDING = 0.2;
-const ROLES = [
+export const ROLES = [
     {
         name: 'Developer',
         id: 'dev',
@@ -32,23 +32,31 @@ export function GetFormattedName(inspector_user, custom_tooltip = null) {
 
     return (
         <>
-        <Tooltip title={custom_tooltip ?? ''} placement='top'>
-            <Chip sx={{ pr: inspector_user.roles?.length > 0 ? 1 : 0 }}
-                onDelete={() => { }}
-                deleteIcon={<>{Array.isArray(inspector_user.roles) && inspector_user.roles?.map(role => {
-                    const _role = ROLES.find(r => r.id === role);
-                    if (!_role) return null;
-                    return (
-                        <>
-                            <Tooltip title={_role.name}>
-                                {_role.icon}
-                            </Tooltip>
-                        </>)
-                })}</>}
-                avatar={<Avatar alt={name} src={`https://a.ppy.sh/${inspector_user.osu_id}`} />} label={name} size="small" />
-        </Tooltip>
+            <Tooltip title={custom_tooltip ?? ''} placement='top'>
+                <Chip sx={{ pr: inspector_user.roles?.length > 0 ? 1 : 0 }}
+                    onDelete={() => { }}
+                    deleteIcon={<>{Array.isArray(inspector_user.roles) && inspector_user.roles?.map(role => {
+                        const _role = ROLES.find(r => r.id === role);
+                        if (!_role) return null;
+                        return (
+                            <>
+                                <Tooltip title={_role.name}>
+                                    {_role.icon}
+                                </Tooltip>
+                            </>)
+                    })}</>}
+                    avatar={<Avatar alt={name} src={`https://a.ppy.sh/${inspector_user.osu_id}`} />} label={name} size="small" />
+            </Tooltip>
         </>
     );
+}
+
+export function GetRoles(inspector_user) {
+    if (inspector_user.roles !== null && typeof inspector_user.roles === 'string') {
+        inspector_user.roles = JSON.parse(inspector_user.roles);
+    }
+
+    return inspector_user.roles;
 }
 
 export async function IsUserLoggedInUnsafe() {
