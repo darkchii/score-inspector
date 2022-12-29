@@ -90,6 +90,7 @@ function CustomizeModal(props, ref) {
                                         label="Background Image (URL)"
                                         variant="standard" />
                                     <Button onClick={save}>Save</Button>
+                                    <Typography variant='caption'>Feel free to use suggestive content, just don't go over the top with full on naked anime girls.</Typography>
                                 </Stack>
                             </CardContent>
                         </Card>
