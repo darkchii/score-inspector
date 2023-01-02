@@ -1,8 +1,9 @@
-import { Alert, Button, Checkbox, FormControl, FormControlLabel, Grid, InputLabel, MenuItem, Paper, Select, Stack, TextField, Tooltip, Typography } from "@mui/material";
+import { Alert, Box, Button, Checkbox, FormControl, FormControlLabel, Grid, InputLabel, MenuItem, Paper, Select, Stack, TextField, Tooltip, Typography } from "@mui/material";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { useEffect, useState } from "react";
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import moment from "moment";
+import TriCheckbox from "../UI/TriCheckbox";
 
 const COMMANDS = [
     {
@@ -82,16 +83,46 @@ const ARGUMENTS = [
         arg: '-m',
         compatibleWith: ['clears', 'total pp', 'top pp', 'fc pp'],
         type: 'dropdown',
+        seperator: '',
         values: ['NM', 'NF', 'EZ', 'TD', 'HD', 'HR', 'SD', 'DT', 'HT', 'NC', 'FL', 'SO', 'PF'],
+        default: undefined,
+    },
+    {
+        name: 'Grades',
+        desc: 'Filter the plays by grades',
+        arg: '-letters',
+        compatibleWith: ['clears', 'total pp', 'top pp', 'fc pp'],
+        type: 'dropdown',
+        seperator: ',',
+        values: ['XH', 'X', 'SH', 'S', 'A', 'B', 'C', 'D'],
         default: undefined,
     },
     {
         name: 'Loved',
         desc: 'Whether to include loved maps in the leaderboard.',
         arg: '-loved',
+        width: 2,
         compatibleWith: ['clears', 'total pp', 'top pp'],
-        type: 'boolean',
-        default: false,
+        type: 'triboolean',
+        default: null,
+    },
+    {
+        name: 'Is SS',
+        desc: 'Include or exclude any of these flags',
+        arg: '-is_ss',
+        width: 2,
+        compatibleWith: ['clears', 'total pp', 'top pp'],
+        type: 'triboolean',
+        default: null,
+    },
+    {
+        name: 'Is FC',
+        desc: 'Include or exclude any of these flags',
+        arg: '-is_fc',
+        width: 2,
+        compatibleWith: ['clears', 'total pp', 'top pp'],
+        type: 'triboolean',
+        default: null,
     },
     {
         name: 'Played After',
@@ -124,6 +155,86 @@ const ARGUMENTS = [
         compatibleWith: ['clears', 'total pp', 'top pp'],
         type: 'datepicker',
         default: null,
+    },
+    {
+        name: 'Min PP',
+        desc: 'Only include plays with PP greater than or equal to this value.',
+        arg: '-pp-min',
+        compatibleWith: ['clears', 'total pp', 'top pp'],
+        type: 'string',
+        numeric: true,
+        default: null,
+        width: 1.5,
+    },
+    {
+        name: 'Max PP',
+        desc: 'Only include plays with PP less than this value.',
+        arg: '-pp-max',
+        compatibleWith: ['clears', 'total pp', 'top pp'],
+        type: 'string',
+        numeric: true,
+        default: null,
+        width: 1.5,
+    },
+    {
+        name: 'Min Length',
+        desc: 'Only include plays with a length more than this value. (in seconds)',
+        arg: '-length-min',
+        compatibleWith: ['clears', 'total pp', 'top pp'],
+        type: 'string',
+        numeric: true,
+        default: null,
+        width: 1.5,
+    },
+    {
+        name: 'Max Length',
+        desc: 'Only include plays with a length less than this value. (in seconds)',
+        arg: '-length-max',
+        compatibleWith: ['clears', 'total pp', 'top pp'],
+        type: 'string',
+        numeric: true,
+        default: null,
+        width: 1.5,
+    },
+    {
+        name: 'Min Combo',
+        desc: 'Only include plays with a combo more than this value.',
+        arg: '-combo-min',
+        compatibleWith: ['clears', 'total pp', 'top pp'],
+        type: 'string',
+        numeric: true,
+        default: null,
+        width: 1.5,
+    },
+    {
+        name: 'Max Combo',
+        desc: 'Only include plays with a combo less than this value.',
+        arg: '-combo-max',
+        compatibleWith: ['clears', 'total pp', 'top pp'],
+        type: 'string',
+        numeric: true,
+        default: null,
+        width: 1.5,
+    },
+    {
+        name: 'Min Score',
+        desc: 'Only include plays with a score more than this value.',
+        arg: '-score-min',
+        compatibleWith: ['clears', 'total pp', 'top pp'],
+        type: 'string',
+        numeric: true,
+        default: null,
+        width: 1.5,
+    },
+    {
+        name: 'Max Score',
+        desc: 'Only include plays with a score less than this value.',
+        arg: '-score-max',
+        compatibleWith: ['clears', 'total pp', 'top pp'],
+        type: 'string',
+        numeric: true,
+        default: null,
+        width: 1.5,
     }
 ]
 
@@ -161,9 +272,9 @@ function ToolCommandHelper() {
                         case 'string':
                             if (argumentData[argument.name]?.length > 0) {
                                 let val;
-                                if(argument.seperated_string){
+                                if (argument.seperated_string) {
                                     val = `%${argumentData[argument.name].replace(/ /g, "+")}%`;
-                                }else{
+                                } else {
                                     val = argumentData[argument.name].replace(/ /g, "+");
                                 }
                                 command += ` ${argument.arg} ${val}`;
@@ -171,10 +282,14 @@ function ToolCommandHelper() {
                             break;
                         case 'dropdown':
                             if (argumentData[argument.name]?.length > 0) {
-                                command += ` ${argument.arg} ${argumentData[argument.name].join('')}`;
+                                command += ` ${argument.arg} ${argumentData[argument.name].join(argument.seperator)}`;
                             }
                             break;
                         case 'boolean':
+                            command += ` ${argument.arg} ${argumentData[argument.name] ? 'true' : 'false'}`;
+                            break;
+                        case 'triboolean':
+                            if (argumentData[argument.name] === null) break;
                             command += ` ${argument.arg} ${argumentData[argument.name] ? 'true' : 'false'}`;
                             break;
                         case 'datepicker':
@@ -213,86 +328,106 @@ function ToolCommandHelper() {
                     }
                     {/* </ButtonGroup> */}
                 </Paper>
-
                 <Paper elevation={2} sx={{ p: 1 }}>
                     <Typography component='p' variant='title'>Arguments</Typography>
                     <Grid container spacing={2}>
                         {
                             ARGUMENTS.map((argument, index) => {
-                                const compatible = argument.compatibleWith.includes(selectedCommand?.cmd);
+                                // const compatible = argument.compatibleWith.includes(selectedCommand?.cmd);
+                                const compatible = true;
                                 return (
-                                    <Grid item xs={3}>
+                                    <Grid item xs={argument.width ?? 3}>
                                         <Tooltip title={argument.desc}>
-                                            <>
-                                                {
+                                            <Box>
+                                                <>
                                                     {
-                                                        'string':
-                                                            <>
-                                                                <TextField disabled={!compatible} size='small' onChange={e => updateArgumentData(argument.name, e.target.value)} value={argumentData[argument.name]} label={argument.name} variant="standard" />
-                                                            </>,
-                                                        'dropdown':
-                                                            <>
-                                                                {
-                                                                    argument.values &&
-                                                                    <FormControl sx={{ width: '100%' }}>
-                                                                        <InputLabel size='small' id={`dropdown_label_${argument.name}`}>{argument.name}</InputLabel>
-                                                                        <Select
-                                                                            disabled={!compatible}
-                                                                            size='small'
-                                                                            multiple
-                                                                            value={argumentData[argument.name] ?? []}
-                                                                            onChange={e => updateArgumentData(argument.name, e.target.value)}
-                                                                            labelId={`dropdown_label_${argument.name}`}
-                                                                            label={argument.name}
-                                                                        // renderValue={(selected) => (
-                                                                        //     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                                                                        //         {selected.map((value) => (
-                                                                        //             <Chip key={value} label={value} />
-                                                                        //         ))}
-                                                                        //     </Box>
-                                                                        // )}
-                                                                        >
-                                                                            {
-                                                                                argument.values.map((value) => {
-                                                                                    return (
-                                                                                        <MenuItem key={value} value={value}>
-                                                                                            {value}
-                                                                                        </MenuItem>
-                                                                                    )
-                                                                                })
-                                                                            }
-                                                                        </Select>
-                                                                    </FormControl>
-                                                                }
-                                                            </>,
-                                                        'boolean':
-                                                            <>
-                                                                <FormControlLabel
-                                                                    disabled={!compatible}
-                                                                    control={
-                                                                        <Checkbox
-                                                                            checked={argumentData[argument.name] !== undefined ? argumentData[argument.name] : argument.default}
-                                                                            onChange={e => updateArgumentData(argument.name, e.target.checked)} />
-                                                                    }
-                                                                    label={argument.name} />
-                                                            </>,
-                                                        'datepicker':
-                                                            <>
-                                                                <LocalizationProvider dateAdapter={AdapterMoment}>
-                                                                    <DesktopDatePicker
+                                                        {
+                                                            'string':
+                                                                <>
+                                                                    <TextField
                                                                         disabled={!compatible}
-                                                                        inputFormat='YYYY/MM/DD'
-                                                                        label={argument.name}
+                                                                        size='small'
+                                                                        onChange={e => updateArgumentData(argument.name, e.target.value)}
                                                                         value={argumentData[argument.name] ?? null}
-                                                                        defaultValue={argument.default ?? null}
-                                                                        onChange={val => updateArgumentData(argument.name, val)}
-                                                                        renderInput={(params) => <TextField size='small' {...params} />}
-                                                                    />
-                                                                </LocalizationProvider>
-                                                            </>,
-                                                    }[argument.type]
-                                                }
-                                            </>
+                                                                        label={argument.name}
+                                                                        type={argument.numeric ? 'number' : 'text'}
+                                                                        variant="standard" />
+                                                                </>,
+                                                            'dropdown':
+                                                                <>
+                                                                    {
+                                                                        argument.values &&
+                                                                        <FormControl sx={{ width: '100%' }}>
+                                                                            <InputLabel size='small' id={`dropdown_label_${argument.name}`}>{argument.name}</InputLabel>
+                                                                            <Select
+                                                                                disabled={!compatible}
+                                                                                size='small'
+                                                                                multiple
+                                                                                value={argumentData[argument.name] ?? []}
+                                                                                onChange={e => updateArgumentData(argument.name, e.target.value)}
+                                                                                labelId={`dropdown_label_${argument.name}`}
+                                                                                label={argument.name}
+                                                                            // renderValue={(selected) => (
+                                                                            //     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                                                                            //         {selected.map((value) => (
+                                                                            //             <Chip key={value} label={value} />
+                                                                            //         ))}
+                                                                            //     </Box>
+                                                                            // )}
+                                                                            >
+                                                                                {
+                                                                                    argument.values.map((value) => {
+                                                                                        return (
+                                                                                            <MenuItem key={value} value={value}>
+                                                                                                {value}
+                                                                                            </MenuItem>
+                                                                                        )
+                                                                                    })
+                                                                                }
+                                                                            </Select>
+                                                                        </FormControl>
+                                                                    }
+                                                                </>,
+                                                            'boolean':
+                                                                <>
+                                                                    <FormControlLabel
+                                                                        disabled={!compatible}
+                                                                        control={
+                                                                            <Checkbox
+                                                                                checked={argumentData[argument.name] !== undefined ? argumentData[argument.name] : argument.default}
+                                                                                onChange={e => updateArgumentData(argument.name, e.target.checked)} />
+                                                                        }
+                                                                        label={argument.name} />
+                                                                </>,
+                                                            'triboolean':
+                                                                <>
+                                                                    <FormControlLabel
+                                                                        disabled={!compatible}
+                                                                        control={
+                                                                            <TriCheckbox
+                                                                                checked={argumentData[argument.name] !== undefined ? argumentData[argument.name] : argument.default}
+                                                                                onChange={val => updateArgumentData(argument.name, val)} />
+                                                                        }
+                                                                        label={argument.name} />
+                                                                </>,
+                                                            'datepicker':
+                                                                <>
+                                                                    <LocalizationProvider dateAdapter={AdapterMoment}>
+                                                                        <DesktopDatePicker
+                                                                            disabled={!compatible}
+                                                                            inputFormat='YYYY/MM/DD'
+                                                                            label={argument.name}
+                                                                            value={argumentData[argument.name] ?? null}
+                                                                            defaultValue={argument.default ?? null}
+                                                                            onChange={val => updateArgumentData(argument.name, val)}
+                                                                            renderInput={(params) => <TextField size='small' {...params} />}
+                                                                        />
+                                                                    </LocalizationProvider>
+                                                                </>,
+                                                        }[argument.type]
+                                                    }
+                                                </>
+                                            </Box>
                                         </Tooltip>
                                     </Grid>
                                 )
