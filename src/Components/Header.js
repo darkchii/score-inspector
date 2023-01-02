@@ -10,6 +10,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import StarIcon from '@mui/icons-material/Star';
 import QueryStatsIcon from '@mui/icons-material/QueryStats';
+import BuildIcon from '@mui/icons-material/Build';
 import Login from './Navigation/Login';
 import { PNG_GUEST } from '../Helpers/Assets';
 import AccountDropdown from './Navigation/AccountDropdown';
@@ -48,6 +49,7 @@ function Header(props) {
                                     {/* <Button size='small' startIcon={<SportsEsportsIcon />} component={Link} to={'/beatmaps'}>Beatmaps</Button> */}
                                     <Button size='small' startIcon={<StarIcon />} component={Link} to={'/top'}>Top Scores</Button>
                                     <Button size='small' startIcon={<SettingsIcon />} onClick={() => settingsElement.current.setOpen(true)}>Settings</Button>
+                                    <Button size='small' startIcon={<BuildIcon />} component={Link} to={'/tools'}>Tools</Button>
                                 </Stack>
                             </Box>
                             <Box sx={{ flexGrow: 0 }}>

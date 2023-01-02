@@ -8,7 +8,7 @@ const CHANGETYPES = {
 const updates = [
     {
         version: '2.0.0',
-        date: 'n/a',
+        date: '2022-12-30',
         changes: [
             [CHANGETYPES.MISC, 'Complete project overhaul'],
             [CHANGETYPES.NEW, 'Showing user load status'],

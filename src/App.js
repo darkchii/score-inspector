@@ -1,4 +1,4 @@
-import { Box, Card, CardContent, Container, CssBaseline, Modal, Typography } from '@mui/material';
+import { Alert, Box, Card, CardContent, Container, CssBaseline, Modal, Typography } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import React, { useEffect, useState } from 'react';
 import './App.css';
@@ -21,6 +21,8 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { showNotification } from './Helpers/Misc';
 import Logout from './Routes/Logout';
+import config from './config';
+import Tools from './Routes/Tools';
 
 function App() {
   const [loginData, setLoginData] = useState(null);
@@ -49,6 +51,17 @@ function App() {
     <>
       <ThemeProvider theme={createTheme(Theme)}>
         <CssBaseline />
+        {
+          config.USE_DEV_API && <>
+            <Alert severity="warning">
+              <Typography variant="h6" component="div">
+                <Box fontWeight="fontWeightBold">
+                  WARNING: You are using the development API!
+                </Box>
+              </Typography>
+            </Alert>
+          </>
+        }
         <Header account={loginData} />
         <Container>
           <ToastContainer hideProgressBar />
@@ -64,6 +77,7 @@ function App() {
                 <Route path="stats" element={<Stats />} />
                 <Route path="beatmaps" element={<Beatmaps />} />
                 <Route path="logout" element={<Logout />} />
+                <Route path="tools" element={<Tools />} />
                 <Route path="leaderboard" element={<Leaders />}>
                   <Route index element={<Leaders />} />
                   <Route path="stat/:stat" element={<Leaders />}>

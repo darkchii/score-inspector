@@ -145,28 +145,35 @@ export async function GetLoginID() {
 }
 
 export async function UpdateVisitor(target_id) {
-    const visitor_id = await GetLoginID();
-    console.log(`Updating visitor data: Visitor:${visitor_id} -> Target:${target_id}`)
-    const res = await fetch(`${GetAPI()}login/update_visitor`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            visitor: visitor_id,
-            target: target_id
-        })
-    });
+    let res = null;
+    try {
+        const visitor_id = await GetLoginID();
+        console.log(`Updating visitor data: Visitor:${visitor_id} -> Target:${target_id}`)
+        res = await fetch(`${GetAPI()}login/update_visitor`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                visitor: visitor_id,
+                target: target_id
+            })
+        });
+    } catch (e) { }
     return res;
 }
 
 export async function GetVisitors(osu_id) {
-    const res = await axios.get(`${GetAPI()}login/visitors/${osu_id}`);
+    let res = null;
+    try {
+        res = await axios.get(`${GetAPI()}login/visitors/${osu_id}`);
+    } catch (e) { }
+    if (res === null) return null;
     return res?.data;
 }
 
-export async function UpdateProfile(data){
-    if(!await IsUserLoggedIn()) return null;
+export async function UpdateProfile(data) {
+    if (!await IsUserLoggedIn()) return null;
 
     const res = await fetch(`${GetAPI()}login/update_profile`, {
         method: 'POST',
