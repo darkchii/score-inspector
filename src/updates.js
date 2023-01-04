@@ -7,6 +7,14 @@ const CHANGETYPES = {
 
 const updates = [
     {
+        version: '2.1.0',
+        date: 'n/a',
+        changes: [
+            [CHANGETYPES.NEW, 'Added a new tool: "Command Helper"'],
+            [CHANGETYPES.NEW, 'Added a new tool: "Missing Beatmaps"'],
+        ]
+    },
+    {
         version: '2.0.0',
         date: '2022-12-30',
         changes: [
