@@ -15,7 +15,7 @@ export async function getFullUser(user_id) {
     }
 
     try {
-        let _scoreRank = await fetch(`${config.SCORE_API}${user.id}`).then((res) => res.json());
+        let _scoreRank = await fetch(`${config.SCORE_API}${user.osu.id}`).then((res) => res.json());
         if (_scoreRank !== undefined) {
             user.osu.scoreRank = _scoreRank[0].rank;
         }

@@ -93,6 +93,7 @@ function SectionHeader(props) {
                                         <TableBody>
                                             <TableRow><TableCell>World</TableCell><TableCell>#{(props.user.osu.statistics.global_rank ?? 0).toLocaleString('en-US')}</TableCell></TableRow>
                                             <TableRow><TableCell>Country</TableCell><TableCell>#{(props.user.osu.statistics.country_rank ?? 0).toLocaleString('en-US')}</TableCell></TableRow>
+                                            <TableRow><TableCell>Score</TableCell><TableCell>#{(props.user.osu.scoreRank ?? 0).toLocaleString('en-US')}</TableCell></TableRow>
                                         </TableBody>
                                     </Table>
                                 </TableContainer>
