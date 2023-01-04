@@ -1,21 +1,33 @@
 import { Button, ButtonGroup, Grid } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import ToolCommandHelper from "../Components/Tools/ToolCommandHelper";
 import ToolMissingBeatmaps from "../Components/Tools/ToolMissingBeatmaps";
 
 const NAV_WIDTH = 3;
-const TOOL_OBJECTS = [
-    {
-        name: 'Command Helper',
-        component: <ToolCommandHelper />
-    },
-    {
-        name: 'Missing Beatmaps',
-        component: <ToolMissingBeatmaps /> 
-    }
-]
 function Tools() {
+    const params = useParams();
     const [currentTool, setTool] = useState(0);
+
+    const TOOL_OBJECTS = [
+        {
+            name: 'Command Helper',
+            component: <ToolCommandHelper />,
+            url: 'command-helper'
+        },
+        {
+            name: 'Missing Beatmaps',
+            component: <ToolMissingBeatmaps />,
+            url: 'missing-beatmaps'
+        }
+    ]
+
+    useEffect(() => {
+        const index = TOOL_OBJECTS.findIndex((tool) => tool.url === params.tool);
+        if (index !== -1) {
+            setTool(index);
+        }
+    }, [params.tool]);
 
     return (
         <>
@@ -25,7 +37,7 @@ function Tools() {
                         {
                             TOOL_OBJECTS.map((tool, index) => {
                                 return (
-                                    <Button onClick={() => setTool(index)} variant={index === currentTool ? 'contained' : 'outlined'}>{tool.name}</Button>
+                                    <Button component={Link} to={`/tools/${tool.url}`} variant={index === currentTool ? 'contained' : 'outlined'}>{tool.name}</Button>
                                 )
                             })
                         }

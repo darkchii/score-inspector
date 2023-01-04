@@ -77,7 +77,10 @@ function App() {
                 <Route path="stats" element={<Stats />} />
                 <Route path="beatmaps" element={<Beatmaps />} />
                 <Route path="logout" element={<Logout />} />
-                <Route path="tools" element={<Tools />} />
+                <Route path="tools" element={<Tools />}>
+                  <Route index element={<Tools />} />
+                  <Route path=":tool" element={<Tools />} />
+                </Route>
                 <Route path="leaderboard" element={<Leaders />}>
                   <Route index element={<Leaders />} />
                   <Route path="stat/:stat" element={<Leaders />}>
