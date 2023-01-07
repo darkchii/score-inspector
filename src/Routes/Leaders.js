@@ -7,6 +7,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { getLeaderboard } from '../Helpers/OsuAlt';
 import VerifiedIcon from '@mui/icons-material/Verified';
 import moment from 'moment/moment';
+import SmartToyIcon from '@mui/icons-material/SmartToy';
 
 const RANKED_STATISTICS = [
     {
@@ -161,7 +162,7 @@ function Leaders() {
                                             <TableCell><Typography variant='subtitles1' noWrap>Rank</Typography></TableCell>
                                             <TableCell></TableCell>
                                             <TableCell></TableCell>
-                                            <TableCell></TableCell>
+                                            <TableCell>Username</TableCell>
                                             <TableCell><Typography variant='subtitles1' noWrap>{statistic.title}</Typography></TableCell>
                                         </TableRow>
                                     </TableHead>
@@ -208,6 +209,13 @@ function Leaders() {
                                                                             <VerifiedIcon color='primary' fontSize='small' />
                                                                         </Tooltip>
                                                                         : <></>
+                                                                }
+                                                                {
+                                                                    osu_user?.is_bot ? <>
+                                                                        <Tooltip title='This is a bot account'>
+                                                                            <SmartToyIcon sx={{ color: '#ffac33' }} fontSize='small' />
+                                                                        </Tooltip>
+                                                                    </> : <></>
                                                                 }
                                                             </Stack>
                                                         </TableCell>
