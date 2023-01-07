@@ -1,17 +1,19 @@
-import { Alert, Box, Button, Card, CardContent, CircularProgress, Grid, Link, Modal, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary, Alert, Box, Button, Card, CardContent, CircularProgress, Grid, Link, Modal, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from '@mui/material';
 import { updates } from '../updates';
 import { Link as RouterLink, useSearchParams } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
-import { MODAL_STYLE, parseReadableStreamToJson, showNotification } from '../Helpers/Misc';
+import { GetAPI, MODAL_STYLE, parseReadableStreamToJson, showNotification } from '../Helpers/Misc';
 import { LoginUser } from '../Helpers/Account';
 import { toast, ToastContainer } from 'react-toastify';
 import config from '../config.json';
-
+import CircleIcon from '@mui/icons-material/Circle';
+import axios from 'axios';
 function Root() {
     const [isModalOpen, setIsModalOpen] = useState(true);
     const [osuAuthCode, setOsuAuthCode] = useState(null);
     const [searchParams, setSearchParams] = useSearchParams();
     const [loginStatus, setLoginStatus] = useState(null);
+    const [serverStatus, setServerStatus] = useState(null);
 
     useEffect(() => {
         const _osuAuthCode = searchParams.get("code");
@@ -46,7 +48,30 @@ function Root() {
                 }
             })();
         }
+
+        (async () => {
+            const res = await axios.get(`${GetAPI()}system/status`);
+            res.data !== null && res.data !== undefined ? setServerStatus({ ...res.data, inspector: true }) : setServerStatus({
+                inspector: false
+            });
+        })();
     }, []);
+
+    useEffect(() => {
+        if(serverStatus === null)
+            return;
+        if(!serverStatus.inspector){
+            showNotification('Server down', 'The inspector server is currently down, please try again later.', 'error');
+        }else{
+            if(!serverStatus.osuv2){
+                showNotification('Server down', 'The osu!api v2 server is currently down, please try again later.', 'error');
+            }
+
+            if(!serverStatus.osualt){
+                showNotification('Server down', 'The osu!alternative server is currently down, please try again later.', 'error');
+            }
+        }
+    }, [serverStatus]);
 
     return (
         <>
@@ -93,7 +118,6 @@ function Root() {
                         <Grid item xs={12}>
                             <Card elevation={2}>
                                 <CardContent>
-                                    <Typography variant='title'>Changelog</Typography>
                                     {
                                         updates.map((update, index) => {
                                             return (
@@ -131,6 +155,32 @@ function Root() {
                         <Grid item xs={12}>
                             <Card elevation={2}>
                                 <CardContent>
+                                    <Typography variant='title'>Server Status</Typography>
+                                    <TableContainer>
+                                        <Table size='small'>
+                                            <TableBody>
+                                                <TableRow><TableCell><CircleIcon sx={{ color: serverStatus?.inspector === undefined ? 'grey' : (serverStatus?.inspector ? 'green' : 'red') }} /></TableCell><TableCell>inspector api</TableCell><TableCell></TableCell></TableRow>
+                                                <TableRow><TableCell><CircleIcon sx={{ color: serverStatus?.osuv2 === undefined ? 'grey' : (serverStatus?.osuv2 ? 'green' : 'red') }} /></TableCell><TableCell>osu!apiv2</TableCell><TableCell></TableCell></TableRow>
+                                                <TableRow><TableCell><CircleIcon sx={{ color: serverStatus?.osualt === undefined ? 'grey' : (serverStatus?.osualt ? 'green' : 'red') }} /></TableCell><TableCell>osu! alternative</TableCell><TableCell></TableCell></TableRow>
+                                                <TableRow><TableCell><CircleIcon sx={{ color: serverStatus?.osudaily === undefined ? 'grey' : (serverStatus?.osudaily ? 'green' : 'red') }} /></TableCell><TableCell>osu!daily</TableCell><TableCell></TableCell></TableRow>
+                                            </TableBody>
+                                        </Table>
+                                    </TableContainer>
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Card elevation={2}>
+                                <CardContent>
+                                    <Typography variant='title'>Loved scores</Typography>
+                                    <Typography>Loved scores are by default not included.</Typography>
+                                    <Typography>To include them, add <code>?loved</code> at the end of the profile URL</Typography>
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Card elevation={2}>
+                                <CardContent>
                                     <Typography variant='title'>Credits</Typography>
                                     <TableContainer>
                                         <Table size='small'>
@@ -154,15 +204,6 @@ function Root() {
                                             </TableBody>
                                         </Table>
                                     </TableContainer>
-                                </CardContent>
-                            </Card>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Card elevation={2}>
-                                <CardContent>
-                                    <Typography variant='title'>Loved scores</Typography>
-                                    <Typography>Loved scores are by default not included.</Typography>
-                                    <Typography>To include them, add <code>?loved</code> at the end of the profile URL</Typography>
                                 </CardContent>
                             </Card>
                         </Grid>
