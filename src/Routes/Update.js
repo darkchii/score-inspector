@@ -1,27 +1,56 @@
-import { Chip, Grid, Link, List, ListItem, Typography } from '@mui/material';
+import { Box, Button, ButtonGroup, Chip, Grid, Link, List, ListItem, Typography } from '@mui/material';
 import moment from 'moment/moment';
 import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { CHANGETYPES, updates } from '../updates';
+import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
+import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
+import { Link as RouterLink } from 'react-router-dom';
 
 function Update() {
     const [update, setUpdate] = useState(null);
+    const [canMove, setCanMove] = useState([false, false]);
     const params = useParams();
+    const navigate = useNavigate();
+
+    const fn_update = () => {
+        if(isNaN(params.id)) {
+            return;
+        }
+        const _id = Number(params.id);
+        if (updates[updates.length - _id] !== undefined) {
+            setUpdate(updates[updates.length - _id]);
+        }
+        let _canMove = [false, false];
+        if (_id > 0) {
+            _canMove[0] = _id - 1;
+        }
+        if (params.id < updates.length) {
+            _canMove[1] = _id + 1;
+        }
+        setCanMove(_canMove);
+    }
 
     useEffect(() => {
-        if (updates[updates.length - params.id] !== undefined) {
-            setUpdate(updates[updates.length - params.id]);
-        }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        fn_update();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    useEffect(() => {
+        fn_update();
+    }, [params.id]);
 
     return (
         <>
             {
                 update !== null ? <>
-                    <Typography variant='title'>{update.version}</Typography>
+                    <Box>
+                        <Button disabled={!canMove[0]} onClick={() => navigate(`/update/${canMove[0]}`)} size='small'><KeyboardDoubleArrowLeftIcon /></Button>
+                        <Typography sx={{ display: 'inline-block', mt: 1 }} component='h4' variant='title'>{update.version}</Typography>
+                        <Button disabled={!canMove[1]} onClick={() => navigate(`/update/${canMove[1]}`)} size='small'><KeyboardDoubleArrowRightIcon /></Button>
+                    </Box>
                     <Typography component='h6'>{update.date} ({moment(update.date).fromNow()})</Typography>
                     <List dense>
                         {
