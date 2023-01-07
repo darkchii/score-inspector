@@ -86,12 +86,12 @@ function Leaders() {
 
     useEffect(() => {
         update(true);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [statistic]);
 
     useEffect(() => {
         update(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [page]);
 
     const update = (resetPage) => {
@@ -168,30 +168,36 @@ function Leaders() {
                                     <TableBody>
                                         {
                                             leaderboard.map((user) => {
+                                                const osu_user = user.osu_user;
+                                                const black_overlay = osu_user?.cover?.custom_url ? '0.8' : '0';
                                                 return (
                                                     <TableRow component={Card}
                                                         sx={{
                                                             "&:hover": {
                                                                 opacity: 0.5,
                                                                 cursor: 'pointer'
-                                                            }
+                                                            },
+                                                            backgroundImage: `url(${osu_user?.cover?.custom_url})`,
+                                                            backgroundSize: 'cover',
+                                                            backgroundPosition: 'center',
+                                                            backgroundRepeat: 'no-repeat'
                                                         }}
                                                         onClick={() => { navigate(`/user/${user.user_id}`); }}
                                                         elevation={5}>
-                                                        <TableCell width={'3%'}>
+                                                        <TableCell width={'3%'} sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})` }}>
                                                             <Typography variant='subtitles1' noWrap>#{user.rank}</Typography>
                                                         </TableCell>
-                                                        <TableCell width={'5%'}>
+                                                        <TableCell width={'5%'} sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})` }}>
                                                             <Avatar sx={{ width: 24, height: 24 }} alt={user.username} src={`https://a.ppy.sh/${user.user_id}`} />
                                                         </TableCell>
-                                                        <TableCell width={'5%'}>
+                                                        <TableCell width={'5%'} sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})` }}>
                                                             <ReactCountryFlag
                                                                 style={{ lineHeight: '1em', fontSize: '1.8em', borderRadius: '5px' }}
                                                                 cdnUrl="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/"
                                                                 countryCode={user.country_code}
                                                             />
                                                         </TableCell>
-                                                        <TableCell>
+                                                        <TableCell sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})` }}>
                                                             <Stack direction='row' spacing={1} alignItems='center'>
                                                                 <Typography variant='subtitles1' noWrap>
                                                                     {user.username}
@@ -205,7 +211,7 @@ function Leaders() {
                                                                 }
                                                             </Stack>
                                                         </TableCell>
-                                                        <TableCell>
+                                                        <TableCell sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})` }}>
                                                             <Typography variant='subtitles1' noWrap>
                                                                 {
                                                                     (statistic.customFormat !== undefined && statistic.customFormat != null) ?

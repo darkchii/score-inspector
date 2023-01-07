@@ -38,7 +38,7 @@ export async function getFullUser(user_id) {
 export async function getUser(user_id) {
     let user = null;
     try {
-        const _user = await axios.get(`${GetAPI()}users/osu/${user_id}`);
+        const _user = await axios.get(`${GetAPI()}users/osu/id/${user_id}`);
         user = _user.data;
     } catch (e) {
     }
@@ -66,6 +66,17 @@ export async function getUser(user_id) {
 
 
     return user;
+}
+
+export async function getUsers(user_ids) {
+    let users = [];
+    try{
+        const _users = await axios.get(`${GetAPI()}users/osu/ids?id[]=${user_ids.join('&id[]=')}`);
+        users = _users.data;
+    }catch(e){
+        return null;
+    }
+    return users;
 }
 
 const osustats_api = 'https://osustats.respektive.pw/counts/';
