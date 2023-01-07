@@ -64,7 +64,7 @@ function Leaders() {
     const [statistic, setStatistic] = useState(params.stat ? RANKED_STATISTICS.find((stat) => stat.name === params.stat) : RANKED_STATISTICS[0]);
     const [page, setPage] = useState(params.page ? parseInt(params.page) : 1);
     const [totalPages, setTotalPages] = useState(0);
-    const [country, setCountry] = useState(countries.countries[params.country] ? params.country.toLowerCase() : 'world');
+    const [country, setCountry] = useState(countries.countries[params.country.toUpperCase()] ? params.country.toLowerCase() : 'world');
     const [countryList, setCountryList] = useState([]);
     const [leaderboard, setLeaderboard] = useState(null);
     const navigate = useNavigate();
