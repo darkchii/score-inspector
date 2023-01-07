@@ -8,7 +8,8 @@ function SectionGraphs(props) {
         {
             title: `Periodic`, buttons: [
                 { id: "clearsPerSection", title: "Clears" },
-                { id: "totalscorePerSection", title: "Score" },
+                { id: "totalscorePerSection", title: "Ranked Score" },
+                { id: "totaltotalScorePerSection", title: "Total Score", isDailyApi: true },
                 { id: "totalSSscorePerSection", title: "SS Score" },
                 { id: "gradesPerSection", title: "Grades" },
                 { id: "ppPerSection", title: "PP" },
@@ -20,7 +21,8 @@ function SectionGraphs(props) {
         {
             title: "Cumulative", buttons: [
                 { id: "cumulativeClears", title: "Clears" },
-                { id: "cumulativeScore", title: "Score" },
+                { id: "cumulativeScore", title: "Ranked Score" },
+                { id: "cumulativeTotalScore", title: "Total Score", isDailyApi: true },
                 { id: "cumulativeSSScore", title: "SS Score" },
                 { id: "cumulativeGrades", title: "Grades" },
                 { id: "cumulativePP", title: "PP" },
