@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, Card, CircularProgress, Pagination, Stack, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableHead, TableRow, tableRowClasses, Tooltip, Typography } from '@mui/material';
+import { Avatar, Box, Button, Card, CircularProgress, FormControl, InputLabel, MenuItem, OutlinedInput, Pagination, Select, Stack, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableHead, TableRow, tableRowClasses, Tooltip, Typography } from '@mui/material';
 import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
@@ -8,6 +8,7 @@ import { getLeaderboard } from '../Helpers/OsuAlt';
 import VerifiedIcon from '@mui/icons-material/Verified';
 import moment from 'moment/moment';
 import SmartToyIcon from '@mui/icons-material/SmartToy';
+import countries from "countries-list";
 
 const RANKED_STATISTICS = [
     {
@@ -63,9 +64,18 @@ function Leaders() {
     const [statistic, setStatistic] = useState(params.stat ? RANKED_STATISTICS.find((stat) => stat.name === params.stat) : RANKED_STATISTICS[0]);
     const [page, setPage] = useState(params.page ? parseInt(params.page) : 1);
     const [totalPages, setTotalPages] = useState(0);
-    // const [country, setCountry] = useState(null);
+    const [country, setCountry] = useState(countries.countries[params.country] ? params.country.toLowerCase() : 'world');
+    const [countryList, setCountryList] = useState([]);
     const [leaderboard, setLeaderboard] = useState(null);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const _c = [];
+        for (const key in countries.countries) {
+            _c.push({ code: key.toLowerCase(), name: countries.countries[key].name });
+        }
+        setCountryList([{ code: 'world', name: 'Worldwide' }, ..._c]);
+    }, []);
 
     //if stat portion of url changes
     useEffect(() => {
@@ -85,6 +95,13 @@ function Leaders() {
         }
     }, [params.page]);
 
+    //if country portion of url changes
+    useEffect(() => {
+        if (params.country) {
+            setCountry(params.country.toLowerCase());
+        }
+    }, [params.country]);
+
     useEffect(() => {
         update(true);
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -95,6 +112,11 @@ function Leaders() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [page]);
 
+    useEffect(() => {
+        update(true);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [country]);
+
     const update = (resetPage) => {
         if (isLoading) return;
         let _page = page;
@@ -104,7 +126,7 @@ function Leaders() {
         setIsLoading(true);
         (async () => {
             setLeaderboard(null);
-            const lb = await getLeaderboard(statistic.name, ROWS_PER_PAGE, _page - 1);
+            const lb = await getLeaderboard(statistic.name, ROWS_PER_PAGE, _page - 1, country);
             if (lb === null || lb.error !== undefined) {
                 setIsLoading(false);
                 return;
@@ -125,10 +147,40 @@ function Leaders() {
                 {
                     RANKED_STATISTICS.map((stat) => {
                         return (
-                            <Button sx={{ m: 0.3 }} disabled={isLoading} size='small' variant={stat.name === statistic.name ? 'contained' : 'outlined'} onClick={() => navigate(`stat/${stat.name}/page/1`)}>{stat.title}</Button>
+                            <Button sx={{ m: 0.3 }} disabled={isLoading} size='small' variant={stat.name === statistic.name ? 'contained' : 'outlined'} onClick={() => navigate(`stat/${stat.name}/page/1/country/${country ?? 'world'}`)}>{stat.title}</Button>
                         );
                     })
                 }
+            </Box>
+            <Box>
+                <FormControl sx={{ width: '250px' }}>
+                    <InputLabel size='small' id={`country_dropdown_label`}>Country</InputLabel>
+                    {
+                        countryList.length > 0 ?
+                            <Select
+                                size='small'
+                                value={country ?? 'world'}
+                                // onChange={e => setCountry(e.target.value)}
+                                onChange={e => navigate(`stat/${statistic.name}/page/1/country/${e.target.value}`)}
+                                labelId={`country_dropdown_label`}
+                                label='Country'
+                            >
+                                {
+                                    countryList.map((value) => {
+                                        return (
+                                            <MenuItem key={value.code} value={value.code}>
+                                                {
+                                                    value.code !== 'world' ? <ReactCountryFlag style={{ lineHeight: '1em', fontSize: '1.4em', borderRadius: '5px' }} cdnUrl="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/" countryCode={value.code} /> : <></>
+                                                }
+                                                &nbsp;{value.name}
+                                            </MenuItem>
+                                        )
+                                    })
+                                }
+                            </Select>
+                            : <></>
+                    }
+                </FormControl>
             </Box>
             {
                 totalPages > 1 ? <>

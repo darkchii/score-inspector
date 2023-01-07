@@ -85,7 +85,10 @@ function App() {
                   <Route index element={<Leaders />} />
                   <Route path="stat/:stat" element={<Leaders />}>
                     <Route index element={<Leaders />} />
-                    <Route path="page/:page" element={<Leaders />} />
+                    <Route path="page/:page" element={<Leaders />}>
+                      <Route index element={<Leaders />} />
+                      <Route path="country/:country" element={<Leaders />} />
+                    </Route>
                   </Route>
                 </Route>
               </Routes>

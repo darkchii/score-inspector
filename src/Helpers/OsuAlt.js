@@ -15,7 +15,7 @@ export async function findUsers(query) {
 export async function getLeaderboard(stat, limit, offset, country) {
     let leaderboard = null;
     try {
-        const url = `${GetAPI()}leaderboards/${stat}?limit=${limit}&offset=${offset}${country ? `&country=${country}` : ""}`;
+        const url = `${GetAPI()}leaderboards/${stat}?limit=${limit}&offset=${offset}${country && country !== 'world' ? `&country=${country}` : ""}`;
         const res = await axios.get(url, { headers: { "Access-Control-Allow-Origin": "*" } });
         console.log(res);
         leaderboard = res.data;
