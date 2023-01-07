@@ -244,11 +244,15 @@ function Leaders() {
                                                             <Avatar sx={{ width: 24, height: 24 }} alt={user.username} src={`https://a.ppy.sh/${user.user_id}`} />
                                                         </TableCell>
                                                         <TableCell width={'5%'} sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})` }}>
-                                                            <ReactCountryFlag
-                                                                style={{ lineHeight: '1em', fontSize: '1.8em', borderRadius: '5px' }}
-                                                                cdnUrl="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/"
-                                                                countryCode={user.country_code}
-                                                            />
+                                                            <Tooltip title={countries.countries[user.country_code.toUpperCase()].name ?? 'Unknown name'}>
+                                                                <Box>
+                                                                    <ReactCountryFlag
+                                                                        style={{ lineHeight: '1em', fontSize: '1.8em', borderRadius: '5px' }}
+                                                                        cdnUrl="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/"
+                                                                        countryCode={user.country_code}
+                                                                    />
+                                                                </Box>
+                                                            </Tooltip>
                                                         </TableCell>
                                                         <TableCell sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})` }}>
                                                             <Stack direction='row' spacing={1} alignItems='center'>
@@ -257,7 +261,7 @@ function Leaders() {
                                                                 </Typography>
                                                                 {
                                                                     user.tracked ?
-                                                                        <Tooltip title='This user is tracked by osu!alternative and can be viewed'>
+                                                                        <Tooltip title='This user is actively being tracked by osu!alternative and should be viewable'>
                                                                             <VerifiedIcon color='primary' fontSize='small' />
                                                                         </Tooltip>
                                                                         : <></>
