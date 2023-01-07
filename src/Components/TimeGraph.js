@@ -116,7 +116,7 @@ function TimeGraph(props) {
                     return gradient;
                 },
                 tension: 0.3,
-                pointRadius: 0,
+                pointRadius: 4,
                 pointHoverRadius: 5,
                 borderWidth: 1
             };
