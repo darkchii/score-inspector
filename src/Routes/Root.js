@@ -58,16 +58,16 @@ function Root() {
     }, []);
 
     useEffect(() => {
-        if(serverStatus === null)
+        if (serverStatus === null)
             return;
-        if(!serverStatus.inspector){
+        if (!serverStatus.inspector) {
             showNotification('Server down', 'The inspector server is currently down, please try again later.', 'error');
-        }else{
-            if(!serverStatus.osuv2){
+        } else {
+            if (!serverStatus.osuv2) {
                 showNotification('Server down', 'The osu!api v2 server is currently down, please try again later.', 'error');
             }
 
-            if(!serverStatus.osualt){
+            if (!serverStatus.osualt) {
                 showNotification('Server down', 'The osu!alternative server is currently down, please try again later.', 'error');
             }
         }
@@ -116,20 +116,46 @@ function Root() {
                             </Card>
                         </Grid>
                         <Grid item xs={12}>
-                            <Card elevation={2}>
-                                <CardContent>
-                                    {
-                                        updates.map((update, index) => {
-                                            return (
-                                                <RouterLink style={{ color: 'inherit', textDecoration: 'none' }} to={`/update/${updates.length - index}`}>
-                                                    <Typography>{update.version} - {update.date}</Typography>
-                                                </RouterLink>
-                                                // <Typography variant='h6'>{update.version} - {update.date}</Typography>
-                                            )
-                                        })
-                                    }
-                                </CardContent>
-                            </Card>
+                            <Grid container spacing={2}>
+                                <Grid item xs={6}>
+                                    <Card elevation={2}>
+                                        <CardContent>
+                                            <Typography variant='title'>Credits</Typography>
+                                            <TableContainer>
+                                                <Table size='small'>
+                                                    <TableBody>
+                                                        <TableRow>
+                                                            <TableCell>scores dataset</TableCell>
+                                                            <TableCell><Link href='https://discord.gg/VZWRZZXcW4' target='_blank'>osu!alternative</Link></TableCell>
+                                                        </TableRow>
+                                                        <TableRow>
+                                                            <TableCell>top50s dataset</TableCell>
+                                                            <TableCell><Link href='https://github.com/respektive/osustats' target='_blank'>respektive</Link></TableCell>
+                                                        </TableRow>
+                                                        <TableRow>
+                                                            <TableCell>score ranking</TableCell>
+                                                            <TableCell><Link href='https://github.com/respektive/osustats' target='_blank'>respektive</Link></TableCell>
+                                                        </TableRow>
+                                                        <TableRow>
+                                                            <TableCell>raw pp and rank data</TableCell>
+                                                            <TableCell><Link href='https://osudaily.net/' target='_blank'>osu!daily</Link></TableCell>
+                                                        </TableRow>
+                                                    </TableBody>
+                                                </Table>
+                                            </TableContainer>
+                                        </CardContent>
+                                    </Card>
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <Card elevation={2}>
+                                        <CardContent>
+                                            <Typography variant='title'>Loved scores</Typography>
+                                            <Typography>Loved scores are by default not included.</Typography>
+                                            <Typography>To include them, add <code>?loved</code> at the end of the profile URL</Typography>
+                                        </CardContent>
+                                    </Card>
+                                </Grid>
+                            </Grid>
                         </Grid>
                     </Grid>
                 </Grid>
@@ -163,44 +189,6 @@ function Root() {
                                                 <TableRow><TableCell><CircleIcon sx={{ color: serverStatus?.osuv2 === undefined ? 'grey' : (serverStatus?.osuv2 ? 'green' : 'red') }} /></TableCell><TableCell>osu!apiv2</TableCell><TableCell></TableCell></TableRow>
                                                 <TableRow><TableCell><CircleIcon sx={{ color: serverStatus?.osualt === undefined ? 'grey' : (serverStatus?.osualt ? 'green' : 'red') }} /></TableCell><TableCell>osu! alternative</TableCell><TableCell></TableCell></TableRow>
                                                 <TableRow><TableCell><CircleIcon sx={{ color: serverStatus?.osudaily === undefined ? 'grey' : (serverStatus?.osudaily ? 'green' : 'red') }} /></TableCell><TableCell>osu!daily</TableCell><TableCell></TableCell></TableRow>
-                                            </TableBody>
-                                        </Table>
-                                    </TableContainer>
-                                </CardContent>
-                            </Card>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Card elevation={2}>
-                                <CardContent>
-                                    <Typography variant='title'>Loved scores</Typography>
-                                    <Typography>Loved scores are by default not included.</Typography>
-                                    <Typography>To include them, add <code>?loved</code> at the end of the profile URL</Typography>
-                                </CardContent>
-                            </Card>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Card elevation={2}>
-                                <CardContent>
-                                    <Typography variant='title'>Credits</Typography>
-                                    <TableContainer>
-                                        <Table size='small'>
-                                            <TableBody>
-                                                <TableRow>
-                                                    <TableCell>scores dataset</TableCell>
-                                                    <TableCell><Link href='https://discord.gg/VZWRZZXcW4' target='_blank'>osu!alternative</Link></TableCell>
-                                                </TableRow>
-                                                <TableRow>
-                                                    <TableCell>top50s dataset</TableCell>
-                                                    <TableCell><Link href='https://github.com/respektive/osustats' target='_blank'>respektive</Link></TableCell>
-                                                </TableRow>
-                                                <TableRow>
-                                                    <TableCell>score ranking</TableCell>
-                                                    <TableCell><Link href='https://github.com/respektive/osustats' target='_blank'>respektive</Link></TableCell>
-                                                </TableRow>
-                                                <TableRow>
-                                                    <TableCell>raw pp and rank data</TableCell>
-                                                    <TableCell><Link href='https://osudaily.net/' target='_blank'>osu!daily</Link></TableCell>
-                                                </TableRow>
                                             </TableBody>
                                         </Table>
                                     </TableContainer>
