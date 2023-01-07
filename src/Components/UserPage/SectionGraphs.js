@@ -42,6 +42,7 @@ function SectionGraphs(props) {
                 { id: "rawPP", title: "Raw PP", isDailyApi: true },
                 { id: "globalRank", title: "Rank", isDailyApi: true },
                 { id: "completion", title: "Completion" },
+                { id: "level", title: "Level", isDailyApi: true },
             ]
         }
     ];

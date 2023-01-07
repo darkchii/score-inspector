@@ -9,6 +9,14 @@ const PERIOD_FORMATS = {
         format: 'month',
         format_str: 'MMMM YYYY'
     },
+    'w': {
+        format: 'week',
+        format_str: 'w YYYY'
+    },
+    'd': {
+        format: 'day',
+        format_str: 'DD MMMM YYYY'
+    }
 }
 
 //split entire score array into chunks of months
@@ -116,6 +124,7 @@ function processDailyData(chunks, user, data, f = 'm') {
         let c_rank = null;
         let raw_pp = null;
         let total_score = null;
+        let level = null;
         if (user.daily !== null && user.daily.error === undefined) {
             const dailyPoints = user.daily.modes[0].lines;
             for (var j = 0; j < dailyPoints.length; j++) {
@@ -136,6 +145,9 @@ function processDailyData(chunks, user, data, f = 'm') {
                     if (total_score === null || point.totalscore < total_score) {
                         total_score = point.totalscore;
                     }
+                    if (level === null || point.level < level) {
+                        level = point.level;
+                    }
                 }
             }
         }
@@ -144,6 +156,7 @@ function processDailyData(chunks, user, data, f = 'm') {
         chunks[i].osudaily.country_rank = c_rank !== null ? -c_rank : null;
         chunks[i].osudaily.raw_pp = raw_pp;
         chunks[i].osudaily.cumulative_total_score = total_score;
+        chunks[i].osudaily.level = level;
     }
 
     //get cumulative osu!daily data
@@ -323,6 +336,7 @@ function getGraphObjects(chunks, labels, f = 'm') {
             { name: "Country Rank", set: chunks.map(x => x.osudaily.country_rank), color: { r: 82, g: 158, b: 250 } },
         ]} />,
         "rawPP": <TimeGraph name="Raw PP" labels={labels} data={[{ name: "Raw PP", set: chunks.map(x => x.osudaily.raw_pp), color: { r: 255, g: 102, b: 158 } }]} />,
+        "level": <TimeGraph name={`Level over time`} labels={labels} data={[{ name: "Level over time", set: chunks.map(x => x.osudaily.level), color: { r: 255, g: 102, b: 158 } }]} />,
         //"accPerPlay": <TimeGraph name="Average accuracy per play" labels={labels[dateFormat]} data={[{ name: "Average accuracy", set: chunks[dateFormat].map(x => x.average_acc), color: { r: 255, g: 102, b: 158 } }]} />,
     };
 
