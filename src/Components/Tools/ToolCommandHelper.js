@@ -437,6 +437,9 @@ function ToolCommandHelper() {
                 </Paper>
 
                 <TextField InputProps={{ readOnly: true }} value={resultingCommand} defaultValue={'Select a command'} label="Result" variant="standard" />
+                <Alert severity="warning">
+                    This tool may not be permanent. The bot is complex and has an extreme amount of commands (+ parameters). You are probably better off just asking in the discord.
+                </Alert>
             </Stack>
         </>
     );

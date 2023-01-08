@@ -4,6 +4,7 @@ import { Link, useParams } from "react-router-dom";
 import ToolCommandHelper from "../Components/Tools/ToolCommandHelper";
 import ToolLevelCalculator from "../Components/Tools/ToolLevelCalculator";
 import ToolMissingBeatmaps from "../Components/Tools/ToolMissingBeatmaps";
+import ToolScoreRank from "../Components/Tools/ToolScoreRank";
 
 const NAV_WIDTH = 3;
 function Tools() {
@@ -25,6 +26,11 @@ function Tools() {
             name: 'Level Calculator',
             component: <ToolLevelCalculator />,
             url: 'level-calculator'
+        },
+        {
+            name: 'Score Rank Calculator',
+            component: <ToolScoreRank />,
+            url: 'score-calculator'
         }
     ]
 

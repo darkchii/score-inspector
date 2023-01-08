@@ -186,19 +186,19 @@ function ToolMissingBeatmaps() {
                         <Grid container>
                             <Grid item xs={12 / 3}>
                                 <Paper elevation={2} sx={{ p: 2, m: 1 }}>
-                                    <Typography variant="title" component='h5'>Missing Ranked</Typography>
+                                    <Typography variant="title" fontSize={'1em'}>Missing Ranked</Typography>
                                     <Typography variant="h6">{processedData?.missingRanked?.length?.toLocaleString('en-US') ?? '-'} ({processedData?.missingRankedSets?.length?.toLocaleString('en-US') ?? '-'} sets)</Typography>
                                 </Paper>
                             </Grid>
                             <Grid item xs={12 / 3}>
                                 <Paper elevation={2} sx={{ p: 2, m: 1 }}>
-                                    <Typography variant="title" component='h5'>Missing Qualified</Typography>
+                                    <Typography variant="title" fontSize={'1em'}>Missing Qualified</Typography>
                                     <Typography variant="h6">{processedData?.missingQualified?.length?.toLocaleString('en-US') ?? '-'} ({processedData?.missingQualifiedSets?.length?.toLocaleString('en-US') ?? '-'} sets)</Typography>
                                 </Paper>
                             </Grid>
                             <Grid item xs={12 / 3}>
                                 <Paper elevation={2} sx={{ p: 2, m: 1 }}>
-                                    <Typography variant="title" component='h5'>Missing Loved</Typography>
+                                    <Typography variant="title" fontSize={'1em'}>Missing Loved</Typography>
                                     <Typography variant="h6">{processedData?.missingLoved?.length?.toLocaleString('en-US') ?? '-'} ({processedData?.missingLovedSets?.length?.toLocaleString('en-US') ?? '-'} sets)</Typography>
                                 </Paper>
                             </Grid>
