@@ -2,6 +2,7 @@ import { Button, ButtonGroup, Grid } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import ToolCommandHelper from "../Components/Tools/ToolCommandHelper";
+import ToolLevelCalculator from "../Components/Tools/ToolLevelCalculator";
 import ToolMissingBeatmaps from "../Components/Tools/ToolMissingBeatmaps";
 
 const NAV_WIDTH = 3;
@@ -19,6 +20,11 @@ function Tools() {
             name: 'Missing Beatmaps',
             component: <ToolMissingBeatmaps />,
             url: 'missing-beatmaps'
+        },
+        {
+            name: 'Level Calculator',
+            component: <ToolLevelCalculator />,
+            url: 'level-calculator'
         }
     ]
 

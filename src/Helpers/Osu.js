@@ -3,6 +3,47 @@ import config from "../config.json";
 import { GetUser as GetInspectorUser } from "./Account";
 import { GetAPI } from "./Misc";
 
+export function getScoreForLevel(level) {
+    if (level <= 100) {
+        if (level > 1) {
+            return Math.floor(5000 / 3 * (4 * Math.pow(level, 3) - 3 * Math.pow(level, 2) - level) + Math.floor(1.25 * Math.pow(1.8, level - 60)));
+        }
+        return 1;
+    }
+    return Math.floor(26931190829 + 100000000000 * (level - 100));
+}
+
+export function getLevelForScore(score){
+    if(isNaN(score) || score < 0){
+        return 0;
+    }
+    
+    if(score > 10000000000000000){
+        return 0;
+    }
+
+    const baseLevel = getLevel(score);
+    const baseLevelScore = getScoreForLevel(baseLevel);
+    const scoreProgress = score - baseLevelScore;
+    const scoreLevelDifference = getScoreForLevel(baseLevel+1) - baseLevelScore;
+    const res = scoreProgress / scoreLevelDifference + baseLevel;
+    if(!isFinite(res)){
+        return 0;
+    }
+    return res;
+}
+
+function getLevel(score){
+    let i = 1;
+    for(;;){
+        var lScore = getScoreForLevel(i);
+        if(score<lScore){
+            return i-1;
+        }
+        i++;
+    }
+}
+
 export async function getFullUser(user_id) {
     let user = null;
     try {
@@ -23,13 +64,13 @@ export async function getFullUser(user_id) {
         return null;
     }
 
-    try{
+    try {
         const _inspectorUser = await GetInspectorUser(user.osu.id);
-        if(_inspectorUser !== null){
+        if (_inspectorUser !== null) {
             user.inspector = _inspectorUser;
         }
-    }catch(err){
-        
+    } catch (err) {
+
     }
 
     return user;
@@ -43,37 +84,15 @@ export async function getUser(user_id) {
     } catch (e) {
     }
 
-    try {
-        let _scoreRank = await fetch(`${config.SCORE_API}${user.id}`).then((res) => res.json());
-        if (_scoreRank !== undefined) {
-            user.scoreRank = _scoreRank[0].rank;
-        }
-    } catch (err) {
-        return null;
-    }
-
-    try {
-        let _dailyUser = await axios.get(`${GetAPI()}users/daily/${user.id}`, { headers: { "Access-Control-Allow-Origin": "*" } });
-        if (_dailyUser !== undefined && _dailyUser.data.error === undefined) {
-            user.daily = _dailyUser.data;
-        } else {
-            user.daily = null;
-            console.log(_dailyUser.data);
-        }
-    } catch (err) {
-        user.daily = null;
-    }
-
-
     return user;
 }
 
 export async function getUsers(user_ids) {
     let users = [];
-    try{
+    try {
         const _users = await axios.get(`${GetAPI()}users/osu/ids?id[]=${user_ids.join('&id[]=')}`);
         users = _users.data;
-    }catch(e){
+    } catch (e) {
         return null;
     }
     return users;
