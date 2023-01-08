@@ -8,7 +8,7 @@ const CHANGETYPES = {
 const updates = [
     {
         version: '2.1.0',
-        date: 'n/a',
+        date: '2023-01-09',
         changes: [
             [CHANGETYPES.NEW, 'Added a new tool: "Command Helper"', '07b1c5205603687df8cd0c3df5d457351c88214c'],
             [CHANGETYPES.NEW, 'Added a new tool: "Missing Beatmaps"', '1d95d6b82258fdd9de66bab644dc6af704758605'],
