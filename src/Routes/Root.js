@@ -1,19 +1,21 @@
-import { Accordion, AccordionDetails, AccordionSummary, Alert, Box, Button, Card, CardContent, CircularProgress, Grid, Link, Modal, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary, Alert, Box, Button, Card, CardContent, CircularProgress, Divider, Grid, Link, Modal, Stack, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableHead, TableRow, tableRowClasses, Typography } from '@mui/material';
 import { updates } from '../updates';
 import { Link as RouterLink, useSearchParams } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import { GetAPI, MODAL_STYLE, parseReadableStreamToJson, showNotification } from '../Helpers/Misc';
-import { LoginUser } from '../Helpers/Account';
+import { GetFormattedName, GetTopVisited, LoginUser } from '../Helpers/Account';
 import { toast, ToastContainer } from 'react-toastify';
 import config from '../config.json';
 import CircleIcon from '@mui/icons-material/Circle';
 import axios from 'axios';
+import moment from 'moment';
 function Root() {
     const [isModalOpen, setIsModalOpen] = useState(true);
     const [osuAuthCode, setOsuAuthCode] = useState(null);
     const [searchParams, setSearchParams] = useSearchParams();
     const [loginStatus, setLoginStatus] = useState(null);
     const [serverStatus, setServerStatus] = useState(null);
+    const [visitorStats, setVisitorStats] = useState(null);
 
     useEffect(() => {
         const _osuAuthCode = searchParams.get("code");
@@ -54,6 +56,16 @@ function Root() {
             res.data !== null && res.data !== undefined ? setServerStatus({ ...res.data, inspector: true }) : setServerStatus({
                 inspector: false
             });
+
+            const most_visited = await GetTopVisited('count', 5);
+            const last_visited = await GetTopVisited('last_visit', 5);
+
+            if (most_visited && last_visited) {
+                setVisitorStats({
+                    most_visited: most_visited,
+                    last_visited: last_visited
+                });
+            }
         })();
     }, []);
 
@@ -161,6 +173,69 @@ function Root() {
                 </Grid>
                 <Grid item xs={12} md={4}>
                     <Grid container spacing={2}>
+                        <Grid item xs={12}>
+                            <Card elevation={2}>
+                                <CardContent>
+                                    <Typography variant='title'>Most visited</Typography>
+                                    <TableContainer>
+                                        <Table size='small' sx={{ [`& .${tableCellClasses.root}`]: { borderBottom: "none" } }}>
+                                            <TableHead>
+                                                <TableRow><TableCell>Username</TableCell><TableCell>Visitors</TableCell></TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                                {
+                                                    visitorStats && visitorStats.most_visited.map((v, i) => {
+                                                        return (
+                                                            <>
+                                                                <TableRow>
+                                                                    <TableCell>
+                                                                        <RouterLink to={`user/${v.osu_id}`}>
+                                                                            {GetFormattedName(v, `Last visit: ${moment(v.last_visit).fromNow()}`, true)}
+                                                                        </RouterLink>
+                                                                    </TableCell>
+                                                                    <TableCell>
+                                                                        {v.count.toLocaleString('en-US')}
+                                                                    </TableCell>
+                                                                </TableRow>
+                                                            </>
+                                                        )
+                                                    })
+                                                }
+                                            </TableBody>
+                                        </Table>
+                                    </TableContainer>
+                                    <Divider style={{ margin: '10px 0' }} />
+                                    <Typography variant='title'>Recent visited</Typography>
+                                    <TableContainer>
+                                        <Table size='small' sx={{ [`& .${tableCellClasses.root}`]: { borderBottom: "none" } }}>
+                                            <TableHead>
+                                                <TableRow><TableCell>Username</TableCell><TableCell>Time ago</TableCell></TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                                {
+                                                    visitorStats && visitorStats.last_visited.map((v, i) => {
+                                                        return (
+                                                            <>
+                                                                <TableRow>
+                                                                    <TableCell>
+                                                                        <RouterLink to={`user/${v.osu_id}`}>
+                                                                            {GetFormattedName(v, `Last visit: ${moment(v.last_visit).fromNow()}`, true)}
+                                                                        </RouterLink>
+                                                                    </TableCell>
+                                                                    <TableCell>
+                                                                        {moment(v.last_visit).fromNow(true)}
+                                                                    </TableCell>
+                                                                </TableRow>
+                                                            </>
+                                                        )
+                                                    })
+                                                }
+                                            </TableBody>
+                                        </Table>
+                                    </TableContainer>
+                                </CardContent>
+                            </Card>
+                        </Grid>
                         <Grid item xs={12}>
                             <Card elevation={2}>
                                 <CardContent>

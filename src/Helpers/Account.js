@@ -20,7 +20,7 @@ export const ROLES = [
     }
 ]
 
-export function GetFormattedName(inspector_user, custom_tooltip = null) {
+export function GetFormattedName(inspector_user, custom_tooltip = null, is_link = false) {
     let name = inspector_user.known_username;
     if (inspector_user === null || inspector_user.osu_id === null) {
         name = 'Guest';
@@ -33,7 +33,9 @@ export function GetFormattedName(inspector_user, custom_tooltip = null) {
     return (
         <>
             <Tooltip title={custom_tooltip ?? ''} placement='top'>
-                <Chip sx={{ pr: inspector_user.roles?.length > 0 ? 1 : 0 }}
+                <Chip sx={{ pr: inspector_user.roles?.length > 0 ? 1 : 0, '&:hover': {
+                    cursor: is_link ? 'pointer' : 'default'
+                } }}
                     onDelete={() => { }}
                     deleteIcon={<>{Array.isArray(inspector_user.roles) && inspector_user.roles?.map(role => {
                         const _role = ROLES.find(r => r.id === role);
@@ -166,7 +168,16 @@ export async function UpdateVisitor(target_id) {
 export async function GetVisitors(osu_id) {
     let res = null;
     try {
-        res = await axios.get(`${GetAPI()}login/visitors/${osu_id}`);
+        res = await axios.get(`${GetAPI()}login/visitors/get/${osu_id}`);
+    } catch (e) { }
+    if (res === null) return null;
+    return res?.data;
+}
+
+export async function GetTopVisited(order_by = 'count', limit = 10) {
+    let res = null;
+    try {
+        res = await axios.get(`${GetAPI()}login/visitors/get?order_by=${order_by}&limit=${limit}`);
     } catch (e) { }
     if (res === null) return null;
     return res?.data;
