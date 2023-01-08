@@ -179,9 +179,6 @@ function Root() {
                                     <Typography variant='title'>Most visited</Typography>
                                     <TableContainer>
                                         <Table size='small' sx={{ [`& .${tableCellClasses.root}`]: { borderBottom: "none" } }}>
-                                            <TableHead>
-                                                <TableRow><TableCell>Username</TableCell><TableCell>Visitors</TableCell></TableRow>
-                                            </TableHead>
                                             <TableBody>
                                                 {
                                                     visitorStats && visitorStats.most_visited.map((v, i) => {
@@ -208,9 +205,6 @@ function Root() {
                                     <Typography variant='title'>Recent visited</Typography>
                                     <TableContainer>
                                         <Table size='small' sx={{ [`& .${tableCellClasses.root}`]: { borderBottom: "none" } }}>
-                                            <TableHead>
-                                                <TableRow><TableCell>Username</TableCell><TableCell>Time ago</TableCell></TableRow>
-                                            </TableHead>
                                             <TableBody>
                                                 {
                                                     visitorStats && visitorStats.last_visited.map((v, i) => {
