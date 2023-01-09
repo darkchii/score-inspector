@@ -12,13 +12,36 @@ import countries from "countries-list";
 
 const RANKED_STATISTICS = [
     {
-        name: 'pp', title: 'PP', customFormat: (value) => (Math.round(value)).toLocaleString('en-US') + 'pp'
+        name: 'pp', title: 'PP', customFormat: (value) => (Math.round(value)).toLocaleString('en-US') + 'pp',
+        description: 'Weighted pp of all scores. This is the main ranking metric.'
     },
     {
-        name: 'ranked_score', title: 'Ranked Score'
+        name: 'total_pp', title: 'Total PP', customFormat: (value) => (Math.round(value)).toLocaleString('en-US') + 'pp',
+        description: 'Total pp of all scores.'
     },
     {
-        name: 'total_score', title: 'Total Score'
+        name: 'avg_pp', title: 'Average PP', customFormat: (value) => (Math.round(value)).toLocaleString('en-US') + 'pp',
+        description: 'Average pp of all scores.'
+    },
+    {
+        name: 'top_pp', title: 'Highest PP', customFormat: (value) => (Math.round(value)).toLocaleString('en-US') + 'pp',
+        description: 'Highest pp achieved by the user.'
+    },
+    {
+        name: 'ranked_score', title: 'Ranked Score',
+        description: 'Total ranked score of all scores.'
+    },
+    {
+        name: 'total_score', title: 'Total Score',
+        description: 'Total score of all scores.'
+    },
+    {
+        name: 'avg_score', title: 'Average Score',
+        description: 'Average score of all scores.'
+    },
+    {
+        name: 'top_score', title: 'Highest Score',
+        description: 'Highest score achieved by the user.'
     },
     {
         name: 'ss', title: 'Total SS',
@@ -30,29 +53,69 @@ const RANKED_STATISTICS = [
         name: 'a', title: 'Total A',
     },
     {
-        name: 'clears', title: 'Clears',
+        name: 'b', title: 'Total B',
     },
     {
-        name: 'total_hits', title: 'Hit Count'
+        name: 'c', title: 'Total C',
+    },
+    {
+        name: 'd', title: 'Total D',
+    },
+    {
+        name: 'clears', title: 'Clears',
+        description: 'Amount of clears the user has. This includes B, C and D ranks'
+    },
+    {
+        name: 'acc', title: 'Profile Accuracy', customFormat: (value) => `${(Math.round(value * 100) / 100)}%`,
+        description: 'Weighted accuracy'
+    },
+    {
+        name: 'avg_acc', title: 'Average Accuracy', customFormat: (value) => `${(Math.round(value * 100) / 100)}%`,
+        description: 'Average accuracy of all scores.'
+    },
+    {
+        name: 'total_hits', title: 'Hit Count',
+        description: 'Total number of hits that the user has achieved.'
     },
     {
         name: 'playcount', title: 'Play Count',
+        description: 'Number of times that the user has played a beatmap.'
     },
     {
-        name: 'playtime', title: 'Play Time', customFormat: (value) => (Math.round(moment.duration(value, 'seconds').asHours())).toLocaleString('en-US') + ' hours'
+        name: 'playtime', title: 'Play Time', customFormat: (value) => (Math.round(moment.duration(value, 'seconds').asHours())).toLocaleString('en-US') + ' hours',
+        description: 'Total tracked time spent playing osu!'
     },
     {
-        name: 'followers', title: 'Followers'
+        name: 'followers', title: 'Followers',
+        description: 'Number of users that follow the user.'
     },
     {
-        name: 'replays_watched', title: 'Replays Watched'
+        name: 'replays_watched', title: 'Replays Watched',
+        description: 'Number of times that the user\'s replays have been watched.'
     },
     {
-        name: 'scores_first_count', title: 'First Places'
-    }, {
-        name: 'post_count', title: 'Forum Posts'
-    }, {
-        name: 'ranked_beatmapset_count', title: 'Ranked Beatmaps'
+        name: 'scores_first_count', title: 'First Places',
+        description: 'Number of number ones on beatmaps'
+    },
+    {
+        name: 'post_count', title: 'Forum Posts',
+        description: 'Number of forum posts that the user has created.'
+    },
+    {
+        name: 'ranked_beatmapset_count', title: 'Ranked Beatmaps',
+        description: 'Number of ranked beatmaps that the user has created.'
+    },
+    {
+        name: 'completion', title: 'Completion', customFormat: (value) => `${(Math.round(value * 100) / 100)}%`,
+        description: 'Percentage of ranked beatmaps that have been cleared.'
+    },
+    {
+        name: 'user_achievements', title: 'Medals',
+        description: 'Amount of medals a user has'
+    },
+    {
+        name: 'user_badges', title: 'Badges',
+        description: 'Amount of badges a user has'
     }
 ]
 
@@ -181,6 +244,9 @@ function Leaders() {
                             : <></>
                     }
                 </FormControl>
+            </Box>
+            <Box sx={{ mt: 1, mb: 1 }}>
+                <Typography variant='body1'>{statistic?.description ?? ' '}</Typography>
             </Box>
             {
                 totalPages > 1 ? <>
