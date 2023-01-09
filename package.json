@@ -13,7 +13,7 @@
     "@mui/x-data-grid": "^5.17.14",
     "@mui/x-date-pickers": "^5.0.9",
     "axios": "^1.2.0",
-    "chart.js": "^3.9.1",
+    "chart.js": "^4.1.2",
     "chartjs-plugin-annotation": "^2.1.0",
     "chartjs-plugin-datalabels": "^2.2.0",
     "chartjs-plugin-zoom": "^2.0.0",
