@@ -11,7 +11,7 @@ import { BrowserRouter } from 'react-router-dom';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <BrowserRouter basename='/score_test/'>
+  <BrowserRouter basename='/score/'>
     <App />
   </BrowserRouter>
 );

@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, Card, CircularProgress, FormControl, InputLabel, MenuItem, OutlinedInput, Pagination, Select, Stack, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableHead, TableRow, tableRowClasses, Tooltip, Typography } from '@mui/material';
+import { Avatar, Box, Button, Card, CircularProgress, FormControl, InputLabel, MenuItem, OutlinedInput, Pagination, Paper, Select, Stack, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableHead, TableRow, tableRowClasses, Tooltip, Typography } from '@mui/material';
 import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
@@ -10,121 +10,166 @@ import moment from 'moment/moment';
 import SmartToyIcon from '@mui/icons-material/SmartToy';
 import countries from "countries-list";
 
-const RANKED_STATISTICS = [
-    {
-        name: 'pp', title: 'PP', customFormat: (value) => (Math.round(value)).toLocaleString('en-US') + 'pp',
-        description: 'Weighted pp of all scores. This is the main ranking metric.'
-    },
-    {
-        name: 'total_pp', title: 'Total PP', customFormat: (value) => (Math.round(value)).toLocaleString('en-US') + 'pp',
-        description: 'Total pp of all scores.'
-    },
-    {
-        name: 'avg_pp', title: 'Average PP', customFormat: (value) => (Math.round(value)).toLocaleString('en-US') + 'pp',
-        description: 'Average pp of all scores.'
-    },
-    {
-        name: 'top_pp', title: 'Highest PP', customFormat: (value) => (Math.round(value)).toLocaleString('en-US') + 'pp',
-        description: 'Highest pp achieved by the user.'
-    },
-    {
-        name: 'ranked_score', title: 'Ranked Score',
-        description: 'Total ranked score of all scores.'
-    },
-    {
-        name: 'total_score', title: 'Total Score',
-        description: 'Total score of all scores.'
-    },
-    {
-        name: 'avg_score', title: 'Average Score',
-        description: 'Average score of all scores.'
-    },
-    {
-        name: 'top_score', title: 'Highest Score',
-        description: 'Highest score achieved by the user.'
-    },
-    {
-        name: 'ss', title: 'Total SS',
-    },
-    {
-        name: 's', title: 'Total S',
-    },
-    {
-        name: 'a', title: 'Total A',
-    },
-    {
-        name: 'b', title: 'Total B',
-    },
-    {
-        name: 'c', title: 'Total C',
-    },
-    {
-        name: 'd', title: 'Total D',
-    },
-    {
-        name: 'clears', title: 'Clears',
-        description: 'Amount of clears the user has. This includes B, C and D ranks'
-    },
-    {
-        name: 'acc', title: 'Profile Accuracy', customFormat: (value) => `${(Math.round(value * 100) / 100)}%`,
-        description: 'Weighted accuracy'
-    },
-    {
-        name: 'avg_acc', title: 'Average Accuracy', customFormat: (value) => `${(Math.round(value * 100) / 100)}%`,
-        description: 'Average accuracy of all scores.'
-    },
-    {
-        name: 'total_hits', title: 'Hit Count',
-        description: 'Total number of hits that the user has achieved.'
-    },
-    {
-        name: 'playcount', title: 'Play Count',
-        description: 'Number of times that the user has played a beatmap.'
-    },
-    {
-        name: 'playtime', title: 'Play Time', customFormat: (value) => (Math.round(moment.duration(value, 'seconds').asHours())).toLocaleString('en-US') + ' hours',
-        description: 'Total tracked time spent playing osu!'
-    },
-    {
-        name: 'followers', title: 'Followers',
-        description: 'Number of users that follow the user.'
-    },
-    {
-        name: 'replays_watched', title: 'Replays Watched',
-        description: 'Number of times that the user\'s replays have been watched.'
-    },
-    {
-        name: 'scores_first_count', title: 'First Places',
-        description: 'Number of number ones on beatmaps'
-    },
-    {
-        name: 'post_count', title: 'Forum Posts',
-        description: 'Number of forum posts that the user has created.'
-    },
-    {
-        name: 'ranked_beatmapset_count', title: 'Ranked Beatmaps',
-        description: 'Number of ranked beatmaps that the user has created.'
-    },
-    {
-        name: 'completion', title: 'Completion', customFormat: (value) => `${(Math.round(value * 100) / 100)}%`,
-        description: 'Percentage of ranked beatmaps that have been cleared.'
-    },
-    {
-        name: 'user_achievements', title: 'Medals',
-        description: 'Amount of medals a user has'
-    },
-    {
-        name: 'user_badges', title: 'Badges',
-        description: 'Amount of badges a user has'
-    }
-]
+const GROUPED_STATS = {
+    'pp': [
+        {
+            name: 'pp', title: 'PP', customFormat: (value) => (Math.round(value)).toLocaleString('en-US') + 'pp',
+            description: 'Weighted pp of all scores. This is the main ranking metric.',
+            group: 'pp'
+        },
+        {
+            name: 'total_pp', title: 'Total PP', customFormat: (value) => (Math.round(value)).toLocaleString('en-US') + 'pp',
+            description: 'Total pp of all scores.',
+            group: 'pp'
+        },
+        {
+            name: 'avg_pp', title: 'Average PP', customFormat: (value) => (Math.round(value)).toLocaleString('en-US') + 'pp',
+            description: 'Average pp of all scores.',
+            group: 'pp'
+        },
+        {
+            name: 'top_pp', title: 'Highest PP', customFormat: (value) => (Math.round(value)).toLocaleString('en-US') + 'pp',
+            description: 'Highest pp achieved by the user.',
+            group: 'pp'
+        },
+    ],
+    'score': [
+        {
+            name: 'ranked_score', title: 'Ranked Score',
+            description: 'Total ranked score of all scores.',
+            group: 'score'
+        },
+        {
+            name: 'total_score', title: 'Total Score',
+            description: 'Total score of all scores.',
+            group: 'score'
+        },
+        {
+            name: 'avg_score', title: 'Average Score',
+            description: 'Average score of all scores.',
+            group: 'score'
+        },
+        {
+            name: 'top_score', title: 'Highest Score',
+            description: 'Highest score achieved by the user.',
+            group: 'score'
+        },
+        {
+            name: 'ss_score', title: 'SS Score',
+            description: 'Ranked score but only with plays that are 100% accuracy',
+            group: 'score'
+        }
+    ],
+    'grade': [
+        {
+            name: 'ss', title: 'Total SS',
+            group: 'grade'
+        },
+        {
+            name: 's', title: 'Total S',
+            group: 'grade'
+        },
+        {
+            name: 'a', title: 'Total A',
+            group: 'grade'
+        },
+        {
+            name: 'b', title: 'Total B',
+            group: 'grade'
+        },
+        {
+            name: 'c', title: 'Total C',
+            group: 'grade'
+        },
+        {
+            name: 'd', title: 'Total D',
+            group: 'grade'
+        },
+    ],
+    'accuracy': [
+        {
+            name: 'acc', title: 'Profile Accuracy', customFormat: (value) => `${(Math.round(value * 100) / 100)}%`,
+            description: 'Weighted accuracy',
+            group: 'accuracy'
+        },
+        {
+            name: 'avg_acc', title: 'Average Accuracy', customFormat: (value) => `${(Math.round(value * 100) / 100)}%`,
+            description: 'Average accuracy of all scores.',
+            group: 'accuracy'
+        },
+    ],
+    'generic': [
+        {
+            name: 'total_hits', title: 'Hit Count',
+            description: 'Total number of hits that the user has achieved.',
+            group: 'generic'
+        },
+        {
+            name: 'playcount', title: 'Play Count',
+            description: 'Number of times that the user has played a beatmap.',
+            group: 'generic'
+        },
+        {
+            name: 'playtime', title: 'Play Time', customFormat: (value) => (Math.round(moment.duration(value, 'seconds').asHours())).toLocaleString('en-US') + ' hours',
+            description: 'Total tracked time spent playing osu!',
+            group: 'generic'
+        },
+        {
+            name: 'followers', title: 'Followers',
+            description: 'Number of users that follow the user.',
+            group: 'generic'
+        },
+        {
+            name: 'replays_watched', title: 'Replays Watched',
+            description: 'Number of times that the user\'s replays have been watched.',
+            group: 'generic'
+        },
+        {
+            name: 'scores_first_count', title: 'First Places',
+            description: 'Number of number ones on beatmaps',
+            group: 'generic'
+        },
+        {
+            name: 'post_count', title: 'Forum Posts',
+            description: 'Number of forum posts that the user has created.',
+            group: 'generic'
+        },
+        {
+            name: 'ranked_beatmapset_count', title: 'Ranked Beatmaps',
+            description: 'Number of ranked beatmaps that the user has created.',
+            group: 'generic'
+        },
+        {
+            name: 'user_achievements', title: 'Medals',
+            description: 'Amount of medals a user has',
+            group: 'generic'
+        },
+        {
+            name: 'user_badges', title: 'Badges',
+            description: 'Amount of badges a user has',
+            group: 'generic'
+        }
+    ],
+    'completion': [
+        {
+            name: 'clears', title: 'Clears',
+            description: 'Amount of clears the user has. This includes B, C and D ranks',
+            group: 'grade'
+        },
+        {
+            name: 'completion', title: 'Completion', customFormat: (value) => `${(Math.round(value * 100) / 100)}%`,
+            description: 'Percentage of ranked beatmaps that have been cleared.',
+            group: 'generic'
+        },
+    ]
+}
 
 const ROWS_PER_PAGE = 50;
 function Leaders() {
     const params = useParams();
 
     const [isLoading, setIsLoading] = useState(false);
-    const [statistic, setStatistic] = useState(params.stat ? RANKED_STATISTICS.find((stat) => stat.name === params.stat) : RANKED_STATISTICS[0]);
+    const [statistic, setStatistic] = useState(params.stat ? Object.values(GROUPED_STATS).flat(1).find((stat) => stat.name === params.stat) : GROUPED_STATS['pp'][0]);
     const [page, setPage] = useState(params.page ? parseInt(params.page) : 1);
     const [totalPages, setTotalPages] = useState(0);
     const [country, setCountry] = useState(params.country && countries.countries[params.country.toUpperCase()] ? params.country.toLowerCase() : 'world');
@@ -143,11 +188,11 @@ function Leaders() {
     //if stat portion of url changes
     useEffect(() => {
         if (params.stat) {
-            const _stat = RANKED_STATISTICS.find((stat) => stat.name === params.stat);
+            const _stat = Object.values(GROUPED_STATS).flat(1).find((stat) => stat.name === params.stat);
             if (_stat) setStatistic(_stat);
-            else setStatistic(RANKED_STATISTICS[0]);
+            else setStatistic(GROUPED_STATS['pp'][0]);
         } else {
-            setStatistic(RANKED_STATISTICS[0]);
+            setStatistic(GROUPED_STATS['pp'][0]);
         }
     }, [params.stat]);
 
@@ -166,11 +211,6 @@ function Leaders() {
     }, [params.country]);
 
     useEffect(() => {
-        update(true);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [statistic]);
-
-    useEffect(() => {
         update(false);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [page]);
@@ -178,7 +218,7 @@ function Leaders() {
     useEffect(() => {
         update(true);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [country]);
+    }, [country, statistic]);
 
     const update = (resetPage) => {
         if (isLoading) return;
@@ -208,42 +248,52 @@ function Leaders() {
         <>
             <Box sx={{ pb: 2 }}>
                 {
-                    RANKED_STATISTICS.map((stat) => {
+                    Object.keys(GROUPED_STATS).map((group) => {
                         return (
-                            <Button sx={{ m: 0.3 }} disabled={isLoading} size='small' variant={stat.name === statistic.name ? 'contained' : 'outlined'} onClick={() => navigate(`stat/${stat.name}/page/1/country/${country ?? 'world'}`)}>{stat.title}</Button>
-                        );
-                    })
-                }
-            </Box>
-            <Box>
-                <FormControl sx={{ width: '250px' }}>
-                    <InputLabel size='small' id={`country_dropdown_label`}>Country</InputLabel>
-                    {
-                        countryList.length > 0 ?
-                            <Select
-                                size='small'
-                                value={country ?? 'world'}
-                                // onChange={e => setCountry(e.target.value)}
-                                onChange={e => navigate(`stat/${statistic.name}/page/1/country/${e.target.value}`)}
-                                labelId={`country_dropdown_label`}
-                                label='Country'
-                            >
+                            <Paper elevation={3} sx={{ m: 0.2, p: 0.4, display: 'inline-block' }}>
                                 {
-                                    countryList.map((value) => {
+                                    GROUPED_STATS[group].map((stat) => {
                                         return (
-                                            <MenuItem key={value.code} value={value.code}>
-                                                {
-                                                    value.code !== 'world' ? <ReactCountryFlag style={{ lineHeight: '1em', fontSize: '1.4em', borderRadius: '5px' }} cdnUrl="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/" countryCode={value.code} /> : <></>
-                                                }
-                                                &nbsp;{value.name}
-                                            </MenuItem>
-                                        )
+                                            <Tooltip title={stat.description ?? ''}>
+                                                <Button sx={{ m: 0.1 }} disabled={isLoading} size='small' variant={stat.name === statistic.name ? 'contained' : 'outlined'} onClick={() => navigate(`stat/${stat.name}/page/1/country/${country ?? 'world'}`)}>{stat.title}</Button>
+                                            </Tooltip>
+                                        );
                                     })
                                 }
-                            </Select>
-                            : <></>
-                    }
-                </FormControl>
+                            </Paper>
+                        )
+                    })
+                }
+                {
+                    countryList.length > 0 ?
+                        <Paper elevation={3} sx={{ m: 0.2, p: 0.4, width: '300px' }}>
+                            <FormControl sx={{ width: '100%' }} size='small'>
+                                <InputLabel size='small' id={`country_dropdown_label`}>Country</InputLabel>
+                                <Select
+                                    size='small'
+                                    value={country ?? 'world'}
+                                    // onChange={e => setCountry(e.target.value)}
+                                    onChange={e => navigate(`stat/${statistic.name}/page/1/country/${e.target.value}`)}
+                                    labelId={`country_dropdown_label`}
+                                    label='Country'
+                                >
+                                    {
+                                        countryList.map((value) => {
+                                            return (
+                                                <MenuItem key={value.code} value={value.code}>
+                                                    {
+                                                        value.code !== 'world' ? <ReactCountryFlag style={{ lineHeight: '1em', fontSize: '1.4em', borderRadius: '5px' }} cdnUrl="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/" countryCode={value.code} /> : <></>
+                                                    }
+                                                    &nbsp;{value.name}
+                                                </MenuItem>
+                                            )
+                                        })
+                                    }
+                                </Select>
+                            </FormControl>
+                        </Paper>
+                        : <></>
+                }
             </Box>
             <Box sx={{ mt: 1, mb: 1 }}>
                 <Typography variant='body1'>{statistic?.description ?? ' '}</Typography>
