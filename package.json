@@ -17,7 +17,7 @@
     "binary-parser": "^2.2.1",
     "buffer": "^6.0.3",
     "chart.js": "^3.9.1",
-    "chartjs-plugin-annotation": "^2.1.0",
+    "chartjs-plugin-annotation": "^2.1.1",
     "chartjs-plugin-datalabels": "^2.2.0",
     "chartjs-plugin-zoom": "^2.0.0",
     "countries-list": "^2.6.1",
