@@ -58,6 +58,16 @@ const GROUPED_STATS = {
             name: 'ss_score', title: 'SS Score',
             description: 'Ranked score but only with plays that are 100% accuracy',
             group: 'score'
+        },
+        {
+            name: 'fc_score', title: 'FC Score',
+            description: 'Ranked score but only with plays that are full combo',
+            group: 'score'
+        },
+        {
+            name: 'as_one_map', title: 'Singular Score',
+            description: 'The score users have if osu was one massive beatmap',
+            group: 'score'
         }
     ],
     'grade': [
@@ -154,6 +164,11 @@ const GROUPED_STATS = {
         {
             name: 'clears', title: 'Clears',
             description: 'Amount of clears the user has. This includes B, C and D ranks',
+            group: 'grade'
+        },
+        {
+            name: 'fc_clears', title: 'FC Clears',
+            description: 'Amount of full combo clears the user has',
             group: 'grade'
         },
         {
