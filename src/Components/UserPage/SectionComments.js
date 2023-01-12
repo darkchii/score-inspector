@@ -1,7 +1,7 @@
 import { Box, Button, Grid, Paper, Stack, Typography } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import MUIRichTextEditor from 'mui-rte';
-import { convertFromRaw, convertToRaw } from 'draft-js';
+import { EditorState, convertFromRaw, convertToRaw } from 'draft-js';
 import { DeleteComment, GetComments, GetFormattedName, SendComment } from "../../Helpers/Account";
 import { showNotification } from "../../Helpers/Misc";
 import { stateToHTML } from "draft-js-export-html";
@@ -36,6 +36,7 @@ function SectionComments(props) {
     const [lastMessage, setLastMessage] = useState(null);
     const ref = useRef(null);
     const [comments, setComments] = useState([]);
+    const [content, setContent] = useState(JSON.stringify(convertToRaw(EditorState.createEmpty().getCurrentContent())));
 
     const refreshComments = async () => {
         setComments([]);
@@ -82,6 +83,7 @@ function SectionComments(props) {
             } else {
                 showNotification('Error', 'Comment could not be send', 'error');
             }
+            setContent(JSON.stringify(convertToRaw(EditorState.createEmpty().getCurrentContent())));
             await refreshComments();
             setLastMessage(new Date());
             setIsWorking(false);
@@ -99,6 +101,7 @@ function SectionComments(props) {
                                 label="Start typing..."
                                 maxLength={300}
                                 ref={ref}
+                                defaultValue={content}
                                 onSave={onSave}
                             />
                         </Box>
