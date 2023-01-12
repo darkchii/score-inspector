@@ -11,21 +11,22 @@ export function getSessions(scores) {
         done: false
     }
     scores.forEach((score, index) => {
+        const currentUnix = score.date_played_moment.valueOf() * 0.001;
         if (currentActivity.start === null) {
-            currentActivity.start = score.date_played_moment.valueOf() * 0.001 - score.modded_length;
+            currentActivity.start = currentUnix - score.modded_length;
         }
 
-        currentActivity.end = score.date_played_moment.valueOf() * 0.001;
+        currentActivity.end = currentUnix;
 
         if (index < scores.length - 1) {
-            const diff = Math.abs(score.date_played_moment.valueOf() * 0.001 - scores[index + 1].date_played.valueOf() * 0.001);
+            const diff = Math.abs((currentUnix) - (scores[index + 1].date_played_moment.valueOf() * 0.001));
 
             if (diff >= ACTIVITY_THRESHOLD) {
-                currentActivity.end = score.date_played_moment.valueOf() * 0.001;
+                currentActivity.end = currentUnix;
                 currentActivity.done = true;
             }
         } else if (index === scores.length - 1) {
-            currentActivity.end = score.date_played_moment.valueOf() * 0.001;
+            currentActivity.end = currentUnix;
             currentActivity.done = true;
         }
 

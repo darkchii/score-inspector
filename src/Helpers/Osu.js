@@ -347,7 +347,7 @@ export function calculatePP2016(scores) {
 
 export function isScoreRealistic(score) {
     const maxMissCount = (score.enabled_mods & mods.NF) ? 15 : 30; //max 15 misses on NF, max 30 on no NF
-    const minCombo = score.maxcombo / 100 * 80; //80% combo
+    const minCombo = score.maxcombo * 0.8; //80% combo
     const minAcc = (score.enabled_mods & mods.NF) ? 90 : 80; //90% acc required for NF, 80% for no NF
 
     if (score.countmiss <= maxMissCount || score.combo > minCombo || score.accuracy > minAcc) {
