@@ -22,7 +22,7 @@ function User() {
     useEffect(() => {
         (async () => {
             const urlParams = new URLSearchParams(location.search);
-            let loved = urlParams.get('loved');
+            let loved = urlParams.get('loved') ?? true;
             if (loved === 'true' || loved === '1' || loved === true || loved === 1 || loved === '') {
                 loved = true;
             } else {

@@ -178,6 +178,7 @@ async function weighPerformance(scores, onScoreProcessUpdate) {
 export function prepareScores(scores, onScoreProcessUpdate) {
     scores.forEach(score => {
         onScoreProcessUpdate?.('' + score.id);
+        score.is_loved = score.approved === 4;
         score.pp = Math.max(0, parseFloat(score.pp));
         score.enabled_mods = parseInt(score.enabled_mods);
         score.stars = parseFloat(score.stars);
@@ -239,16 +240,18 @@ function getBestScores(scores) {
     };
 
     scores.forEach(score => {
-        if (_scores.best_pp === null || score.pp > _scores.best_pp.pp) {
-            _scores.best_pp = score;
-        }
-        if ((score.enabled_mods & mods.NF) === 0) {
-            if ((_scores.best_sr === null || score.star_rating > _scores.best_sr.star_rating)) {
-                _scores.best_sr = score;
+        if (!score.is_loved) {
+            if (_scores.best_pp === null || score.pp > _scores.best_pp.pp) {
+                _scores.best_pp = score;
             }
-        }
-        if (_scores.best_score === null || score.score > _scores.best_score.score) {
-            _scores.best_score = score;
+            if ((score.enabled_mods & mods.NF) === 0) {
+                if ((_scores.best_sr === null || score.star_rating > _scores.best_sr.star_rating)) {
+                    _scores.best_sr = score;
+                }
+            }
+            if (_scores.best_score === null || score.score > _scores.best_score.score) {
+                _scores.best_score = score;
+            }
         }
     });
 

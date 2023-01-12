@@ -20,6 +20,8 @@ let htmlOptions = {
                 },
                 style: {
                     // Put styles here...
+                    width: data.width ?? '100%',
+                    height: data.height ?? 'auto',
                     maxWidth: '1000px',
                     maxHeight: '1000px',
                     borderRadius: '10px',

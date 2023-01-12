@@ -161,9 +161,17 @@ function Root() {
                                 <Grid item xs={6}>
                                     <Card elevation={2}>
                                         <CardContent>
-                                            <Typography variant='title'>Loved scores</Typography>
-                                            <Typography>Loved scores are by default not included.</Typography>
-                                            <Typography>To include them, add <code>?loved</code> at the end of the profile URL</Typography>
+                                            <Typography variant='title'>For new users</Typography>
+                                            <TableContainer>
+                                                <Table size='small'>
+                                                    <TableBody>
+                                                        <TableRow><TableCell>Join the osu!alt discord</TableCell></TableRow>
+                                                        <TableRow><TableCell>Follow the guide to fetch your scores (#info channel)</TableCell></TableRow>
+                                                        <TableRow><TableCell>Wait a few hours. When done, you generally don't need to run it anymore</TableCell></TableRow>
+                                                        <TableRow><TableCell>Enter your username above and fetch</TableCell></TableRow>
+                                                    </TableBody>
+                                                </Table>
+                                            </TableContainer>
                                         </CardContent>
                                     </Card>
                                 </Grid>
@@ -224,23 +232,6 @@ function Root() {
                                                         )
                                                     })
                                                 }
-                                            </TableBody>
-                                        </Table>
-                                    </TableContainer>
-                                </CardContent>
-                            </Card>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Card elevation={2}>
-                                <CardContent>
-                                    <Typography variant='title'>For new users</Typography>
-                                    <TableContainer>
-                                        <Table size='small'>
-                                            <TableBody>
-                                                <TableRow><TableCell>Join the osu!alt discord</TableCell></TableRow>
-                                                <TableRow><TableCell>Follow the guide to fetch your scores (#info channel)</TableCell></TableRow>
-                                                <TableRow><TableCell>Wait a few hours. When done, you generally don't need to run it anymore</TableCell></TableRow>
-                                                <TableRow><TableCell>Enter your username above and fetch</TableCell></TableRow>
                                             </TableBody>
                                         </Table>
                                     </TableContainer>
