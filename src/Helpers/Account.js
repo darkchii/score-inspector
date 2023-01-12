@@ -200,3 +200,50 @@ export async function UpdateProfile(data) {
 
     return res;
 }
+
+export async function DeleteComment(comment_id, deleter_id){
+    if (!await IsUserLoggedIn()) return null;
+
+    const res = await fetch(`${GetAPI()}login/comments/delete`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            token: localStorage.getItem('auth_token'),
+            comment_id: comment_id,
+            deleter_id: deleter_id
+        })
+    });
+
+    return res;
+}
+
+export async function GetComments(user_id){
+    let res = null;
+    try {
+        res = await axios.get(`${GetAPI()}login/comments/get/${user_id}`);
+    } catch (e) { }
+    if (res === null) return null;
+    return res?.data;
+}
+
+export async function SendComment(sender, recipient, reply_to, content){
+    if (!await IsUserLoggedIn()) return null;
+
+    const res = await fetch(`${GetAPI()}login/comments/send`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            token: localStorage.getItem('auth_token'),
+            sender: sender,
+            recipient: recipient,
+            reply_to: reply_to,
+            comment: content
+        })
+    });
+
+    return res;
+}
