@@ -114,6 +114,7 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
     onScoreProcessUpdate('Best scores');
     data.bestScores = getBestScores(scores);
 
+    onScoreProcessUpdate('Weigh performance');
     data.performance = await weighPerformance(scores, onScoreProcessUpdate);
 
     await sleep(FEEDBACK_SLEEP_TIME);
@@ -128,28 +129,16 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
 }
 
 async function weighPerformance(scores, onScoreProcessUpdate) {
-    await sleep(FEEDBACK_SLEEP_TIME);
-    onScoreProcessUpdate('Fullcombo performance');
     scores = calculatePPifFC(scores);
-
-    await sleep(FEEDBACK_SLEEP_TIME);
-    onScoreProcessUpdate('SS performance');
     scores = calculatePPifSS(scores);
-
-    await sleep(FEEDBACK_SLEEP_TIME);
-    onScoreProcessUpdate('2016 performance');
     scores = calculatePP2016(scores);
 
-    await sleep(FEEDBACK_SLEEP_TIME);
-    onScoreProcessUpdate('2016 performance');
     scores.sort((a, b) => {
         return b.pp - a.pp;
     });
     scores.forEach(score => { score.pp_weight = Math.pow(0.95, index); index++; });
     var index = 0;
 
-    await sleep(FEEDBACK_SLEEP_TIME);
-    onScoreProcessUpdate('Weighing scores');
     const data = {};
 
     data.weighted = {};
@@ -178,8 +167,6 @@ async function weighPerformance(scores, onScoreProcessUpdate) {
             data.weighted._2016 += score.pp_2016.total * score.pp_2016.weight;
         }
     });
-    await sleep(FEEDBACK_SLEEP_TIME);
-    onScoreProcessUpdate('Bonus PP');
     const bonus = getBonusPerformance(scores.length);
     data.weighted.fc += bonus;
     data.weighted.ss += bonus;
@@ -223,7 +210,6 @@ export function prepareScores(scores, onScoreProcessUpdate) {
         score.spinners = parseInt(score.spinners);
         score.objects = score.sliders + score.circles + score.spinners;
         score.modded_length = score.length;
-        score.date_played_object = new Date(score.date_played);
         score.date_played_moment = moment(score.date_played);
         if (score.enabled_mods & mods.DT || score.enabled_mods & mods.NC) {
             score.modded_length /= 1.5;

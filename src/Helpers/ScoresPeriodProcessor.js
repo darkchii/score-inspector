@@ -25,7 +25,8 @@ export function getPeriodicData(scores, data, user, f = 'm') {
         f = 'm';
     }
     let chunks = [];
-    let duplicate_scores = JSON.parse(JSON.stringify(scores));
+    // let duplicate_scores = JSON.parse(JSON.stringify(scores));
+    let duplicate_scores = [...scores];
 
     for (const score of duplicate_scores) {
         const _m = moment(score.date_played);
