@@ -2,13 +2,14 @@ import { Box, Button, ButtonGroup, Card, CardContent, Chip, chipClasses, Grid, P
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import moment from "moment";
+import momentDurationFormatSetup  from "moment-duration-format";
 import { useEffect, useState } from "react";
 import { getGradeColor, mods } from "../../Helpers/Osu";
 import { getSessions } from "../../Helpers/Session";
 import CircleIcon from '@mui/icons-material/Circle';
 import SquareIcon from '@mui/icons-material/Square';
 import { Scatter } from "react-chartjs-2";
-import { SVG_GRADE_A, SVG_GRADE_S, SVG_GRADE_X } from "../../Helpers/Assets";
+import { IMG_SVG_GRADE_A, IMG_SVG_GRADE_B, IMG_SVG_GRADE_C, IMG_SVG_GRADE_D, IMG_SVG_GRADE_S, IMG_SVG_GRADE_SH, IMG_SVG_GRADE_X, IMG_SVG_GRADE_XH, SVG_GRADE_A, SVG_GRADE_S, SVG_GRADE_X } from "../../Helpers/Assets";
 import {
     Chart as ChartJS,
     LinearScale,
@@ -19,6 +20,7 @@ import {
 } from 'chart.js';
 import Annotations from "chartjs-plugin-annotation";
 ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend, Annotations);
+momentDurationFormatSetup(moment);
 
 const heightDefiners = [
     { value: 'pp', label: 'Performance' },
@@ -102,9 +104,9 @@ function SectionDaily(props) {
                             callback: function (value, index, values) {
                                 return moment.unix(value).format("MMMM Do, YYYY HH:mm");
                             },
-                            min: selectedDay.startOf('day'),
-                            max: selectedDay.endOf('day')
-                        }
+                        },
+                        min: selectedDay.startOf('day').format("YYYY-MM-DD HH:mm:ss"),
+                        max: selectedDay.endOf('day').format("YYYY-MM-DD HH:mm:ss")
                     }
                 },
                 plugins: {
@@ -161,32 +163,58 @@ function SectionDaily(props) {
             const scoresSubset = props.user.scores.filter(score => moment(score.date_played).isSame(date, 'day'));
             const sorted = scoresSubset.sort((a, b) => moment(a.date_played).valueOf() - moment(b.date_played).valueOf());
 
+            console.log(scoresSubset);
             const _stats = {
                 gained_score: 0,
                 clears: 0,
+                grade_ssh: 0,
                 grade_ss: 0,
+                grade_sh: 0,
                 grade_s: 0,
                 grade_a: 0,
+                grade_b: 0,
+                grade_c: 0,
+                grade_d: 0,
                 average_acc: 0,
-                playtime: 0
+                playtime: 0,
+                average_sr: 0,
+                average_length: 0,
+                pp: 0,
+                average_pp: 0
             }
 
             if (sorted.length > 0) {
                 let acc = 0;
+                let sr = 0;
                 sorted.forEach(score => {
                     _stats.gained_score += score.score;
-                    if (score.rank === 'XH' || score.rank === 'X') {
+                    if (score.rank === 'XH') {
+                        _stats.grade_ssh++;
+                    } else if (score.rank === 'X') {
                         _stats.grade_ss++;
-                    } else if (score.rank === 'SH' || score.rank === 'S') {
+                    } else if (score.rank === 'SH') {
+                        _stats.grade_sh++;
+                    } else if (score.rank === 'S') {
                         _stats.grade_s++;
                     } else if (score.rank === 'A') {
                         _stats.grade_a++;
+                    } else if (score.rank === 'B') {
+                        _stats.grade_b++;
+                    } else if (score.rank === 'C') {
+                        _stats.grade_c++;
+                    } else {
+                        _stats.grade_d++;
                     }
                     _stats.clears++;
+                    _stats.pp += score.pp ?? 0;
                     acc += score.accuracy;
+                    sr += score.star_rating;
                     _stats.playtime += score.modded_length;
                 });
                 _stats.average_acc = acc / sorted.length;
+                _stats.average_sr = sr / sorted.length;
+                _stats.average_length = _stats.playtime / sorted.length;
+                _stats.average_pp = _stats.pp / sorted.length;
             }
 
             setStats(_stats);
@@ -202,8 +230,8 @@ function SectionDaily(props) {
             <Card>
                 <CardContent>
                     <LocalizationProvider dateAdapter={AdapterMoment}>
-                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                            <Paper elevation={3}>
+                        <Paper elevation={3}>
+                            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                                 <Grid sx={{ px: 1, m: 1 }}>
                                     <DesktopDatePicker
                                         format="dd-MMM-yyyy"
@@ -215,11 +243,11 @@ function SectionDaily(props) {
                                         value={selectedDay}
                                         onChange={setSelectedDay}
                                         renderInput={(params) => <TextField variant="standard" size="small" {...params} />}
-                                        shouldDisableDate={(date) => (props.user.data.activeDays !== null && props.user.data.activeDays.size > 0) ? !props.user.data.activeDays.has(date.format("YYYY-MM-DD")) : false} 
+                                        shouldDisableDate={(date) => (props.user.data.activeDays !== null && props.user.data.activeDays.size > 0) ? !props.user.data.activeDays.has(date.format("YYYY-MM-DD")) : false}
                                     />
                                 </Grid>
-                            </Paper>
-                        </Box>
+                            </Box>
+                        </Paper>
                     </LocalizationProvider>
 
                     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -252,78 +280,120 @@ function SectionDaily(props) {
                         </Grid>
                         <Typography variant='caption'>The left and right lines indicate the start and end of the selected day (the chart plugin doesn't cap at those points)</Typography>
                         <Grid sx={{ mt: 1, pl: 2 }}>
-                            <Grid container>
-                                <Grid item xs={0} md={2}></Grid>
-                                <Grid item xs={12} md={4}>
-                                    <Grid>
-                                        {
-                                            stats && <>
-                                                <TableContainer>
-                                                    <Table size="small">
-                                                        <TableBody>
-                                                            <TableRow>
-                                                                <TableCell sx={{ width: '50%' }}>Score gained</TableCell>
-                                                                <TableCell sx={{ width: '50%' }}>{stats.gained_score.toLocaleString('en-US')}</TableCell>
-                                                            </TableRow>
-                                                            <TableRow>
-                                                                <TableCell sx={{ width: '50%' }}>Clears gained</TableCell>
-                                                                <TableCell sx={{ width: '50%' }}>{stats.clears.toLocaleString('en-US')}</TableCell>
-                                                            </TableRow>
-                                                            <TableRow>
-                                                                <TableCell sx={{ width: '50%' }}>Score per clear</TableCell>
-                                                                <TableCell sx={{ width: '50%' }}>{Math.round(stats.clears > 0 ? (stats.gained_score / stats.clears) : 0).toLocaleString('en-US')}</TableCell>
-                                                            </TableRow>
-                                                            <TableRow>
-                                                                <TableCell sx={{ width: '50%' }}>Average accuracy</TableCell>
-                                                                <TableCell sx={{ width: '50%' }}>{stats.average_acc.toLocaleString('en-US')}%</TableCell>
-                                                            </TableRow>
-                                                            <TableRow>
-                                                                <TableCell sx={{ width: '50%' }}>Playtime</TableCell>
-                                                                <TableCell sx={{ width: '50%' }}>{`${moment.duration(stats.playtime, 'seconds').humanize()}`}</TableCell>
-                                                            </TableRow>
-                                                            <TableRow>
-                                                                <TableCell sx={{ width: '50%' }}>Sessions</TableCell>
-                                                                <TableCell sx={{ width: '50%' }}>{`${sessionCount.toLocaleString('en-US')}`}</TableCell>
-                                                            </TableRow>
-                                                            <TableRow>
-                                                                <TableCell sx={{ width: '50%' }}>Total session length</TableCell>
-                                                                <TableCell sx={{ width: '50%' }}>{`${moment.duration(totalSessionLength, 'seconds').humanize()}`}</TableCell>
-                                                            </TableRow>
-                                                        </TableBody>
-                                                    </Table>
-                                                </TableContainer>
-                                            </>
-                                        }
-                                    </Grid>
+                            <Stack direction="column" spacing={2}>
+                                <Grid>
+                                    {
+                                        stats && <>
+                                            <Stack direction="row" sx={{ justifyContent: 'center', alignItems: 'center' }}>
+                                                <Grid sx={{ mr: 3, ml: 3 }}>
+                                                    <img src={IMG_SVG_GRADE_XH} alt='XH' /> {stats.grade_ssh.toLocaleString('en-US')}
+                                                </Grid>
+                                                <Grid sx={{ mr: 3, ml: 3 }}>
+                                                    <img src={IMG_SVG_GRADE_X} alt='X' /> {stats.grade_ss.toLocaleString('en-US')}
+                                                </Grid>
+                                                <Grid sx={{ mr: 3, ml: 3 }}>
+                                                    <img src={IMG_SVG_GRADE_SH} alt='SH' /> {stats.grade_sh.toLocaleString('en-US')}
+                                                </Grid>
+                                                <Grid sx={{ mr: 3, ml: 3 }}>
+                                                    <img src={IMG_SVG_GRADE_S} alt='S' /> {stats.grade_s.toLocaleString('en-US')}
+                                                </Grid>
+                                                <Grid sx={{ mr: 3, ml: 3 }}>
+                                                    <img src={IMG_SVG_GRADE_A} alt='A' /> {stats.grade_a.toLocaleString('en-US')}
+                                                </Grid>
+                                                <Grid sx={{ mr: 3, ml: 3 }}>
+                                                    <img src={IMG_SVG_GRADE_B} alt='B' /> {stats.grade_b.toLocaleString('en-US')}
+                                                </Grid>
+                                                <Grid sx={{ mr: 3, ml: 3 }}>
+                                                    <img src={IMG_SVG_GRADE_C} alt='C' /> {stats.grade_c.toLocaleString('en-US')}
+                                                </Grid>
+                                                <Grid sx={{ mr: 3, ml: 3 }}>
+                                                    <img src={IMG_SVG_GRADE_D} alt='D' /> {stats.grade_d.toLocaleString('en-US')}
+                                                </Grid>
+                                            </Stack>
+                                        </>
+                                    }
                                 </Grid>
-                                <Grid item xs={12} md={4}>
-                                    <Grid sx={{ ml: 1 }}>
-                                        {
-                                            stats && <>
-                                                <TableContainer>
-                                                    <Table size="small">
-                                                        <TableBody>
-                                                            <TableRow>
-                                                                <TableCell sx={{ width: '50%' }}><SVG_GRADE_X /></TableCell>
-                                                                <TableCell sx={{ width: '50%' }}>{stats.grade_ss.toLocaleString('en-US')}</TableCell>
-                                                            </TableRow>
-                                                            <TableRow>
-                                                                <TableCell sx={{ width: '50%' }}><SVG_GRADE_S /></TableCell>
-                                                                <TableCell sx={{ width: '50%' }}>{stats.grade_s.toLocaleString('en-US')}</TableCell>
-                                                            </TableRow>
-                                                            <TableRow>
-                                                                <TableCell sx={{ width: '50%' }}><SVG_GRADE_A /></TableCell>
-                                                                <TableCell sx={{ width: '50%' }}>{stats.grade_a.toLocaleString('en-US')}</TableCell>
-                                                            </TableRow>
-                                                        </TableBody>
-                                                    </Table>
-                                                </TableContainer>
-                                            </>
-                                        }
+                                <Grid container>
+                                    <Grid item xs={0} md={2}></Grid>
+                                    <Grid item xs={12} md={4}>
+                                        <Paper sx={{ p: 1, m: 1 }} elevation={3}>
+                                            {
+                                                stats && <>
+                                                    <TableContainer>
+                                                        <Table size="small">
+                                                            <TableBody>
+                                                                <TableRow>
+                                                                    <TableCell sx={{ width: '50%' }}>Score gained</TableCell>
+                                                                    <TableCell sx={{ width: '50%' }}>{stats.gained_score.toLocaleString('en-US')}</TableCell>
+                                                                </TableRow>
+                                                                <TableRow>
+                                                                    <TableCell sx={{ width: '50%' }}>Clears gained</TableCell>
+                                                                    <TableCell sx={{ width: '50%' }}>{stats.clears.toLocaleString('en-US')}</TableCell>
+                                                                </TableRow>
+                                                                <TableRow>
+                                                                    <TableCell sx={{ width: '50%' }}>Total PP gained</TableCell>
+                                                                    <TableCell sx={{ width: '50%' }}>{Math.round(stats.pp).toLocaleString('en-US')}pp</TableCell>
+                                                                </TableRow>
+                                                                <TableRow>
+                                                                    <TableCell sx={{ width: '50%' }}>Playtime</TableCell>
+                                                                    <TableCell sx={{ width: '50%' }}>{`${moment.duration(stats.playtime, 'seconds').format()}`}</TableCell>
+                                                                </TableRow>
+                                                                <TableRow>
+                                                                    <TableCell sx={{ width: '50%' }}>Sessions</TableCell>
+                                                                    <TableCell sx={{ width: '50%' }}>{`${sessionCount.toLocaleString('en-US')}`}</TableCell>
+                                                                </TableRow>
+                                                                <TableRow>
+                                                                    <TableCell sx={{ width: '50%' }}>Total session</TableCell>
+                                                                    <TableCell sx={{ width: '50%' }}>{`${moment.duration(totalSessionLength, 'seconds').format()}`}</TableCell>
+                                                                </TableRow>
+                                                            </TableBody>
+                                                        </Table>
+                                                    </TableContainer>
+                                                </>
+                                            }
+                                        </Paper>
                                     </Grid>
+                                    <Grid item xs={12} md={4}>
+                                        <Paper sx={{ p: 1, m: 1 }} elevation={3}>
+                                            {
+                                                stats && <>
+                                                    <TableContainer>
+                                                        <Table size="small">
+                                                            <TableBody>
+                                                                <TableRow>
+                                                                    <TableCell sx={{ width: '50%' }}>Average score</TableCell>
+                                                                    <TableCell sx={{ width: '50%' }}>{Math.round(stats.clears > 0 ? (stats.gained_score / stats.clears) : 0).toLocaleString('en-US')}</TableCell>
+                                                                </TableRow>
+                                                                <TableRow>
+                                                                    <TableCell sx={{ width: '50%' }}>Average stars</TableCell>
+                                                                    <TableCell sx={{ width: '50%' }}>{stats.average_sr.toLocaleString('en-US')}*</TableCell>
+                                                                </TableRow>
+                                                                <TableRow>
+                                                                    <TableCell sx={{ width: '50%' }}>Average PP</TableCell>
+                                                                    <TableCell sx={{ width: '50%' }}>{stats.average_pp.toLocaleString('en-US')}pp</TableCell>
+                                                                </TableRow>
+                                                                <TableRow>
+                                                                    <TableCell sx={{ width: '50%' }}>Average accuracy</TableCell>
+                                                                    <TableCell sx={{ width: '50%' }}>{stats.average_acc.toLocaleString('en-US')}%</TableCell>
+                                                                </TableRow>
+                                                                <TableRow>
+                                                                    <TableCell sx={{ width: '50%' }}>Average length</TableCell>
+                                                                    <TableCell sx={{ width: '50%' }}>{`${moment.duration(stats.average_length, 'seconds').format()}`}</TableCell>
+                                                                </TableRow>
+                                                                <TableRow>
+                                                                    <TableCell sx={{ width: '50%' }}>Average session</TableCell>
+                                                                    <TableCell sx={{ width: '50%' }}>{`${moment.duration(totalSessionLength / sessionCount, 'seconds').format()}`}</TableCell>
+                                                                </TableRow>
+                                                            </TableBody>
+                                                        </Table>
+                                                    </TableContainer>
+                                                </>
+                                            }
+                                        </Paper>
+                                    </Grid>
+                                    <Grid item xs={0} md={2}></Grid>
                                 </Grid>
-                                <Grid item xs={0} md={2}></Grid>
-                            </Grid>
+                            </Stack>
                         </Grid>
                     </Grid>}
                 </CardContent>

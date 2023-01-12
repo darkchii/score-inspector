@@ -21,6 +21,7 @@
     "chartjs-plugin-zoom": "^2.0.0",
     "countries-list": "^2.6.1",
     "moment": "^2.29.4",
+    "moment-duration-format": "^2.3.2",
     "react": "^18.2.0",
     "react-chartjs-2": "^5.0.0",
     "react-country-flag": "^3.0.2",
