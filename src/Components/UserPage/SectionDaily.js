@@ -2,7 +2,7 @@ import { Box, Button, ButtonGroup, Card, CardContent, Chip, chipClasses, Grid, P
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import moment from "moment";
-import momentDurationFormatSetup  from "moment-duration-format";
+import momentDurationFormatSetup from "moment-duration-format";
 import { useEffect, useState } from "react";
 import { getGradeColor, mods } from "../../Helpers/Osu";
 import { getSessions } from "../../Helpers/Session";
@@ -37,7 +37,7 @@ const heightDefiners = [
 
 function SectionDaily(props) {
     const MIN_DATE = moment(props.user.osu.join_date);
-    const MAX_DATE = moment.unix((props.user.scores !== null && props.user.scores.length > 0) ? Math.max(...props.user.scores.map(score => moment(score.date_played).unix())) : moment().unix());
+    const [MAX_DATE, setMaxDate] = useState(moment());
     const [selectedDay, setSelectedDay] = useState(MAX_DATE.endOf('day'));
     const [isWorking, setWorkingState] = useState(false);
     const [scores, setScores] = useState(null);
@@ -50,7 +50,19 @@ function SectionDaily(props) {
 
     const [stats, setStats] = useState(null);
 
+    const getDateIndex = (date) => {
+        const index = props.user.data.activeDays.findIndex(day => day === date.format("YYYY-MM-DD"));
+        return index;
+    }
+
+    useEffect(()=>{
+        setMaxDate(moment.unix((props.user.scores !== null && props.user.scores.length > 0) ? Math.max(...props.user.scores.map(score => moment(score.date_played).unix())) : moment().unix()));
+    }, props.user.scores);
+
     useEffect(() => {
+        if(scores===null){
+            return;
+        }
         const updateGraph = () => {
             let annotations = {};
 
@@ -60,8 +72,6 @@ function SectionDaily(props) {
                 setTotalSessionLength(0);
                 setSessionCount(0);
                 if (activities.length > 0) {
-                    console.log(activities);
-
                     let len = 0;
                     activities.forEach((activity, index) => {
                         annotations[`activity${index}`] = {
@@ -157,13 +167,20 @@ function SectionDaily(props) {
     }, [scores, props.user.scores, heightDefiner]);
 
     useEffect(() => {
-        const handleDayChange = (date) => {
+        if(isWorking){
+            return;
+        }
+
+        if(selectedDay > MAX_DATE){
+            setSelectedDay(MAX_DATE);
+            return;
+        }
+        
+        const handleDayChange = async (date) => {
             setWorkingState(true);
             setScores(null);
-            const scoresSubset = props.user.scores.filter(score => moment(score.date_played).isSame(date, 'day'));
-            const sorted = scoresSubset.sort((a, b) => moment(a.date_played).valueOf() - moment(b.date_played).valueOf());
+            const sorted = props.user.scores.filter(score => score.date_played_moment.isSame(date, 'day'));
 
-            console.log(scoresSubset);
             const _stats = {
                 gained_score: 0,
                 clears: 0,
@@ -223,7 +240,7 @@ function SectionDaily(props) {
             setWorkingState(false);
         };
         handleDayChange(selectedDay);
-    }, [selectedDay, props.user.scores]);
+    }, [selectedDay, MAX_DATE]);
 
     return (
         <>
@@ -232,6 +249,7 @@ function SectionDaily(props) {
                     <LocalizationProvider dateAdapter={AdapterMoment}>
                         <Paper elevation={3}>
                             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                <Button disabled={isWorking || props.user.data.activeDays.length === 0 || getDateIndex(selectedDay) <= 0} onClick={() => { setSelectedDay(moment(props.user.data.activeDays[getDateIndex(selectedDay) - 1])) }}>Previous</Button>
                                 <Grid sx={{ px: 1, m: 1 }}>
                                     <DesktopDatePicker
                                         format="dd-MMM-yyyy"
@@ -239,13 +257,14 @@ function SectionDaily(props) {
                                         minDate={MIN_DATE}
                                         maxDate={MAX_DATE}
                                         label="Select day"
-                                        inputFormat="MM/DD/YYYY"
+                                        inputFormat="MMMM Do, yyyy"
                                         value={selectedDay}
                                         onChange={setSelectedDay}
                                         renderInput={(params) => <TextField variant="standard" size="small" {...params} />}
-                                        shouldDisableDate={(date) => (props.user.data.activeDays !== null && props.user.data.activeDays.size > 0) ? !props.user.data.activeDays.has(date.format("YYYY-MM-DD")) : false}
+                                        shouldDisableDate={(date) => (props.user.data.activeDays !== null && props.user.data.activeDays.length > 0) ? !props.user.data.activeDays.includes(date.format("YYYY-MM-DD")) : false}
                                     />
                                 </Grid>
+                                <Button disabled={isWorking || props.user.data.activeDays.length === 0 || !(getDateIndex(selectedDay) < props.user.data.activeDays.length - 1)} onClick={() => { setSelectedDay(moment(props.user.data.activeDays[getDateIndex(selectedDay) + 1])) }}>Next</Button>
                             </Box>
                         </Paper>
                     </LocalizationProvider>

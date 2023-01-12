@@ -1,3 +1,4 @@
+import moment from "moment";
 import { sleep } from "./Misc";
 import { calculatePP2016, calculatePPifFC, calculatePPifSS, getBeatmapCount, getBonusPerformance, getLazerScore, getModString, mods } from "./Osu";
 import { getPerformance2016 } from "./Performance/Performance2016";
@@ -223,6 +224,7 @@ export function prepareScores(scores, onScoreProcessUpdate) {
         score.objects = score.sliders + score.circles + score.spinners;
         score.modded_length = score.length;
         score.date_played_object = new Date(score.date_played);
+        score.date_played_moment = moment(score.date_played);
         if (score.enabled_mods & mods.DT || score.enabled_mods & mods.NC) {
             score.modded_length /= 1.5;
         } else if (score.enabled_mods & mods.HT) {
@@ -272,7 +274,12 @@ function getActiveDays(scores) {
     scores.forEach(score => {
         activeDays.add(new Date(score.date_played).toISOString().slice(0, 10));
     });
-    return activeDays;
+
+    const arrayActiveDays = Array.from(activeDays);
+    arrayActiveDays.sort((a, b) => {
+        return new Date(a) - new Date(b);
+    });
+    return arrayActiveDays;
 }
 
 function getMonthlyBeatmapData(beatmaps) {
