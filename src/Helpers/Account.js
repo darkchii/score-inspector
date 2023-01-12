@@ -20,7 +20,7 @@ export const ROLES = [
     }
 ]
 
-export function GetFormattedName(inspector_user, custom_tooltip = null, is_link = false) {
+export function GetFormattedName(inspector_user, custom_tooltip = null, is_link = false, size = 'small') {
     let name = inspector_user.known_username;
     if (inspector_user === null || inspector_user.osu_id === null) {
         name = 'Guest';
@@ -47,7 +47,9 @@ export function GetFormattedName(inspector_user, custom_tooltip = null, is_link 
                                 </Tooltip>
                             </>)
                     })}</>}
-                    avatar={<Avatar alt={name} src={`https://a.ppy.sh/${inspector_user.osu_id}`} />} label={name} size="small" />
+                    avatar={<Avatar alt={name} src={`https://a.ppy.sh/${inspector_user.osu_id}`} />} 
+                    label={name} 
+                    size={size} />
             </Tooltip>
         </>
     );

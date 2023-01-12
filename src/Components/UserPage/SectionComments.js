@@ -1,4 +1,4 @@
-import { Box, Button, Grid, Paper, Stack, Typography } from "@mui/material";
+import { Box, Button, Divider, Grid, Paper, Stack, Typography } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import MUIRichTextEditor from 'mui-rte';
 import { EditorState, convertFromRaw, convertToRaw } from 'draft-js';
@@ -107,17 +107,24 @@ function SectionComments(props) {
                         </Box>
                         <Button disabled={isWorking} sx={{ float: 'right', mb: 2 }} variant='contained' onClick={onComment}>Comment</Button>
                     </Paper>
-                    <Typography variant='title'>{comments.length} comments</Typography>
+                    <Typography variant='title'>{comments.length} comment{comments.length === 1 ? '' : 's'}</Typography>
                     <Paper elevation={3} sx={{ p: 2 }}>
                         {comments.map((comment, index) => {
                             return (
-                                <Paper elevation={4} sx={{ mb: 1, p: 1 }}>
-                                    <Typography variant='subtitle1'>{GetFormattedName(comment)} &bull; {comment.date.fromNow()}</Typography>
-                                    <Typography variant='body2'>{parse(comment.comment)}</Typography>
+                                <>
+                                    <Box sx={{ m: 1, p: 1 }}>
+                                        <Typography variant='subtitle1'>{GetFormattedName(comment, null, null, 'large')} &bull; {comment.date.fromNow()} &bull; #{comment.id.toLocaleString('en-US')}</Typography>
+                                        <Box>
+                                            {parse(comment.comment)}
+                                        </Box>
+                                        {
+                                            (comment.commentor_id == localStorage.getItem('auth_osu_id')) && <Button onClick={() => deleteComment(comment.id)} variant='contained'>Delete</Button>
+                                        }
+                                    </Box>
                                     {
-                                        (comment.commentor_id == localStorage.getItem('auth_osu_id')) && <Button onClick={() => deleteComment(comment.id)} variant='contained'>Delete</Button>
+                                        index !== comments.length - 1 && <Divider />
                                     }
-                                </Paper>
+                                </>
                             )
                         })
                         }

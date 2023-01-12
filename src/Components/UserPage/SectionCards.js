@@ -1,4 +1,4 @@
-import { Card, CardContent, Grid, Typography } from "@mui/material";
+import { Card, CardContent, Grid, Paper, Typography } from "@mui/material";
 import moment from "moment";
 import BestScoreCard from "./BestScoreCard";
 import Performance2016 from "./Performance/Performance2016";
@@ -89,18 +89,16 @@ function SectionCards(props) {
                     _cards.map((card) => {
                         return (
                             <Grid item xs={card.size} sx={{ p: 0.3 }}>
-                                <Card elevation={2}>
-                                    <CardContent>
-                                        <Grid container>
-                                            <Grid item xs={12}>
-                                                <Typography variant='title' sx={{ fontSize: '0.85em' }}>{card.title}</Typography>
-                                            </Grid>
-                                            <Grid item xs={12}>
-                                                <Typography variant='body1' sx={{ fontSize: '1.2em' }}>{card.value}</Typography>
-                                            </Grid>
+                                <Paper elevation={2} sx={{ p: 1.25 }}>
+                                    <Grid container>
+                                        <Grid item xs={12}>
+                                            <Typography variant='title' sx={{ fontSize: '0.85em' }}>{card.title}</Typography>
                                         </Grid>
-                                    </CardContent>
-                                </Card>
+                                        <Grid item xs={12}>
+                                            <Typography variant='body1' sx={{ fontSize: '1.2em' }}>{card.value}</Typography>
+                                        </Grid>
+                                    </Grid>
+                                </Paper>
                             </Grid>
                         )
                     })

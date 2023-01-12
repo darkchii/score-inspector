@@ -18,12 +18,12 @@ function SectionHeader(props) {
     return (
         <>
             <Stack direction='column' spacing={1}>
-                <Box component={Paper} elevation={2} sx={{ p: 1 }}>
+                <Box component={Paper} elevation={2} sx={{ p: 0.25 }}>
                     <Typography variant='body1' sx={{ m: 1 }}>
                         Recent visitors ({visitorCount.toLocaleString('en-US')} total): {props.user.visitors === null || props.user.visitors.length === 0 ? 'Noone yet :(' : ''} {props.user.visitors != null && props.user.visitors.slice(0, MAX_VISITORS).map((visitor, index) => {
                             return (
                                 <>
-                                    {GetFormattedName(visitor, `Last visit: ${moment(visitor.last_visit).fromNow()}`)}{index < MAX_VISITORS - 1 ? ' ' : ''}
+                                    {GetFormattedName(visitor, `Last visit: ${moment(visitor.last_visit).fromNow()}`, null, 'large')}{index < MAX_VISITORS - 1 ? ' ' : ''}
                                 </>
                             )
                         })}
