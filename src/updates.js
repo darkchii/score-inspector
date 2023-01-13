@@ -7,6 +7,53 @@ const CHANGETYPES = {
 
 const updates = [
     {
+        version: '2.2.0',
+        date: '2023-01-13',
+        changes: [
+            [CHANGETYPES.NEW, 'Added score-based leaderboards', '260f50e96a20ec2ed9d0f0216aef2b3b54113d35'],
+            [CHANGETYPES.NEW, 'Added comments', 'f799cacd1ee3d99137a2c639e829f43d3e9a2fe7'],
+            [CHANGETYPES.NEW, 'More user root statistic cards', 'e93192b88fd386d21c278167210cd7d8c212ccd3'],
+            [CHANGETYPES.NEW, 'Previous/Next buttons added to daily data', '469076becba17171aea3c0a3283d88793796fbb1'],
+            [CHANGETYPES.NEW, 'Added completion page to user', 'f83c9ae6fc48361b7b776fcc1799b1c169795e9c'],
+            [CHANGETYPES.FIX, 'Fixed country filter not influencing pagination on leaderboards'],
+            [CHANGETYPES.MISC, 'Performance improvements', '809c55ad628c96265b04090142da1ec97bd06388'],
+            [CHANGETYPES.MISC, 'Loved is now enabled by default, turned off by URL loved parameter', '336831551c4ad8ccb8d3b3e87811e78623a9863c'],
+        ]
+    },
+    {
+        version: '2.1.0',
+        date: '2023-01-09',
+        changes: [
+            [CHANGETYPES.NEW, 'Added a new tool: "Command Helper"', '07b1c5205603687df8cd0c3df5d457351c88214c'],
+            [CHANGETYPES.NEW, 'Added a new tool: "Missing Beatmaps"', '1d95d6b82258fdd9de66bab644dc6af704758605'],
+            [CHANGETYPES.NEW, 'Added a new tool: "Level Calculator"', 'aa349980ec5fa25afe8124060e2d4534d6802544'],
+            [CHANGETYPES.NEW, 'Added a new tool: "Score Rank Calculator"', '8251c39ab6744f22456edb5563bbd1ad244a2cc5'],
+            [CHANGETYPES.NEW, 'Added servers status to root page', '334e3bde945e4d7b7064f4719202210e6d53fc4c'],
+            [CHANGETYPES.NEW, 'Added a visitor stats to root page', 'cfe979effd20b9c0d93db61fa2724e35913c3316'],
+            [CHANGETYPES.NEW, 'Added country filter to leaderboards', 'da70a6af7d0d03961c5612c7ad033648f27daab8'],
+            [CHANGETYPES.NEW, 'Added total score graphs', '4464d4effb310ebaa5f92bb10ea42646e1fc2046'],
+            [CHANGETYPES.FIX, 'Fixed score rank not showing up in user profile', '1708867710510dbd72a98677ec33188958bb7172'],
+            [CHANGETYPES.FIX, 'Increase graph point size so users can hover them', '244c549a0b2d790ca2068aebc2b86d9651a2b562'],
+        ]
+    },
+    {
+        version: '2.0.0',
+        date: '2022-12-30',
+        changes: [
+            [CHANGETYPES.MISC, 'Complete project overhaul', '068611db9df9e7354ebeba18309878ef47f9d558'],
+            [CHANGETYPES.NEW, 'Showing user load status', '73355d5daaa18ac9a74ac2a89464729bc941099b'],
+            [CHANGETYPES.NEW, 'Added react.js routing', '407ab9ee68a2b33e04d4c5997a9345351d60363c'],
+            [CHANGETYPES.NEW, 'New search modal with improved autocomplete', '068611db9df9e7354ebeba18309878ef47f9d558'],
+            [CHANGETYPES.NEW, 'Leaderboards added', '617b1fcb94fd958d1dd16b587ba5db05dfbb57c1'],
+            [CHANGETYPES.NEW, 'Top scores added', 'c5eaee4595642b3c82b852587c0e5d32ec836f61'],
+            [CHANGETYPES.NEW, 'User profile customization added', 'e96d37141d0b85309d1c978ae7820db309bf7dab'],
+            [CHANGETYPES.NEW, 'Logging in through osu! added', '994e1e990bbbc879045eda012c3436dab7f27562'],
+            [CHANGETYPES.NEW, 'Special inspector user roles added'],
+            [CHANGETYPES.FIX, 'Much faster scores processing'],
+            [CHANGETYPES.MISC, 'Rewritten API endpoints to a single server instead of seperated ones (osu, osu!alt were dealt with seperately)'],
+        ]
+    },
+    {
         version: '1.3.1',
         date: '2022-12-02',
         changes: [

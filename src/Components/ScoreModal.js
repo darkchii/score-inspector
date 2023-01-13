@@ -1,11 +1,13 @@
 import { Modal } from "@mui/material";
-import React, { useEffect } from "react";
-import { Chart as ChartJS, ArcElement, Tooltip as ChartTooltip, Legend } from 'chart.js';
+import { useEffect } from "react";
+import { useState } from "react";
 import ScoreView from "./ScoreView";
+import { Chart as ChartJS, ArcElement, Tooltip as ChartTooltip, Legend } from 'chart.js';
+import { MODAL_STYLE } from "../Helpers/Misc";
 ChartJS.register(ArcElement, ChartTooltip, Legend);
 
 function ScoreModal(props) {
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = useState(false);
     const handleClose = () => setOpen(false);
 
     useEffect(() => {
@@ -24,16 +26,7 @@ function ScoreModal(props) {
                     aria-describedby="modal-modal-description"
                 >
                     <ScoreView data={{
-                        score: props.data.score, style: {
-                            position: 'absolute',
-                            top: '50%',
-                            left: '50%',
-                            transform: 'translate(-50%, -50%)',
-                            bgcolor: 'background.paper',
-                            minWidth: 800,
-                            boxShadow: 24,
-                            borderRadius: 3
-                        }
+                        score: props.data.score, style: MODAL_STYLE
                     }} />
                 </Modal>
                 : <></>

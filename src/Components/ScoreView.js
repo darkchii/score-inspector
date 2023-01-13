@@ -1,17 +1,18 @@
-import { Tooltip, Box, Card, CardContent, CardMedia, Chip, Typography, Grid, Table, TableContainer, TableHead, TableRow, TableCell, TableBody, tableCellClasses, Link } from "@mui/material";
-import React, { useEffect } from "react";
-import { Doughnut } from "react-chartjs-2";
+import { Box, Card, CardContent, CardMedia, Chip, Grid, Link, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableHead, TableRow, Tooltip, Typography } from '@mui/material';
 import { Chart as ChartJS, ArcElement, Tooltip as ChartTooltip, Legend } from 'chart.js';
-import { getGradeIcon } from "../Assets";
-import { getModString, mods, toFixedNumber } from "../helper";
-import { getBeatmapMaxscore, getHitsFromAccuracy } from "../osu";
-import moment from "moment";
-import { getPerformanceLive } from "../Performance/PerformanceLive";
+import moment from 'moment';
+import { useEffect } from 'react';
+import { useState } from 'react';
+import { Doughnut } from 'react-chartjs-2';
+import { getGradeIcon } from '../Helpers/Assets';
+import { toFixedNumber } from '../Helpers/Misc';
+import { getBeatmapMaxscore, getHitsFromAccuracy, getModString, mods } from '../Helpers/Osu';
+import { getPerformanceLive } from '../Helpers/Performance/PerformanceLive';
 ChartJS.register(ArcElement, ChartTooltip, Legend);
 
 function ScoreView(props) {
-    const [score, setScore] = React.useState(-1);
-    const [performance, setPerformance] = React.useState(null);
+    const [score, setScore] = useState(-1);
+    const [performance, setPerformance] = useState(null);
 
     useEffect(() => {
         if (props.data !== undefined && props.data.score !== undefined) {
@@ -59,9 +60,9 @@ function ScoreView(props) {
             pp["90%"] = getPerformanceLive({ accuracy: 0.90, score: props.data.score, combo: props.data.score.maxcombo, count300: accHits["90%"].count300, count100: accHits["90%"].count100, count50: accHits["90%"].count50, countmiss: accHits["90%"].countmiss });
             pp["80%"] = getPerformanceLive({ accuracy: 0.80, score: props.data.score, combo: props.data.score.maxcombo, count300: accHits["80%"].count300, count100: accHits["80%"].count100, count50: accHits["80%"].count50, countmiss: accHits["80%"].countmiss });
 
-            console.log(pp["100%"]);
-
             setPerformance(pp);
+
+            console.log(props.data.score);
         }
     }, [props.data, props.data.score.score]);
 
@@ -158,10 +159,10 @@ function ScoreView(props) {
                                         </TableHead>
                                         <TableBody>
                                             <TableRow>
-                                                <TableCell>{(props.data.score.pp_cur.aim ?? 0).toFixed(1)}pp</TableCell>
-                                                <TableCell>{(props.data.score.pp_cur.speed ?? 0).toFixed(1)}pp</TableCell>
-                                                <TableCell>{(props.data.score.pp_cur.acc ?? 0).toFixed(1)}pp</TableCell>
-                                                <TableCell>{(props.data.score.pp_cur.flashlight ?? 0).toFixed(1)}pp</TableCell>
+                                                <TableCell>{(props.data.score.pp_cur?.aim ?? 0).toFixed(1)}pp</TableCell>
+                                                <TableCell>{(props.data.score.pp_cur?.speed ?? 0).toFixed(1)}pp</TableCell>
+                                                <TableCell>{(props.data.score.pp_cur?.acc ?? 0).toFixed(1)}pp</TableCell>
+                                                <TableCell>{(props.data.score.pp_cur?.flashlight ?? 0).toFixed(1)}pp</TableCell>
                                             </TableRow>
                                         </TableBody>
                                     </Table>
@@ -190,12 +191,12 @@ function ScoreView(props) {
                                                     </TableHead>
                                                     <TableBody>
                                                         <TableRow>
-                                                            <TableCell>{performance["80%"].total.toFixed(0)}pp</TableCell>
-                                                            <TableCell>{performance["90%"].total.toFixed(0)}pp</TableCell>
-                                                            <TableCell>{performance["95%"].total.toFixed(0)}pp</TableCell>
-                                                            <TableCell>{performance["98%"].total.toFixed(0)}pp</TableCell>
-                                                            <TableCell>{performance["99%"].total.toFixed(0)}pp</TableCell>
-                                                            <TableCell>{performance["100%"].total.toFixed(0)}pp</TableCell>
+                                                            <TableCell>{(performance["80%"]?.total??0).toFixed(0)}pp</TableCell>
+                                                            <TableCell>{(performance["90%"]?.total??0).toFixed(0)}pp</TableCell>
+                                                            <TableCell>{(performance["95%"]?.total??0).toFixed(0)}pp</TableCell>
+                                                            <TableCell>{(performance["98%"]?.total??0).toFixed(0)}pp</TableCell>
+                                                            <TableCell>{(performance["99%"]?.total??0).toFixed(0)}pp</TableCell>
+                                                            <TableCell>{(performance["100%"]?.total??0).toFixed(0)}pp</TableCell>
                                                         </TableRow>
                                                     </TableBody>
                                                 </Table>
@@ -205,7 +206,9 @@ function ScoreView(props) {
                                     : <></>
                             }
                             <Typography id="modal-modal-description" sx={{ mt: 0 }}>
-                                Mapped by <Link href={`https://osu.ppy.sh/users/${props.data.score.creator_id}`} target='_blank' rel='noreferrer'>{props.data.score.creator}</Link> - Go to <Link href={`https://osu.ppy.sh/beatmaps/${props.data.score.beatmap_id}`} target='_blank' rel='noreferrer'>Beatmap</Link>
+                                Mapped by <Link href={`https://osu.ppy.sh/users/${props.data.score.creator_id}`} target='_blank' rel='noreferrer'>{props.data.score.creator}</Link> 
+                                &nbsp;- Go to <Link href={`https://osu.ppy.sh/beatmaps/${props.data.score.beatmap_id}`} target='_blank' rel='noreferrer'>Beatmap</Link> 
+                                &nbsp;- Played by <Link href={`https://osu.ppy.sh/users/${props.data.score.user_id}`} target='_blank' rel='noreferrer'>{props.data.score.username}</Link>
                             </Typography>
                         </Box>
                     </CardContent>

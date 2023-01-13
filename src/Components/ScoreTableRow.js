@@ -1,14 +1,16 @@
-import { Box, Card, Collapse, Grid, IconButton, LinearProgress, Tooltip, Typography } from "@mui/material";
-import React, { useEffect } from "react";
-import { getGradeIcon, getModIcon } from "../Assets";
-import { getModString, mods, mod_strings_long, toFixedNumber } from "../helper";
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
-import ScoreView from "./ScoreView";
+import { Box, Card, Collapse, Grid, IconButton, LinearProgress, Tooltip, Typography } from '@mui/material';
+import { useEffect } from 'react';
+import { useState } from 'react';
+import { getGradeIcon, getModIcon } from '../Helpers/Assets';
+import { toFixedNumber } from '../Helpers/Misc';
+import { getModString, mods, mod_strings_long } from '../Helpers/Osu';
+import ScoreView from './ScoreView';
 
 function ScoreTableRow(props) {
-    const [score, setScore] = React.useState(null);
-    const [viewerOpen, setViewerOpen] = React.useState(false);
+    const [score, setScore] = useState(null);
+    const [viewerOpen, setViewerOpen] = useState(false);
 
     useEffect(() => {
         setScore(props.data.score);

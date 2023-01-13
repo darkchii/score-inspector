@@ -1,11 +1,12 @@
 import { Box, Button, Checkbox, FormControl, FormControlLabel, Grid, Radio, RadioGroup, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Tooltip, Typography } from "@mui/material";
 import moment from "moment";
-import React, { useEffect } from "react";
-import { getModIcon, getPossibleMods, IMG_SVG_GRADE_A, IMG_SVG_GRADE_B, IMG_SVG_GRADE_C, IMG_SVG_GRADE_D, IMG_SVG_GRADE_S, IMG_SVG_GRADE_SH, IMG_SVG_GRADE_X, IMG_SVG_GRADE_XH } from "../Assets";
-import { mods, mod_strings_long } from "../helper";
-import ImageToggle from "./ImageToggle";
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { useState } from "react";
+import { mods, mod_strings_long } from "../Helpers/Osu";
+import { useEffect } from "react";
+import { getModIcon, getPossibleMods, IMG_SVG_GRADE_A, IMG_SVG_GRADE_B, IMG_SVG_GRADE_C, IMG_SVG_GRADE_D, IMG_SVG_GRADE_S, IMG_SVG_GRADE_SH, IMG_SVG_GRADE_X, IMG_SVG_GRADE_XH } from "../Helpers/Assets";
+import ImageToggle from "./ImageToggle";
 
 const FILTER_FIELD_SIZE = 12 / 7;
 const MIN_DATE = moment('6 Oct 2007');
@@ -14,26 +15,26 @@ const MAX_DATE = moment();
 function BeatmapFilter(props) {
     //-1 in range values are simply ignored and no limit is set
     //null is ignored too
-    const [enabledMods, setEnabledMods] = React.useState(0);
-    const [enabledNomod, setNomodEnabled] = React.useState(true);
-    const [enabledGrades, setEnabledGrades] = React.useState(['XH', 'X', 'SH', 'S', 'A', 'B', 'C', 'D']);
-    const [modsState, setModsState] = React.useState('any');
-    const [minScore, setMinScore] = React.useState(null);
-    const [maxScore, setMaxScore] = React.useState(null);
-    const [minStars, setMinStars] = React.useState(null);
-    const [maxStars, setMaxStars] = React.useState(null);
-    const [minPP, setMinPP] = React.useState(null);
-    const [maxPP, setMaxPP] = React.useState(null);
-    const [minAcc, setMinAcc] = React.useState(null);
-    const [maxAcc, setMaxAcc] = React.useState(null);
-    const [minCombo, setMinCombo] = React.useState(null);
-    const [maxCombo, setMaxCombo] = React.useState(null);
-    const [minApprovedDate, setMinApprovedDate] = React.useState(MIN_DATE);
-    const [maxApprovedDate, setMaxApprovedDate] = React.useState(MAX_DATE);
-    const [minPlayedDate, setMinPlayedDate] = React.useState(MIN_DATE);
-    const [maxPlayedDate, setMaxPlayedDate] = React.useState(MAX_DATE);
+    const [enabledMods, setEnabledMods] = useState(0);
+    const [enabledNomod, setNomodEnabled] = useState(true);
+    const [enabledGrades, setEnabledGrades] = useState(['XH', 'X', 'SH', 'S', 'A', 'B', 'C', 'D']);
+    const [modsState, setModsState] = useState('any');
+    const [minScore, setMinScore] = useState(null);
+    const [maxScore, setMaxScore] = useState(null);
+    const [minStars, setMinStars] = useState(null);
+    const [maxStars, setMaxStars] = useState(null);
+    const [minPP, setMinPP] = useState(null);
+    const [maxPP, setMaxPP] = useState(null);
+    const [minAcc, setMinAcc] = useState(null);
+    const [maxAcc, setMaxAcc] = useState(null);
+    const [minCombo, setMinCombo] = useState(null);
+    const [maxCombo, setMaxCombo] = useState(null);
+    const [minApprovedDate, setMinApprovedDate] = useState(MIN_DATE);
+    const [maxApprovedDate, setMaxApprovedDate] = useState(MAX_DATE);
+    const [minPlayedDate, setMinPlayedDate] = useState(MIN_DATE);
+    const [maxPlayedDate, setMaxPlayedDate] = useState(MAX_DATE);
 
-    const [columns, setColumns] = React.useState(null);
+    const [columns, setColumns] = useState(null);
 
     console.log('approved min: ' + minApprovedDate);
 
@@ -73,9 +74,9 @@ function BeatmapFilter(props) {
         setEnabledMods(m);
     }, []);
 
-    useEffect(()=>{
+    useEffect(() => {
         setColumns(props.columns);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, props.columns);
 
     const onApply = () => {
@@ -97,8 +98,8 @@ function BeatmapFilter(props) {
     const updateColumn = (column, checked) => {
         const _c = columns;
         _c.forEach(c => {
-            if(c.field===column.field){
-                c.hide = !checked; 
+            if (c.field === column.field) {
+                c.hide = !checked;
             }
         });
         setColumns(_c);
@@ -116,7 +117,7 @@ function BeatmapFilter(props) {
 
                                     <Tooltip title={mod_strings_long[mods[mod]]} arrow>
                                         <Box display="inline">
-                                            <ImageToggle checkedDefault={true} onClick={(checked) => toggleMod(mod, checked)} sx={{ pr: 0.5 }} height="38px" src={getModIcon(mod)} alt={mod} />
+                                            <ImageToggle checkedDefault={true} onClick={(checked) => toggleMod(mod, checked)} sx={{ pr: 0.5 }} height="34px" src={getModIcon(mod)} alt={mod} />
                                         </Box>
                                     </Tooltip>
                                 </>
@@ -124,8 +125,8 @@ function BeatmapFilter(props) {
                         }
                         <FormControl sx={{ ml: 2 }}>
                             <RadioGroup onChange={handleModStateChange} value={modsState} row>
-                                <FormControlLabel control={<Radio />} value='any' label='Any' />
-                                <FormControlLabel control={<Radio />} value='all' label='All' />
+                                <FormControlLabel control={<Radio size='small' />} value='any' label='Any' />
+                                <FormControlLabel control={<Radio size='small' />} value='all' label='All' />
                             </RadioGroup>
                         </FormControl>
                     </Grid>
@@ -133,42 +134,42 @@ function BeatmapFilter(props) {
                         <Grid container>
                             <Tooltip title='Silver SS' arrow>
                                 <Box display="inline">
-                                    <ImageToggle checkedDefault={true} onClick={(checked) => toggleGrade('XH', checked)} sx={{ pr: 0.5 }} height="30px" src={IMG_SVG_GRADE_XH} />
+                                    <ImageToggle checkedDefault={true} onClick={(checked) => toggleGrade('XH', checked)} sx={{ pr: 0.5 }} height="26px" src={IMG_SVG_GRADE_XH} />
                                 </Box>
                             </Tooltip>
                             <Tooltip title='Silver S' arrow>
                                 <Box display="inline">
-                                    <ImageToggle checkedDefault={true} onClick={(checked) => toggleGrade('SH', checked)} sx={{ pr: 0.5 }} height="30px" src={IMG_SVG_GRADE_SH} />
+                                    <ImageToggle checkedDefault={true} onClick={(checked) => toggleGrade('SH', checked)} sx={{ pr: 0.5 }} height="26px" src={IMG_SVG_GRADE_SH} />
                                 </Box>
                             </Tooltip>
                             <Tooltip title='Gold SS' arrow>
                                 <Box display="inline">
-                                    <ImageToggle checkedDefault={true} onClick={(checked) => toggleGrade('X', checked)} sx={{ pr: 0.5 }} height="30px" src={IMG_SVG_GRADE_X} />
+                                    <ImageToggle checkedDefault={true} onClick={(checked) => toggleGrade('X', checked)} sx={{ pr: 0.5 }} height="26px" src={IMG_SVG_GRADE_X} />
                                 </Box>
                             </Tooltip>
                             <Tooltip title='Gold S' arrow>
                                 <Box display="inline">
-                                    <ImageToggle checkedDefault={true} onClick={(checked) => toggleGrade('S', checked)} sx={{ pr: 0.5 }} height="30px" src={IMG_SVG_GRADE_S} />
+                                    <ImageToggle checkedDefault={true} onClick={(checked) => toggleGrade('S', checked)} sx={{ pr: 0.5 }} height="26px" src={IMG_SVG_GRADE_S} />
                                 </Box>
                             </Tooltip>
                             <Tooltip title='A' arrow>
                                 <Box display="inline">
-                                    <ImageToggle checkedDefault={true} onClick={(checked) => toggleGrade('A', checked)} sx={{ pr: 0.5 }} height="30px" src={IMG_SVG_GRADE_A} />
+                                    <ImageToggle checkedDefault={true} onClick={(checked) => toggleGrade('A', checked)} sx={{ pr: 0.5 }} height="26px" src={IMG_SVG_GRADE_A} />
                                 </Box>
                             </Tooltip>
                             <Tooltip title='B' arrow>
                                 <Box display="inline">
-                                    <ImageToggle checkedDefault={true} onClick={(checked) => toggleGrade('B', checked)} sx={{ pr: 0.5 }} height="30px" src={IMG_SVG_GRADE_B} />
+                                    <ImageToggle checkedDefault={true} onClick={(checked) => toggleGrade('B', checked)} sx={{ pr: 0.5 }} height="26px" src={IMG_SVG_GRADE_B} />
                                 </Box>
                             </Tooltip>
                             <Tooltip title='C' arrow>
                                 <Box display="inline">
-                                    <ImageToggle checkedDefault={true} onClick={(checked) => toggleGrade('C', checked)} sx={{ pr: 0.5 }} height="30px" src={IMG_SVG_GRADE_C} />
+                                    <ImageToggle checkedDefault={true} onClick={(checked) => toggleGrade('C', checked)} sx={{ pr: 0.5 }} height="26px" src={IMG_SVG_GRADE_C} />
                                 </Box>
                             </Tooltip>
                             <Tooltip title='D' arrow>
                                 <Box display="inline">
-                                    <ImageToggle checkedDefault={true} onClick={(checked) => toggleGrade('D', checked)} sx={{ pr: 0.5 }} height="30px" src={IMG_SVG_GRADE_D} />
+                                    <ImageToggle checkedDefault={true} onClick={(checked) => toggleGrade('D', checked)} sx={{ pr: 0.5 }} height="26px" src={IMG_SVG_GRADE_D} />
                                 </Box>
                             </Tooltip>
                         </Grid>
@@ -216,7 +217,7 @@ function BeatmapFilter(props) {
                                     {
                                         columns && columns.map((column) => (
                                             <>
-                                                <TableCell align="center"><Typography variant="subtitles1">{column.headerName}</Typography></TableCell>
+                                                <TableCell align="center"><Typography variant="subtitles1" sx={{fontSize: '0.9em'}}>{column.headerName}</Typography></TableCell>
                                             </>
                                         ))
                                     }
@@ -227,7 +228,7 @@ function BeatmapFilter(props) {
                                     {
                                         columns && columns.map((column) => (
                                             <>
-                                                <TableCell align="center"><Checkbox onChange={(e) => { updateColumn(column, e.target.checked); }} defaultChecked={!column.hide} /></TableCell>
+                                                <TableCell align="center"><Checkbox size='small' onChange={(e) => { updateColumn(column, e.target.checked); }} defaultChecked={!column.hide} /></TableCell>
                                             </>
                                         ))
                                     }

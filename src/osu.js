@@ -2,36 +2,6 @@ import axios from "axios";
 import config from "./config.json";
 import { getAltAPIURL, getAPIURL, getUnix, mods } from "./helper";
 
-export function getBonusPerformance(clears) {
-    return 416.6667 * (1 - Math.pow(0.9994, clears));
-}
-
-export function getHitsFromAccuracy(acc, nobjects, nmiss = 0) {
-    let n300 = 0, n100 = 0, n50 = 0
-    const max300 = nobjects - nmiss
-    n100 = Math.round(
-        -3.0 * ((acc * 0.01 - 1.0) * nobjects + nmiss) * 0.5
-    )
-
-    if (n100 > max300) {
-        // acc lower than all 100s, use 50s
-        n100 = 0;
-        n50 = Math.round(
-            -6.0 * ((acc * 0.01 - 1.0) * nobjects + nmiss) * 0.5
-        );
-        n50 = Math.min(max300, n50);
-    }
-
-    n300 = nobjects - n100 - n50 - nmiss;
-
-    return {
-        count300: n300,
-        count100: n100,
-        count50: n50,
-        countmiss: nmiss
-    }
-}
-
 export async function isUserRegistered(id) {
     let _registered = false;
     try {
@@ -54,19 +24,6 @@ export async function getRegisteredUsers() {
         _users = [];
     }
     return _users;
-}
-
-const osustats_api = 'https://osustats.respektive.pw/counts/';
-export async function getUserLeaderboardStart(id) {
-    let _stats = null;
-    try {
-        const url = `${osustats_api}${id}`;
-        const res = await axios.get(url, { headers: { "Access-Control-Allow-Origin": "*" } });
-        _stats = res.data;
-    } catch (err) {
-        return null;
-    }
-    return _stats;
 }
 
 export async function getUserScores(id, allowLoved) {
@@ -125,30 +82,22 @@ export async function getUser(id) {
             _user.scoreRank = _scoreRank[0].rank;
         }
     } catch (err) {
-        return null;
+        _user.scoreRank = null;
     }
 
     try {
         let _dailyUser = await axios.get(`${getAPIURL()}daily/${_user.id}`, { headers: { "Access-Control-Allow-Origin": "*" } });
         if(_dailyUser !== undefined && _dailyUser.data.error===undefined) {
             _user.daily = _dailyUser.data;
+        }else{
+            _user.daily = null;
+            console.log(_dailyUser.data);
         }
     }catch (err) {
         _user.daily = null;
     }
 
     return _user;
-}
-
-export async function getBeatmapCount() {
-    let bmCount;
-    try {
-        bmCount = await axios.get(`${getAPIURL()}beatmaps/monthly`, { headers: { "Access-Control-Allow-Origin": "*" } });
-    } catch (err) {
-        return null;
-    }
-
-    return bmCount;
 }
 
 export async function getBeatmap(beatmap_id) {
@@ -191,18 +140,6 @@ export async function getBeatmapPacks(include_loved = false) {
     return packs.data;
 }
 
-export function isScoreRealistic(score) {
-    const maxMissCount = (score.enabled_mods & mods.NF) ? 15 : 30; //max 15 misses on NF, max 30 on no NF
-    const minCombo = score.maxcombo / 100 * 80; //80% combo
-    const minAcc = (score.enabled_mods & mods.NF) ? 90 : 80; //90% acc required for NF, 80% for no NF
-
-    if (score.countmiss <= maxMissCount || score.combo > minCombo || score.accuracy > minAcc) {
-        return true;
-    }
-
-    return false;
-}
-
 const MAX_SCORE = 1000000;
 export function getLazerScore(score, classic = true) {
     const mul = getModMultiplier(score.enabled_mods);
@@ -214,37 +151,6 @@ export function getLazerScore(score, classic = true) {
         val = Math.pow(((val / MAX_SCORE) * score.objects), 2) * 36;
     }
     return val;
-}
-
-export function getGrade(score) {
-    var grade = 'D';
-
-    const totalhits = score.count300 + score.count100 + score.count50 + score.countmiss;
-
-    const perc300 = 100 / totalhits * score.count300;
-    const perc50 = 100 / totalhits * score.count50;
-
-
-    if (score.accuracy === 100) {
-        grade = "X";
-    } else if (perc300 > 90 && perc50 <= 1 && score.countmiss === 0) {
-        grade = "S";
-    } else if (perc300 > 80 && (score.countmiss === 0 || perc300 > 90)) {
-        grade = "A";
-    } else if (perc300 > 70 && (score.countmiss === 0 || perc300 > 80)) {
-        grade = "B";
-    } else if (perc300 > 60) {
-        grade = "C";
-    } else {
-        grade = "D";
-    }
-
-    if (grade === "X" || grade === "S") {
-        if (score.enabled_mods & mods.HD || score.enabled_mods & mods.FL) {
-            grade += "H";
-        }
-    }
-    return grade;
 }
 
 export function getModMultiplier(enabled_mods) {

@@ -2,44 +2,6 @@ import axios from "axios";
 import { isScoreRealistic } from "./osu";
 import config from "./config.json";
 
-export async function getUserTrackerStatus(user_id) {
-    const currentlyTracking = await axios.get(`${(config.USE_DEV_API) ? config.OSU_TEST_API : config.OSU_API}proxy/aHR0cHM6Ly9vc3VhbHQucmVzcGVrdGl2ZS5wdy9hcGkvY3VycmVudA==`, { headers: { "Access-Control-Allow-Origin": "*" } });
-
-    if (currentlyTracking.data === undefined || currentlyTracking.data.length === 0) {
-        return false;
-    }
-
-    const existing = currentlyTracking.data.filter(user => parseInt(user.user_id) === parseInt(user_id));
-    if (existing.length > 0) {
-        return existing[0];
-    }
-
-    return false;
-}
-
-export function getGradeColor(grade) {
-    switch (grade) {
-        default:
-            return '#ffffff';
-        case 'XH':
-            return '#C0C0C0';
-        case 'X':
-            return '#C0C0C0';
-        case 'SH':
-            return '#E8BF3F';
-        case 'S':
-            return '#E8BF3F';
-        case 'A':
-            return '#72B75D';
-        case 'B':
-            return '#8B6996';
-        case 'C':
-            return '#8B6996';
-        case 'D':
-            return '#8B6996';
-    }
-}
-
 export const mods = {
     None: 0,
     NF: 1,
@@ -87,43 +49,6 @@ export const mod_strings = {
     1073741824: "MR"
 }
 
-export const mod_strings_long = {
-    0: "Nomod",
-    1: "NoFail",
-    2: "Easy",
-    4: "Touch Device",
-    8: "Hidden",
-    16: "Hardrock",
-    32: "Sudden Death",
-    64: "Double Time",
-    128: "Relax",
-    256: "Half Time",
-    512: "Nightcore",
-    1024: "Flashlight",
-    2048: "Autoplay",
-    4096: "Spin-out",
-    16384: "Perfect",
-    1048576: "Fade In",
-    2097152: "Random",
-    4194304: "Cinema",
-    8388608: "Target Practice",
-    536870912: "Score V2",
-    1073741824: "Mirror"
-}
-
-export function toFixedNumber(num, digits, base) {
-    var pow = Math.pow(base || 10, digits);
-    return Math.round(num * pow) / pow;
-}
-
-export function getAPIURL() {
-    return (config.USE_DEV_API) ? config.OSU_TEST_API : config.OSU_API;
-}
-
-export function getAltAPIURL() {
-    return (config.USE_DEV_API) ? config.OSU_TEST_API_ALT : config.OSU_API_ALT;
-}
-
 export function formatNumber(n, decimals = 0, short = false) {
     if (n > 999999999) {
         return (n / 1000000000).toFixed(decimals) + (short ? 'b' : ' billion');
@@ -132,26 +57,6 @@ export function formatNumber(n, decimals = 0, short = false) {
         return (n / 1000000).toFixed(decimals) + (short ? 'm' : ' million');
     }
     return n;
-}
-
-export function getModString(value) {
-    var data = [];
-
-    if (value & mods.NC) {
-        value &= ~mods.DT;
-    }
-
-    if (value & mods.PF) {
-        value &= ~mods.SD;
-    }
-
-    for (const modVal in mod_strings) {
-        if (value & modVal) {
-            data.push(mod_strings[modVal]);
-            continue;
-        }
-    }
-    return data;
 }
 
 export function numToMod(num) {

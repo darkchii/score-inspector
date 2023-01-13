@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import RotateLeftIcon from '@mui/icons-material/RotateLeft';
-import { Button, Card, CardContent, FormControlLabel, FormGroup, Grid, Menu, MenuItem, Switch } from "@mui/material";
+import { Button, FormControlLabel, FormGroup, Grid, Switch } from "@mui/material";
 import { Line } from "react-chartjs-2";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {
@@ -15,7 +15,6 @@ import {
     Filler
 } from 'chart.js';
 import Zoom from "chartjs-plugin-zoom";
-import styled from "@emotion/styled";
 ChartJS.register(
     CategoryScale,
     LinearScale,
@@ -117,6 +116,9 @@ function TimeGraph(props) {
                     return gradient;
                 },
                 tension: 0.3,
+                pointRadius: 4,
+                pointHoverRadius: 5,
+                borderWidth: 1
             };
             newData.datasets.push(dataObject);
         });
@@ -161,10 +163,10 @@ function TimeGraph(props) {
 
     return (
         <>
-            <Grid sx={{ height: 600, position: "relative", pt: 5 }}>
+            <Grid sx={{ height: 500, position: "relative", pt: 5 }}>
                 <Grid>
                     <FormGroup row={true} sx={{ position: "absolute", left: 5, top: 5 }}>
-                        <Button startIcon={<RotateLeftIcon />} variant="contained" onClick={resetZoom}>Reset Zoom</Button>&nbsp;
+                        <Button startIcon={<RotateLeftIcon />} size='small' variant="contained" onClick={resetZoom}>Reset Zoom</Button>&nbsp;
                         {
                             data.datasets.length > 1 ?
                                 <>
@@ -173,7 +175,7 @@ function TimeGraph(props) {
                                             <>
                                                 <FormControlLabel
                                                     control={
-                                                        <Switch checked={!_data.hidden} onChange={handleDataToggleChange} name={_data.label} />
+                                                        <Switch size='small' checked={!_data.hidden} onChange={handleDataToggleChange} name={_data.label} />
                                                     }
                                                     label={_data.label}
                                                 />
