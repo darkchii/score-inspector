@@ -13,32 +13,32 @@ export function getScoreForLevel(level) {
     return Math.floor(26931190829 + 100000000000 * (level - 100));
 }
 
-export function getLevelForScore(score){
-    if(isNaN(score) || score < 0){
+export function getLevelForScore(score) {
+    if (isNaN(score) || score < 0) {
         return 0;
     }
-    
-    if(score > 10000000000000000){
+
+    if (score > 10000000000000000) {
         return 0;
     }
 
     const baseLevel = getLevel(score);
     const baseLevelScore = getScoreForLevel(baseLevel);
     const scoreProgress = score - baseLevelScore;
-    const scoreLevelDifference = getScoreForLevel(baseLevel+1) - baseLevelScore;
+    const scoreLevelDifference = getScoreForLevel(baseLevel + 1) - baseLevelScore;
     const res = scoreProgress / scoreLevelDifference + baseLevel;
-    if(!isFinite(res)){
+    if (!isFinite(res)) {
         return 0;
     }
     return res;
 }
 
-function getLevel(score){
+function getLevel(score) {
     let i = 1;
-    for(;;){
+    for (; ;) {
         var lScore = getScoreForLevel(i);
-        if(score<lScore){
-            return i-1;
+        if (score < lScore) {
+            return i - 1;
         }
         i++;
     }
@@ -364,12 +364,23 @@ export function getBonusPerformance(clears) {
 export async function getBeatmapCount(loved = true) {
     let bmCount;
     try {
-        bmCount = await axios.get(`${GetAPI()}beatmaps/monthly?loved=true`, { headers: { "Access-Control-Allow-Origin": "*" } });
+        bmCount = await axios.get(`${GetAPI()}beatmaps/monthly?include_loved=${loved ? 'true' : 'false'}`, { headers: { "Access-Control-Allow-Origin": "*" } });
     } catch (err) {
         return null;
     }
 
     return bmCount;
+}
+
+export async function getBeatmaps(loved = true) {
+    let beatmaps;
+    try {
+        beatmaps = await axios.get(`${GetAPI()}beatmaps/all?include_loved=${loved ? 'true' : 'false'}`, { headers: { "Access-Control-Allow-Origin": "*" } });
+    } catch (err) {
+        return null;
+    }
+
+    return beatmaps;
 }
 
 export function getGradeColor(grade) {

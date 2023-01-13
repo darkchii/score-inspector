@@ -6,6 +6,7 @@ import TodayIcon from '@mui/icons-material/Today';
 import AutoGraphIcon from '@mui/icons-material/AutoGraph';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import InsertCommentIcon from '@mui/icons-material/InsertComment';
+import GradingIcon from '@mui/icons-material/Grading';
 import SectionCards from "./SectionCards";
 import SectionGrades from "./SectionGrades";
 import SectionGraphs from "./SectionGraphs";
@@ -13,6 +14,7 @@ import SectionScores from "./SectionScores";
 import SectionDaily from "./SectionDaily";
 import SectionComments from "./SectionComments";
 import styled from "@emotion/styled";
+import SectionCompletion from "./SectionCompletion";
 
 const StyledTab = styled(Tab)({
     minHeight: 'auto',
@@ -27,7 +29,8 @@ function UserDataContainer(props) {
         'daily': '1',
         'graphs': '2',
         'scores': '3',
-        'comments': '4'
+        'completion': '4',
+        'comments': '5'
     }
 
     return (
@@ -39,6 +42,7 @@ function UserDataContainer(props) {
                         <StyledTab icon={<TodayIcon />} iconPosition='start' label='Daily' value={_IDs['daily']} />
                         <StyledTab icon={<AutoGraphIcon />} iconPosition='start' label='Graphs' value={_IDs['graphs']} />
                         <StyledTab icon={<FormatListBulletedIcon />} iconPosition='start' label='Scores' value={_IDs['scores']} />
+                        <StyledTab icon={<GradingIcon />} iconPosition='start' label='Completion' value={_IDs['completion']} />
                         <StyledTab icon={<InsertCommentIcon />} iconPosition='start' label='Comments' value={_IDs['comments']} />
                     </TabList>
                 </Box>
@@ -59,6 +63,9 @@ function UserDataContainer(props) {
                 </TabPanel>
                 <TabPanel sx={{ p: 0 }} value={_IDs['comments']}>
                     <SectionComments user={props.user} />
+                </TabPanel>
+                <TabPanel sx={{ p: 0 }} value={_IDs['completion']}>
+                    <SectionCompletion user={props.user} />
                 </TabPanel>
             </TabContext>
         </>

@@ -17,6 +17,14 @@ export const MODAL_STYLE = {
     },
 }
 
+export function range(size, startAt = 0) {
+    return [...Array(size).keys()].map(i => i + startAt);
+}
+
+export function capitalize(s) {
+    return s[0].toUpperCase() + s.slice(1);
+}
+
 export function validateImage(url) {
     return (url.match(/\.(jpeg|jpg|gif|png)$/) != null);
 }
