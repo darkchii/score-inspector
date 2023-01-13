@@ -7,7 +7,7 @@ import ScoreModal from "../Components/ScoreModal";
 import { getBestScores } from "../Helpers/OsuAlt";
 import { prepareScores } from "../Helpers/ScoresProcessor";
 
-const SCORES_TO_FETCH = 5;
+const SCORES_TO_FETCH = 10;
 const PERIODS = [
     { value: "day", label: "Past Day" },
     { value: "week", label: "Past Week" },
