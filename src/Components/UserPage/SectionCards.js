@@ -96,6 +96,31 @@ function SectionCards(props) {
             title: 'Completion',
             value: (props.user.scores?.length > 0 ? Math.round((100 / props.user.data.total_beatmaps * props.user.scores?.length) * 100) / 100 : 0) + '%',
             size: 1.5
+        },
+        {
+            title: 'Medals',
+            value: (props.user.alt.medals?.length ?? 0).toLocaleString('en-US'),
+            size: 1
+        },
+        {
+            title: 'Highest Combo',
+            value: (props.user.alt.maximum_combo ?? 0).toLocaleString('en-US') + 'x',
+            size: 1.5
+        },
+        {
+            title: 'Unique SS',
+            value: (props.user.alt.unique_ss?.length ?? 0).toLocaleString('en-US'),
+            size: 1.5
+        },
+        {
+            title: 'Unique FC',
+            value: (props.user.alt.unique_fc?.length ?? 0).toLocaleString('en-US'),
+            size: 1.5
+        },
+        {
+            title: 'Unique DT FC',
+            value: (props.user.alt.unique_dt_fc?.length ?? 0).toLocaleString('en-US'),
+            size: 1.5
         }
     ];
 

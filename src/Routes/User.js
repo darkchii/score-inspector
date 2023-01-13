@@ -34,7 +34,6 @@ function User() {
             setLoadingState('Fetching user data');
             const user_out = await getFullUser(user_in);
 
-
             const onScoreDownloadProgress = (progress) => {
                 setLoadingState(`Fetching user scores (${parseInt(Math.round(progress.loaded * 100) / progress.total)}%)`);
             };
