@@ -176,6 +176,26 @@ const GROUPED_STATS = {
             description: 'Percentage of ranked beatmaps that have been cleared.',
             group: 'generic'
         },
+        {
+            name: 'unique_ss', title: 'Unique SS',
+            description: 'Amount of unique SS the user has',
+            group: 'generic'
+        },
+        // {
+        //     name: 'unique_hd_ss', title: 'Unique HD SS',
+        //     description: 'Amount of unique HD SS the user has',
+        //     group: 'generic'
+        // },
+        {
+            name: 'unique_fc', title: 'Unique FC',
+            description: 'Amount of unique FCs the user has',
+            group: 'generic'
+        },
+        {
+            name: 'unique_dt_fc', title: 'Unique DT FC',
+            description: 'Amount of unique DT FCs the user has',
+            group: 'generic'
+        },
     ]
 }
 
