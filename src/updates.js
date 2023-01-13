@@ -8,7 +8,7 @@ const CHANGETYPES = {
 const updates = [
     {
         version: '2.2.0',
-        date: 'n/a',
+        date: '2023-01-13',
         changes: [
             [CHANGETYPES.NEW, 'Added score-based leaderboards', '260f50e96a20ec2ed9d0f0216aef2b3b54113d35'],
             [CHANGETYPES.NEW, 'Added comments', 'f799cacd1ee3d99137a2c639e829f43d3e9a2fe7'],

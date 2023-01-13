@@ -1,10 +1,10 @@
 import { Grid, Paper, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
+import { useEffect } from "react";
 import { capitalize } from "../../Helpers/Misc";
 
 function SectionCompletion(props) {
     if (props.user == null) return (<></>);
     if (!props.user.data.completion) return (<></>);
-
     return (
         <>
             <Grid container spacing={0.5}>
