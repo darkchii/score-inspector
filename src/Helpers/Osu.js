@@ -361,10 +361,10 @@ export function getBonusPerformance(clears) {
     return 416.6667 * (1 - Math.pow(0.9994, clears));
 }
 
-export async function getBeatmapCount() {
+export async function getBeatmapCount(loved = true) {
     let bmCount;
     try {
-        bmCount = await axios.get(`${GetAPI()}beatmaps/monthly`, { headers: { "Access-Control-Allow-Origin": "*" } });
+        bmCount = await axios.get(`${GetAPI()}beatmaps/monthly?loved=true`, { headers: { "Access-Control-Allow-Origin": "*" } });
     } catch (err) {
         return null;
     }

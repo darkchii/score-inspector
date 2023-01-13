@@ -5,6 +5,8 @@ import Performance2016 from "./Performance/Performance2016";
 import PerformanceFC from "./Performance/PerformanceFC";
 import PerformanceSS from "./Performance/PerformanceSS";
 import PerformanceXexxar from "./Performance/PerformanceXexxar";
+import momentDurationFormatSetup from "moment-duration-format";
+momentDurationFormatSetup(moment);
 
 function SectionCards(props) {
     if (props.user == null) return (<></>);
@@ -32,7 +34,7 @@ function SectionCards(props) {
         },
         {
             title: 'Avg Length',
-            value: moment.utc(moment.duration(props.user.data?.average.length ?? 0, 'seconds').asMilliseconds()).format('mm:ss') + ' min',
+            value: moment.duration(props.user.data?.average.length ?? 0, 'seconds').format('m:s'),
             size: 1.5
         },
         {
@@ -79,6 +81,21 @@ function SectionCards(props) {
             title: 'Approx playtime',
             value: Math.round(moment.duration(props.user.data.approximatePlaytime ?? 0, 'seconds').asHours()) + ' hours',
             size: 2
+        },
+        {
+            title: 'Total sessions',
+            value: (props.user.data.sessions.length ?? 0).toLocaleString('en-US'),
+            size: 1.5
+        },
+        {
+            title: 'Avg session length',
+            value: moment.duration(props.user.data.sessions.length > 0 ? (props.user.data.totalSessionLength / props.user.data.sessions.length) : 0, 'seconds').format('h [hrs], m [min]'),
+            size: 2
+        },
+        {
+            title: 'Completion',
+            value: (props.user.scores?.length > 0 ? Math.round((100 / props.user.data.total_beatmaps * props.user.scores?.length) * 100) / 100 : 0) + '%',
+            size: 1.5
         }
     ];
 

@@ -39,6 +39,7 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
         },
         average_pp: 0,
         clears: scores.length,
+        total_beatmaps: 0,
         total: {
             pp: 0,
             score: 0,
@@ -56,6 +57,11 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
             star_rating: 0
         }
     };
+
+    bmCount.data.forEach(monthData => {
+        data.total_beatmaps += monthData.amount;
+    });
+    console.log(`TOTAL BEATMAPS: ${data.total_beatmaps}`);
 
     await sleep(FEEDBACK_SLEEP_TIME);
     onScoreProcessUpdate('Generate monthly beatmap data');
@@ -90,12 +96,16 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
     await sleep(FEEDBACK_SLEEP_TIME);
     onScoreProcessUpdate('Sessions');
     data.sessions = getSessions(scores);
+    data.totalSessionLength = 0;
+    data.totalSessionLengthMoment = null;
     data.approximatePlaytime = 0;
     if (data.sessions !== undefined) {
         let pt = 0;
         data.sessions.forEach(session => {
             pt += session.length; //session playtime
         });
+        data.totalSessionLength = pt;
+        data.totalSessionLengthMoment = moment.duration(pt, 'seconds');
 
         let it = user.osu.statistics.play_time - data.total.length; // idle time in game
         let pcT = user.osu.statistics.play_count * (data.average.length * 0.5); // playtime based on playcount
