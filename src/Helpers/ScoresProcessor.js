@@ -195,9 +195,11 @@ export function prepareScores(user, scores, onScoreProcessUpdate) {
     scores.forEach(score => {
         onScoreProcessUpdate?.('' + score.id);
         score.is_loved = score.approved === 4;
-        score.is_unique_ss = user.alt.unique_ss.includes(score.beatmap_id);
-        score.is_unique_fc = user.alt.unique_fc.includes(score.beatmap_id);
-        score.is_unique_dt_fc = user.alt.unique_dt_fc.includes(score.beatmap_id);
+        if(user!==null){
+            score.is_unique_ss = user.alt.unique_ss.includes(score.beatmap_id);
+            score.is_unique_fc = user.alt.unique_fc.includes(score.beatmap_id);
+            score.is_unique_dt_fc = user.alt.unique_dt_fc.includes(score.beatmap_id);
+        }
         score.pp = Math.max(0, parseFloat(score.pp));
         score.enabled_mods = parseInt(score.enabled_mods);
         score.stars = parseFloat(score.stars);

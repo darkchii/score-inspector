@@ -34,8 +34,8 @@ function Top(props) {
                 let scores_pp = await getBestScores(selected_period.value, "pp", SCORES_TO_FETCH, false);
                 let scores_score = await getBestScores(selected_period.value, "score", SCORES_TO_FETCH, false);
 
-                scores_pp = prepareScores(scores_pp);
-                scores_score = prepareScores(scores_score);
+                scores_pp = prepareScores(null, scores_pp);
+                scores_score = prepareScores(null, scores_score);
 
                 setScores({
                     0: {
@@ -50,7 +50,7 @@ function Top(props) {
                     },
                 });
             } catch (err) {
-                console.log(err.message);
+                console.log(err);
             }
             setIsWorking(false);
         })();
