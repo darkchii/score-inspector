@@ -63,7 +63,7 @@ export function GetRoles(inspector_user) {
     return inspector_user.roles;
 }
 
-export async function IsUserLoggedInUnsafe() {
+export function IsUserLoggedInUnsafe() {
     const token = localStorage.getItem('auth_token');
     const user_id = localStorage.getItem('auth_osu_id');
     const username = localStorage.getItem('auth_username');
