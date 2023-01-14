@@ -2,7 +2,7 @@ import { Box, Button, Divider, Grid, Paper, Stack, Typography } from "@mui/mater
 import { useEffect, useRef, useState } from "react";
 import MUIRichTextEditor from 'mui-rte';
 import { EditorState, convertFromRaw, convertToRaw } from 'draft-js';
-import { DeleteComment, GetComments, GetFormattedName, SendComment } from "../../Helpers/Account";
+import { DeleteComment, GetComments, GetFormattedName, IsUserLoggedIn, IsUserLoggedInUnsafe, SendComment } from "../../Helpers/Account";
 import { showNotification } from "../../Helpers/Misc";
 import { stateToHTML } from "draft-js-export-html";
 import parse from 'html-react-parser';
@@ -95,17 +95,23 @@ function SectionComments(props) {
             <Grid>
                 <Stack spacing={2}>
                     <Paper elevation={3} sx={{ p: 2, minHeight: '200px', pb: 6 }}>
-                        <Box sx={{ minHeight: '120px' }}>
-                            <MUIRichTextEditor
-                                controls={['bold', 'italic', 'underline', 'strikethrough', 'undo', 'redo', 'link', 'media']}
-                                label="Start typing..."
-                                maxLength={300}
-                                ref={ref}
-                                defaultValue={content}
-                                onSave={onSave}
-                            />
-                        </Box>
-                        <Button disabled={isWorking} sx={{ float: 'right', mb: 2 }} variant='contained' onClick={onComment}>Comment</Button>
+                        {
+                            IsUserLoggedInUnsafe() ? <>
+                                <Box sx={{ minHeight: '120px' }}>
+                                    <MUIRichTextEditor
+                                        controls={['bold', 'italic', 'underline', 'strikethrough', 'undo', 'redo', 'link', 'media']}
+                                        label="Start typing..."
+                                        maxLength={300}
+                                        ref={ref}
+                                        defaultValue={content}
+                                        onSave={onSave}
+                                    />
+                                </Box>
+                                <Button disabled={isWorking} sx={{ float: 'right', mb: 2 }} variant='contained' onClick={onComment}>Comment</Button>
+                            </> : <>
+                                <Typography variant='subtitle1'>You need to be logged in to comment</Typography>
+                            </>
+                        }
                     </Paper>
                     <Typography variant='title'>{comments.length} comment{comments.length === 1 ? '' : 's'}</Typography>
                     <Paper elevation={3} sx={{ p: 2 }}>
