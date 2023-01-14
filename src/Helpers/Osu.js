@@ -3,6 +3,16 @@ import config from "../config.json";
 import { GetUser as GetInspectorUser } from "./Account";
 import { GetAPI } from "./Misc";
 
+export const approval_state = {
+    '-2': 'Graveyard',
+    '-1': 'WIP',
+    '0': 'Pending',
+    '1': 'Ranked',
+    '2': 'Approved',
+    '3': 'Qualified',
+    '4': 'Loved'
+}
+
 export function getScoreForLevel(level) {
     if (level <= 100) {
         if (level > 1) {

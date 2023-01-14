@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, Card, CircularProgress, FormControl, InputLabel, MenuItem, OutlinedInput, Pagination, Paper, Select, Stack, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableHead, TableRow, tableRowClasses, Tooltip, Typography } from '@mui/material';
+import { Alert, AlertTitle, Avatar, Box, Button, Card, CircularProgress, FormControl, InputLabel, Link, MenuItem, OutlinedInput, Pagination, Paper, Select, Stack, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableHead, TableRow, tableRowClasses, Tooltip, Typography } from '@mui/material';
 import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
@@ -9,6 +9,9 @@ import VerifiedIcon from '@mui/icons-material/Verified';
 import moment from 'moment/moment';
 import SmartToyIcon from '@mui/icons-material/SmartToy';
 import countries from "countries-list";
+import { approval_state } from '../Helpers/Osu';
+import CheckIcon from '@mui/icons-material/Check';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 
 const GROUPED_STATS = {
     'pp': [
@@ -196,6 +199,18 @@ const GROUPED_STATS = {
             description: 'Amount of unique DT FCs the user has',
             group: 'generic'
         },
+    ],
+    'beatmaps': [
+        {
+            name: 'most_played', title: 'Most Played',
+            description: 'List of most played beatmaps',
+            group: 'grade'
+        },
+        {
+            name: 'most_played_loved', title: 'Most Played Loved',
+            description: 'List of most played loved beatmaps',
+            group: 'grade'
+        }
     ]
 }
 
@@ -210,6 +225,7 @@ function Leaders() {
     const [country, setCountry] = useState(params.country && countries.countries[params.country.toUpperCase()] ? params.country.toLowerCase() : 'world');
     const [countryList, setCountryList] = useState([]);
     const [leaderboard, setLeaderboard] = useState(null);
+    const [leaderboardType, setLeaderboardType] = useState('users');
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -270,9 +286,10 @@ function Leaders() {
                 return;
             }
 
-            const pages = Math.ceil(lb.result_users / ROWS_PER_PAGE);
+            const pages = Math.ceil(lb.result_count / ROWS_PER_PAGE);
             setTotalPages(pages);
             setLeaderboard(lb.leaderboard);
+            setLeaderboardType(lb.result_type);
             setIsLoading(false);
         })();
     };
@@ -360,20 +377,23 @@ function Leaders() {
                                     borderCollapse: 'separate',
                                     borderSpacing: '0 0.4em',
                                 }}>
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell><Typography variant='subtitles1' noWrap>Rank</Typography></TableCell>
-                                            <TableCell></TableCell>
-                                            <TableCell></TableCell>
-                                            <TableCell>Username</TableCell>
-                                            <TableCell><Typography variant='subtitles1' noWrap>{statistic.title}</Typography></TableCell>
-                                        </TableRow>
-                                    </TableHead>
                                     <TableBody>
                                         {
-                                            leaderboard.map((user) => {
-                                                const osu_user = user.osu_user;
-                                                const black_overlay = osu_user?.cover?.custom_url ? '0.8' : '0';
+                                            leaderboard.map((entry) => {
+                                                //const osu_user = entry.osu_user;
+                                                let detail;
+                                                let name;
+                                                let background;
+                                                if (leaderboardType === 'users') {
+                                                    detail = entry.osu_user;
+                                                    name = detail?.username;
+                                                    background = detail?.cover?.custom_url;
+                                                } else if (leaderboardType === 'beatmaps') {
+                                                    detail = entry.osu_beatmap;
+                                                    name = `${detail?.artist} - ${detail?.title} [${detail?.version}]`;
+                                                    background = `https://assets.ppy.sh/beatmaps/${detail?.beatmapset_id}/covers/cover.jpg`;
+                                                }
+                                                const black_overlay = background ? '0.8' : '0';
                                                 return (
                                                     <TableRow component={Card}
                                                         sx={{
@@ -381,44 +401,76 @@ function Leaders() {
                                                                 opacity: 0.5,
                                                                 cursor: 'pointer'
                                                             },
-                                                            backgroundImage: `url(${osu_user?.cover?.custom_url})`,
+                                                            backgroundImage: `url(${background})`,
                                                             backgroundSize: 'cover',
                                                             backgroundPosition: 'center',
                                                             backgroundRepeat: 'no-repeat'
                                                         }}
-                                                        onClick={() => { navigate(`/user/${user.user_id}`); }}
+                                                        onClick={() => {
+                                                            if (leaderboardType === 'users')
+                                                                navigate(`/user/${entry.user_id}`);
+                                                            else if (leaderboardType === 'beatmaps')
+                                                                window.open(`https://osu.ppy.sh/beatmaps/${detail?.beatmap_id}`, "_blank");
+                                                        }}
                                                         elevation={5}>
                                                         <TableCell width={'3%'} sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})` }}>
-                                                            <Typography variant='subtitles1' noWrap>#{user.rank}</Typography>
+                                                            <Typography variant='subtitles1' noWrap>#{entry.rank}</Typography>
                                                         </TableCell>
+                                                        {
+                                                            leaderboardType === 'users' ?
+                                                                <TableCell width={'5%'} sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})` }}>
+                                                                    <Avatar sx={{ width: 24, height: 24 }} alt={name} src={`https://a.ppy.sh/${entry.user_id}`} />
+                                                                </TableCell>
+                                                                : <></>}
                                                         <TableCell width={'5%'} sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})` }}>
-                                                            <Avatar sx={{ width: 24, height: 24 }} alt={user.username} src={`https://a.ppy.sh/${user.user_id}`} />
-                                                        </TableCell>
-                                                        <TableCell width={'5%'} sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})` }}>
-                                                            <Tooltip title={countries.countries[user.country_code.toUpperCase()].name ?? 'Unknown name'}>
-                                                                <Box>
-                                                                    <ReactCountryFlag
-                                                                        style={{ lineHeight: '1em', fontSize: '1.8em', borderRadius: '5px' }}
-                                                                        cdnUrl="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/"
-                                                                        countryCode={user.country_code}
-                                                                    />
-                                                                </Box>
-                                                            </Tooltip>
+                                                            {
+                                                                leaderboardType === 'users' ?
+                                                                    <Tooltip title={countries.countries[detail?.country_code.toUpperCase()].name ?? 'Unknown name'}>
+                                                                        <Box>
+                                                                            <ReactCountryFlag
+                                                                                style={{ lineHeight: '1em', fontSize: '1.8em', borderRadius: '5px' }}
+                                                                                cdnUrl="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/"
+                                                                                countryCode={detail?.country_code}
+                                                                            />
+                                                                        </Box>
+                                                                    </Tooltip>
+                                                                    : <></>
+                                                            }
+                                                            {
+                                                                leaderboardType === 'beatmaps' ?
+                                                                    <>
+                                                                        {/* {approval_state[detail?.approved]} */}
+                                                                        <Tooltip title={`${approval_state[detail?.approved] ?? ''}`}>
+                                                                            <Box>
+                                                                                {
+                                                                                    detail?.approved === 1 || detail?.approved === 2 ?
+                                                                                        <CheckIcon sx={{ color: 'green' }} />
+                                                                                        : detail?.approved === 3 ?
+                                                                                            <CheckIcon sx={{ color: 'yellow' }} />
+                                                                                            : detail?.approved === 4 ?
+                                                                                                <FavoriteIcon sx={{ color: 'red' }} />
+                                                                                                : <></>
+                                                                                }
+                                                                            </Box>
+                                                                        </Tooltip>
+                                                                    </>
+                                                                    : <></>
+                                                            }
                                                         </TableCell>
                                                         <TableCell sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})` }}>
                                                             <Stack direction='row' spacing={1} alignItems='center'>
                                                                 <Typography variant='subtitles1' noWrap>
-                                                                    {user.username}
+                                                                    {name ?? 'Unknown'}
                                                                 </Typography>
                                                                 {
-                                                                    user.tracked ?
+                                                                    entry?.tracked ?
                                                                         <Tooltip title='This user is actively being tracked by osu!alternative and should be viewable'>
                                                                             <VerifiedIcon color='primary' fontSize='small' />
                                                                         </Tooltip>
                                                                         : <></>
                                                                 }
                                                                 {
-                                                                    osu_user?.is_bot ? <>
+                                                                    entry?.is_bot ? <>
                                                                         <Tooltip title='This is a bot account'>
                                                                             <SmartToyIcon sx={{ color: '#ffac33' }} fontSize='small' />
                                                                         </Tooltip>
@@ -431,9 +483,9 @@ function Leaders() {
                                                                 {
                                                                     (statistic.customFormat !== undefined && statistic.customFormat != null) ?
                                                                         <>
-                                                                            {statistic.customFormat(user.stat)}
+                                                                            {statistic.customFormat(entry.stat)}
                                                                         </> : <>
-                                                                            {Math.round(user.stat).toLocaleString('en-US')}
+                                                                            {Math.round(entry.stat).toLocaleString('en-US')}
                                                                         </>
 
                                                                 }
@@ -449,6 +501,12 @@ function Leaders() {
                         }
                     </> : <><p>Couldn't get data. Try later...</p></>
             }
+            <Alert severity='info' sx={{ marginTop: 2 }}>
+                <AlertTitle>Information</AlertTitle>
+                <Typography variant='body2'>
+                    These leaderboards are based on data collected by osu!alt and will always be incomplete. Join the <Link href='https://discord.gg/VZWRZZXcW4' target='_blank'>osu!alt discord</Link> to get your account tracked and to improve the accuracy of the statistics shown.
+                    </Typography>
+            </Alert>
         </>
     );
 }
