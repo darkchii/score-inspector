@@ -121,11 +121,12 @@ export function getPeriodicData(scores, data, user, f = 'm') {
 function processDailyData(chunks, user, data, f = 'm') {
     for (var i = 0; i < chunks.length; i++) {
         //get highest rank at this time point
-        let rank = null;
-        let c_rank = null;
-        let raw_pp = null;
-        let total_score = null;
-        let level = null;
+        const previous = chunks[i - 1]?.osudaily;
+        let rank = previous?.rank ?? 0;
+        let c_rank = previous?.c_rank ?? 0;
+        let raw_pp = previous?.raw_pp ?? 0;
+        let cumulative_total_score = previous?.cumulative_total_score ?? 0;
+        let cumulative_level = previous?.cumulative_level ?? 0;
         if (user.daily !== null && user.daily.error === undefined) {
             const dailyPoints = user.daily.modes[0].lines;
             for (var j = 0; j < dailyPoints.length; j++) {
@@ -137,17 +138,17 @@ function processDailyData(chunks, user, data, f = 'm') {
                         rank = point.rankworld;
                     }
 
-                    if (c_rank === null || point.rankcountry < c_rank) {
+                    if (c_rank === null || point.rankcountry > c_rank) {
                         c_rank = point.rankcountry;
                     }
-                    if (raw_pp === null || point.pp < raw_pp) {
+                    if (raw_pp === null || point.pp > raw_pp) {
                         raw_pp = point.pp;
                     }
-                    if (total_score === null || point.totalscore < total_score) {
-                        total_score = point.totalscore;
+                    if (cumulative_total_score === null || point.totalscore > cumulative_total_score) {
+                        cumulative_total_score = point.totalscore;
                     }
-                    if (level === null || point.level < level) {
-                        level = point.level;
+                    if (cumulative_level === null || point.level > cumulative_level) {
+                        cumulative_level = point.level;
                     }
                 }
             }
@@ -155,22 +156,36 @@ function processDailyData(chunks, user, data, f = 'm') {
         chunks[i].osudaily = {};
         chunks[i].osudaily.global_rank = rank !== null ? -rank : null;
         chunks[i].osudaily.country_rank = c_rank !== null ? -c_rank : null;
+        chunks[i].osudaily.cumulative_total_score = cumulative_total_score;
         chunks[i].osudaily.raw_pp = raw_pp;
-        chunks[i].osudaily.cumulative_total_score = total_score;
-        chunks[i].osudaily.level = level;
+        chunks[i].osudaily.cumulative_level = cumulative_level;
     }
 
-    //get cumulative osu!daily data
-    if (user.daily !== null && user.daily.error === undefined) {
-        for (var i = 0; i < chunks.length; i++) {
-            var prev = i > 0 ? chunks[i - 1].osudaily.total_score : 0;
-            if (prev) {
-                chunks[i].osudaily.total_score = chunks[i].osudaily.cumulative_total_score + prev;
-            } else {
-                chunks[i].osudaily.total_score = chunks[i].osudaily.cumulative_total_score;
-            }
+    //get the difference between chunks
+    for (var i = 0; i < chunks.length; i++) {
+        var prev = i > 0 ? chunks[i - 1].osudaily : null;
+        if (prev) {
+            chunks[i].osudaily.total_score = Math.max(0, chunks[i].osudaily.cumulative_total_score - (prev?.cumulative_total_score ?? 0));
+            chunks[i].osudaily.gained_level = Math.max(0, chunks[i].osudaily.cumulative_level - (prev?.cumulative_level ?? 0));
+        }else{
+            chunks[i].osudaily.total_score = 0;
+            chunks[i].osudaily.gained_level = 0;
         }
     }
+
+    //console.log(chunks[20].osudaily);
+
+    // //get cumulative osu!daily data
+    // if (user.daily !== null && user.daily.error === undefined) {
+    //     for (var i = 0; i < chunks.length; i++) {
+    //         var prev = i > 0 ? chunks[i - 1].osudaily.total_score : 0;
+    //         if (prev) {
+    //             chunks[i].osudaily.total_score = chunks[i].osudaily.cumulative_total_score + prev;
+    //         } else {
+    //             chunks[i].osudaily.total_score = chunks[i].osudaily.cumulative_total_score;
+    //         }
+    //     }
+    // }
     return chunks;
 }
 
@@ -292,11 +307,12 @@ function getGraphObjects(chunks, labels, f = 'm') {
         "clearsPerSection": <TimeGraph name={`Scores set per ${PERIOD_FORMATS[f].format_str}`} labels={labels} data={[{ name: "Scores set", set: chunks.map(x => x.count_scores), color: { r: 255, g: 102, b: 158 } }]} />,
         "ppPerSection": <TimeGraph name={`Total PP per ${PERIOD_FORMATS[f].format}`} labels={labels} data={[{ name: "Total PP set", set: chunks.map(x => x.total_pp), color: { r: 255, g: 102, b: 158 } }]} />,
         "lengthPerSection": <TimeGraph name={`Total length per ${PERIOD_FORMATS[f].format}`} labels={labels} data={[{ name: "Total length played", set: chunks.map(x => x.total_length), color: { r: 255, g: 102, b: 158 } }]} />,
-        "totalscorePerSection": <TimeGraph name={`Ranked score per ${PERIOD_FORMATS[f].format}`} labels={labels} data={[{ name: "Ranked score gained", set: chunks.map(x => x.osudaily.total_score), color: { r: 255, g: 102, b: 158 } }]} />,
-        "totaltotalScorePerSection": <TimeGraph name={`Total score per ${PERIOD_FORMATS[f].format}`} labels={labels} data={[{ name: "Total score gained", set: chunks.map(x => x.total_score), color: { r: 255, g: 102, b: 158 } }]} />,
+        "totalscorePerSection": <TimeGraph name={`Ranked score per ${PERIOD_FORMATS[f].format}`} labels={labels} data={[{ name: "Ranked score gained", set: chunks.map(x => x.total_score), color: { r: 255, g: 102, b: 158 } }]} />,
+        "totaltotalScorePerSection": <TimeGraph name={`Total score per ${PERIOD_FORMATS[f].format}`} labels={labels} data={[{ name: "Total score gained", set: chunks.map(x => x.osudaily.total_score), color: { r: 255, g: 102, b: 158 } }]} />,
         "totalSSscorePerSection": <TimeGraph name={`Total SS score per ${PERIOD_FORMATS[f].format}`} labels={labels} data={[{ name: "Total SS score gained", set: chunks.map(x => x.total_ss_score), color: { r: 255, g: 102, b: 158 } }]} />,
         "totalhitsPerSection": <TimeGraph name={`Total hits per ${PERIOD_FORMATS[f].format}`} labels={labels} data={[{ name: "Total hits", set: chunks.map(x => x.total_hits), color: { r: 255, g: 102, b: 158 } }]} />,
         "totalAverageAcc": <TimeGraph name={`Average accuracy per ${PERIOD_FORMATS[f].format}`} labels={labels} data={[{ name: "Average accuracy", set: chunks.map(x => x.total_average_acc), color: { r: 255, g: 102, b: 158 } }]} />,
+        "gainedLevel": <TimeGraph name={`Gained Level %`} labels={labels} data={[{ name: "Gained Level %", set: chunks.map(x => x.osudaily.gained_level), color: { r: 255, g: 102, b: 158 } }]} />,
         "completion": <TimeGraph name='Completion' labels={labels} data={[
             { name: "% Clear Completion", set: chunks.map(x => x.completion), color: { r: 255, g: 102, b: 158 } },
             { name: "% Score Completion", set: chunks.map(x => x.completion_score), color: { r: 244, g: 67, b: 54 } },
@@ -311,6 +327,7 @@ function getGraphObjects(chunks, labels, f = 'm') {
         "cumulativeLength": <TimeGraph name={`Cumulative length played`} labels={labels} data={[{ name: "Cumulative total length played", set: chunks.map(x => x.cumulative_length), color: { r: 255, g: 102, b: 158 } }]} />,
         "cumulativeHits": <TimeGraph name={`Cumulative note hits`} labels={labels} data={[{ name: "Cumulative note hits", set: chunks.map(x => x.cumulative_total_hits), color: { r: 255, g: 102, b: 158 } }]} />,
         "cumulativeAcc": <TimeGraph name={`Overall average accuracy`} labels={labels} data={[{ name: "Overall average accuracy", set: chunks.map(x => x.cumulative_average_acc), color: { r: 255, g: 102, b: 158 } }]} />,
+        "cumulativeLevel": <TimeGraph name={`Level over time`} labels={labels} data={[{ name: "Level over time", set: chunks.map(x => x.osudaily.cumulative_level), color: { r: 255, g: 102, b: 158 } }]} />,
         "gradesPerSection": <TimeGraph name="Grades" labels={labels} data={[
             { name: "Total SS", set: chunks.map(x => x.total_ss), color: { r: 197, g: 197, b: 197 } },
             { name: "Total S", set: chunks.map(x => x.total_s), color: { r: 255, g: 186, b: 14 } },
@@ -337,7 +354,6 @@ function getGraphObjects(chunks, labels, f = 'm') {
             { name: "Country Rank", set: chunks.map(x => x.osudaily.country_rank), color: { r: 82, g: 158, b: 250 } },
         ]} />,
         "rawPP": <TimeGraph name="Raw PP" labels={labels} data={[{ name: "Raw PP", set: chunks.map(x => x.osudaily.raw_pp), color: { r: 255, g: 102, b: 158 } }]} />,
-        "level": <TimeGraph name={`Level over time`} labels={labels} data={[{ name: "Level over time", set: chunks.map(x => x.osudaily.level), color: { r: 255, g: 102, b: 158 } }]} />,
         //"accPerPlay": <TimeGraph name="Average accuracy per play" labels={labels[dateFormat]} data={[{ name: "Average accuracy", set: chunks[dateFormat].map(x => x.average_acc), color: { r: 255, g: 102, b: 158 } }]} />,
     };
 

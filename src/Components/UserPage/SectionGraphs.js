@@ -16,6 +16,7 @@ function SectionGraphs(props) {
                 { id: "lengthPerSection", title: "Length" },
                 { id: "totalhitsPerSection", title: "Hits" },
                 { id: "totalAverageAcc", title: "Accuracy" },
+                { id: "gainedLevel", title: "Level", isDailyApi: true },
             ]
         },
         {
@@ -29,6 +30,7 @@ function SectionGraphs(props) {
                 { id: "cumulativeLength", title: "Length" },
                 { id: "cumulativeHits", title: "Hits" },
                 { id: "cumulativeAcc", title: "Accuracy" },
+                { id: "cumulativeLevel", title: "Level", isDailyApi: true },
             ]
         },
         {
@@ -42,7 +44,6 @@ function SectionGraphs(props) {
                 { id: "rawPP", title: "Raw PP", isDailyApi: true },
                 { id: "globalRank", title: "Rank", isDailyApi: true },
                 { id: "completion", title: "Completion" },
-                { id: "level", title: "Level", isDailyApi: true },
             ]
         }
     ];
