@@ -38,6 +38,12 @@ function User() {
                 setLoadingState(`Fetching user scores (${parseInt(Math.round(progress.loaded * 100) / progress.total)}%)`);
             };
 
+            if (user_out === null || user_out.error !== undefined) {
+                setUser(null);
+                setIsLoading(false);
+                return;
+            }
+
             setLoadingState('Fetching user scores');
             const _scores = await getUserScores(user_out.alt.user_id, loved === true, onScoreDownloadProgress);
             if (_scores === null || _scores.error !== undefined) {
