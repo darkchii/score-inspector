@@ -1,5 +1,5 @@
 let _defaultSettings = {
-    snowFall: true
+    snowFall: false
 }
 
 let _clientSettings = null;
