@@ -1,4 +1,4 @@
-import { Box, Button, Checkbox, FormControl, FormControlLabel, Grid, Radio, RadioGroup, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Tooltip, Typography } from "@mui/material";
+import { Box, Button, Checkbox, FormControl, FormControlLabel, Grid, Radio, RadioGroup, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Tooltip, Typography } from "@mui/material";
 import moment from "moment";
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
@@ -33,6 +33,9 @@ function BeatmapFilter(props) {
     const [maxApprovedDate, setMaxApprovedDate] = useState(MAX_DATE);
     const [minPlayedDate, setMinPlayedDate] = useState(MIN_DATE);
     const [maxPlayedDate, setMaxPlayedDate] = useState(MAX_DATE);
+    const [checkUniqueSS, setCheckUniqueSS] = useState(false);
+    const [checkUniqueFC, setCheckUniqueFC] = useState(false);
+    const [checkUniqueDTFC, setCheckUniqueDTFC] = useState(false);
 
     const [columns, setColumns] = useState(null);
 
@@ -91,7 +94,8 @@ function BeatmapFilter(props) {
             accRange: [minAcc, maxAcc],
             comboRange: [minCombo, maxCombo],
             approvedDateRange: [minApprovedDate, maxApprovedDate],
-            playedDateRange: [minPlayedDate, maxPlayedDate]
+            playedDateRange: [minPlayedDate, maxPlayedDate],
+            flags: { checkUniqueSS, checkUniqueFC, checkUniqueDTFC }
         });
     }
 
@@ -209,7 +213,14 @@ function BeatmapFilter(props) {
                         </LocalizationProvider>
                     </Grid>
                 </Grid>
-                <Grid container sx={{ py: 2 }}>
+                <Grid>
+                    <Stack direction="row" spacing={2} sx={{ pt: 2 }}>
+                        <FormControlLabel label='Is unique SS' control={<Checkbox size='small' onChange={e => setCheckUniqueSS(e.target.checked)} defaultChecked={checkUniqueSS} />} />
+                        <FormControlLabel label='Is unique FC' control={<Checkbox size='small' onChange={e => setCheckUniqueFC(e.target.checked)} defaultChecked={checkUniqueFC} />} />
+                        <FormControlLabel label='Is unique DT FC' control={<Checkbox size='small' onChange={e => setCheckUniqueDTFC(e.target.checked)} defaultChecked={checkUniqueDTFC} />} />
+                    </Stack>
+                </Grid>
+                <Grid container sx={{ py: 1 }}>
                     <TableContainer>
                         <Table size="small">
                             <TableHead>
@@ -217,7 +228,7 @@ function BeatmapFilter(props) {
                                     {
                                         columns && columns.map((column) => (
                                             <>
-                                                <TableCell align="center"><Typography variant="subtitles1" sx={{fontSize: '0.9em'}}>{column.headerName}</Typography></TableCell>
+                                                <TableCell align="center"><Typography variant="subtitles1" sx={{ fontSize: '0.9em' }}>{column.headerName}</Typography></TableCell>
                                             </>
                                         ))
                                     }

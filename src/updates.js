@@ -7,6 +7,16 @@ const CHANGETYPES = {
 
 const updates = [
     {
+        version: '2.3.0',
+        date: 'n/a',
+        changes: [
+            [CHANGETYPES.NEW, 'Added beatmap leaderboards', '0c59cd288df7afdf309e180a3b53f7d2429e945c'],
+            [CHANGETYPES.FIX, 'Added null check on user object before fetching scores', '7d6b30b7c29f768f93fa6fcfce8be2cfb5d89e25'],
+            [CHANGETYPES.FIX, 'Fixed ranked and total score graphs on monthly data', '6b1865d51407f918ecacab7a5363412f00c1b072'],
+            [CHANGETYPES.MISC, 'Added a warning if user is available but isn\'t a \'priority user\' (incomplete data)', 'a81faf37ecd72d3fe0fe69ded3cdcf0c02892883'],
+        ]
+    },
+    {
         version: '2.2.0',
         date: '2023-01-13',
         changes: [

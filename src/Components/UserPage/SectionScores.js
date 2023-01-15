@@ -17,26 +17,26 @@ function SectionScores(props) {
     const forceUpdate = useCallback(() => updateState({}), []);
     const [modalData, setModalData] = useState({ active: false });
     const columns = [
-            { field: 'title', flex: 1, headerName: 'Title', minWidth: 280 },
-            { field: 'score', headerName: 'Score', minWidth: 170, type: "number", valueFormatter: (params) => { return `${params.value.toLocaleString('en-US')}`; } },
-            { field: 'mods', headerName: 'Mods', minWidth: 180, type: "number", renderCell: (params) => { return modFormatter(params) }, onMouseEnter: (params) => { console.log(params) } },
-            { field: 'approved', headerName: 'Status', minWidth: 50, type: "number", renderCell: (params) => { return approvedFormatter(params) } },
-            { field: 'sr', headerName: 'Stars', minWidth: 100, type: "number", valueFormatter: (params) => { return `${params.value.toFixed(2)}*`; } },
-            { field: 'pp', headerName: 'PP', minWidth: 80, type: "number", valueFormatter: (params) => { return `${params.value.toFixed(1)}pp`; } },
-            { field: 'aimpp', headerName: 'Aim PP', minWidth: 80, type: "number", valueFormatter: (params) => { return `${params.value.toFixed(1)}pp`; }, hide: true },
-            { field: 'speedpp', headerName: 'Speed PP', minWidth: 80, type: "number", valueFormatter: (params) => { return `${params.value.toFixed(1)}pp`; }, hide: true },
-            { field: 'accpp', headerName: 'Acc PP', minWidth: 80, type: "number", valueFormatter: (params) => { return `${params.value.toFixed(1)}pp`; }, hide: true },
-            { field: 'flpp', headerName: 'FL PP', minWidth: 80, type: "number", valueFormatter: (params) => { return `${params.value.toFixed(1)}pp`; }, hide: true },
-            { field: 'date', headerName: 'Date', minWidth: 150, valueFormatter: (params) => { return `${moment(params.value).fromNow()}`; } },
-            { field: 'acc', headerName: 'Accuracy', minWidth: 120, type: "number", valueFormatter: (params) => { return `${params.value.toFixed(2)}%`; } },
-            { field: 'grade', headerName: 'Grade', minWidth: 80, renderCell: (params) => { return gradeFormatter(params) } },
-            { field: 'combo', headerName: 'Play combo', minWidth: 100, type: "number", valueFormatter: (params) => { return `${params.value}x`; } },
-            { field: 'maxcombo', headerName: 'Max combo', minWidth: 100, type: "number", valueFormatter: (params) => { return `${params.value}x`; }, hide: true },
-            { field: 'length', headerName: 'Length', minWidth: 100, type: "number", valueFormatter: (params) => { return moment.utc(moment.duration(params.value, "seconds").asMilliseconds()).format("mm:ss") } },
-            { field: 'bpm', headerName: 'BPM', minWidth: 100, type: "number" },
-            { field: 'ppfc', headerName: 'FC PP', minWidth: 100, type: "number", hide: true },
-            { field: 'ppss', headerName: 'SS PP', minWidth: 100, type: "number", hide: true },
-        ];
+        { field: 'title', flex: 1, headerName: 'Title', minWidth: 280 },
+        { field: 'score', headerName: 'Score', minWidth: 170, type: "number", valueFormatter: (params) => { return `${params.value.toLocaleString('en-US')}`; } },
+        { field: 'mods', headerName: 'Mods', minWidth: 180, type: "number", renderCell: (params) => { return modFormatter(params) }, onMouseEnter: (params) => { console.log(params) } },
+        { field: 'approved', headerName: 'Status', minWidth: 50, type: "number", renderCell: (params) => { return approvedFormatter(params) } },
+        { field: 'sr', headerName: 'Stars', minWidth: 100, type: "number", valueFormatter: (params) => { return `${params.value.toFixed(2)}*`; } },
+        { field: 'pp', headerName: 'PP', minWidth: 80, type: "number", valueFormatter: (params) => { return `${params.value.toFixed(1)}pp`; } },
+        { field: 'aimpp', headerName: 'Aim PP', minWidth: 80, type: "number", valueFormatter: (params) => { return `${params.value.toFixed(1)}pp`; }, hide: true },
+        { field: 'speedpp', headerName: 'Speed PP', minWidth: 80, type: "number", valueFormatter: (params) => { return `${params.value.toFixed(1)}pp`; }, hide: true },
+        { field: 'accpp', headerName: 'Acc PP', minWidth: 80, type: "number", valueFormatter: (params) => { return `${params.value.toFixed(1)}pp`; }, hide: true },
+        { field: 'flpp', headerName: 'FL PP', minWidth: 80, type: "number", valueFormatter: (params) => { return `${params.value.toFixed(1)}pp`; }, hide: true },
+        { field: 'date', headerName: 'Date', minWidth: 150, valueFormatter: (params) => { return `${moment(params.value).fromNow()}`; } },
+        { field: 'acc', headerName: 'Accuracy', minWidth: 120, type: "number", valueFormatter: (params) => { return `${params.value.toFixed(2)}%`; } },
+        { field: 'grade', headerName: 'Grade', minWidth: 80, renderCell: (params) => { return gradeFormatter(params) } },
+        { field: 'combo', headerName: 'Play combo', minWidth: 100, type: "number", valueFormatter: (params) => { return `${params.value}x`; } },
+        { field: 'maxcombo', headerName: 'Max combo', minWidth: 100, type: "number", valueFormatter: (params) => { return `${params.value}x`; }, hide: true },
+        { field: 'length', headerName: 'Length', minWidth: 100, type: "number", valueFormatter: (params) => { return moment.utc(moment.duration(params.value, "seconds").asMilliseconds()).format("mm:ss") } },
+        { field: 'bpm', headerName: 'BPM', minWidth: 100, type: "number" },
+        { field: 'ppfc', headerName: 'FC PP', minWidth: 100, type: "number", hide: true },
+        { field: 'ppss', headerName: 'SS PP', minWidth: 100, type: "number", hide: true },
+    ];
 
     const [columnVisibilityModel, setColumnVisibilityModel] = useState({});
 
@@ -182,6 +182,10 @@ function SectionScores(props) {
             if (filter.comboRange[0] !== null && filter.comboRange[0] >= 0) { scores = scores.filter(score => score.combo >= filter.comboRange[0]); }
             if (filter.comboRange[1] !== null && filter.comboRange[1] >= 0) { scores = scores.filter(score => score.combo <= filter.comboRange[1]); }
 
+            if (filter.flags.checkUniqueSS) { scores = scores.filter(score => score.is_unique_ss); }
+            if (filter.flags.checkUniqueFC) { scores = scores.filter(score => score.is_unique_fc); }
+            if (filter.flags.checkUniqueDTFC) { scores = scores.filter(score => score.is_unique_dt_fc); }
+
             scores = scores.filter(score => {
                 return moment(score.approved_date).isBetween(filter.approvedDateRange[0], filter.approvedDateRange[1], undefined, '[]');
             });
@@ -195,11 +199,11 @@ function SectionScores(props) {
     };
 
     useEffect(() => {
-        if(props.user.scoreRows === undefined){
+        if (props.user.scoreRows === undefined) {
             setScores(props.user.scores);
         }
         handleFilter(columns, null);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (

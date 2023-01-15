@@ -22,84 +22,91 @@ function User() {
 
     useEffect(() => {
         (async () => {
-            const urlParams = new URLSearchParams(location.search);
-            let loved = urlParams.get('loved') ?? true;
-            if (loved === 'true' || loved === '1' || loved === true || loved === 1 || loved === '') {
-                loved = true;
-            } else {
-                loved = false;
-            }
+            setRegistered(false);
             setIsLoading(true);
             setUser(null);
-            const user_in = params.id;
-            setLoadingState('Fetching user data');
-            const user_out = await getFullUser(user_in);
-
-            const onScoreDownloadProgress = (progress) => {
-                setLoadingState(`Fetching user scores (${parseInt(Math.round(progress.loaded * 100) / progress.total)}%)`);
-            };
-
-            if (user_out === null || user_out.error !== undefined) {
-                setUser(null);
-                setIsLoading(false);
-                return;
-            }
-
-            const registered = await isUserRegistered(user_out.osu.id);
-            setRegistered(registered);
-
-            setLoadingState('Fetching user scores');
-            const _scores = await getUserScores(user_out.alt.user_id, loved === true, onScoreDownloadProgress);
-            if (_scores === null || _scores.error !== undefined) {
-                setUser(null);
-                setIsLoading(false);
-                return;
-            }
-            user_out.scores = _scores;
-
-            const onScoreProcessUpdate = (progress) => {
-                setLoadingState(`Processing user scores (${progress})`);
-            };
-
-            const onCallbackError = (error) => {
-                console.error(error);
-            };
-
-            setLoadingState('Processing user scores');
-            let _data;
             try {
-                _data = await processScores(user_out, user_out.scores, onCallbackError, onScoreProcessUpdate);
+                const urlParams = new URLSearchParams(location.search);
+                let loved = urlParams.get('loved') ?? true;
+                if (loved === 'true' || loved === '1' || loved === true || loved === 1 || loved === '') {
+                    loved = true;
+                } else {
+                    loved = false;
+                }
+                const user_in = params.id;
+                setLoadingState('Fetching user data');
+                const user_out = await getFullUser(user_in);
+
+                const onScoreDownloadProgress = (progress) => {
+                    setLoadingState(`Fetching user scores (${parseInt(Math.round(progress.loaded * 100) / progress.total)}%)`);
+                };
+
+                if (user_out === null || user_out.error !== undefined) {
+                    setUser(null);
+                    setIsLoading(false);
+                    return;
+                }
+
+                const registered = await isUserRegistered(user_out.osu.id);
+                setRegistered(registered);
+
+                setLoadingState('Fetching user scores');
+                const _scores = await getUserScores(user_out.alt.user_id, loved === true, onScoreDownloadProgress);
+                if (_scores === null || _scores.error !== undefined) {
+                    setUser(null);
+                    setIsLoading(false);
+                    return;
+                }
+                user_out.scores = _scores;
+
+                const onScoreProcessUpdate = (progress) => {
+                    setLoadingState(`Processing user scores (${progress})`);
+                };
+
+                const onCallbackError = (error) => {
+                    console.error(error);
+                };
+
+                setLoadingState('Processing user scores');
+                let _data;
+                try {
+                    _data = await processScores(user_out, user_out.scores, onCallbackError, onScoreProcessUpdate);
+                } catch (e) {
+                    console.error(e);
+                    setUser(null);
+                    setIsLoading(false);
+                    return;
+                }
+
+                if (_data === null || _data === undefined) {
+                    setUser(null);
+                    setIsLoading(false);
+                    return;
+                }
+
+                user_out.data = _data;
+
+                setLoadingState('Fetching user leaderboard positions');
+                const _leaderboardStats = await getUserLeaderboardStats(user_out.alt.user_id);
+                user_out.data.leaderboardStats = (_leaderboardStats === null || _leaderboardStats.error !== undefined) ? null : _leaderboardStats;
+
+                setLoadingState('Server side stuff');
+
+                if (!config.USE_DEV_API) {
+                    await UpdateVisitor(user_out.osu.id);
+                }
+
+                const visitors = await GetVisitors(user_out.osu.id);
+                user_out.visitors = visitors;
+
+                console.log(user_out);
+                setUser(user_out);
+                setIsLoading(false);
             } catch (e) {
                 console.error(e);
                 setUser(null);
                 setIsLoading(false);
-                return;
             }
-
-            if (_data === null || _data === undefined) {
-                setUser(null);
-                setIsLoading(false);
-                return;
-            }
-
-            user_out.data = _data;
-
-            setLoadingState('Fetching user leaderboard positions');
-            const _leaderboardStats = await getUserLeaderboardStats(user_out.alt.user_id);
-            user_out.data.leaderboardStats = (_leaderboardStats === null || _leaderboardStats.error !== undefined) ? null : _leaderboardStats;
-
-            setLoadingState('Server side stuff');
-
-            if (!config.USE_DEV_API) {
-                await UpdateVisitor(user_out.osu.id);
-            }
-
-            const visitors = await GetVisitors(user_out.osu.id);
-            user_out.visitors = visitors;
-
-            console.log(user_out);
-            setUser(user_out);
-            setIsLoading(false);
         })();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [params.id]);
