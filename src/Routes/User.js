@@ -1,9 +1,9 @@
-import { Box, CircularProgress, Link, Stack, Typography } from '@mui/material';
+import { Alert, Box, CircularProgress, Link, Stack, Typography } from '@mui/material';
 import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom/dist';
-import { getUser as getAltUser, getUserScores } from '../Helpers/OsuAlt';
+import { getUser as getAltUser, getUserScores, isUserRegistered } from '../Helpers/OsuAlt';
 import { getFullUser, getUser as getOsuUser, getUserLeaderboardStats } from '../Helpers/Osu';
 import SectionHeader from '../Components/UserPage/SectionHeader';
 import { processScores } from '../Helpers/ScoresProcessor';
@@ -16,6 +16,7 @@ function User() {
     const [user, setUser] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [loadingState, setLoadingState] = useState('Test message');
+    const [registered, setRegistered] = useState(false);
     const params = useParams();
     const location = useLocation();
 
@@ -43,6 +44,9 @@ function User() {
                 setIsLoading(false);
                 return;
             }
+
+            const registered = await isUserRegistered(user_out.osu.id);
+            setRegistered(registered);
 
             setLoadingState('Fetching user scores');
             const _scores = await getUserScores(user_out.alt.user_id, loved === true, onScoreDownloadProgress);
@@ -86,7 +90,7 @@ function User() {
 
             setLoadingState('Server side stuff');
 
-            if(!config.USE_DEV_API){
+            if (!config.USE_DEV_API) {
                 await UpdateVisitor(user_out.osu.id);
             }
 
@@ -117,11 +121,14 @@ function User() {
                         <Link sx={{ textDecoration: 'none' }} href={`https://osu.ppy.sh/users/${params.id}`} target='_blank'>
                             <Typography variant='title' sx={{ fontSize: '1em' }}>Try osu! profile ....</Typography>
                         </Link>
+                        <Alert severity='info'>
+                            If you are this user, join <Link href='https://discord.gg/VZWRZZXcW4' target='_blank'>osu!alt discord</Link> and follow the guide there to get your scores available.
+                        </Alert>
                     </Stack>
 
                 </> : <>
                     {
-                        user.inspector !== null && user.inspector!==undefined && user.inspector.background_image !== null ? <>
+                        user.inspector !== null && user.inspector !== undefined && user.inspector.background_image !== null ? <>
                             {
                                 <Helmet>
                                     <style>
@@ -144,6 +151,12 @@ function User() {
                         // </> : <></>
                     }
                     <Stack spacing={1} direction='column'>
+                        {
+                            registered ? <></> : <Alert severity='warning'>
+                                This user is not live tracked and the data is most likely inaccurate or even non-existent.
+                                If you are this user, join <Link href='https://discord.gg/VZWRZZXcW4' target='_blank'>osu!alt discord</Link> and follow the guide there to get your scores available.
+                            </Alert>
+                        }
                         <SectionHeader user={user} />
                         <UserDataContainer user={user} />
                     </Stack>

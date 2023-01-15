@@ -12,6 +12,18 @@ export async function findUsers(query) {
     return users;
 }
 
+export async function isUserRegistered(id) {
+    let _registered = false;
+    try {
+        const url = `${GetAPI()}users/alt/registered/${id}`;
+        const res = await axios.get(url, { headers: { "Access-Control-Allow-Origin": "*" } });
+        _registered = res.data.registered;
+    } catch (err) {
+        _registered = false;
+    }
+    return _registered;
+}
+
 export async function getLeaderboard(stat, limit, offset, country) {
     let leaderboard = null;
     try {

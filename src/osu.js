@@ -2,18 +2,6 @@ import axios from "axios";
 import config from "./config.json";
 import { getAltAPIURL, getAPIURL, getUnix, mods } from "./helper";
 
-export async function isUserRegistered(id) {
-    let _registered = false;
-    try {
-        const url = `${getAltAPIURL()}users/registered/${id}`;
-        const res = await axios.get(url, { headers: { "Access-Control-Allow-Origin": "*" } });
-        _registered = res.data.registered;
-    } catch (err) {
-        _registered = false;
-    }
-    return _registered;
-}
-
 export async function getRegisteredUsers() {
     let _users = [];
     try {
