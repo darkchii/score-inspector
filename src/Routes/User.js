@@ -80,7 +80,9 @@ function User() {
 
             setLoadingState('Server side stuff');
 
-            await UpdateVisitor(user_out.osu.id);
+            if(!config.USE_DEV_API){
+                await UpdateVisitor(user_out.osu.id);
+            }
 
             const visitors = await GetVisitors(user_out.osu.id);
             user_out.visitors = visitors;
