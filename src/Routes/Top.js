@@ -117,9 +117,14 @@ function Top(props) {
                                                                             </Typography>
                                                                             <Button onClick={() => { setModalData({ active: true, score: score }) }} size='small' variant='contained'>View</Button>
                                                                         </Box>
-                                                                        <Typography sx={{ float: 'right' }} variant='h6'>
-                                                                            {Math.round(score[scores[i].significantStat]).toLocaleString('en-US')}{scores[i].significantStat === 'pp' ? 'pp' : ''}
-                                                                        </Typography>
+                                                                        <Box sx={{ float: 'right' }}>
+                                                                            <Typography sx={{ textAlign: 'right' }} variant='h6'>
+                                                                                {scores[i].significantStat==='pp' && !score.is_fc ? `(${Math.round(score.pp_fc.total).toLocaleString('en-US')}pp if FC)` : ''} {Math.round(score[scores[i].significantStat]).toLocaleString('en-US')}{scores[i].significantStat === 'pp' ? `pp` : ''}
+                                                                            </Typography>
+                                                                            <Typography sx={{ textAlign: 'right' }} variant='body1'>
+                                                                                {score.modString} {score.is_fc ? 'FC' : ''} {Math.round(score.accuracy * 100) / 100}% {Math.round(score.star_rating * 10) / 10}*
+                                                                            </Typography>
+                                                                        </Box>
                                                                     </Box>
                                                                 </Stack>
                                                             </Box>
