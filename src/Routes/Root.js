@@ -2,19 +2,22 @@ import { Accordion, AccordionDetails, AccordionSummary, Alert, Box, Button, Card
 import { updates } from '../updates';
 import { Link as RouterLink, useSearchParams } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
-import { GetAPI, MODAL_STYLE, parseReadableStreamToJson, showNotification } from '../Helpers/Misc';
+import { formatBytes, GetAPI, MODAL_STYLE, parseReadableStreamToJson, showNotification } from '../Helpers/Misc';
 import { GetFormattedName, GetTopVisited, LoginUser } from '../Helpers/Account';
 import { toast, ToastContainer } from 'react-toastify';
 import config from '../config.json';
 import CircleIcon from '@mui/icons-material/Circle';
 import axios from 'axios';
 import moment from 'moment';
+import momentDurationFormatSetup from "moment-duration-format";
+momentDurationFormatSetup(moment);
 function Root() {
     const [isModalOpen, setIsModalOpen] = useState(true);
     const [osuAuthCode, setOsuAuthCode] = useState(null);
     const [searchParams, setSearchParams] = useSearchParams();
     const [loginStatus, setLoginStatus] = useState(null);
     const [serverStatus, setServerStatus] = useState(null);
+    const [serverInfo, setServerInfo] = useState(null);
     const [visitorStats, setVisitorStats] = useState(null);
 
     useEffect(() => {
@@ -52,11 +55,6 @@ function Root() {
         }
 
         (async () => {
-            const res = await axios.get(`${GetAPI()}system/status`);
-            res.data !== null && res.data !== undefined ? setServerStatus({ ...res.data, inspector: true }) : setServerStatus({
-                inspector: false
-            });
-
             const most_visited = await GetTopVisited('count', 5);
             const last_visited = await GetTopVisited('last_visit', 5);
 
@@ -64,6 +62,27 @@ function Root() {
                 setVisitorStats({
                     most_visited: most_visited,
                     last_visited: last_visited
+                });
+            }
+        })();
+
+        (async () => {
+            try {
+                const res = await axios.get(`${GetAPI()}system`);
+                res.data !== null && res.data !== undefined ? setServerInfo({ ...res.data }) : setServerInfo(null);
+            } catch (e) { }
+        })();
+
+
+        (async () => {
+            try {
+                const res = await axios.get(`${GetAPI()}system/status`);
+                res.data !== null && res.data !== undefined ? setServerStatus({ ...res.data, inspector: true }) : setServerStatus({
+                    inspector: false
+                });
+            } catch (e) {
+                setServerStatus({
+                    inspector: false
                 });
             }
         })();
@@ -115,15 +134,15 @@ function Root() {
                             <Card elevation={2}>
                                 <CardContent>
                                     <Typography variant='title'>What does it do</Typography>
-                                    <Typography>This website takes the dump of all your scores, and generates statistics and graphs from it.</Typography>
-                                    <Typography>All of your scores means every TOP score on a beatmap, so not plays that are overridden or set with different mods.</Typography>
-                                    <Typography>Because of this, stats like periodic activity can be off due to missing scores, if they were overridden later in time.</Typography>
+                                    <Typography variant='body2'>This website takes the dump of all your scores, and generates statistics and graphs from it.</Typography>
+                                    <Typography variant='body2'>All of your scores means every TOP score on a beatmap, so not plays that are overridden or set with different mods.</Typography>
+                                    <Typography variant='body2'>Because of this, stats like periodic activity can be off due to missing scores, if they were overridden later in time.</Typography>
                                     <Typography variant='title'>Can I see other users</Typography>
-                                    <Typography>Every user that has fetched their scores can be viewed here. The user in question has to fetch them themselves, others cannot do that.</Typography>
+                                    <Typography variant='body2'>Every user that has fetched their scores can be viewed here. The user in question has to fetch them themselves, others cannot do that.</Typography>
                                     <Typography variant='title'>Where can I recommend changes</Typography>
-                                    <Typography>The following two places are fine:</Typography>
-                                    <Typography>- The #feature-ideas channel in the <Link href='https://discord.gg/VZWRZZXcW4' target='_blank'>osu!alt discord</Link> (make sure to tag Amayakase#9198)</Typography>
-                                    <Typography>- Opening an issue on the <Link href='https://github.com/darkchii/score-inspector' target='_blank'>GitHub</Link></Typography>
+                                    <Typography variant='body2'>The following two places are fine:</Typography>
+                                    <Typography variant='body2'>- The #feature-ideas channel in the <Link href='https://discord.gg/VZWRZZXcW4' target='_blank'>osu!alt discord</Link> (make sure to tag Amayakase#9198)</Typography>
+                                    <Typography variant='body2'>- Opening an issue on the <Link href='https://github.com/darkchii/score-inspector' target='_blank'>GitHub</Link></Typography>
                                 </CardContent>
                             </Card>
                         </Grid>
@@ -176,6 +195,30 @@ function Root() {
                                     </Card>
                                 </Grid>
                             </Grid>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Card elevation={2}>
+                                <CardContent>
+                                    <Typography variant='title'>Server Info</Typography>
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={12} md={6}>
+                                            <Typography variant='body2'>inspector registrations: {(parseInt(serverInfo?.database?.inspector?.user_count ?? 0)).toLocaleString('en-US')}</Typography>
+                                            <Typography variant='body2'>inspector profile visits: {(parseInt(serverInfo?.database?.inspector?.total_visits ?? 0)).toLocaleString('en-US')}</Typography>
+                                            <Typography variant='body2'>osu!alt users: {(parseInt(serverInfo?.database?.alt?.total_users ?? 0)).toLocaleString('en-US')}</Typography>
+                                            <Typography variant='body2'>osu!alt live users: {(parseInt(serverInfo?.database?.alt?.tracked_users ?? 0)).toLocaleString('en-US')}</Typography>
+                                            <Typography variant='body2'>osu!alt scores: {(parseInt(serverInfo?.database?.alt?.total_scores ?? 0)).toLocaleString('en-US')}</Typography>
+                                            <Typography variant='body2'>osu!alt size: {formatBytes(serverInfo?.database?.alt?.size ?? 0)}</Typography>
+                                        </Grid>
+                                        <Grid item xs={12} md={6}>
+                                            <Typography variant='body2'>Uptime: {moment.duration(serverInfo?.system?.system_time?.uptime ?? 0, 'second').format()}</Typography>
+                                            <Typography variant='body2'>API Uptime: {moment.duration(serverInfo?.system?.uptime ?? 0, 'second').format()}</Typography>
+                                            <Typography variant='body2'>OS: {serverInfo?.system?.os?.distro ?? 'n/a'}</Typography>
+                                            <Typography variant='body2'>CPU: {serverInfo?.system?.cpu?.manufacturer ?? ''} {serverInfo?.system?.cpu?.brand ?? ''}</Typography>
+
+                                        </Grid>
+                                    </Grid>
+                                </CardContent>
+                            </Card>
                         </Grid>
                     </Grid>
                 </Grid>
