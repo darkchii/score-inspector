@@ -8,13 +8,14 @@ const CHANGETYPES = {
 const updates = [
     {
         version: '2.3.0',
-        date: 'n/a',
+        date: '2023-01-20',
         changes: [
             [CHANGETYPES.NEW, 'Added completion graphs', 'a700d1c3345056810c253f43b9899fe38e4238c6'],
             [CHANGETYPES.NEW, 'Added leaderboard: \'Most SSed beatmaps\'', '41c092170d32d512fc4be3349529ff91cc7ba9d0'],
             [CHANGETYPES.NEW, 'Added leaderboard: \'Most four-mod SSed beatmaps\'', '41c092170d32d512fc4be3349529ff91cc7ba9d0'],
             [CHANGETYPES.NEW, 'Added leaderboard: \'Longest rank time\'', '41c092170d32d512fc4be3349529ff91cc7ba9d0'],
             [CHANGETYPES.NEW, 'Added leaderboards: \'Unique SS/FC/DTFC\'', 'f6f3e28928b444e40c681b36f0ba2e70b50d5a99'],
+            [CHANGETYPES.NEW, 'Added server stats to root page', 'e317add86673cdd121b3331418db901c7af25f43'],
             [CHANGETYPES.FIX, 'Added null check on user object before fetching scores', '7d6b30b7c29f768f93fa6fcfce8be2cfb5d89e25'],
             [CHANGETYPES.FIX, 'Fixed ranked and total score graphs on monthly data', '6b1865d51407f918ecacab7a5363412f00c1b072'],
             [CHANGETYPES.FIX, 'Moved completion data generation to server-side (removes need to download beatmap data)', 'a700d1c3345056810c253f43b9899fe38e4238c6'],
