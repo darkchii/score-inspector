@@ -47,7 +47,7 @@ function UserDataContainer(props) {
                     </TabList>
                 </Box>
                 <TabPanel sx={{ p: 0 }} value={_IDs['profile']}>
-                    <Stack direction='column' spacing={1}>
+                    <Stack direction='column' spacing={0.5}>
                         <SectionGrades user={props.user} />
                         <SectionCards user={props.user} />
                     </Stack>
