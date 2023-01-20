@@ -59,6 +59,7 @@ function TimeGraph(props) {
                 anchor: 'end',
                 align: 'end',
                 backgroundColor: '#00000088',
+                borderRadius: 5,
                 formatter: props.formatter ?? ((value, context) => {
                     return `${value.toLocaleString("en-US")}`;
                 })
