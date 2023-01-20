@@ -50,7 +50,7 @@ export async function getUser(user_id) {
 export async function getUserScores(user_id, allowLoved, onScoreDownloadProgress) {
     let _scores = null;
     try {
-        const url = `${GetAPI()}scores/user/${user_id}${allowLoved ? "?loved=true" : ""}`;
+        const url = `${GetAPI()}scores/user/${user_id}${allowLoved ? "?include_loved=true" : ""}`;
         const config = {
             onDownloadProgress: (progressEvent) => {
                 onScoreDownloadProgress?.(progressEvent);
@@ -81,7 +81,7 @@ export async function getUserTrackerStatus(user_id) {
 
 export async function getBestScores(period, stat, limit, loved) {
     let scores = null;
-    const url = `${GetAPI()}scores/best?stat=${stat}&limit=${limit}&period=${period}${loved ? "&loved=true" : ""}`;
+    const url = `${GetAPI()}scores/best?stat=${stat}&limit=${limit}&period=${period}${loved ? "&include_loved=true" : ""}`;
     const res = await axios.get(url, { headers: { "Access-Control-Allow-Origin": "*" } });
     scores = res?.data;
     return scores;
@@ -93,4 +93,12 @@ export async function getScoreStats() {
     const res = await axios.get(url, { headers: { "Access-Control-Allow-Origin": "*" } });
     stats = res?.data;
     return stats;
+}
+
+export async function getCompletionData(user_id, allowLoved){
+    let data = null;
+    const url = `${GetAPI()}scores/completion/${user_id}${allowLoved ? "?include_loved=true" : ""}`;
+    const res = await axios.get(url, { headers: { "Access-Control-Allow-Origin": "*" } });
+    data = res?.data;
+    return data;
 }

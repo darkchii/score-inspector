@@ -70,7 +70,7 @@ function User() {
                 setLoadingState('Processing user scores');
                 let _data;
                 try {
-                    _data = await processScores(user_out, user_out.scores, onCallbackError, onScoreProcessUpdate);
+                    _data = await processScores(user_out, user_out.scores, onCallbackError, onScoreProcessUpdate, loved === true);
                 } catch (e) {
                     console.error(e);
                     setUser(null);

@@ -1,22 +1,22 @@
 import moment from "moment";
 import { range, sleep } from "./Misc";
 import { calculatePP2016, calculatePPifFC, calculatePPifSS, getBeatmapCount, getBeatmaps, getBonusPerformance, getLazerScore, getModString, mods } from "./Osu";
+import { getCompletionData } from "./OsuAlt";
 import { getPerformance2016 } from "./Performance/Performance2016";
 import { getPerformanceLive } from "./Performance/PerformanceLive";
 import { getPeriodicData } from "./ScoresPeriodProcessor";
 import { getSessions } from "./Session";
 
 const FEEDBACK_SLEEP_TIME = 100; // give the browser bit of breathing room to update the UI before each intensive task
-export async function processScores(user, scores, onCallbackError, onScoreProcessUpdate) {
+export async function processScores(user, scores, onCallbackError, onScoreProcessUpdate, allow_loved) {
     await sleep(FEEDBACK_SLEEP_TIME);
-    onScoreProcessUpdate('Fetching beatmaps');
+    onScoreProcessUpdate('Fetching beatmap count');
     let bmCount;
     try {
-        bmCount = await getBeatmapCount();
+        bmCount = await getBeatmapCount(allow_loved);
     } catch (err) {
         bmCount = null;
     }
-    const beatmaps = await getBeatmaps();
 
     if (bmCount === null) {
         onCallbackError('Error fetching beatmap count');
@@ -65,9 +65,7 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
 
     await sleep(FEEDBACK_SLEEP_TIME);
     onScoreProcessUpdate('Completion data');
-    if (beatmaps?.data) {
-        data.completion = getCompletionData(scores, beatmaps.data);
-    }
+    data.completion = await getCompletionData(user.alt.user_id, allow_loved);
 
     await sleep(FEEDBACK_SLEEP_TIME);
     onScoreProcessUpdate('Generate monthly beatmap data');
@@ -196,11 +194,12 @@ export function prepareScores(user, scores, onScoreProcessUpdate) {
     scores.forEach(score => {
         onScoreProcessUpdate?.('' + score.id);
         score.is_loved = score.approved === 4;
-        if(user!==null){
+        if (user !== null) {
             score.is_unique_ss = user.alt.unique_ss.includes(score.beatmap_id);
             score.is_unique_fc = user.alt.unique_fc.includes(score.beatmap_id);
             score.is_unique_dt_fc = user.alt.unique_dt_fc.includes(score.beatmap_id);
         }
+        score.accuracy = parseFloat(score.accuracy);
         score.pp = Math.max(0, parseFloat(score.pp));
         score.objects = score.sliders + score.circles + score.spinners;
         score.modded_length = score.length;
@@ -292,7 +291,7 @@ function getMonthlyBeatmapData(beatmaps) {
 }
 
 function isScoreFullcombo(score) {
-    var is_fc = score.perfect === "1";
+    var is_fc = score.perfect === 1;
 
     if (!is_fc) {
         if (score.countmiss === 0 && score.maxcombo > 0) {
@@ -302,105 +301,4 @@ function isScoreFullcombo(score) {
     }
 
     return is_fc;
-}
-
-function getCompletionData(scores, beatmaps) {
-    // cs
-    const completion = {};
-    let spread = ["0-1", "1-2", "2-3", "3-4", "4-5", "5-6", "6-7", "7-8", "8-9", "9-10"];
-    completion.cs = [];
-    for (const range of spread) {
-        let perc = 100;
-        let min = parseInt(range.split("-")[0]);
-        let max = parseInt(range.split("-")[1]);
-        let filtered_scores = scores.filter(score => score.cs >= min && score.cs < max);
-        let filtered_beatmaps = beatmaps.filter(beatmap => beatmap.cs >= min && beatmap.cs < max);
-        perc = filtered_scores.length / filtered_beatmaps.length * 100;
-        completion.cs.push({
-            range, min, max, completion: perc, scores: filtered_scores.length, beatmaps: filtered_beatmaps.length
-        });
-    }
-
-    completion.ar = [];
-    for (const range of spread) {
-        let perc = 100;
-        let min = parseInt(range.split("-")[0]);
-        let max = parseInt(range.split("-")[1]);
-        let filtered_scores = scores.filter(score => score.ar >= min && score.ar < max);
-        let filtered_beatmaps = beatmaps.filter(beatmap => beatmap.ar >= min && beatmap.ar < max);
-        perc = filtered_scores.length / filtered_beatmaps.length * 100;
-        completion.ar.push({
-            range, min, max, completion: perc, scores: filtered_scores.length, beatmaps: filtered_beatmaps.length
-        });
-    }
-
-    completion.od = [];
-    for (const range of spread) {
-        let perc = 100;
-        let min = parseInt(range.split("-")[0]);
-        let max = parseInt(range.split("-")[1]);
-        let filtered_scores = scores.filter(score => score.od >= min && score.od < max);
-        let filtered_beatmaps = beatmaps.filter(beatmap => beatmap.od >= min && beatmap.od < max);
-        perc = filtered_scores.length / filtered_beatmaps.length * 100;
-        completion.od.push({
-            range, min, max, completion: perc, scores: filtered_scores.length, beatmaps: filtered_beatmaps.length
-        });
-    }
-
-    completion.hp = [];
-    for (const range of spread) {
-        let perc = 100;
-        let min = parseInt(range.split("-")[0]);
-        let max = parseInt(range.split("-")[1]);
-        let filtered_scores = scores.filter(score => score.hp >= min && score.hp < max);
-        let filtered_beatmaps = beatmaps.filter(beatmap => beatmap.hp >= min && beatmap.hp < max);
-        perc = filtered_scores.length / filtered_beatmaps.length * 100;
-        completion.hp.push({
-            range, min, max, completion: perc, scores: filtered_scores.length, beatmaps: filtered_beatmaps.length
-        });
-    }
-
-    spread = range(new Date().getFullYear() - 2007 + 1, 2007);
-    completion.years = [];
-    for (const year of spread) {
-        let perc = 100;
-        let filtered_scores = scores.filter(score => new Date(score.approved_date).getFullYear() === year);
-        let filtered_beatmaps = beatmaps.filter(beatmap => new Date(beatmap.approved_date).getFullYear() === year);
-        //console.log(new Date(scores[0].approved_date).getFullYear());
-        perc = filtered_scores.length / filtered_beatmaps.length * 100;
-        completion.years.push({
-            range: year, completion: perc, scores: filtered_scores.length, beatmaps: filtered_beatmaps.length
-        });
-    }
-
-    spread = ["0-1", "1-2", "2-3", "3-4", "4-5", "5-6", "6-7", "7-8", "8-9", "9-10", "10-20"];
-    completion.stars = [];
-    for (const range of spread) {
-        let perc = 100;
-        let min = parseInt(range.split('-')[0]);
-        let max = parseInt(range.split('-')[1]);
-        let filtered_scores = scores.filter(score => score.stars >= min && score.stars < max);
-        let filtered_beatmaps = beatmaps.filter(beatmap => beatmap.star_rating >= min && beatmap.star_rating < max);
-        perc = filtered_scores.length / filtered_beatmaps.length * 100;
-        completion.stars.push({
-            range: (max < 20 ? `${range}*` : (range.split('-')[0]+'*+')), min, max, completion: perc, scores: filtered_scores.length, beatmaps: filtered_beatmaps.length
-        });
-    }
-
-    spread = ["0-60", "60-120", "120-180", "180-240", "240-300", "300-360", "360-420", "420-480", "480-540", "540-600", "600-99999"];
-    completion.length = [];
-    for (const range of spread) {
-        let perc = 100;
-        let min = parseInt(range.split('-')[0]);
-        let max = parseInt(range.split('-')[1]);
-        let filtered_scores = scores.filter(score => score.length >= min && score.length < max);
-        let filtered_beatmaps = beatmaps.filter(beatmap => beatmap.total_length >= min && beatmap.total_length < max);
-        perc = filtered_scores.length / filtered_beatmaps.length * 100;
-        completion.length.push({
-            range: (max < 99999 ? range : (range.split('-')[0]+'+')), min, max, completion: perc, scores: filtered_scores.length, beatmaps: filtered_beatmaps.length
-        });
-    }
-
-    console.log(completion);
-    return completion;
 }
