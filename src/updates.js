@@ -10,10 +10,19 @@ const updates = [
         version: '2.3.0',
         date: 'n/a',
         changes: [
-            [CHANGETYPES.NEW, 'Added beatmap leaderboards', '0c59cd288df7afdf309e180a3b53f7d2429e945c'],
+            [CHANGETYPES.NEW, 'Added completion graphs', 'a700d1c3345056810c253f43b9899fe38e4238c6'],
+            [CHANGETYPES.NEW, 'Added leaderboard: \'Most SSed beatmaps\'', '41c092170d32d512fc4be3349529ff91cc7ba9d0'],
+            [CHANGETYPES.NEW, 'Added leaderboard: \'Most four-mod SSed beatmaps\'', '41c092170d32d512fc4be3349529ff91cc7ba9d0'],
+            [CHANGETYPES.NEW, 'Added leaderboard: \'Longest rank time\'', '41c092170d32d512fc4be3349529ff91cc7ba9d0'],
+            [CHANGETYPES.NEW, 'Added leaderboards: \'Unique SS/FC/DTFC\'', 'f6f3e28928b444e40c681b36f0ba2e70b50d5a99'],
             [CHANGETYPES.FIX, 'Added null check on user object before fetching scores', '7d6b30b7c29f768f93fa6fcfce8be2cfb5d89e25'],
             [CHANGETYPES.FIX, 'Fixed ranked and total score graphs on monthly data', '6b1865d51407f918ecacab7a5363412f00c1b072'],
+            [CHANGETYPES.FIX, 'Moved completion data generation to server-side (removes need to download beatmap data)', 'a700d1c3345056810c253f43b9899fe38e4238c6'],
+            [CHANGETYPES.MISC, 'Visual user page changes', '37a3e2653ff7ea6cb61e1d620bafbeafad9225d5'],
+            [CHANGETYPES.MISC, 'Added several beatmap details to top scores cards', 'e45fb483164d8923ca3a09bab2cb793dea4aeda5'],
             [CHANGETYPES.MISC, 'Added a warning if user is available but isn\'t a \'priority user\' (incomplete data)', 'a81faf37ecd72d3fe0fe69ded3cdcf0c02892883'],
+            [CHANGETYPES.MISC, 'General user page performance improvements', '26dac93d3d9b52576af1a8df3a25387023aa6604'],
+            [CHANGETYPES.MISC, 'Snowmode off by default', '7cbdb07c8e83a1a29a77d1030296232170c532ef'],
         ]
     },
     {
