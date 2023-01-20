@@ -192,6 +192,7 @@ async function weighPerformance(scores, onScoreProcessUpdate) {
 }
 
 export function prepareScores(user, scores, onScoreProcessUpdate) {
+    console.log('Scores before parsing', scores);
     scores.forEach(score => {
         onScoreProcessUpdate?.('' + score.id);
         score.is_loved = score.approved === 4;
@@ -201,35 +202,6 @@ export function prepareScores(user, scores, onScoreProcessUpdate) {
             score.is_unique_dt_fc = user.alt.unique_dt_fc.includes(score.beatmap_id);
         }
         score.pp = Math.max(0, parseFloat(score.pp));
-        score.enabled_mods = parseInt(score.enabled_mods);
-        score.stars = parseFloat(score.stars);
-        score.ar = parseFloat(score.ar);
-        score.od = parseFloat(score.od);
-        score.cs = parseFloat(score.cs);
-        score.hp = parseFloat(score.hp);
-        score.maxcombo = parseInt(score.maxcombo);
-        score.combo = parseInt(score.combo);
-        score.countmiss = parseInt(score.countmiss);
-        score.count300 = parseInt(score.count300);
-        score.count100 = parseInt(score.count100);
-        score.count50 = parseInt(score.count50);
-        score.score = parseInt(score.score);
-        score.accuracy = parseFloat(score.accuracy);
-        score.length = parseInt(score.length);
-        score.bpm = parseInt(score.bpm);
-        score.approved = parseInt(score.approved);
-        score.star_rating = parseFloat(score.star_rating);
-        score.aim_diff = parseFloat(score.aim_diff);
-        score.speed_diff = parseFloat(score.speed_diff);
-        score.fl_diff = parseFloat(score.fl_diff);
-        score.slider_factor = parseFloat(score.slider_factor);
-        score.modded_od = parseFloat(score.modded_od);
-        score.modded_ar = parseFloat(score.modded_ar);
-        score.modded_cs = parseFloat(score.modded_cs);
-        score.modded_hp = parseFloat(score.modded_hp);
-        score.sliders = parseInt(score.sliders);
-        score.circles = parseInt(score.circles);
-        score.spinners = parseInt(score.spinners);
         score.objects = score.sliders + score.circles + score.spinners;
         score.modded_length = score.length;
         score.date_played_moment = moment(score.date_played);
@@ -250,6 +222,7 @@ export function prepareScores(user, scores, onScoreProcessUpdate) {
         score.is_fc = isScoreFullcombo(score);
         score.scoreLazer = Math.floor(getLazerScore(score));
     });
+    console.log('Scores after parsing', scores);
 
     return scores;
 }
