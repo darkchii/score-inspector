@@ -157,7 +157,7 @@ function User() {
 
                         // </> : <></>
                     }
-                    <Stack spacing={1} direction='column'>
+                    <Stack spacing={0.5} direction='column'>
                         {
                             registered ? <></> : <Alert severity='warning'>
                                 This user is not live tracked and the data is most likely inaccurate or even non-existent.
