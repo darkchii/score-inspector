@@ -12,6 +12,8 @@ import countries from "countries-list";
 import { approval_state } from '../Helpers/Osu';
 import CheckIcon from '@mui/icons-material/Check';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import momentDurationFormatSetup from "moment-duration-format";
+momentDurationFormatSetup(moment);
 
 const GROUPED_STATS = {
     'pp': [
@@ -204,12 +206,43 @@ const GROUPED_STATS = {
         {
             name: 'most_played', title: 'Most Played',
             description: 'List of most played beatmaps',
-            group: 'grade'
         },
         {
             name: 'most_played_loved', title: 'Most Played Loved',
             description: 'List of most played loved beatmaps',
-            group: 'grade'
+        },
+        {
+            name: 'most_ssed', title: 'Most SSed',
+            description: 'List of most SSed beatmaps',
+        },
+        {
+            name: 'most_fm_ssed', title: 'Most FMSSed',
+            description: 'List of most four-mod (HDDTHRFL) SSed beatmaps',
+        },
+        {
+            name: 'longest_approval', title: 'Longest Rank Time',
+            description: 'List of beatmaps sorted by longest time from submission to ranked',
+            customFormat: (value) => `
+                ${Object.keys(value).length === 0 ? 'Instant' :
+                    `
+                    ${value.years ? value.years + 'y ' : ''}
+                    ${value.months ? value.months + 'm ' : ''}
+                    ${value.days ? value.days + 'd ' : ''}
+                    ${
+                        value.years === undefined && value.months === undefined && value.days === undefined ? `
+                        ${value.hours ? value.hours + 'h' : ''}
+                        ${value.minutes ? value.minutes + 'min' : ''}
+                        ${value.seconds ? value.seconds + 's' : ''}
+                        ` : ''
+                    }
+                    `
+                }
+            `
+        },
+        {
+            name: 'longest_maps', title: 'Longest Maps',
+            description: 'List of beatmaps sorted by length',
+            customFormat: (value) => moment.duration(value, 'seconds').format('h[h] m[m] s[s]')
         }
     ]
 }
@@ -367,11 +400,11 @@ function Leaders() {
                         {
                             <TableContainer>
                                 <Table size='small' sx={{
-                                    [`& .${tableCellClasses.root}`]: {
+                                    [`& .${ tableCellClasses.root } `]: {
                                         mb: 1,
                                         borderBottom: "none",
                                     },
-                                    [`& .${tableRowClasses.root}`]: {
+                                    [`& .${ tableRowClasses.root } `]: {
                                         borderRadius: 10,
                                     },
                                     borderCollapse: 'separate',
@@ -388,9 +421,9 @@ function Leaders() {
                                                     detail = entry.osu_user;
                                                     name = detail?.username;
                                                     background = detail?.cover?.custom_url;
-                                                } else if (leaderboardType === 'beatmaps') {
+                                                } else if (leaderboardType === 'beatmaps' || leaderboardType === 'beatmapsets') {
                                                     detail = entry.osu_beatmap;
-                                                    name = `${detail?.artist} - ${detail?.title} [${detail?.version}]`;
+                                                    name = `${ detail?.artist } - ${ detail?.title } ${ leaderboardType === 'beatmaps' ? `[${detail?.version}]` : '' } `;
                                                     background = `https://assets.ppy.sh/beatmaps/${detail?.beatmapset_id}/covers/cover.jpg`;
                                                 }
                                                 const black_overlay = background ? '0.8' : '0';
@@ -411,6 +444,8 @@ function Leaders() {
                                                                 navigate(`/user/${entry.user_id}`);
                                                             else if (leaderboardType === 'beatmaps')
                                                                 window.open(`https://osu.ppy.sh/beatmaps/${detail?.beatmap_id}`, "_blank");
+                                                            else if (leaderboardType === 'beatmapsets')
+                                                                window.open(`https://osu.ppy.sh/beatmapsets/${detail?.beatmapset_id}`, "_blank");
                                                         }}
                                                         elevation={5}>
                                                         <TableCell width={'3%'} sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})` }}>
@@ -437,7 +472,7 @@ function Leaders() {
                                                                     : <></>
                                                             }
                                                             {
-                                                                leaderboardType === 'beatmaps' ?
+                                                                leaderboardType === 'beatmaps' || leaderboardType === 'beatmapsets' ?
                                                                     <>
                                                                         {/* {approval_state[detail?.approved]} */}
                                                                         <Tooltip title={`${approval_state[detail?.approved] ?? ''}`}>
@@ -478,6 +513,17 @@ function Leaders() {
                                                                 }
                                                             </Stack>
                                                         </TableCell>
+                                                        {
+                                                            leaderboardType === 'beatmaps' ?
+                                                            <>
+                                                                <TableCell sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})` }}>
+                                                                    <Typography variant='subtitles1' noWrap>
+                                                                        {Math.round(detail?.star_rating*100)/100}*
+                                                                    </Typography>
+                                                                </TableCell>
+                                                            </> : <>
+                                                            </>
+                                                        }
                                                         <TableCell sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})` }}>
                                                             <Typography variant='subtitles1' noWrap>
                                                                 {
@@ -492,12 +538,12 @@ function Leaders() {
                                                             </Typography>
                                                         </TableCell>
                                                     </TableRow>
-                                                )
+                                                );
                                             })
                                         }
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
+                                    </TableBody >
+                                </Table >
+                            </TableContainer >
                         }
                     </> : <><p>Couldn't get data. Try later...</p></>
             }
@@ -505,7 +551,7 @@ function Leaders() {
                 <AlertTitle>Information</AlertTitle>
                 <Typography variant='body2'>
                     These leaderboards are based on data collected by osu!alt and will always be incomplete. Join the <Link href='https://discord.gg/VZWRZZXcW4' target='_blank'>osu!alt discord</Link> to get your account tracked and to improve the accuracy of the statistics shown.
-                    </Typography>
+                </Typography>
             </Alert>
         </>
     );
