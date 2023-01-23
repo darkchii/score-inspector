@@ -228,8 +228,7 @@ const GROUPED_STATS = {
                     ${value.years ? value.years + 'y ' : ''}
                     ${value.months ? value.months + 'm ' : ''}
                     ${value.days ? value.days + 'd ' : ''}
-                    ${
-                        value.years === undefined && value.months === undefined && value.days === undefined ? `
+                    ${value.years === undefined && value.months === undefined && value.days === undefined ? `
                         ${value.hours ? value.hours + 'h' : ''}
                         ${value.minutes ? value.minutes + 'min' : ''}
                         ${value.seconds ? value.seconds + 's' : ''}
@@ -400,11 +399,11 @@ function Leaders() {
                         {
                             <TableContainer>
                                 <Table size='small' sx={{
-                                    [`& .${ tableCellClasses.root } `]: {
+                                    [`& .${tableCellClasses.root} `]: {
                                         mb: 1,
                                         borderBottom: "none",
                                     },
-                                    [`& .${ tableRowClasses.root } `]: {
+                                    [`& .${tableRowClasses.root} `]: {
                                         borderRadius: 10,
                                     },
                                     borderCollapse: 'separate',
@@ -417,13 +416,17 @@ function Leaders() {
                                                 let detail;
                                                 let name;
                                                 let background;
+                                                let country;
+                                                let restricted = false;
                                                 if (leaderboardType === 'users') {
                                                     detail = entry.osu_user;
-                                                    name = detail?.username;
+                                                    name = detail?.username ?? entry?.username ?? 'n/a';
                                                     background = detail?.cover?.custom_url;
+                                                    country = detail?.country_code ?? '';
+                                                    restricted = !detail;
                                                 } else if (leaderboardType === 'beatmaps' || leaderboardType === 'beatmapsets') {
                                                     detail = entry.osu_beatmap;
-                                                    name = `${ detail?.artist } - ${ detail?.title } ${ leaderboardType === 'beatmaps' ? `[${detail?.version}]` : '' } `;
+                                                    name = `${detail?.artist} - ${detail?.title} ${leaderboardType === 'beatmaps' ? `[${detail?.version}]` : ''} `;
                                                     background = `https://assets.ppy.sh/beatmaps/${detail?.beatmapset_id}/covers/cover.jpg`;
                                                 }
                                                 const black_overlay = background ? '0.8' : '0';
@@ -460,12 +463,12 @@ function Leaders() {
                                                         <TableCell width={'5%'} sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})` }}>
                                                             {
                                                                 leaderboardType === 'users' ?
-                                                                    <Tooltip title={countries.countries[detail?.country_code.toUpperCase()].name ?? 'Unknown name'}>
+                                                                    <Tooltip title={countries.countries[country.toUpperCase()]?.name ?? 'Unknown name'}>
                                                                         <Box>
                                                                             <ReactCountryFlag
                                                                                 style={{ lineHeight: '1em', fontSize: '1.8em', borderRadius: '5px' }}
                                                                                 cdnUrl="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/"
-                                                                                countryCode={detail?.country_code}
+                                                                                countryCode={country}
                                                                             />
                                                                         </Box>
                                                                     </Tooltip>
@@ -494,9 +497,11 @@ function Leaders() {
                                                         </TableCell>
                                                         <TableCell sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})` }}>
                                                             <Stack direction='row' spacing={1} alignItems='center'>
-                                                                <Typography variant='subtitles1' noWrap>
-                                                                    {name ?? 'Unknown'}
-                                                                </Typography>
+                                                                <Tooltip title={restricted ? 'This user is likely restricted' : ''}>
+                                                                    <Typography variant='subtitles1' sx={{ textDecoration: restricted ? 'line-through' : 'none' }} noWrap>
+                                                                        {name ?? 'Unknown'}
+                                                                    </Typography>
+                                                                </Tooltip>
                                                                 {
                                                                     entry?.tracked ?
                                                                         <Tooltip title='This user is actively being tracked by osu!alternative and should be viewable'>
@@ -515,14 +520,14 @@ function Leaders() {
                                                         </TableCell>
                                                         {
                                                             leaderboardType === 'beatmaps' ?
-                                                            <>
-                                                                <TableCell sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})` }}>
-                                                                    <Typography variant='subtitles1' noWrap>
-                                                                        {Math.round(detail?.star_rating*100)/100}*
-                                                                    </Typography>
-                                                                </TableCell>
-                                                            </> : <>
-                                                            </>
+                                                                <>
+                                                                    <TableCell sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})` }}>
+                                                                        <Typography variant='subtitles1' noWrap>
+                                                                            {Math.round(detail?.star_rating * 100) / 100}*
+                                                                        </Typography>
+                                                                    </TableCell>
+                                                                </> : <>
+                                                                </>
                                                         }
                                                         <TableCell sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})` }}>
                                                             <Typography variant='subtitles1' noWrap>
