@@ -21,7 +21,7 @@ export const ROLES = [
 ]
 
 export function GetFormattedName(inspector_user, custom_tooltip = null, is_link = false, size = 'small') {
-    let name = inspector_user.known_username;
+    let name = inspector_user?.known_username;
     if (inspector_user === null || inspector_user.osu_id === null) {
         name = 'Guest';
     }
@@ -33,9 +33,11 @@ export function GetFormattedName(inspector_user, custom_tooltip = null, is_link 
     return (
         <>
             <Tooltip title={custom_tooltip ?? ''} placement='top'>
-                <Chip sx={{ pr: inspector_user.roles?.length > 0 ? 1 : 0, '&:hover': {
-                    cursor: is_link ? 'pointer' : 'default'
-                } }}
+                <Chip sx={{
+                    pr: inspector_user.roles?.length > 0 ? 1 : 0, '&:hover': {
+                        cursor: is_link ? 'pointer' : 'default'
+                    }
+                }}
                     onDelete={() => { }}
                     deleteIcon={<>{Array.isArray(inspector_user.roles) && inspector_user.roles?.map(role => {
                         const _role = ROLES.find(r => r.id === role);
@@ -47,8 +49,8 @@ export function GetFormattedName(inspector_user, custom_tooltip = null, is_link 
                                 </Tooltip>
                             </>)
                     })}</>}
-                    avatar={<Avatar alt={name} src={`https://a.ppy.sh/${inspector_user.osu_id}`} />} 
-                    label={name} 
+                    avatar={<Avatar alt={name} src={`https://a.ppy.sh/${inspector_user.osu_id}`} />}
+                    label={name}
                     size={size} />
             </Tooltip>
         </>
@@ -56,11 +58,18 @@ export function GetFormattedName(inspector_user, custom_tooltip = null, is_link 
 }
 
 export function GetRoles(inspector_user) {
+    if (inspector_user === null || inspector_user.roles === null) return null;
     if (inspector_user.roles !== null && typeof inspector_user.roles === 'string') {
         inspector_user.roles = JSON.parse(inspector_user.roles);
     }
 
     return inspector_user.roles;
+}
+
+export function IsUserAdmin(inspector_user) {
+    const roles = GetRoles(inspector_user);
+    const isAdmin = roles?.includes('admin') || roles?.includes('dev');
+    return isAdmin;
 }
 
 export function IsUserLoggedInUnsafe() {
@@ -203,7 +212,7 @@ export async function UpdateProfile(data) {
     return res;
 }
 
-export async function DeleteComment(comment_id, deleter_id){
+export async function DeleteComment(comment_id, deleter_id) {
     if (!await IsUserLoggedIn()) return null;
 
     const res = await fetch(`${GetAPI()}login/comments/delete`, {
@@ -221,7 +230,7 @@ export async function DeleteComment(comment_id, deleter_id){
     return res;
 }
 
-export async function GetComments(user_id){
+export async function GetComments(user_id) {
     let res = null;
     try {
         res = await axios.get(`${GetAPI()}login/comments/get/${user_id}`);
@@ -230,7 +239,7 @@ export async function GetComments(user_id){
     return res?.data;
 }
 
-export async function SendComment(sender, recipient, reply_to, content){
+export async function SendComment(sender, recipient, reply_to, content) {
     if (!await IsUserLoggedIn()) return null;
 
     const res = await fetch(`${GetAPI()}login/comments/send`, {
