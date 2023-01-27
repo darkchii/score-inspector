@@ -90,3 +90,12 @@ export function readFileAsync(file) {
         reader.readAsArrayBuffer(file);
     })
 }
+
+export function nestedSearch(object, keyArray) {
+    const _keyArray = [...keyArray];
+    const _currentKey = _keyArray.shift();
+    if (_keyArray.length === 0) {
+        return object[_currentKey];
+    }
+    return nestedSearch(object[_currentKey], _keyArray);
+}

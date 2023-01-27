@@ -35,7 +35,7 @@ export const dataToList = [
     {
         outputValue: "total_sr",
         exec: function (output, score) {
-            return output + score.stars;
+            return output + score.beatmap.modded_sr.star_rating;
         }
     },
     {
@@ -95,7 +95,7 @@ export const dataToList = [
     {
         outputValue: "total_length",
         exec: function (output, score) {
-            return output + score.length;
+            return output + score.beatmap.modded_length;
         }
     },
     {

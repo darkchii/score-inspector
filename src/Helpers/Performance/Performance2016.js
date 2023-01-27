@@ -45,7 +45,7 @@ function getTotalValue(data) {
 }
 
 function getAimValue(data) {
-    const raw_aim = data.score.aim_diff;
+    const raw_aim = data.score.beatmap.modded_sr.aim_diff;
 
     let aim = Math.pow(5.0 * Math.max(1.0, raw_aim / 0.0675) - 4.0, 3.0) / 100000.0;
 
@@ -58,18 +58,18 @@ function getAimValue(data) {
 
     aim *= Math.pow(0.97, data.countmiss);
 
-    if (data.score.maxcombo > 0) {
-        aim *= Math.min(Math.pow(data.combo, 0.8) / Math.pow(data.score.maxcombo, 0.8), 1.0);
+    if (data.score.beatmap.maxcombo > 0) {
+        aim *= Math.min(Math.pow(data.combo, 0.8) / Math.pow(data.score.beatmap.maxcombo, 0.8), 1.0);
     }
 
     let approachRateFactor = 1.0;
-    if (data.score.modded_ar > 10.33) {
-        approachRateFactor += 0.45 * (data.score.modded_ar - 10.33);
-    } else if (data.score.modded_ar < 8.0) {
+    if (data.score.beatmap.modded_sr.modded_ar > 10.33) {
+        approachRateFactor += 0.45 * (data.score.beatmap.modded_sr.modded_ar - 10.33);
+    } else if (data.score.beatmap.modded_sr.modded_ar < 8.0) {
         if (data.score.enabled_mods & mods.HD) {
-            approachRateFactor += 0.02 * (8.0 - data.score.modded_ar);
+            approachRateFactor += 0.02 * (8.0 - data.score.beatmap.modded_sr.modded_ar);
         } else {
-            approachRateFactor += 0.01 * (8.0 - data.score.modded_ar);
+            approachRateFactor += 0.01 * (8.0 - data.score.beatmap.modded_sr.modded_ar);
         }
     }
 
@@ -85,13 +85,13 @@ function getAimValue(data) {
 
     aim *= 0.5 + getAccuracy(data) * 0.5;
 
-    aim *= 0.98 + ((data.score.modded_od * data.score.modded_od) / 2500);
+    aim *= 0.98 + ((data.score.beatmap.modded_sr.modded_od * data.score.beatmap.modded_sr.modded_od) / 2500);
 
     return aim;
 }
 
 function getSpeedValue(data) {
-    let speed = Math.pow(5.0 * Math.max(1.0, data.score.speed_diff / 0.0675) - 4.0, 3.0) / 100000.0;
+    let speed = Math.pow(5.0 * Math.max(1.0, data.score.beatmap.modded_sr.speed_diff / 0.0675) - 4.0, 3.0) / 100000.0;
 
     const amountTotalHits = data.totalhits;
 
@@ -100,19 +100,19 @@ function getSpeedValue(data) {
 
     speed *= Math.pow(0.97, data.countmiss);
 
-    if (data.score.maxcombo > 0) {
-        speed *= Math.min(Math.pow(data.combo, 0.8) / Math.pow(data.score.maxcombo, 0.8), 1.0);
+    if (data.score.beatmap.maxcombo > 0) {
+        speed *= Math.min(Math.pow(data.combo, 0.8) / Math.pow(data.score.beatmap.maxcombo, 0.8), 1.0);
     }
 
     speed *= 0.5 + getAccuracy(data) * 0.5;
-    speed *= 0.98 + ((data.score.modded_od * data.score.modded_od) / 2500);
+    speed *= 0.98 + ((data.score.beatmap.modded_sr.modded_od * data.score.beatmap.modded_sr.modded_od) / 2500);
     return speed;
 }
 
 function getAccuracyValue(data) {
     let betterAccuracyPercentage = 0;
 
-    const amountHitObjectsWithAccuracy = data.score.circles;
+    const amountHitObjectsWithAccuracy = data.score.beatmap.circles;
     if(amountHitObjectsWithAccuracy>0){
         betterAccuracyPercentage = ((data.count300 - (data.totalhits-amountHitObjectsWithAccuracy)) * 6 + data.count100 * 2 + data.count50) / (amountHitObjectsWithAccuracy * 6);
     }else{
@@ -123,7 +123,7 @@ function getAccuracyValue(data) {
         betterAccuracyPercentage = 0;
     }
 
-    let acc = Math.pow(1.52163, data.score.modded_od) * Math.pow(betterAccuracyPercentage, 24.0) * 2.83;
+    let acc = Math.pow(1.52163, data.score.beatmap.modded_sr.modded_od) * Math.pow(betterAccuracyPercentage, 24.0) * 2.83;
 
     acc *= Math.min(1.15, Math.pow(amountHitObjectsWithAccuracy / 1000.0, 0.3));
 

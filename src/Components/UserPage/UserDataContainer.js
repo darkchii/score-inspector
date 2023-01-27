@@ -15,6 +15,7 @@ import SectionDaily from "./SectionDaily";
 import SectionComments from "./SectionComments";
 import styled from "@emotion/styled";
 import SectionCompletion from "./SectionCompletion";
+import SectionCompactCard from "./SectionCompactCard";
 
 const StyledTab = styled(Tab)({
     minHeight: 'auto',
@@ -30,7 +31,8 @@ function UserDataContainer(props) {
         'graphs': '2',
         'scores': '3',
         'completion': '4',
-        'comments': '5'
+        'comments': '5',
+        'card': '6'
     }
 
     return (
@@ -44,6 +46,7 @@ function UserDataContainer(props) {
                         <StyledTab icon={<FormatListBulletedIcon />} iconPosition='start' label='Scores' value={_IDs['scores']} />
                         <StyledTab icon={<GradingIcon />} iconPosition='start' label='Completion' value={_IDs['completion']} />
                         <StyledTab icon={<InsertCommentIcon />} iconPosition='start' label='Comments' value={_IDs['comments']} />
+                        <StyledTab icon={<InsertCommentIcon />} iconPosition='start' label='Card' value={_IDs['card']} />
                     </TabList>
                 </Box>
                 <TabPanel sx={{ p: 0 }} value={_IDs['profile']}>
@@ -66,6 +69,9 @@ function UserDataContainer(props) {
                 </TabPanel>
                 <TabPanel sx={{ p: 0 }} value={_IDs['completion']}>
                     <SectionCompletion user={props.user} />
+                </TabPanel>
+                <TabPanel sx={{ p: 0 }} value={_IDs['card']}>
+                    <SectionCompactCard user={props.user} />
                 </TabPanel>
             </TabContext>
         </>

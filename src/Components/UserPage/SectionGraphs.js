@@ -42,7 +42,8 @@ function SectionGraphs(props) {
                 //{ id: "accPerPlay", title: "Average Accuracy" },
                 { id: "highestPPPlay", title: "Highest PP" },
                 { id: "rawPP", title: "Raw PP", isDailyApi: true },
-                { id: "globalRank", title: "Rank", isDailyApi: true },
+                { id: "globalRank", title: "World Rank", isDailyApi: true },
+                { id: "countryRank", title: "Country Rank", isDailyApi: true },
                 { id: "completion", title: "Completion" },
             ]
         }
@@ -70,28 +71,20 @@ function SectionGraphs(props) {
                                                     <Typography variant="body1">{group.title}</Typography>
                                                 </TableCell>
                                                 <TableCell>
-                                                    <ButtonGroup size='small'>
-                                                        {
-                                                            group.buttons.map((button, j) => {
-                                                                const disableButton = button.isDailyApi ? (props.user.daily === null || props.user.daily === undefined || props.user.daily.error !== undefined) : false;
+                                                    {
+                                                        group.buttons.map((button, j) => {
+                                                            const disableButton = button.isDailyApi ? (props.user.daily === null || props.user.daily === undefined || props.user.daily.error !== undefined) : false;
 
-                                                                return (
-                                                                    <>
-                                                                        {
-                                                                            disableButton ?
-                                                                                <Tooltip title='No data available from osu!daily api for this user'>
-                                                                                    <Button disabled={true} variant={timeGraphValue === button.id ? 'contained' : 'outlined'} key={j} onClick={() => { setTimeGraphValue(button.id); }}>{button.title}</Button>
-                                                                                </Tooltip> :
-                                                                                <>
-                                                                                    <Button disabled={false} variant={timeGraphValue === button.id ? 'contained' : 'outlined'} key={j} onClick={() => { setTimeGraphValue(button.id); }}>{button.title}</Button>
-                                                                                </>
-                                                                        }
-                                                                    </>
-                                                                )
-                                                            }
+                                                            return (
+                                                                <>
+                                                                    <Tooltip title={disableButton ? 'No data available from osu!daily api for this user' : ''}>
+                                                                        <Button sx={{mr:1}} size='small' disabled={disableButton} variant={timeGraphValue === button.id ? 'contained' : 'outlined'} key={j} onClick={() => { setTimeGraphValue(button.id); }}>{button.title}</Button>
+                                                                    </Tooltip>
+                                                                </>
                                                             )
                                                         }
-                                                    </ButtonGroup>
+                                                        )
+                                                    }
                                                 </TableCell>
                                             </TableRow>
                                         )

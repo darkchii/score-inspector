@@ -238,8 +238,8 @@ function Root() {
                                                             <>
                                                                 <TableRow>
                                                                     <TableCell>
-                                                                        <RouterLink to={`user/${v.osu_id}`}>
-                                                                            {GetFormattedName(v, `Last visit: ${moment(v.last_visit).fromNow()}`, true)}
+                                                                        <RouterLink to={`user/${v.target_user.osu_id}`}>
+                                                                            {GetFormattedName(v.target_user, `Last visit: ${moment(v.last_visit).fromNow()}`, true)}
                                                                         </RouterLink>
                                                                     </TableCell>
                                                                     <TableCell>
@@ -264,8 +264,8 @@ function Root() {
                                                             <>
                                                                 <TableRow>
                                                                     <TableCell>
-                                                                        <RouterLink to={`user/${v.osu_id}`}>
-                                                                            {GetFormattedName(v, `Last visit: ${moment(v.last_visit).fromNow()}`, true)}
+                                                                        <RouterLink to={`user/${v.target_user.osu_id}`}>
+                                                                            {GetFormattedName(v.target_user, `Last visit: ${moment(v.last_visit).fromNow()}`, true)}
                                                                         </RouterLink>
                                                                     </TableCell>
                                                                     <TableCell>

@@ -80,8 +80,8 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
         data.total.pp += score.pp ?? 0;
         data.total.score += score.score ?? 0;
         data.total.acc += score.accuracy ?? 0;
-        data.total.length += score.modded_length ?? 0;
-        data.total.star_rating += score.star_rating ?? 0;
+        data.total.length += score.beatmap.modded_length ?? 0;
+        data.total.star_rating += score.beatmap.modded_sr.star_rating ?? 0;
         data.total.scoreLazer += score.scoreLazer ?? 0;
         data.total.is_fc += score.is_fc ?? 0;
     }
@@ -139,6 +139,10 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
     onScoreProcessUpdate('Active days');
     data.activeDays = getActiveDays(scores);
 
+    await sleep(FEEDBACK_SLEEP_TIME);
+    onScoreProcessUpdate('Average day spread');
+    data.averageDaySpread = getDayPlaycountSpread(scores);
+
     return data;
 }
 
@@ -190,10 +194,10 @@ async function weighPerformance(scores, onScoreProcessUpdate) {
 }
 
 export function prepareScores(user, scores, onScoreProcessUpdate) {
-    console.log('Scores before parsing', scores);
+    console.log('Before proc', scores[200]);
     scores.forEach(score => {
         onScoreProcessUpdate?.('' + score.id);
-        score.is_loved = score.approved === 4;
+        score.is_loved = score.beatmap.approved === 4;
         if (user !== null) {
             score.is_unique_ss = user.alt.unique_ss.includes(score.beatmap_id);
             score.is_unique_fc = user.alt.unique_fc.includes(score.beatmap_id);
@@ -201,27 +205,37 @@ export function prepareScores(user, scores, onScoreProcessUpdate) {
         }
         score.accuracy = parseFloat(score.accuracy);
         score.pp = Math.max(0, parseFloat(score.pp));
-        score.objects = score.sliders + score.circles + score.spinners;
-        score.modded_length = score.length;
         score.date_played_moment = moment(score.date_played);
-        score.date_approved_moment = moment(score.date_approved);
+        score.enabled_mods = parseInt(score.enabled_mods);
+
+        score.beatmap.objects = score.beatmap.sliders + score.beatmap.circles + score.beatmap.spinners;
+        score.beatmap.modded_length = score.beatmap.length;
+        score.beatmap.modded_bpm = score.beatmap.bpm;
+        score.beatmap.date_approved_moment = moment(score.beatmap.date_approved);
         if (score.enabled_mods & mods.DT || score.enabled_mods & mods.NC) {
-            score.modded_length /= 1.5;
+            score.beatmap.modded_length /= 1.5;
+            score.beatmap.modded_bpm *= 1.5;
         } else if (score.enabled_mods & mods.HT) {
-            score.modded_length /= 0.75;
+            score.beatmap.modded_length /= 0.75;
+            score.beatmap.modded_bpm *= 0.75;
         }
         score.modString = getModString(score.enabled_mods).toString();
         score.totalhits = score.count300 + score.count100 + score.count50 + score.countmiss;
 
-        score.pp_fc = getPerformanceLive({ count300: score.count300 + score.countmiss, count100: score.count100, count50: score.count50, countmiss: 0, combo: score.maxcombo, score: score });
-        score.pp_ss = getPerformanceLive({ count300: score.count300 + score.countmiss + score.count100 + score.count50, count100: 0, count50: 0, countmiss: 0, combo: score.maxcombo, score: score });
+        score.pp_fc = getPerformanceLive({ count300: score.count300 + score.countmiss, count100: score.count100, count50: score.count50, countmiss: 0, combo: score.beatmap.maxcombo, score: score });
+        score.pp_ss = getPerformanceLive({ count300: score.count300 + score.countmiss + score.count100 + score.count50, count100: 0, count50: 0, countmiss: 0, combo: score.beatmap.maxcombo, score: score });
         score.pp_cur = getPerformanceLive({ score: score });
         score.pp_2016 = getPerformance2016({ score: score });
 
         score.is_fc = isScoreFullcombo(score);
         score.scoreLazer = Math.floor(getLazerScore(score));
+
+        if(!score.user && user){
+            score.user = user.alt;
+        }
     });
-    console.log('Scores after parsing', scores);
+
+    console.log('After proc', scores[200]);
 
     return scores;
 }
@@ -239,7 +253,7 @@ function getBestScores(scores) {
                 _scores.best_pp = score;
             }
             if ((score.enabled_mods & mods.NF) === 0) {
-                if ((_scores.best_sr === null || score.star_rating > _scores.best_sr.star_rating)) {
+                if ((_scores.best_sr === null || score.beatmap.modded_sr.star_rating > _scores.best_sr.beatmap.modded_sr.star_rating)) {
                     _scores.best_sr = score;
                 }
             }
@@ -294,11 +308,31 @@ function isScoreFullcombo(score) {
     var is_fc = score.perfect === 1;
 
     if (!is_fc) {
-        if (score.countmiss === 0 && score.maxcombo > 0) {
-            const perc_fc = 100 / score.maxcombo * score.combo;
+        if (score.countmiss === 0 && score.beatmap.maxcombo > 0) {
+            const perc_fc = 100 / score.beatmap.maxcombo * score.combo;
             is_fc = perc_fc >= 99;
         }
     }
 
     return is_fc;
+}
+
+function getDayPlaycountSpread(scores) {
+    //ranges
+    //const ranges = ['0-1', '1-2', '2-3', '3-4', '4-5', '5-6', '6-7', '7-8', '8-9', '9-10', '10-11', '11-12', '12-13', '13-14', '14-15', '15-16', '16-17', '17-18', '18-19', '19-20', '20-21', '21-22', '22-23', '23-24'];
+    const hours = ["12 AM", "1 AM", "2 AM", "3 AM", "4 AM", "5 AM", "6 AM", "7 AM", "8 AM", "9 AM", "10 AM", "11 AM", "12 PM", "1 PM", "2 PM", "3 PM", "4 PM", "5 PM", "6 PM", "7 PM", "8 PM", "9 PM", "10 PM", "11 PM"];
+    const values = [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    ];
+
+    scores.forEach(score => {
+        // const hour = moment(score.date_played).hour();
+        const hour = parseInt(score.date_played_moment.hour());
+        if (!values[hour]) {
+            values[hour] = 0;
+        }
+        values[hour]++;
+    });
+
+    return { hours, values };
 }

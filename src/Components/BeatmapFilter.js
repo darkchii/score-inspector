@@ -39,8 +39,6 @@ function BeatmapFilter(props) {
 
     const [columns, setColumns] = useState(null);
 
-    console.log('approved min: ' + minApprovedDate);
-
     const handleModStateChange = (event) => {
         setModsState(event.target.value);
     };

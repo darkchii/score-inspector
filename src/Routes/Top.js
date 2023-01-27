@@ -89,7 +89,7 @@ function Top(props) {
                                                     return (
                                                         <Box
                                                             sx={{
-                                                                backgroundImage: `url(https://assets.ppy.sh/beatmaps/${score.set_id}/covers/cover.jpg)`,
+                                                                backgroundImage: `url(https://assets.ppy.sh/beatmaps/${score.beatmap.set_id}/covers/cover.jpg)`,
                                                                 backgroundSize: 'cover',
                                                                 backgroundPosition: 'center',
                                                                 borderRadius: '10px'
@@ -106,14 +106,14 @@ function Top(props) {
                                                             }}>
                                                                 <Stack direction='column' spacing={0} sx={{ width: '100%' }}>
                                                                     {/* <Marquee pauseOnHover={true} speed={40} gradient={false}> */}
-                                                                    <Tooltip title={`${score.artist} - ${score.title} [${score.diffname}]`}>
-                                                                        <Typography textOverflow='ellipsis' noWrap variant='h6' sx={{ fontSize: '1em' }}>{score.artist} - {score.title} [{score.diffname}]</Typography>
+                                                                    <Tooltip title={`${score.beatmap.artist} - ${score.beatmap.title} [${score.beatmap.diffname}]`}>
+                                                                        <Typography textOverflow='ellipsis' noWrap variant='h6' sx={{ fontSize: '1em' }}>{score.beatmap.artist} - {score.beatmap.title} [{score.beatmap.diffname}]</Typography>
                                                                     </Tooltip>
                                                                     {/* </Marquee> */}
                                                                     <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                                                                         <Box>
                                                                             <Typography variant='body1'>
-                                                                                By <Typography component={Link} variant='body1' sx={{ textDecoration: 'none' }} color='primary' to={`/user/${score.user_id}`}>{score.username}</Typography> <Tooltip title={moment(score.date_played).format('HH:mm MMMM Do, YYYY')}><Chip label={moment(score.date_played).fromNow()} color='primary' size='small' /></Tooltip>
+                                                                                By <Typography component={Link} variant='body1' sx={{ textDecoration: 'none' }} color='primary' to={`/user/${score.user_id}`}>{score.user.username}</Typography> <Tooltip title={moment(score.date_played).format('HH:mm MMMM Do, YYYY')}><Chip label={moment(score.date_played).fromNow()} color='primary' size='small' /></Tooltip>
                                                                             </Typography>
                                                                             <Button onClick={() => { setModalData({ active: true, score: score }) }} size='small' variant='contained'>View</Button>
                                                                         </Box>
@@ -122,7 +122,7 @@ function Top(props) {
                                                                                 {scores[i].significantStat==='pp' && !score.is_fc ? `(${Math.round(score.pp_fc.total).toLocaleString('en-US')}pp if FC)` : ''} {Math.round(score[scores[i].significantStat]).toLocaleString('en-US')}{scores[i].significantStat === 'pp' ? `pp` : ''}
                                                                             </Typography>
                                                                             <Typography sx={{ textAlign: 'right' }} variant='body1'>
-                                                                                {score.modString} {score.is_fc ? 'FC' : ''} {Math.round(score.accuracy * 100) / 100}% {Math.round(score.star_rating * 10) / 10}*
+                                                                                {score.modString} {score.is_fc ? 'FC' : ''} {Math.round(score.accuracy * 100) / 100}% {Math.round(score.beatmap.modded_sr.star_rating * 10) / 10}*
                                                                             </Typography>
                                                                         </Box>
                                                                     </Box>

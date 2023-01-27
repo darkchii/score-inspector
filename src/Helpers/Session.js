@@ -13,7 +13,7 @@ export function getSessions(scores) {
     scores.forEach((score, index) => {
         const currentUnix = score.date_played_moment.valueOf() * 0.001;
         if (currentActivity.start === null) {
-            currentActivity.start = currentUnix - score.modded_length;
+            currentActivity.start = currentUnix - score.beatmap.modded_length;
         }
 
         currentActivity.end = currentUnix;
@@ -35,7 +35,7 @@ export function getSessions(scores) {
             activities.push(currentActivity);
             if (index < scores.length - 1) {
                 currentActivity = {
-                    start: scores[index + 1].date_played_moment.valueOf() * 0.001 - score.modded_length,
+                    start: scores[index + 1].date_played_moment.valueOf() * 0.001 - score.beatmap.modded_length,
                     end: null,
                     length: null,
                     done: false

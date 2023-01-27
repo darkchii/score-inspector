@@ -19,20 +19,21 @@ import {
     Legend,
 } from 'chart.js';
 import Annotations from "chartjs-plugin-annotation";
+import { deepSearch, nestedSearch } from "../../Helpers/Misc";
 ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend, Annotations);
 momentDurationFormatSetup(moment);
 
 const heightDefiners = [
-    { value: 'pp', label: 'Performance' },
-    { value: 'score', label: 'Score' },
-    { value: 'accuracy', label: 'Accuracy' },
-    { value: 'combo', label: 'Combo' },
-    { value: 'length', label: 'Length' },
-    { value: 'star_rating', label: 'Stars' },
-    { value: 'modded_cs', label: 'CS' },
-    { value: 'modded_ar', label: 'AR' },
-    { value: 'modded_od', label: 'OD' },
-    { value: 'modded_hp', label: 'HP' },
+    { value: 'pp', nesting: ['pp'], label: 'Performance' },
+    { value: 'score', nesting: ['score'], label: 'Score' },
+    { value: 'acc', nesting: ['accuracy'], label: 'Accuracy' },
+    { value: 'combo', nesting: ['combo'], label: 'Combo' },
+    { value: 'length', nesting: ['beatmap', 'length'], label: 'Length' },
+    { value: 'sr', nesting: ['beatmap', 'modded_sr', 'star_rating'], label: 'Stars' },
+    { value: 'cs', nesting: ['beatmap', 'modded_sr', 'modded_cs'], label: 'CS' },
+    { value: 'ar', nesting: ['beatmap', 'modded_sr', 'modded_ar'], label: 'AR' },
+    { value: 'od', nesting: ['beatmap', 'modded_sr', 'modded_od'], label: 'OD' },
+    { value: 'hp', nesting: ['beatmap', 'modded_sr', 'modded_hp'], label: 'HP' },
 ]
 
 function SectionDaily(props) {
@@ -43,7 +44,7 @@ function SectionDaily(props) {
     const [scores, setScores] = useState(null);
     const [graphOptions, setGraphOptions] = useState(null);
     const [graphData, setGraphData] = useState(null);
-    const [heightDefiner, setHeightDefiner] = useState('pp');
+    const [heightDefiner, setHeightDefiner] = useState(heightDefiners[0]);
 
     const [sessionCount, setSessionCount] = useState(0);
     const [totalSessionLength, setTotalSessionLength] = useState(0);
@@ -55,12 +56,12 @@ function SectionDaily(props) {
         return index;
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         setMaxDate(moment.unix((props.user.scores !== null && props.user.scores.length > 0) ? Math.max(...props.user.scores.map(score => moment(score.date_played).unix())) : moment().unix()));
     }, props.user.scores);
 
     useEffect(() => {
-        if(scores===null){
+        if (scores === null) {
             return;
         }
         const updateGraph = () => {
@@ -126,7 +127,7 @@ function SectionDaily(props) {
                     tooltip: {
                         callbacks: {
                             label: function (context) {
-                                return `${moment.unix(context.parsed.x).format("HH:mm")} • ${context.raw.score.artist} - ${context.raw.score.title} [${context.raw.score.diffname}] • ${context.raw.score.accuracy}% ${context.raw.score.rank} • ${context.raw.score.score} score • ${context.raw.score.pp.toFixed(2)}pp`;
+                                return `${moment.unix(context.parsed.x).format("HH:mm")} • ${context.raw.score.beatmap.artist} - ${context.raw.score.beatmap.title} [${context.raw.score.beatmap.diffname}] • ${context.raw.score.accuracy}% ${context.raw.score.rank} • ${context.raw.score.score} score • ${context.raw.score.pp.toFixed(2)}pp`;
                             }
                         }
                     },
@@ -141,7 +142,7 @@ function SectionDaily(props) {
                 datasets: [
                     {
                         label: "Scores",
-                        data: scores !== null ? scores.map((score) => { return { x: moment(score.date_played).unix(), y: score[heightDefiner], score: score } }) : [],
+                        data: scores !== null ? scores.map((score) => { return { x: moment(score.date_played).unix(), y: nestedSearch(score, heightDefiner.nesting), score: score } }) : [],
                         backgroundColor: scores !== null ? scores.map((score) => getGradeColor(score.rank)) : [],
                         pointRadius: 5,
                         pointStyle: scores !== null ? scores.map((score) => (((score.enabled_mods & mods.HD !== 0) || (score.enabled_mods & mods.FL) !== 0) ? 'rect' : 'circle')) : [],
@@ -167,15 +168,15 @@ function SectionDaily(props) {
     }, [scores, props.user.scores, heightDefiner]);
 
     useEffect(() => {
-        if(isWorking){
+        if (isWorking) {
             return;
         }
 
-        if(selectedDay > MAX_DATE){
+        if (selectedDay > MAX_DATE) {
             setSelectedDay(MAX_DATE);
             return;
         }
-        
+
         const handleDayChange = async (date) => {
             setWorkingState(true);
             setScores(null);
@@ -225,8 +226,8 @@ function SectionDaily(props) {
                     _stats.clears++;
                     _stats.pp += score.pp ?? 0;
                     acc += score.accuracy;
-                    sr += score.star_rating;
-                    _stats.playtime += score.modded_length;
+                    sr += score.beatmap.modded_sr.star_rating;
+                    _stats.playtime += score.beatmap.modded_length;
                 });
                 _stats.average_acc = acc / sorted.length;
                 _stats.average_sr = sr / sorted.length;
@@ -273,7 +274,7 @@ function SectionDaily(props) {
                         <Grid sx={{ my: 2 }}>
                             <ButtonGroup size='small'>
                                 {heightDefiners.map((definer) => (
-                                    <Button onClick={() => setHeightDefiner(definer.value)} variant={heightDefiner === definer.value ? 'contained' : 'outlined'}>
+                                    <Button onClick={() => setHeightDefiner(definer)} variant={heightDefiner.value === definer.value ? 'contained' : 'outlined'}>
                                         {definer.label}
                                     </Button>
                                 ))

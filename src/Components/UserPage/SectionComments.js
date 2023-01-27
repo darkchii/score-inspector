@@ -119,7 +119,7 @@ function SectionComments(props) {
                             return (
                                 <>
                                     <Box sx={{ m: 1, p: 1 }}>
-                                        <Typography variant='subtitle1'>{GetFormattedName(comment, null, null, 'large')} &bull; {comment.date.fromNow()} &bull; #{comment.id.toLocaleString('en-US')}</Typography>
+                                        <Typography variant='subtitle1'>{GetFormattedName(comment.commentor, null, null, 'large')} &bull; {comment.date.fromNow()} &bull; #{comment.id.toLocaleString('en-US')}</Typography>
                                         <Box>
                                             {parse(comment.comment)}
                                         </Box>

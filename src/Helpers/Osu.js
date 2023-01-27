@@ -186,10 +186,10 @@ export function getLazerScore(score, classic = true) {
     const mul = getModMultiplier(score.enabled_mods);
     let val = ((((
         (50 * score.count50 + 100 * score.count100 + 300 * score.count300) / (300 * score.count50 + 300 * score.count100 + 300 * score.count300 + 300 * score.countmiss)) *
-        300000) + ((score.combo / score.maxcombo) * 700000)) * mul);
+        300000) + ((score.combo / score.beatmap.maxcombo) * 700000)) * mul);
 
     if (classic) {
-        val = Math.pow(((val / MAX_SCORE) * score.objects), 2) * 36;
+        val = Math.pow(((val / MAX_SCORE) * score.beatmap.objects), 2) * 36;
     }
     return val;
 }
@@ -357,7 +357,7 @@ export function calculatePP2016(scores) {
 
 export function isScoreRealistic(score) {
     const maxMissCount = (score.enabled_mods & mods.NF) ? 15 : 30; //max 15 misses on NF, max 30 on no NF
-    const minCombo = score.maxcombo * 0.8; //80% combo
+    const minCombo = score.beatmap.maxcombo * 0.8; //80% combo
     const minAcc = (score.enabled_mods & mods.NF) ? 90 : 80; //90% acc required for NF, 80% for no NF
 
     if (score.countmiss <= maxMissCount || score.combo > minCombo || score.accuracy > minAcc) {

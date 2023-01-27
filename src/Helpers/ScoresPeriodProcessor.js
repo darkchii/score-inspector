@@ -134,7 +134,7 @@ function processDailyData(chunks, user, data, f = 'm') {
                 const date = moment(point.date);
                 if (date.isSame(chunks[i].actual_date, PERIOD_FORMATS[f].format)) {
                     //perDatePoints.push(dailyPoints[j]);
-                    if (rank === null || point.rankworld < rank) {
+                    if (rank === null || point.rankworld > rank) {
                         rank = point.rankworld;
                     }
 
@@ -153,6 +153,9 @@ function processDailyData(chunks, user, data, f = 'm') {
                 }
             }
         }
+
+        if (rank === 0) rank = null;
+        if (c_rank === 0) c_rank = null;
         chunks[i].osudaily = {};
         chunks[i].osudaily.global_rank = rank !== null ? -rank : null;
         chunks[i].osudaily.country_rank = c_rank !== null ? -c_rank : null;
@@ -167,7 +170,7 @@ function processDailyData(chunks, user, data, f = 'm') {
         if (prev) {
             chunks[i].osudaily.total_score = Math.max(0, chunks[i].osudaily.cumulative_total_score - (prev?.cumulative_total_score ?? 0));
             chunks[i].osudaily.gained_level = Math.max(0, chunks[i].osudaily.cumulative_level - (prev?.cumulative_level ?? 0));
-        }else{
+        } else {
             chunks[i].osudaily.total_score = 0;
             chunks[i].osudaily.gained_level = 0;
         }
@@ -349,8 +352,10 @@ function getGraphObjects(chunks, labels, f = 'm') {
         "srPerPlay": <TimeGraph name="Average SR per play" labels={labels} data={[{ name: "Average SR", set: chunks.map(x => x.average_sr), color: { r: 255, g: 102, b: 158 } }]} />,
         "scorePerPlay": <TimeGraph name="Average score per play" labels={labels} data={[{ name: "Average score", set: chunks.map(x => x.average_score), color: { r: 255, g: 102, b: 158 } }]} />,
         "lengthPerPlay": <TimeGraph name="Average length per play" labels={labels} data={[{ name: "Average score", set: chunks.map(x => x.average_length), color: { r: 255, g: 102, b: 158 } }]} />,
-        "globalRank": <TimeGraph formatter={(value, context) => { return `#${Math.abs(value).toLocaleString("en-US")}`; }} name="Rank" labels={labels} data={[
+        "globalRank": <TimeGraph formatter={(value, context) => { return `#${Math.abs(value).toLocaleString("en-US")}`; }} name="World Rank" labels={labels} data={[
             { name: "Global Rank", set: chunks.map(x => x.osudaily.global_rank), color: { r: 255, g: 102, b: 158 } },
+        ]} />,
+        "countryRank": <TimeGraph formatter={(value, context) => { return `#${Math.abs(value).toLocaleString("en-US")}`; }} name="Country Rank" labels={labels} data={[
             { name: "Country Rank", set: chunks.map(x => x.osudaily.country_rank), color: { r: 82, g: 158, b: 250 } },
         ]} />,
         "rawPP": <TimeGraph name="Raw PP" labels={labels} data={[{ name: "Raw PP", set: chunks.map(x => x.osudaily.raw_pp), color: { r: 255, g: 102, b: 158 } }]} />,

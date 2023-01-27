@@ -113,10 +113,10 @@ function SectionScores(props) {
         scores.forEach(score => {
             rows.push({
                 id: index,
-                title: `${score.title} [${score.diffname}]`,
+                title: `${score.beatmap.title} [${score.beatmap.diffname}]`,
                 score: score.score,
                 mods: score.enabled_mods,
-                sr: score.star_rating,
+                sr: score.beatmap.modded_sr.star_rating,
                 pp: score.pp,
                 aimpp: score.pp_cur.aim,
                 speedpp: score.pp_cur.speed,
@@ -125,11 +125,11 @@ function SectionScores(props) {
                 date: `${score.date_played}`,
                 grade: `${score.rank}`,
                 combo: `${score.combo}`,
-                maxcombo: `${score.maxcombo}`,
+                maxcombo: `${score.beatmap.maxcombo}`,
                 acc: score.accuracy,
-                length: (score.mods & mods.DoubleTime ? score.length * 1.5 : (score.mods & mods.HalfTime ? score.length * 0.75 : score.length)),
-                bpm: (score.mods & mods.DoubleTime ? score.bpm * 1.5 : (score.mods & mods.HalfTime ? score.bpm * 0.75 : score.bpm)),
-                approved: score.approved,
+                length: score.beatmap.modded_length,
+                bpm: score.beatmap.modded_bpm,
+                approved: score.beatmap.approved,
                 ppfc: score.pp_fc.total,
                 ppss: score.pp_ss.total,
                 score_object: score
@@ -150,7 +150,6 @@ function SectionScores(props) {
 
         if (filter !== null) {
             var scores = JSON.parse(JSON.stringify(props.user.scores));
-
             //mods
             scores = scores.filter(score => {
                 if (filter.modsUsage === 'any') {
@@ -170,8 +169,8 @@ function SectionScores(props) {
             if (filter.scoreRange[0] !== null && filter.scoreRange[0] >= 0) { scores = scores.filter(score => score.score >= filter.scoreRange[0]); }
             if (filter.scoreRange[1] !== null && filter.scoreRange[1] >= 0) { scores = scores.filter(score => score.score <= filter.scoreRange[1]); }
 
-            if (filter.starsRange[0] !== null && filter.starsRange[0] >= 0) { scores = scores.filter(score => score.star_rating >= filter.starsRange[0]); }
-            if (filter.starsRange[1] !== null && filter.starsRange[1] >= 0) { scores = scores.filter(score => score.star_rating <= filter.starsRange[1]); }
+            if (filter.starsRange[0] !== null && filter.starsRange[0] >= 0) { scores = scores.filter(score => score.beatmap.modded_sr.star_rating >= filter.starsRange[0]); }
+            if (filter.starsRange[1] !== null && filter.starsRange[1] >= 0) { scores = scores.filter(score => score.beatmap.modded_sr.star_rating <= filter.starsRange[1]); }
 
             if (filter.ppRange[0] !== null && filter.ppRange[0] >= 0) { scores = scores.filter(score => score.pp >= filter.ppRange[0]); }
             if (filter.ppRange[1] !== null && filter.ppRange[1] >= 0) { scores = scores.filter(score => score.pp <= filter.ppRange[1]); }
@@ -187,7 +186,7 @@ function SectionScores(props) {
             if (filter.flags.checkUniqueDTFC) { scores = scores.filter(score => score.is_unique_dt_fc); }
 
             scores = scores.filter(score => {
-                return moment(score.approved_date).isBetween(filter.approvedDateRange[0], filter.approvedDateRange[1], undefined, '[]');
+                return moment(score.beatmap.approved_date).isBetween(filter.approvedDateRange[0], filter.approvedDateRange[1], undefined, '[]');
             });
 
             scores = scores.filter(score => {

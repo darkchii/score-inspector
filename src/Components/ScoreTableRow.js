@@ -32,9 +32,9 @@ function ScoreTableRow(props) {
                                     <img src={getGradeIcon(score.rank)} alt={score.rank} />
                                 </Grid>
                                 <Grid item xs={7.5} sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
-                                    <Tooltip title={`${score.artist} - ${score.title} [${score.diffname}]`}>
+                                    <Tooltip title={`${score.beatmap.artist} - ${score.beatmap.title} [${score.beatmap.diffname}]`}>
                                         <Typography variant="subtitle1" sx={{ maxWidth: '100%', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
-                                            {score.artist} - {score.title} [{score.diffname}]
+                                            {score.beatmap.artist} - {score.beatmap.title} [{score.beatmap.diffname}]
                                         </Typography>
                                     </Tooltip>
                                 </Grid>
