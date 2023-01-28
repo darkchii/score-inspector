@@ -22,6 +22,7 @@
     "chartjs-plugin-datalabels": "^2.2.0",
     "chartjs-plugin-zoom": "^2.0.0",
     "countries-list": "^2.6.1",
+    "dom-to-image": "^2.6.0",
     "draft-js-export-html": "^1.4.1",
     "html-react-parser": "^3.0.7",
     "moment": "^2.29.4",
