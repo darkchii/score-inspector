@@ -95,6 +95,12 @@ function TimeGraph(props) {
                 bottom: 0
             }
         },
+        scales: {
+            y:
+            {
+                reverse: false,
+            }
+        }
     })
 
     useEffect(() => {
@@ -126,14 +132,16 @@ function TimeGraph(props) {
 
         setData(newData);
 
+        const _options = JSON.parse(JSON.stringify(options));
         if (props.formatter !== undefined) {
-            options.plugins.datalabels.formatter = props.formatter;
+            _options.plugins.datalabels.formatter = props.formatter;
         } else {
-            options.plugins.datalabels.formatter = (value, context) => {
+            _options.plugins.datalabels.formatter = (value, context) => {
                 return `${value.toLocaleString("en-US")}`;
             };
         }
-        setOptions(options);
+        _options.scales.y.reverse = props.reverse;
+        setOptions(_options);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props, labels]);
 

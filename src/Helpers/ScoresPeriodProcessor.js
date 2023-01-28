@@ -119,11 +119,16 @@ export function getPeriodicData(scores, data, user, f = 'm') {
 }
 
 function processDailyData(chunks, user, data, f = 'm') {
+    const firstDate = chunks[0].actual_date;
+    const firstDaily = user.daily.modes[0].lines[user.daily.modes[0].lines.length - 1];
+    const firstDailyDate = moment(firstDaily.date);
+    const pointsBetween = firstDailyDate.diff(firstDate, 'months');
+    const countryRankPercOfGlobal = 1 / user.osu.statistics.global_rank * user.osu.statistics.country_rank;
     for (var i = 0; i < chunks.length; i++) {
         //get highest rank at this time point
         const previous = chunks[i - 1]?.osudaily;
-        let rank = previous?.rank ?? 0;
-        let c_rank = previous?.c_rank ?? 0;
+        let rank = previous?.rank ?? (i === 0 ? user.osu.id : 0);
+        let c_rank = previous?.c_rank ?? (i === 0 ? Math.round(countryRankPercOfGlobal * user.osu.id) : 0);
         let raw_pp = previous?.raw_pp ?? 0;
         let cumulative_total_score = previous?.cumulative_total_score ?? 0;
         let cumulative_level = previous?.cumulative_level ?? 0;
@@ -156,9 +161,22 @@ function processDailyData(chunks, user, data, f = 'm') {
 
         if (rank === 0) rank = null;
         if (c_rank === 0) c_rank = null;
+        if (raw_pp === 0) raw_pp = null;
+        if (cumulative_total_score === 0) cumulative_total_score = null;
+        if (cumulative_level === 0) cumulative_level = null;
+        if (pointsBetween > 1 && i < pointsBetween) {
+            //rank = firstDaily.rankworld / pointsBetween * i;
+            //c_rank = firstDaily.rankcountry / pointsBetween * i;
+            raw_pp = firstDaily.pp / pointsBetween * i;
+            cumulative_total_score = firstDaily.totalscore / pointsBetween * i;
+            cumulative_level = firstDaily.level / pointsBetween * i;
+            // raw_pp = 0;
+            // cumulative_total_score = 0;
+            // cumulative_level = 0;
+        }
         chunks[i].osudaily = {};
-        chunks[i].osudaily.global_rank = rank !== null ? -rank : null;
-        chunks[i].osudaily.country_rank = c_rank !== null ? -c_rank : null;
+        chunks[i].osudaily.global_rank = rank !== null ? rank : null;
+        chunks[i].osudaily.country_rank = c_rank !== null ? c_rank : null;
         chunks[i].osudaily.cumulative_total_score = cumulative_total_score;
         chunks[i].osudaily.raw_pp = raw_pp;
         chunks[i].osudaily.cumulative_level = cumulative_level;
@@ -352,10 +370,10 @@ function getGraphObjects(chunks, labels, f = 'm') {
         "srPerPlay": <TimeGraph name="Average SR per play" labels={labels} data={[{ name: "Average SR", set: chunks.map(x => x.average_sr), color: { r: 255, g: 102, b: 158 } }]} />,
         "scorePerPlay": <TimeGraph name="Average score per play" labels={labels} data={[{ name: "Average score", set: chunks.map(x => x.average_score), color: { r: 255, g: 102, b: 158 } }]} />,
         "lengthPerPlay": <TimeGraph name="Average length per play" labels={labels} data={[{ name: "Average score", set: chunks.map(x => x.average_length), color: { r: 255, g: 102, b: 158 } }]} />,
-        "globalRank": <TimeGraph formatter={(value, context) => { return `#${Math.abs(value).toLocaleString("en-US")}`; }} name="World Rank" labels={labels} data={[
+        "globalRank": <TimeGraph reverse={true} formatter={(value, context) => { return `#${Math.abs(value).toLocaleString("en-US")}`; }} name="World Rank" labels={labels} data={[
             { name: "Global Rank", set: chunks.map(x => x.osudaily.global_rank), color: { r: 255, g: 102, b: 158 } },
         ]} />,
-        "countryRank": <TimeGraph formatter={(value, context) => { return `#${Math.abs(value).toLocaleString("en-US")}`; }} name="Country Rank" labels={labels} data={[
+        "countryRank": <TimeGraph reverse={true} formatter={(value, context) => { return `#${Math.abs(value).toLocaleString("en-US")}`; }} name="Country Rank" labels={labels} data={[
             { name: "Country Rank", set: chunks.map(x => x.osudaily.country_rank), color: { r: 82, g: 158, b: 250 } },
         ]} />,
         "rawPP": <TimeGraph name="Raw PP" labels={labels} data={[{ name: "Raw PP", set: chunks.map(x => x.osudaily.raw_pp), color: { r: 255, g: 102, b: 158 } }]} />,
