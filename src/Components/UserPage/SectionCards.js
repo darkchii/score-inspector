@@ -39,7 +39,7 @@ function SectionCards(props) {
         },
         {
             title: 'Avg Length',
-            value: moment.duration(props.user.data?.average.length ?? 0, 'seconds').format('m:s'),
+            value: moment.duration(props.user.data?.average.length ?? 0, 'seconds').format('mm:ss'),
             size: 1.5
         },
         {
