@@ -36,6 +36,7 @@ function SectionGraphs(props) {
         {
             title: "Other", buttons: [
                 { id: "srPerPlay", title: "Average SR" },
+                { id: "highestSr", title: "Highest SR" },
                 { id: "scorePerPlay", title: "Average Score" },
                 { id: "lengthPerPlay", title: "Average Length" },
                 { id: "ppPerPlay", title: "Average PP" },
@@ -78,7 +79,7 @@ function SectionGraphs(props) {
                                                             return (
                                                                 <>
                                                                     <Tooltip title={disableButton ? 'No data available from osu!daily api for this user' : ''}>
-                                                                        <Button sx={{mr:1}} size='small' disabled={disableButton} variant={timeGraphValue === button.id ? 'contained' : 'outlined'} key={j} onClick={() => { setTimeGraphValue(button.id); }}>{button.title}</Button>
+                                                                        <Button sx={{m:0.2}} size='small' disabled={disableButton} variant={timeGraphValue === button.id ? 'contained' : 'outlined'} key={j} onClick={() => { setTimeGraphValue(button.id); }}>{button.title}</Button>
                                                                     </Tooltip>
                                                                 </>
                                                             )
