@@ -355,6 +355,17 @@ export function calculatePP2016(scores) {
     return scores;
 }
 
+export function calculatePP2014(scores) {
+    scores.sort((a, b) => {
+        return b.pp_2014.total - a.pp_2014.total;
+    });
+
+    var index = 0;
+    scores.forEach(score => { if (!score.is_loved && !isNaN(score.pp_2014.total)) { score.pp_2014.weight = Math.pow(0.95, index); index++; } else { score.pp_2014.weight = 0 } });
+
+    return scores;
+}
+
 export function calculatePPLazer(scores) {
     scores.sort((a, b) => {
         return b.pp_lazer.total - a.pp_lazer.total;

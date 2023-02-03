@@ -148,18 +148,14 @@ function getAccuracyValue(data) {
 
     var betterAccuracyPercentage = 0.0;
 
-    var numHitObjectsWithAccuracy = 0.0;
+    var numHitObjectsWithAccuracy = data.score.beatmap.circles;
 
-    if (data.score.enabled_mods & mods.SV2) {
-        numHitObjectsWithAccuracy = data.totalhits;
-        betterAccuracyPercentage = getAccuracy(data.combo, data.score.beatmap.maxcombo);
-    } else {
-        numHitObjectsWithAccuracy = data.score.beatmap.circles;
-        if (numHitObjectsWithAccuracy > 0) {
-            betterAccuracyPercentage = ((data.count300 - (data.totalhits - numHitObjectsWithAccuracy)) * 6 + data.count100 * 2 + data.count50) / (numHitObjectsWithAccuracy * 6);
-        }
+    if(numHitObjectsWithAccuracy){
+        betterAccuracyPercentage = ((data.count300 - (data.totalhits - numHitObjectsWithAccuracy)) * 6 + data.count100 * 2 + data.count50) / (numHitObjectsWithAccuracy * 6);
+    }
 
-        if (betterAccuracyPercentage < 0) { betterAccuracyPercentage = 0; }
+    if(betterAccuracyPercentage< 0.0){
+        betterAccuracyPercentage = 0.0;
     }
 
     var accValue = Math.pow(1.52163, data.score.beatmap.modded_sr.modded_od) * Math.pow(betterAccuracyPercentage, 24) * 2.83;

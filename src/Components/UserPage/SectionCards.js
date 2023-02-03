@@ -10,6 +10,7 @@ import { Chart, registerables } from 'chart.js'
 import { Bar } from "react-chartjs-2";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import PerformanceLazer from "./Performance/PerformanceLazer";
+import Performance2014 from "./Performance/Performance2014";
 Chart.register(...registerables, ChartDataLabels)
 momentDurationFormatSetup(moment);
 
@@ -161,11 +162,12 @@ function SectionCards(props) {
                 <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={4}><BestScoreCard valueTitle={'stars'} valueLabel={`${props.user.data.bestScores.best_sr.beatmap.modded_sr.star_rating.toFixed(1)}*`} score={props.user.data.bestScores.best_sr} /></Grid>
             </Grid>
             <Grid container>
-                <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={12/5}><PerformanceFC data={props.user} /></Grid>
-                <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={12/5}><PerformanceSS data={props.user} /></Grid>
-                <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={12/5}><Performance2016 data={props.user} /></Grid>
-                <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={12/5}><PerformanceLazer data={props.user} /></Grid>
-                <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={12/5}><PerformanceXexxar data={props.user} /></Grid>
+                <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={12/6}><PerformanceFC data={props.user} /></Grid>
+                <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={12/6}><PerformanceSS data={props.user} /></Grid>
+                <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={12/6}><Performance2014 data={props.user} /></Grid>
+                <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={12/6}><Performance2016 data={props.user} /></Grid>
+                <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={12/6}><PerformanceLazer data={props.user} /></Grid>
+                <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={12/6}><PerformanceXexxar data={props.user} /></Grid>
             </Grid>
             <Grid>
                 {

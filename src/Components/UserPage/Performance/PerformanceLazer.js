@@ -42,12 +42,10 @@ function PerformanceLazer(props) {
                 <CardContent>
                     <Grid container sx={{ justifyContent: 'space-between' }}>
                         <Grid item>
-                            <Typography component="div" color="textPrimary" variant="h5">
-                                {toFixedNumber(props.data.data.performance.weighted.lazer, 0).toLocaleString('en-US')}pp <Typography color={'' + (ppDiff >= 0 ? '#11cb5f' : 'error')} variant='subtitle2' display="inline">{(ppDiff >= 0 ? '+' : '')}{ppDiff.toFixed(1)}pp</Typography>
+                            <Typography component="div" color="textPrimary" variant="body1">
+                                {toFixedNumber(props.data.data.performance.weighted.lazer, 0).toLocaleString('en-US')}pp <Typography sx={{fontSize: '0.7rem'}} color={'' + (ppDiff >= 0 ? '#11cb5f' : 'error')} variant='subtitle2' display="inline">{(ppDiff >= 0 ? '+' : '')}{ppDiff.toFixed(1)}pp</Typography>
                             </Typography>
-                            <Marquee speed={40} gradient={false}>
-                                <Typography color="textSecondary">if lazer&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Typography>
-                            </Marquee>
+                            <Typography color="textSecondary">lazer</Typography>
                             <Button size='small' startIcon={<AutoGraphIcon />} onClick={openModal} variant='contained' sx={{ mt: 2 }}>Top plays</Button>
                         </Grid>
                     </Grid>

@@ -19,13 +19,11 @@ function PerformanceXexxar(props) {
                 <CardContent>
                     <Grid container spacing={3} sx={{ justifyContent: 'space-between' }}>
                         <Grid item>
-                            <Typography component="div" color="textPrimary" variant="h6">
-                                {toFixedNumber(props.data.data.performance.weighted.xexxar, 0).toLocaleString('en-US')}pp <Typography color={'' + (ppDiff >= 0 ? '#11cb5f' : 'error')} variant='subtitle2' display="inline">{(ppDiff >= 0 ? '+' : '')}{ppDiff.toFixed(1)}pp</Typography>
+                            <Typography component="div" color="textPrimary" variant="body1">
+                                {toFixedNumber(props.data.data.performance.weighted.xexxar, 0).toLocaleString('en-US')}pp <Typography sx={{fontSize: '0.7rem'}} color={'' + (ppDiff >= 0 ? '#11cb5f' : 'error')} variant='subtitle2' display="inline">{(ppDiff >= 0 ? '+' : '')}{ppDiff.toFixed(1)}pp</Typography>
                             </Typography>
-                            <Marquee speed={40} gradient={false}>
-                                <Typography color="textSecondary">with xexxar profile pp proposal&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Typography>
-                            </Marquee>
-                            <Button size='small' startIcon={<LaunchIcon />} href='https://github.com/ppy/osu/discussions/20210' target='_blank' variant='contained' sx={{ mt: 2 }}>See proposal</Button>
+                            <Typography color="textSecondary">xexxar bonus</Typography>
+                            <Button size='small' startIcon={<LaunchIcon />} href='https://github.com/ppy/osu/discussions/20210' target='_blank' variant='contained' sx={{ mt: 2 }}>Proposal</Button>
                         </Grid>
                     </Grid>
                 </CardContent>

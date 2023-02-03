@@ -1,26 +1,26 @@
 import AutoGraphIcon from '@mui/icons-material/AutoGraph';
-import { Button, Card, CardContent, Grid, Typography } from '@mui/material';
+import { Button, Card, CardContent, Grid, Tooltip, Typography } from '@mui/material';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import Marquee from 'react-fast-marquee';
 import { toFixedNumber } from '../../../Helpers/Misc';
 import TopplaysModal from '../../Modals/TopplaysModal';
 
-function Performance2016(props) {
+function Performance2014(props) {
     const [modalData, setModalData] = useState({ active: false });
     const [ppDiff, setPPDiff] = useState(0);
 
     const openModal = async () => {
         var _scores = JSON.parse(JSON.stringify(props.data.scores));
         _scores.sort((a, b) => {
-            if (a.pp_2016.weight > b.pp_2016.weight) { return -1; }
-            if (a.pp_2016.weight < b.pp_2016.weight) { return 1; }
+            if (a.pp_2014.weight > b.pp_2014.weight) { return -1; }
+            if (a.pp_2014.weight < b.pp_2014.weight) { return 1; }
             return 0;
         });
         _scores = _scores.slice(0, 200);
         _scores.forEach(score => {
-            score.pp = score.pp_2016.total;
-            score.pp_cur = score.pp_2016;
+            score.pp = score.pp_2014.total;
+            score.pp_cur = score.pp_2014;
         })
         setModalData({
             scores: _scores,
@@ -29,7 +29,7 @@ function Performance2016(props) {
     }
 
     useEffect(() => {
-        setPPDiff(props.data.data.performance.weighted._2016 - props.data.osu.statistics.pp);
+        setPPDiff(props.data.data.performance.weighted._2014 - props.data.osu.statistics.pp);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -41,9 +41,11 @@ function Performance2016(props) {
                     <Grid container spacing={3} sx={{ justifyContent: 'space-between' }}>
                         <Grid item>
                             <Typography component="div" color="textPrimary" variant="body1">
-                                {toFixedNumber(props.data.data.performance.weighted._2016, 0).toLocaleString('en-US')}pp <Typography sx={{fontSize: '0.7rem'}} color={'' + (ppDiff >= 0 ? '#11cb5f' : 'error')} variant='subtitle2' display="inline">{(ppDiff >= 0 ? '+' : '')}{ppDiff.toFixed(1)}pp</Typography>
+                                {toFixedNumber(props.data.data.performance.weighted._2014, 0).toLocaleString('en-US')}pp <Typography sx={{ fontSize: '0.7rem' }} color={'' + (ppDiff >= 0 ? '#11cb5f' : 'error')} variant='subtitle2' display="inline">{(ppDiff >= 0 ? '+' : '')}{ppDiff.toFixed(1)}pp</Typography>
                             </Typography>
-                            <Typography color="textSecondary">2016 ppv2</Typography>
+                            <Tooltip title='Assuming current day starratings'>
+                                <Typography color="textSecondary">2014 ppv2</Typography>
+                            </Tooltip>
                             <Button size='small' startIcon={<AutoGraphIcon />} onClick={openModal} variant='contained' sx={{ mt: 2 }}>Top plays</Button>
                         </Grid>
                     </Grid>
@@ -52,4 +54,4 @@ function Performance2016(props) {
         </>
     );
 }
-export default Performance2016;
+export default Performance2014;

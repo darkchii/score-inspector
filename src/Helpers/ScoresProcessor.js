@@ -1,7 +1,8 @@
 import moment from "moment";
 import { range, sleep } from "./Misc";
-import { calculatePP2016, calculatePPifFC, calculatePPifSS, calculatePPLazer, getBeatmapCount, getBeatmaps, getBonusPerformance, getLazerScore, getModString, mods } from "./Osu";
+import { calculatePP2014, calculatePP2016, calculatePPifFC, calculatePPifSS, calculatePPLazer, getBeatmapCount, getBeatmaps, getBonusPerformance, getLazerScore, getModString, mods } from "./Osu";
 import { getCompletionData } from "./OsuAlt";
+import { getPerformance2014 } from "./Performance/Performance2014";
 import { getPerformance2016 } from "./Performance/Performance2016";
 import { getPerformanceLazer } from "./Performance/PerformanceLazer";
 import { getPerformanceLive } from "./Performance/PerformanceLive";
@@ -150,6 +151,7 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
 async function weighPerformance(scores, onScoreProcessUpdate) {
     scores = calculatePPifFC(scores);
     scores = calculatePPifSS(scores);
+    scores = calculatePP2014(scores);
     scores = calculatePP2016(scores);
     scores = calculatePPLazer(scores);
 
@@ -166,6 +168,7 @@ async function weighPerformance(scores, onScoreProcessUpdate) {
     data.weighted.fc = 0;
     data.weighted.ss = 0;
     data.weighted.xexxar = 0;
+    data.weighted._2014 = 0;
     data.weighted._2016 = 0;
     data.weighted.lazer = 0;
 
@@ -184,6 +187,9 @@ async function weighPerformance(scores, onScoreProcessUpdate) {
         if (!isNaN(score.pp_ss.total)) {
             data.weighted.ss += score.pp_ss.total * score.pp_ss.weight;
         }
+        if (!isNaN(score.pp_2014.total)) {
+            data.weighted._2014 += score.pp_2014.total * score.pp_2014.weight;
+        }
         if (!isNaN(score.pp_2016.total)) {
             data.weighted._2016 += score.pp_2016.total * score.pp_2016.weight;
         }
@@ -194,6 +200,7 @@ async function weighPerformance(scores, onScoreProcessUpdate) {
     const bonus = getBonusPerformance(scores.length);
     data.weighted.fc += bonus;
     data.weighted.ss += bonus;
+    data.weighted._2014 += bonus;
     data.weighted._2016 += bonus;
     // data.weighted.lazer += bonus;
 
@@ -234,14 +241,17 @@ export function prepareScores(user, scores, onScoreProcessUpdate) {
         score.pp_cur = getPerformanceLive({ score: score });
         score.pp_2016 = getPerformance2016({ score: score });
         score.pp_lazer = getPerformanceLazer({ score: score });
+        score.pp_2014 = getPerformance2014({ score: score });
 
         score.is_fc = isScoreFullcombo(score);
         score.scoreLazer = Math.floor(getLazerScore(score));
 
-        if(!score.user && user){
+        if (!score.user && user) {
             score.user = user.alt;
         }
     });
+
+    //test
 
     console.log('After proc', scores[200]);
 
