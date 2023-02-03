@@ -24,7 +24,7 @@
     "countries-list": "^2.6.1",
     "dom-to-image": "^2.6.0",
     "draft-js-export-html": "^1.4.1",
-    "html-react-parser": "^3.0.7",
+    "html-react-parser": "^3.0.8",
     "moment": "^2.29.4",
     "moment-duration-format": "^2.3.2",
     "mui-rte": "^2.0.1",
