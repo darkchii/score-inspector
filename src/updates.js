@@ -7,6 +7,23 @@ const CHANGETYPES = {
 
 const updates = [
     {
+        version: '2.4.0',
+        date: 'n/a',
+        changes: [
+            [CHANGETYPES.NEW, 'Added user card image generator', 'c83f957f1678c6c45f487ddd46f52a98097729ea'],
+            [CHANGETYPES.NEW, 'Added highest star rating pass to monthly graphs', '9629338f388fc18814072a593a0ccd542d81d9bd'],
+            [CHANGETYPES.NEW, 'Added experimental lazer pp', 'a839806a422b75506183ba36ee84a83967cd9684'],
+            [CHANGETYPES.NEW, 'Added 2014 pp', '775f5aa4d93b6e1b2c0dabb4fe17d58be2ded0e3'],
+            [CHANGETYPES.FIX, 'Fixed incorrect average length formatting', '2e989879b0084c468ac66c060f9ed407b0a46d72'],
+            [CHANGETYPES.FIX, 'Fixed restricted users crashing leaderboards page', 'e11852d0a09d99fe53b774803e17a45b7bfd2d2e'],
+            [CHANGETYPES.FIX, 'Added null checks to login data validation', '3ac71c7fcec7b4b1345f3303df32c11cee7eeb74'],
+            [CHANGETYPES.FIX, 'Fixed charts axis reversal (global and country rank)', '6e0889eceb8db43ed47ccca1d14be06348cd5f61'],
+            [CHANGETYPES.FIX, 'Fixed scoreview incorrect donut chart data', '9f0ccb59dd0900de4c35aaf7fc622fe731572884'],
+            [CHANGETYPES.MISC, 'Added simulated data where missing for osudaily', '6e0889eceb8db43ed47ccca1d14be06348cd5f61'],
+            [CHANGETYPES.MISC, 'Converted most server-side database calls to Sequelize usage', 'c9092bbd1146745059025f1e0549aa0471d14714'],
+        ]
+    },
+    {
         version: '2.3.0',
         date: '2023-01-20',
         changes: [
