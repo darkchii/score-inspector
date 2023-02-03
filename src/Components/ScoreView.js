@@ -88,7 +88,7 @@ function ScoreView(props) {
                                         labels: ["300", "100", "50", "Miss"],
                                         datasets: [
                                             {
-                                                data: [props.data.score.count300, props.data.score.count100, props.data.score.count100, props.data.score.countmiss],
+                                                data: [props.data.score.count300, props.data.score.count100, props.data.score.count50, props.data.score.countmiss],
                                                 backgroundColor: [
                                                     '#8BC34A',
                                                     '#FDD835',
