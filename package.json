@@ -14,7 +14,7 @@
     "@mui/material": "^5.11.5",
     "@mui/styles": "^5.11.2",
     "@mui/x-data-grid": "^5.17.19",
-    "@mui/x-date-pickers": "^5.0.14",
+    "@mui/x-date-pickers": "^5.0.16",
     "axios": "^1.2.3",
     "buffer": "^6.0.3",
     "chart.js": "^4.2.0",
