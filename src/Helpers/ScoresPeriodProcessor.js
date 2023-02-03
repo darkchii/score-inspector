@@ -123,6 +123,7 @@ function processDailyData(chunks, user, data, f = 'm') {
     const firstDaily = user.daily.modes[0].lines[user.daily.modes[0].lines.length - 1];
     const firstDailyDate = moment(firstDaily.date);
     const pointsBetween = firstDailyDate.diff(firstDate, 'months');
+    console.log('pointsBetween', pointsBetween);
     const countryRankPercOfGlobal = 1 / user.osu.statistics.global_rank * user.osu.statistics.country_rank;
     for (var i = 0; i < chunks.length; i++) {
         //get highest rank at this time point
@@ -164,7 +165,7 @@ function processDailyData(chunks, user, data, f = 'm') {
         if (raw_pp === 0) raw_pp = null;
         if (cumulative_total_score === 0) cumulative_total_score = null;
         if (cumulative_level === 0) cumulative_level = null;
-        if (pointsBetween > 1 && i < pointsBetween) {
+        if (pointsBetween > 1 && i <= pointsBetween) {
             //rank = firstDaily.rankworld / pointsBetween * i;
             //c_rank = firstDaily.rankcountry / pointsBetween * i;
             raw_pp = firstDaily.pp / pointsBetween * i;
@@ -368,6 +369,7 @@ function getGraphObjects(chunks, labels, f = 'm') {
         "ppPerPlay": <TimeGraph name="Average PP per play" labels={labels} data={[{ name: "Average PP", set: chunks.map(x => x.average_pp), color: { r: 255, g: 102, b: 158 } }]} />,
         "highestPPPlay": <TimeGraph name="Highest PP play" labels={labels} data={[{ name: "Highest PP", set: chunks.map(x => x.highest_pp), color: { r: 255, g: 102, b: 158 } }]} />,
         "srPerPlay": <TimeGraph name="Average SR per play" labels={labels} data={[{ name: "Average SR", set: chunks.map(x => x.average_sr), color: { r: 255, g: 102, b: 158 } }]} />,
+        "highestSr": <TimeGraph name="Highest SR pass" labels={labels} data={[{ name: "Highest SR", set: chunks.map(x => x.highest_sr), color: { r: 255, g: 102, b: 158 } }]} />,
         "scorePerPlay": <TimeGraph name="Average score per play" labels={labels} data={[{ name: "Average score", set: chunks.map(x => x.average_score), color: { r: 255, g: 102, b: 158 } }]} />,
         "lengthPerPlay": <TimeGraph name="Average length per play" labels={labels} data={[{ name: "Average score", set: chunks.map(x => x.average_length), color: { r: 255, g: 102, b: 158 } }]} />,
         "globalRank": <TimeGraph reverse={true} formatter={(value, context) => { return `#${Math.abs(value).toLocaleString("en-US")}`; }} name="World Rank" labels={labels} data={[

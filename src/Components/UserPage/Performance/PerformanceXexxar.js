@@ -25,7 +25,7 @@ function PerformanceXexxar(props) {
                             <Marquee speed={40} gradient={false}>
                                 <Typography color="textSecondary">with xexxar profile pp proposal&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Typography>
                             </Marquee>
-                            <Button startIcon={<LaunchIcon />} href='https://github.com/ppy/osu/discussions/20210' target='_blank' variant='contained' sx={{ mt: 2 }}>See proposal</Button>
+                            <Button size='small' startIcon={<LaunchIcon />} href='https://github.com/ppy/osu/discussions/20210' target='_blank' variant='contained' sx={{ mt: 2 }}>See proposal</Button>
                         </Grid>
                     </Grid>
                 </CardContent>

@@ -355,6 +355,17 @@ export function calculatePP2016(scores) {
     return scores;
 }
 
+export function calculatePPLazer(scores) {
+    scores.sort((a, b) => {
+        return b.pp_lazer.total - a.pp_lazer.total;
+    });
+
+    var index = 0;
+    scores.forEach(score => { if (!score.is_loved && !isNaN(score.pp_lazer.total)) { score.pp_lazer.weight = Math.pow(0.95, index); index++; } else { score.pp_lazer.weight = 0 } });
+
+    return scores;
+}
+
 export function isScoreRealistic(score) {
     const maxMissCount = (score.enabled_mods & mods.NF) ? 15 : 30; //max 15 misses on NF, max 30 on no NF
     const minCombo = score.beatmap.maxcombo * 0.8; //80% combo

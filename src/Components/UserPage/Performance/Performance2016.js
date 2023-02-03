@@ -2,6 +2,7 @@ import AutoGraphIcon from '@mui/icons-material/AutoGraph';
 import { Button, Card, CardContent, Grid, Typography } from '@mui/material';
 import { useEffect } from 'react';
 import { useState } from 'react';
+import Marquee from 'react-fast-marquee';
 import { toFixedNumber } from '../../../Helpers/Misc';
 import TopplaysModal from '../../Modals/TopplaysModal';
 
@@ -29,7 +30,7 @@ function Performance2016(props) {
 
     useEffect(() => {
         setPPDiff(props.data.data.performance.weighted._2016 - props.data.osu.statistics.pp);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
@@ -42,8 +43,10 @@ function Performance2016(props) {
                             <Typography component="div" color="textPrimary" variant="h6">
                                 {toFixedNumber(props.data.data.performance.weighted._2016, 0).toLocaleString('en-US')}pp <Typography color={'' + (ppDiff >= 0 ? '#11cb5f' : 'error')} variant='subtitle2' display="inline">{(ppDiff >= 0 ? '+' : '')}{ppDiff.toFixed(1)}pp</Typography>
                             </Typography>
-                            <Typography color="textSecondary">using 2016 ppv2</Typography>
-                            <Button startIcon={<AutoGraphIcon />} onClick={openModal} variant='contained' sx={{ mt: 2 }}>See top plays</Button>
+                            <Marquee speed={40} gradient={false}>
+                                <Typography color="textSecondary">using 2016 ppv2&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</Typography>
+                            </Marquee>
+                            <Button size='small' startIcon={<AutoGraphIcon />} onClick={openModal} variant='contained' sx={{ mt: 2 }}>Top plays</Button>
                         </Grid>
                     </Grid>
                 </CardContent>

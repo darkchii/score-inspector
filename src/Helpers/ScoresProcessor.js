@@ -1,8 +1,9 @@
 import moment from "moment";
 import { range, sleep } from "./Misc";
-import { calculatePP2016, calculatePPifFC, calculatePPifSS, getBeatmapCount, getBeatmaps, getBonusPerformance, getLazerScore, getModString, mods } from "./Osu";
+import { calculatePP2016, calculatePPifFC, calculatePPifSS, calculatePPLazer, getBeatmapCount, getBeatmaps, getBonusPerformance, getLazerScore, getModString, mods } from "./Osu";
 import { getCompletionData } from "./OsuAlt";
 import { getPerformance2016 } from "./Performance/Performance2016";
+import { getPerformanceLazer } from "./Performance/PerformanceLazer";
 import { getPerformanceLive } from "./Performance/PerformanceLive";
 import { getPeriodicData } from "./ScoresPeriodProcessor";
 import { getSessions } from "./Session";
@@ -150,6 +151,7 @@ async function weighPerformance(scores, onScoreProcessUpdate) {
     scores = calculatePPifFC(scores);
     scores = calculatePPifSS(scores);
     scores = calculatePP2016(scores);
+    scores = calculatePPLazer(scores);
 
     scores.sort((a, b) => {
         return b.pp - a.pp;
@@ -165,6 +167,7 @@ async function weighPerformance(scores, onScoreProcessUpdate) {
     data.weighted.ss = 0;
     data.weighted.xexxar = 0;
     data.weighted._2016 = 0;
+    data.weighted.lazer = 0;
 
     let xexxar_score_pp = 0;
     let xexxar_total_pp = 0;
@@ -184,11 +187,15 @@ async function weighPerformance(scores, onScoreProcessUpdate) {
         if (!isNaN(score.pp_2016.total)) {
             data.weighted._2016 += score.pp_2016.total * score.pp_2016.weight;
         }
+        if (!isNaN(score.pp_lazer.total)) {
+            data.weighted.lazer += score.pp_lazer.total * score.pp_lazer.weight;
+        }
     });
     const bonus = getBonusPerformance(scores.length);
     data.weighted.fc += bonus;
     data.weighted.ss += bonus;
     data.weighted._2016 += bonus;
+    // data.weighted.lazer += bonus;
 
     return data;
 }
@@ -226,6 +233,7 @@ export function prepareScores(user, scores, onScoreProcessUpdate) {
         score.pp_ss = getPerformanceLive({ count300: score.count300 + score.countmiss + score.count100 + score.count50, count100: 0, count50: 0, countmiss: 0, combo: score.beatmap.maxcombo, score: score });
         score.pp_cur = getPerformanceLive({ score: score });
         score.pp_2016 = getPerformance2016({ score: score });
+        score.pp_lazer = getPerformanceLazer({ score: score });
 
         score.is_fc = isScoreFullcombo(score);
         score.scoreLazer = Math.floor(getLazerScore(score));
