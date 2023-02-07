@@ -14,6 +14,7 @@ const updates = [
             [CHANGETYPES.NEW, 'Added highest star rating pass to monthly graphs', '9629338f388fc18814072a593a0ccd542d81d9bd'],
             [CHANGETYPES.NEW, 'Added experimental lazer pp', 'a839806a422b75506183ba36ee84a83967cd9684'],
             [CHANGETYPES.NEW, 'Added 2014 pp', '775f5aa4d93b6e1b2c0dabb4fe17d58be2ded0e3'],
+            [CHANGETYPES.NEW, 'Added 2016 star rating values (DT is still a bit buggy)', '00162a640da078cc5a072596649eb7f0f768c048'],
             [CHANGETYPES.FIX, 'Fixed incorrect average length formatting', '2e989879b0084c468ac66c060f9ed407b0a46d72'],
             [CHANGETYPES.FIX, 'Fixed restricted users crashing leaderboards page', 'e11852d0a09d99fe53b774803e17a45b7bfd2d2e'],
             [CHANGETYPES.FIX, 'Added null checks to login data validation', '3ac71c7fcec7b4b1345f3303df32c11cee7eeb74'],

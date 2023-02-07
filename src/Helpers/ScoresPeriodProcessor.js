@@ -122,14 +122,18 @@ function processDailyData(chunks, user, data, f = 'm') {
     const firstDate = chunks[0].actual_date;
     const firstDaily = user.daily.modes[0].lines[user.daily.modes[0].lines.length - 1];
     const firstDailyDate = moment(firstDaily.date);
+    console.log('firstDate', firstDate);
+    console.log('firstDailyDate', firstDailyDate);
     const pointsBetween = firstDailyDate.diff(firstDate, 'months');
     console.log('pointsBetween', pointsBetween);
+    const initial_rank = user.osu.id;
     const countryRankPercOfGlobal = 1 / user.osu.statistics.global_rank * user.osu.statistics.country_rank;
+    const initial_c_rank = Math.round(countryRankPercOfGlobal * initial_rank);
     for (var i = 0; i < chunks.length; i++) {
         //get highest rank at this time point
         const previous = chunks[i - 1]?.osudaily;
-        let rank = previous?.rank ?? (i === 0 ? user.osu.id : 0);
-        let c_rank = previous?.c_rank ?? (i === 0 ? Math.round(countryRankPercOfGlobal * user.osu.id) : 0);
+        let rank = previous?.rank ?? (i === 0 ? initial_rank : 0);
+        let c_rank = previous?.c_rank ?? (i === 0 ? initial_c_rank : 0);
         let raw_pp = previous?.raw_pp ?? 0;
         let cumulative_total_score = previous?.cumulative_total_score ?? 0;
         let cumulative_level = previous?.cumulative_level ?? 0;
@@ -166,8 +170,10 @@ function processDailyData(chunks, user, data, f = 'm') {
         if (cumulative_total_score === 0) cumulative_total_score = null;
         if (cumulative_level === 0) cumulative_level = null;
         if (pointsBetween > 1 && i <= pointsBetween) {
-            //rank = firstDaily.rankworld / pointsBetween * i;
-            //c_rank = firstDaily.rankcountry / pointsBetween * i;
+            const perc = i / pointsBetween;
+            rank = initial_rank - (initial_rank - firstDaily.rankworld) * perc;
+            c_rank = initial_c_rank - (initial_c_rank - firstDaily.rankcountry) * perc;
+            //c_rank = initial_c_rank - firstDaily.rankcountry / pointsBetween * i;
             raw_pp = firstDaily.pp / pointsBetween * i;
             cumulative_total_score = firstDaily.totalscore / pointsBetween * i;
             cumulative_level = firstDaily.level / pointsBetween * i;
