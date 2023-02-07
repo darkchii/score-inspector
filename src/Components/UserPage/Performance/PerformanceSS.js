@@ -30,7 +30,7 @@ function PerformanceSS(props) {
             score.weight = score.pp_ss.weight;
             score.rank = getGrade(score);
             score.score = -1;
-            score.pp_cur = score.pp_ss;
+            score.displayed_pp = structuredClone(score.pp_ss);
         })
         setModalData({
             scores: _scores,

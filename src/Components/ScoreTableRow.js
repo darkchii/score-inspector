@@ -51,8 +51,8 @@ function ScoreTableRow(props) {
                                     <Typography variant="subtitle1">{score.accuracy.toFixed(2)}%</Typography>
                                 </Grid>
                                 <Grid item xs={1} sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
-                                    <Tooltip title={`Weight: ${(score.weight * 100).toFixed(0)}% ${toFixedNumber(score.pp * score.weight, 0).toLocaleString('en-US')}pp`}>
-                                        <Typography variant="h5">{toFixedNumber(score.pp, 0).toLocaleString('en-US')}pp</Typography>
+                                    <Tooltip title={`Weight: ${(score.displayed_pp.weight * 100).toFixed(0)}% ${toFixedNumber(score.displayed_pp.total * score.displayed_pp.weight, 0).toLocaleString('en-US')}pp`}>
+                                        <Typography variant="h5">{toFixedNumber(score.displayed_pp.total, 0).toLocaleString('en-US')}pp</Typography>
                                     </Tooltip>
                                 </Grid>
                                 <Grid item xs={0.5} sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
@@ -73,7 +73,8 @@ function ScoreTableRow(props) {
                                                     width: '100%',
                                                     boxShadow: 24,
                                                     borderRadius: 0,
-                                                }
+                                                },
+                                                pp_version: props.data.pp_version
                                             }} />
                                         </Collapse>
                                     </>

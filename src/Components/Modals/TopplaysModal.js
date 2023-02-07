@@ -48,7 +48,7 @@ function TopplaysModal(props) {
                                                         <Typography variant="subtitle1">{index + 1}</Typography>
                                                     </Grid>
                                                     <Grid item xs={11.4}>
-                                                        <ScoreTableRow data={{ score: score }} />
+                                                        <ScoreTableRow data={{ score: score, pp_version: props.data.pp_version }} />
                                                     </Grid>
                                                 </Grid>
                                                 {/* <Typography>Test</Typography> */}

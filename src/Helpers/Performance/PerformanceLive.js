@@ -1,7 +1,8 @@
 import { mods } from "../Osu";
 
-export function getPerformanceLive(data) {
-    const score = JSON.parse(JSON.stringify(data.score));
+export function getPerformanceLive(_data, debug = false) {
+    const data = JSON.parse(JSON.stringify(_data));
+    const score = data.score;
     data.count300 = data.count300 ?? score.count300;
     data.count100 = data.count100 ?? score.count100;
     data.count50 = data.count50 ?? score.count50;
@@ -21,7 +22,16 @@ export function getPerformanceLive(data) {
 
     data.score = undefined;
 
-    return data;
+    const output = {
+        aim: data.aim,
+        speed: data.speed,
+        acc: data.acc,
+        flashlight: data.flashlight,
+        total: data.total,
+        version: '2014'
+    }
+
+    return output;
 }
 
 function getTotalValue(data) {

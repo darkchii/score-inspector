@@ -20,11 +20,12 @@ function Performance2014(props) {
         _scores = _scores.slice(0, 200);
         _scores.forEach(score => {
             score.pp = score.pp_2014.total;
-            score.pp_cur = score.pp_2014;
+            score.displayed_pp = structuredClone(score.pp_2014);
         })
         setModalData({
             scores: _scores,
-            active: true
+            active: true,
+            pp_version: '2014'
         });
     }
 

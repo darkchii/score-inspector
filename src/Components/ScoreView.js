@@ -7,16 +7,18 @@ import { Doughnut } from 'react-chartjs-2';
 import { getGradeIcon } from '../Helpers/Assets';
 import { toFixedNumber } from '../Helpers/Misc';
 import { getBeatmapMaxscore, getHitsFromAccuracy, getModString, mods } from '../Helpers/Osu';
+import { getCalculator } from '../Helpers/Performance/Performance';
 import { getPerformanceLive } from '../Helpers/Performance/PerformanceLive';
 ChartJS.register(ArcElement, ChartTooltip, Legend);
 
 function ScoreView(props) {
     const [score, setScore] = useState(-1);
     const [performance, setPerformance] = useState(null);
+    const [sr, setSR] = useState(null);
 
     useEffect(() => {
         if (props.data !== undefined && props.data.score !== undefined) {
-
+            setSR(null);
             setScore(props.data.score.score);
             async function fixScore() {
                 if (props.data.score.score === -1) { //if we get -1, we approximate the score of this play
@@ -53,22 +55,26 @@ function ScoreView(props) {
             accHits["80%"] = getHitsFromAccuracy(80, props.data.score.beatmap.objects, 0);
 
             const pp = [];
-            pp["100%"] = getPerformanceLive({ accuracy: 1, score: props.data.score, combo: props.data.score.beatmap.maxcombo, count300: accHits["100%"].count300, count100: accHits["100%"].count100, count50: accHits["100%"].count50, countmiss: accHits["100%"].countmiss });
-            pp["99%"] = getPerformanceLive({ accuracy: 0.99, score: props.data.score, combo: props.data.score.beatmap.maxcombo, count300: accHits["99%"].count300, count100: accHits["99%"].count100, count50: accHits["99%"].count50, countmiss: accHits["99%"].countmiss });
-            pp["98%"] = getPerformanceLive({ accuracy: 0.98, score: props.data.score, combo: props.data.score.beatmap.maxcombo, count300: accHits["98%"].count300, count100: accHits["98%"].count100, count50: accHits["98%"].count50, countmiss: accHits["98%"].countmiss });
-            pp["95%"] = getPerformanceLive({ accuracy: 0.95, score: props.data.score, combo: props.data.score.beatmap.maxcombo, count300: accHits["95%"].count300, count100: accHits["95%"].count100, count50: accHits["95%"].count50, countmiss: accHits["95%"].countmiss });
-            pp["90%"] = getPerformanceLive({ accuracy: 0.90, score: props.data.score, combo: props.data.score.beatmap.maxcombo, count300: accHits["90%"].count300, count100: accHits["90%"].count100, count50: accHits["90%"].count50, countmiss: accHits["90%"].countmiss });
-            pp["80%"] = getPerformanceLive({ accuracy: 0.80, score: props.data.score, combo: props.data.score.beatmap.maxcombo, count300: accHits["80%"].count300, count100: accHits["80%"].count100, count50: accHits["80%"].count50, countmiss: accHits["80%"].countmiss });
+            pp["100%"] = getCalculator(props.data.pp_version ?? 'live', { accuracy: 1, score: props.data.score, combo: props.data.score.beatmap.maxcombo, count300: accHits["100%"].count300, count100: accHits["100%"].count100, count50: accHits["100%"].count50, countmiss: accHits["100%"].countmiss });
+            pp["99%"] = getCalculator(props.data.pp_version ?? 'live', { accuracy: 0.99, score: props.data.score, combo: props.data.score.beatmap.maxcombo, count300: accHits["99%"].count300, count100: accHits["99%"].count100, count50: accHits["99%"].count50, countmiss: accHits["99%"].countmiss });
+            pp["98%"] = getCalculator(props.data.pp_version ?? 'live', { accuracy: 0.98, score: props.data.score, combo: props.data.score.beatmap.maxcombo, count300: accHits["98%"].count300, count100: accHits["98%"].count100, count50: accHits["98%"].count50, countmiss: accHits["98%"].countmiss });
+            pp["95%"] = getCalculator(props.data.pp_version ?? 'live', { accuracy: 0.95, score: props.data.score, combo: props.data.score.beatmap.maxcombo, count300: accHits["95%"].count300, count100: accHits["95%"].count100, count50: accHits["95%"].count50, countmiss: accHits["95%"].countmiss });
+            pp["90%"] = getCalculator(props.data.pp_version ?? 'live', { accuracy: 0.90, score: props.data.score, combo: props.data.score.beatmap.maxcombo, count300: accHits["90%"].count300, count100: accHits["90%"].count100, count50: accHits["90%"].count50, countmiss: accHits["90%"].countmiss });
+            pp["80%"] = getCalculator(props.data.pp_version ?? 'live', { accuracy: 0.80, score: props.data.score, combo: props.data.score.beatmap.maxcombo, count300: accHits["80%"].count300, count100: accHits["80%"].count100, count50: accHits["80%"].count50, countmiss: accHits["80%"].countmiss });
 
             setPerformance(pp);
+            const _sr = props.data.pp_version ?
+                (props.data.score.beatmap.modded_sr[props.data.pp_version] ?? props.data.score.beatmap.modded_sr) :
+                props.data.score.beatmap.modded_sr;
+            setSR(_sr);
 
-            console.log(props.data.score);
+            console.log(props.data.pp_version, props.data.score);
         }
     }, [props.data, props.data.score.score]);
 
     return (
         <>
-            {props.data !== undefined && props.data.score !== undefined ?
+            {props.data !== undefined && props.data.score !== undefined && sr !== null ?
                 <Card sx={props.data.style}>
                     <CardMedia
                         component="img"
@@ -78,7 +84,7 @@ function ScoreView(props) {
                     <CardContent sx={{ px: 0, py: 0, backgroundColor: 'background.paper2' }}>
                         <Card sx={{ borderRadius: 0, backgroundColor: '#2E293D' }}>
                             <CardContent>
-                                <Typography id="modal-modal-title" variant="h6" component="h2"><Chip sx={{ mr: 1 }} size='small' label={`${props.data.score.beatmap.modded_sr.star_rating.toFixed(2)}★`} variant="outlined" /> {props.data.score.beatmap.artist} - {props.data.score.beatmap.title} [{props.data.score.beatmap.diffname}] {`${props.data.score.enabled_mods > 0 ? '+' : ''}${getModString(props.data.score.enabled_mods)}`}</Typography>
+                                <Typography id="modal-modal-title" variant="h6" component="h2"><Chip sx={{ mr: 1 }} size='small' label={`${sr.star_rating.toFixed(2)}★`} variant="outlined" /> {props.data.score.beatmap.artist} - {props.data.score.beatmap.title} [{props.data.score.beatmap.diffname}] {`${props.data.score.enabled_mods > 0 ? '+' : ''}${getModString(props.data.score.enabled_mods)}`}</Typography>
                             </CardContent>
                         </Card>
                         <Box sx={{ px: 4 }}>
@@ -125,13 +131,13 @@ function ScoreView(props) {
                                         <Grid>
                                             <Typography variant="h3" sx={{ mt: 0 }}>{toFixedNumber(score, 0).toLocaleString('en-US')}</Typography>
                                             <Typography variant="subtitle1" display="flex" alignItems="center" sx={{ mt: 0 }} spacing="5">
-                                                <img alt={props.data.score.rank} src={getGradeIcon(props.data.score.rank)} />&nbsp;<b>{props.data.score.accuracy.toFixed(2)}%</b>&nbsp;★&nbsp;<b>{props.data.score.pp.toFixed(2)}pp</b>&nbsp;★&nbsp;<b>{props.data.score.combo}x/{props.data.score.beatmap.maxcombo}x</b>
+                                                <img alt={props.data.score.rank} src={getGradeIcon(props.data.score.rank)} />&nbsp;<b>{props.data.score.accuracy.toFixed(2)}%</b>&nbsp;★&nbsp;<b>{props.data.score.displayed_pp.total.toFixed(2)}pp</b>&nbsp;★&nbsp;<b>{props.data.score.combo}x/{props.data.score.beatmap.maxcombo}x</b>
                                             </Typography>
                                             <Typography variant="subtitle1" display="flex" alignItems="center" sx={{ mt: 0 }} spacing="5">
                                                 Played&nbsp;<b><Tooltip title={'' + props.data.score.date_played}><Grid>{moment(props.data.score.date_played).fromNow()}</Grid></Tooltip></b>&nbsp;★ Ranked&nbsp;<b><Tooltip title={'' + props.data.score.beatmap.approved_date}><Grid>{moment(props.data.score.beatmap.approved_date).fromNow()}</Grid></Tooltip></b>
                                             </Typography>
                                             <Typography variant="subtitle1" display="flex" alignItems="center" sx={{ mt: 0 }} spacing="5">
-                                                AR&nbsp;<b>{props.data.score.beatmap.modded_sr.modded_ar.toFixed(2)}</b>&nbsp;★ CS&nbsp;<b>{props.data.score.beatmap.modded_sr.modded_cs.toFixed(2)}</b>&nbsp;★ HP&nbsp;<b>{props.data.score.beatmap.modded_sr.modded_hp.toFixed(2)}</b>&nbsp;★ OD&nbsp;<b>{props.data.score.beatmap.modded_sr.modded_od.toFixed(2)}</b>
+                                                AR&nbsp;<b>{sr.modded_ar.toFixed(2)}</b>&nbsp;★ CS&nbsp;<b>{sr.modded_cs.toFixed(2)}</b>&nbsp;★ HP&nbsp;<b>{sr.modded_hp.toFixed(2)}</b>&nbsp;★ OD&nbsp;<b>{sr.modded_od.toFixed(2)}</b>
                                             </Typography>
                                             <Typography variant="subtitle1" display="flex" alignItems="center" sx={{ mt: 0 }} spacing="5">
                                                 {moment.utc(moment.duration(props.data.score.beatmap.modded_length, 'seconds').asMilliseconds()).format("mm:ss")} minutes&nbsp;★&nbsp;
@@ -159,10 +165,10 @@ function ScoreView(props) {
                                         </TableHead>
                                         <TableBody>
                                             <TableRow>
-                                                <TableCell>{(props.data.score.pp_cur?.aim ?? 0).toFixed(1)}pp</TableCell>
-                                                <TableCell>{(props.data.score.pp_cur?.speed ?? 0).toFixed(1)}pp</TableCell>
-                                                <TableCell>{(props.data.score.pp_cur?.acc ?? 0).toFixed(1)}pp</TableCell>
-                                                <TableCell>{(props.data.score.pp_cur?.flashlight ?? 0).toFixed(1)}pp</TableCell>
+                                                <TableCell>{(props.data.score.displayed_pp?.aim ?? 0).toFixed(1)}pp</TableCell>
+                                                <TableCell>{(props.data.score.displayed_pp?.speed ?? 0).toFixed(1)}pp</TableCell>
+                                                <TableCell>{(props.data.score.displayed_pp?.acc ?? 0).toFixed(1)}pp</TableCell>
+                                                <TableCell>{(props.data.score.displayed_pp?.flashlight ?? 0).toFixed(1)}pp</TableCell>
                                             </TableRow>
                                         </TableBody>
                                     </Table>
@@ -191,12 +197,12 @@ function ScoreView(props) {
                                                     </TableHead>
                                                     <TableBody>
                                                         <TableRow>
-                                                            <TableCell>{(performance["80%"]?.total??0).toFixed(0)}pp</TableCell>
-                                                            <TableCell>{(performance["90%"]?.total??0).toFixed(0)}pp</TableCell>
-                                                            <TableCell>{(performance["95%"]?.total??0).toFixed(0)}pp</TableCell>
-                                                            <TableCell>{(performance["98%"]?.total??0).toFixed(0)}pp</TableCell>
-                                                            <TableCell>{(performance["99%"]?.total??0).toFixed(0)}pp</TableCell>
-                                                            <TableCell>{(performance["100%"]?.total??0).toFixed(0)}pp</TableCell>
+                                                            <TableCell>{(performance["80%"]?.total ?? 0).toFixed(0)}pp</TableCell>
+                                                            <TableCell>{(performance["90%"]?.total ?? 0).toFixed(0)}pp</TableCell>
+                                                            <TableCell>{(performance["95%"]?.total ?? 0).toFixed(0)}pp</TableCell>
+                                                            <TableCell>{(performance["98%"]?.total ?? 0).toFixed(0)}pp</TableCell>
+                                                            <TableCell>{(performance["99%"]?.total ?? 0).toFixed(0)}pp</TableCell>
+                                                            <TableCell>{(performance["100%"]?.total ?? 0).toFixed(0)}pp</TableCell>
                                                         </TableRow>
                                                     </TableBody>
                                                 </Table>
@@ -206,8 +212,8 @@ function ScoreView(props) {
                                     : <></>
                             }
                             <Typography id="modal-modal-description" sx={{ mt: 0 }}>
-                                Mapped by <Link href={`https://osu.ppy.sh/users/${props.data.score.beatmap.creator_id}`} target='_blank' rel='noreferrer'>{props.data.score.beatmap.creator}</Link> 
-                                &nbsp;- Go to <Link href={`https://osu.ppy.sh/beatmaps/${props.data.score.beatmap.beatmap_id}`} target='_blank' rel='noreferrer'>Beatmap</Link> 
+                                Mapped by <Link href={`https://osu.ppy.sh/users/${props.data.score.beatmap.creator_id}`} target='_blank' rel='noreferrer'>{props.data.score.beatmap.creator}</Link>
+                                &nbsp;- Go to <Link href={`https://osu.ppy.sh/beatmaps/${props.data.score.beatmap.beatmap_id}`} target='_blank' rel='noreferrer'>Beatmap</Link>
                                 &nbsp;- Played by <Link href={`https://osu.ppy.sh/users/${props.data.score.user_id}`} target='_blank' rel='noreferrer'>{props.data.score.user.username}</Link>
                             </Typography>
                         </Box>

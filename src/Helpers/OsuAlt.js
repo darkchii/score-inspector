@@ -61,7 +61,7 @@ export async function getUserScores(user_id, allowLoved, onScoreDownloadProgress
     } catch (err) {
         return null;
     }
-    return _scores;
+    return structuredClone(_scores);
 }
 
 export async function getUserTrackerStatus(user_id) {

@@ -2,10 +2,7 @@ import moment from "moment";
 import { range, sleep } from "./Misc";
 import { calculatePP2014, calculatePP2016, calculatePPifFC, calculatePPifSS, calculatePPLazer, getBeatmapCount, getBeatmaps, getBonusPerformance, getLazerScore, getModString, mods } from "./Osu";
 import { getCompletionData } from "./OsuAlt";
-import { getPerformance2014 } from "./Performance/Performance2014";
-import { getPerformance2016 } from "./Performance/Performance2016";
-import { getPerformanceLazer } from "./Performance/PerformanceLazer";
-import { getPerformanceLive } from "./Performance/PerformanceLive";
+import { getCalculator } from "./Performance/Performance";
 import { getPeriodicData } from "./ScoresPeriodProcessor";
 import { getSessions } from "./Session";
 
@@ -208,7 +205,6 @@ async function weighPerformance(scores, onScoreProcessUpdate) {
 }
 
 export function prepareScores(user, scores, onScoreProcessUpdate) {
-    console.log('Before proc', scores[200]);
     scores.forEach(score => {
         onScoreProcessUpdate?.('' + score.id);
         score.is_loved = score.beatmap.approved === 4;
@@ -236,12 +232,12 @@ export function prepareScores(user, scores, onScoreProcessUpdate) {
         score.modString = getModString(score.enabled_mods).toString();
         score.totalhits = score.count300 + score.count100 + score.count50 + score.countmiss;
 
-        score.pp_fc = getPerformanceLive({ count300: score.count300 + score.countmiss, count100: score.count100, count50: score.count50, countmiss: 0, combo: score.beatmap.maxcombo, score: score });
-        score.pp_ss = getPerformanceLive({ count300: score.count300 + score.countmiss + score.count100 + score.count50, count100: 0, count50: 0, countmiss: 0, combo: score.beatmap.maxcombo, score: score });
-        score.pp_cur = getPerformanceLive({ score: score });
-        score.pp_2016 = getPerformance2016({ score: score });
-        score.pp_lazer = getPerformanceLazer({ score: score });
-        score.pp_2014 = getPerformance2014({ score: score });
+        score.pp_fc = getCalculator('live', { count300: score.count300 + score.countmiss, count100: score.count100, count50: score.count50, countmiss: 0, combo: score.beatmap.maxcombo, score: score });
+        score.pp_ss = getCalculator('live', { count300: score.count300 + score.countmiss + score.count100 + score.count50, count100: 0, count50: 0, countmiss: 0, combo: score.beatmap.maxcombo, score: score });
+        score.displayed_pp = getCalculator('live', { score: score });
+        score.pp_2016 = getCalculator('2016', { score: score });
+        score.pp_lazer = getCalculator('lazer', { score: score });
+        score.pp_2014 = getCalculator('2014', { score: score });
 
         score.is_fc = isScoreFullcombo(score);
         score.scoreLazer = Math.floor(getLazerScore(score));
@@ -250,10 +246,6 @@ export function prepareScores(user, scores, onScoreProcessUpdate) {
             score.user = user.alt;
         }
     });
-
-    //test
-
-    console.log('After proc', scores[200]);
 
     return scores;
 }

@@ -1,7 +1,8 @@
 import { mods } from "../Osu";
 
-export function getPerformance2016(data) {
-    const score = JSON.parse(JSON.stringify(data.score));
+export function getPerformance2016(_data, debug = false) {
+    const data = JSON.parse(JSON.stringify(_data));
+    const score = data.score;
     data.count300 = data.count300 ?? score.count300;
     data.count100 = data.count100 ?? score.count100;
     data.count50 = data.count50 ?? score.count50;
@@ -12,8 +13,6 @@ export function getPerformance2016(data) {
 
     data.modded_sr = score.beatmap.modded_sr['2017'] ?? score.beatmap.modded_sr;
 
-    console.log(data.modded_sr);
-
     data.aim = getAimValue(data);
     data.speed = getSpeedValue(data);
     data.acc = getAccuracyValue(data);
@@ -21,7 +20,15 @@ export function getPerformance2016(data) {
 
     data.score = undefined;
 
-    return data;
+    const output = {
+        aim: data.aim,
+        speed: data.speed,
+        acc: data.acc,
+        total: data.total,
+        version: '2016'
+    }
+
+    return output;
 }
 
 function getTotalValue(data) {

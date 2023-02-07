@@ -21,13 +21,14 @@ function PerformanceLazer(props) {
         _scores = _scores.slice(0, 200);
         _scores.forEach(score => {
             score.pp = score.pp_lazer.total;
-            score.pp_cur = score.pp_lazer;
-            score.weight = score.pp_lazer.weight;
+            score.displayed_pp = structuredClone(score.pp_lazer);
+            score.weight = score.displayed_pp.weight;
         })
         console.log(_scores);
         setModalData({
             scores: _scores,
-            active: true
+            active: true,
+            pp_version: 'lazer'
         });
     }
 

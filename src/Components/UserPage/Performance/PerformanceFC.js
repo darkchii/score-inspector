@@ -30,7 +30,7 @@ function PerformanceFC(props) {
             score.weight = score.pp_fc.weight;
             score.rank = getGrade(score);
             score.score = -1;
-            score.pp_cur = score.pp_fc;
+            score.displayed_pp = structuredClone(score.pp_fc);
         })
         setModalData({
             scores: _scores,
