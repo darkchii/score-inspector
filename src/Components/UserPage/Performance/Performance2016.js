@@ -1,5 +1,5 @@
 import AutoGraphIcon from '@mui/icons-material/AutoGraph';
-import { Button, Card, CardContent, Grid, Typography } from '@mui/material';
+import { Button, Card, CardContent, Grid, Tooltip, Typography } from '@mui/material';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import Marquee from 'react-fast-marquee';
@@ -42,9 +42,11 @@ function Performance2016(props) {
                     <Grid container spacing={3} sx={{ justifyContent: 'space-between' }}>
                         <Grid item>
                             <Typography component="div" color="textPrimary" variant="body1">
-                                {toFixedNumber(props.data.data.performance.weighted._2016, 0).toLocaleString('en-US')}pp <Typography sx={{fontSize: '0.7rem'}} color={'' + (ppDiff >= 0 ? '#11cb5f' : 'error')} variant='subtitle2' display="inline">{(ppDiff >= 0 ? '+' : '')}{ppDiff.toFixed(1)}pp</Typography>
+                                {toFixedNumber(props.data.data.performance.weighted._2016, 0).toLocaleString('en-US')}pp <Typography sx={{ fontSize: '0.7rem' }} color={'' + (ppDiff >= 0 ? '#11cb5f' : 'error')} variant='subtitle2' display="inline">{(ppDiff >= 0 ? '+' : '')}{ppDiff.toFixed(1)}pp</Typography>
                             </Typography>
-                            <Typography color="textSecondary">2016 ppv2</Typography>
+                            <Tooltip title='Using 2016 star rating values'>
+                                <Typography color="textSecondary">2016 ppv2</Typography>
+                            </Tooltip>
                             <Button size='small' startIcon={<AutoGraphIcon />} onClick={openModal} variant='contained' sx={{ mt: 2 }}>Top plays</Button>
                         </Grid>
                     </Grid>

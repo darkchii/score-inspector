@@ -44,7 +44,7 @@ function Performance2014(props) {
                             <Typography component="div" color="textPrimary" variant="body1">
                                 {toFixedNumber(props.data.data.performance.weighted._2014, 0).toLocaleString('en-US')}pp <Typography sx={{ fontSize: '0.7rem' }} color={'' + (ppDiff >= 0 ? '#11cb5f' : 'error')} variant='subtitle2' display="inline">{(ppDiff >= 0 ? '+' : '')}{ppDiff.toFixed(1)}pp</Typography>
                             </Typography>
-                            <Tooltip title='Assuming current day starratings'>
+                            <Tooltip title='Using 2014 star rating values'>
                                 <Typography color="textSecondary">2014 ppv2</Typography>
                             </Tooltip>
                             <Button size='small' startIcon={<AutoGraphIcon />} onClick={openModal} variant='contained' sx={{ mt: 2 }}>Top plays</Button>
