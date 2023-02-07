@@ -11,33 +11,34 @@ export function getPerformance2014(_data, debug = false) {
 
     data.modded_sr = score.beatmap.modded_sr['2014'] ?? score.beatmap.modded_sr;
 
-    data.countmiss = Math.min(data.objects, countmiss);
+    data.count300 = count300;
+    data.count100 = count100;
+    data.count50 = count50;
+    data.countmiss = countmiss;
 
-    const max300 = data.objects - data.countmiss;
+    const max300 = data.objects - countmiss;
 
-    data.accuracyPercent = Math.max(0.0, Math.min(getAccuracy(max300, 0, 0, data.countmiss, data.objects) * 100.0, 100.0));
-
-    let c50 = 0;
-    let c100 = Math.round(-3.0 * ((data.accuracyPercent * 0.01 - 1.0) * data.objects + data.countmiss) / 2.0);
-
-    if (c100 > data.objects - data.countmiss) {
-        c100 = 0;
-        c50 = Math.round(-6.0 * ((data.accuracyPercent * 0.01 - 1.0) * data.objects + data.countmiss) * 0.2);
-
-        c50 = Math.min(max300, c50);
-    } else {
-        c100 = Math.min(max300, c100);
-    }
-
-    let c300 = data.objects - c100 - c50 - data.countmiss;
-
-    data.count300 = c300;
-    data.count100 = c100;
+    data.accuracy = getAccuracy(count300, count100, count50, data.countmiss, data.objects);
+    data.accuracy = Math.max(0.0, Math.min(getAccuracy(data.count300, data.count100, data.count50, data.countmiss, data.objects), data.accuracy));
+    
+    const accPerc = data.accuracy * 100;
+    
     data.count50 = 0;
-
+    data.count100 = Math.round(-3.0 * ((accPerc * 0.01 - 1.0) * data.objects + data.countmiss) / 2.0);
+    
+    if (data.count100 > data.objects - data.countmiss) {
+        data.count100 = 0;
+        data.count50 = Math.round(-6.0 * ((accPerc * 0.01 - 1.0) * data.objects + data.countmiss) * 0.2);
+        data.count50 = Math.min(max300, data.count50);
+    }else{
+        data.count100 = Math.min(max300, data.count100);
+    }
+    
     data.combo = data.combo ?? score.combo;
     data.totalhits = data.count300 + data.count100 + data.count50 + data.countmiss;
-    data.accuracy = getAccuracy(data.count300, data.count100, data.count50, data.countmiss, data.objects);
+    data.count300 = data.objects - data.count100 - data.count50 - data.countmiss;
+
+    data.count50 = 0;
 
     data.aim = getAimValue(data);
     data.speed = getSpeedValue(data);
@@ -46,7 +47,7 @@ export function getPerformance2014(_data, debug = false) {
 
     data.score = undefined;
 
-    if(debug){
+    if (debug) {
         console.log(data);
     }
 
@@ -66,7 +67,7 @@ function getTotalValue(data) {
         return 0;
     }
 
-    let mul = 1;
+    let mul = 1.1;
 
     if (data.score.enabled_mods & mods.NF) {
         mul *= 0.90;
@@ -76,8 +77,11 @@ function getTotalValue(data) {
         mul *= 0.95;
     }
 
-    const total = (
-        data.aim + data.speed + data.acc
+    const total = Math.pow(
+        Math.pow(data.aim, 1.1) +
+        Math.pow(data.speed, 1.1) +
+        Math.pow(data.acc, 1.1),
+        1.0 / 1.1
     ) * mul;
 
     return total;
@@ -87,11 +91,12 @@ function getAimValue(data) {
     const raw_aim = data.modded_sr.aim_diff;
     let aim = Math.pow(5.0 * Math.max(1.0, raw_aim / 0.0675) - 4.0, 3.0) / 100000.0;
 
-    aim *= 1.0 + 0.1 * Math.min(1.0, data.totalhits / 1500.0); //length bonus
+    aim *= 0.95 + 0.4 * Math.min(1.0, data.totalhits / 2000.0)
+        + (data.totalhits > 2000 ? Math.log10(data.totalhits / 2000.0) * 0.5 : 0.0); //length bonus
     aim *= Math.pow(0.97, data.countmiss); // miss penalty
 
     if (data.score.beatmap.maxcombo > 0) {
-        aim *= Math.min(Math.pow(data.combo, 0.8) / Math.pow(data.score.beatmap.maxcombo, 0.8), 1.0);
+        aim *= Math.min(Math.pow(data.combo / data.score.beatmap.maxcombo, 0.8), 1.0);
     }
 
     let approachRateFactor = 1.0;
@@ -113,7 +118,7 @@ function getAimValue(data) {
     }
 
     if ((data.score.enabled_mods & mods.FL) !== 0) {
-        aim *= 1.36;
+        aim *= 1.50;
     }
 
     aim *= 0.5 + data.accuracy * 0.5;
@@ -126,7 +131,7 @@ function getAimValue(data) {
 function getSpeedValue(data) {
     let speed = Math.pow(5.0 * Math.max(1.0, data.modded_sr.speed_diff / 0.0675) - 4.0, 3.0) / 100000.0;
 
-    speed *= 1.0 + 0.1 * Math.min(1.0, data.totalhits / 1500.0); //length bonus
+    speed *= 0.95 + 0.4 * Math.min(1.0, data.totalhits / 2000.0) + (data.totalhits > 2000 ? Math.log10(data.totalhits / 2000.0) * 0.5 : 0.0); //length bonus
     speed *= Math.pow(0.97, data.countmiss); // miss penalty
 
     if (data.score.beatmap.maxcombo > 0) {
@@ -148,8 +153,8 @@ function getAccuracyValue(data) {
 
     betterAccuracyPercentage = Math.max(0.0, betterAccuracyPercentage);
 
-    let acc = Math.pow(Math.pow(1.3, data.modded_sr.modded_od) * Math.pow(betterAccuracyPercentage, 15) / 2, 1.6) * 8.3;
-
+    //let acc = Math.pow(Math.pow(1.3, data.modded_sr.modded_od) * Math.pow(betterAccuracyPercentage, 15) / 2, 1.6) * 8.3;
+    let acc = Math.pow(1.52163, data.modded_sr.modded_od) * Math.pow(betterAccuracyPercentage, 24.0) * 2.83;
     acc *= Math.min(1.15, Math.pow(data.score.beatmap.circles / 1000.0, 0.3));
 
     if ((data.score.enabled_mods & mods.HD) !== 0) {
