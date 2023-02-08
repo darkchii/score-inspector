@@ -5,21 +5,19 @@ import { getPerformanceLive } from "./PerformanceLive";
 import { cloneDeep } from "lodash";
 
 export function getCalculator(version, data, debug = false) {
-    const _data = cloneDeep(data);
-    // const _data = JSON.parse(JSON.stringify(data));
     let pp;
     switch (version) {
         case '2016':
-            pp = new getPerformance2016(_data, debug);
+            pp = new getPerformance2016(data, debug);
             break;
         case '2014':
-            pp = new getPerformance2014(_data, debug);
+            pp = new getPerformance2014(data, debug);
             break;
         case 'lazer':
-            pp = new getPerformanceLazer(_data, debug);
+            pp = new getPerformanceLazer(data, debug);
             break;
         default:
-            pp = new getPerformanceLive(_data, debug);
+            pp = new getPerformanceLive(data, debug);
             break;
     }
     pp.version = version ?? 'live';
