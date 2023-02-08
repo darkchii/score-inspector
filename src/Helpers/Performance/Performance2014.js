@@ -1,7 +1,6 @@
 import { mods } from "../Osu";
 
-export function getPerformance2014(_data, debug = false) {
-    const data = JSON.parse(JSON.stringify(_data));
+export function getPerformance2014(data, debug = false) {
     const score = data.score;
     data.objects = score.beatmap.objects;
     const count300 = data.count300 ?? score.count300;
@@ -19,16 +18,13 @@ export function getPerformance2014(_data, debug = false) {
     const max300 = data.objects - countmiss;
 
     data.accuracy = getAccuracy(count300, count100, count50, data.countmiss, data.objects);
-    data.accuracy = Math.max(0.0, Math.min(getAccuracy(data.count300, data.count100, data.count50, data.countmiss, data.objects), data.accuracy));
-    
-    const accPerc = data.accuracy * 100;
     
     data.count50 = 0;
-    data.count100 = Math.round(-3.0 * ((accPerc * 0.01 - 1.0) * data.objects + data.countmiss) / 2.0);
+    data.count100 = Math.round(-3.0 * ((data.accuracy - 1.0) * data.objects + data.countmiss) / 2.0);
     
     if (data.count100 > data.objects - data.countmiss) {
         data.count100 = 0;
-        data.count50 = Math.round(-6.0 * ((accPerc * 0.01 - 1.0) * data.objects + data.countmiss) * 0.2);
+        data.count50 = Math.round(-6.0 * ((data.accuracy - 1.0) * data.objects + data.countmiss) * 0.2);
         data.count50 = Math.min(max300, data.count50);
     }else{
         data.count100 = Math.min(max300, data.count100);

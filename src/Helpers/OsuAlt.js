@@ -60,7 +60,7 @@ export async function getUserScores(user_id, allowLoved, onScoreDownloadProgress
     } catch (err) {
         return null;
     }
-    return structuredClone(_scores);
+    return _scores;
 }
 
 export async function getUserTrackerStatus(user_id) {

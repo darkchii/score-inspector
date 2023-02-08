@@ -1,7 +1,6 @@
 import { mods } from "../Osu";
 
-export function getPerformance2016(_data, debug = false) {
-    const data = JSON.parse(JSON.stringify(_data));
+export function getPerformance2016(data, debug = false) {
     const score = data.score;
     data.count300 = data.count300 ?? score.count300;
     data.count100 = data.count100 ?? score.count100;

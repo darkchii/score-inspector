@@ -2,8 +2,7 @@ import { mods } from "../Osu";
 
 const PERFORMANCE_BASE_MULTIPLIER = 1.14;
 
-export function getPerformanceLazer(_data, debug = false) {
-    const data = JSON.parse(JSON.stringify(_data));
+export function getPerformanceLazer(data, debug = false) {
     const score = data.score;
     data.count300 = data.count300 ?? score.count300;
     data.count100 = data.count100 ?? score.count100;
