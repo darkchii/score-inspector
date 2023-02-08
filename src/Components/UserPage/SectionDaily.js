@@ -9,7 +9,7 @@ import { getSessions } from "../../Helpers/Session";
 import CircleIcon from '@mui/icons-material/Circle';
 import SquareIcon from '@mui/icons-material/Square';
 import { Scatter } from "react-chartjs-2";
-import { IMG_SVG_GRADE_A, IMG_SVG_GRADE_B, IMG_SVG_GRADE_C, IMG_SVG_GRADE_D, IMG_SVG_GRADE_S, IMG_SVG_GRADE_SH, IMG_SVG_GRADE_X, IMG_SVG_GRADE_XH, SVG_GRADE_A, SVG_GRADE_S, SVG_GRADE_X } from "../../Helpers/Assets";
+import { IMG_SVG_GRADE_A, IMG_SVG_GRADE_B, IMG_SVG_GRADE_C, IMG_SVG_GRADE_D, IMG_SVG_GRADE_S, IMG_SVG_GRADE_SH, IMG_SVG_GRADE_X, IMG_SVG_GRADE_XH } from "../../Helpers/Assets";
 import {
     Chart as ChartJS,
     LinearScale,
@@ -19,7 +19,7 @@ import {
     Legend,
 } from 'chart.js';
 import Annotations from "chartjs-plugin-annotation";
-import { deepSearch, nestedSearch } from "../../Helpers/Misc";
+import { nestedSearch } from "../../Helpers/Misc";
 ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend, Annotations);
 momentDurationFormatSetup(moment);
 
@@ -58,6 +58,7 @@ function SectionDaily(props) {
 
     useEffect(() => {
         setMaxDate(moment.unix((props.user.scores !== null && props.user.scores.length > 0) ? Math.max(...props.user.scores.map(score => moment(score.date_played).unix())) : moment().unix()));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, props.user.scores);
 
     useEffect(() => {
@@ -241,6 +242,7 @@ function SectionDaily(props) {
             setWorkingState(false);
         };
         handleDayChange(selectedDay);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedDay, MAX_DATE]);
 
     return (

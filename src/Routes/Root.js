@@ -1,11 +1,8 @@
-import { Accordion, AccordionDetails, AccordionSummary, Alert, Box, Button, Card, CardContent, CircularProgress, Divider, Grid, Link, Modal, Stack, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableHead, TableRow, tableRowClasses, Typography } from '@mui/material';
-import { updates } from '../updates';
+import { Alert, Box, Button, Card, CardContent, CircularProgress, Divider, Grid, Link, Modal, Stack, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableRow, Typography } from '@mui/material';
 import { Link as RouterLink, useSearchParams } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import { formatBytes, GetAPI, MODAL_STYLE, parseReadableStreamToJson, showNotification } from '../Helpers/Misc';
 import { GetFormattedName, GetTopVisited, LoginUser } from '../Helpers/Account';
-import { toast, ToastContainer } from 'react-toastify';
-import config from '../config.json';
 import CircleIcon from '@mui/icons-material/Circle';
 import axios from 'axios';
 import moment from 'moment';
@@ -14,8 +11,7 @@ momentDurationFormatSetup(moment);
 function Root() {
     const [isModalOpen, setIsModalOpen] = useState(true);
     const [osuAuthCode, setOsuAuthCode] = useState(null);
-    const [searchParams, setSearchParams] = useSearchParams();
-    const [loginStatus, setLoginStatus] = useState(null);
+    const [searchParams] = useSearchParams();
     const [serverStatus, setServerStatus] = useState(null);
     const [serverInfo, setServerInfo] = useState(null);
     const [visitorStats, setVisitorStats] = useState(null);
@@ -86,6 +82,7 @@ function Root() {
                 });
             }
         })();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {

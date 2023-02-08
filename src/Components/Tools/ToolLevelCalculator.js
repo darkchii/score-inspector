@@ -1,8 +1,6 @@
-import { Accordion, AccordionDetails, AccordionSummary, Alert, Box, Button, CircularProgress, Collapse, Grid, Link, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableRow, TextField, Typography } from "@mui/material";
-import axios from "axios";
-import { useEffect } from "react";
+import { Box, Button, Grid, Paper, Stack, TextField, Typography } from "@mui/material";
 import { useState } from "react";
-import { GetAPI, parseReadableStreamToJson, readFileAsync, showNotification } from "../../Helpers/Misc";
+import { showNotification } from "../../Helpers/Misc";
 import { getLevelForScore, getScoreForLevel, getUser } from "../../Helpers/Osu";
 
 function ToolLevelCalculator() {

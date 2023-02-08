@@ -1,5 +1,4 @@
-import { Alert, Box, Button, Link, ListItemIcon, ListItemText, MenuItem, MenuList } from "@mui/material";
-import { GetOsuAuthUrl } from "../../Helpers/Misc";
+import { Alert, Box, ListItemIcon, ListItemText, MenuItem, MenuList } from "@mui/material";
 import PersonIcon from '@mui/icons-material/Person';
 import LogoutIcon from '@mui/icons-material/Logout';
 import FilterIcon from '@mui/icons-material/Filter';

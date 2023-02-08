@@ -1,7 +1,6 @@
 import { Alert, Box, Button, ButtonGroup, Chip, Grid, Paper, Skeleton, Stack, Tooltip, Typography } from "@mui/material";
 import moment from "moment";
 import { useEffect, useState } from "react";
-import Marquee from "react-fast-marquee";
 import { Link } from "react-router-dom";
 import ScoreModal from "../Components/ScoreModal";
 import { getBestScores } from "../Helpers/OsuAlt";
@@ -57,6 +56,7 @@ function Top(props) {
 
     useEffect(() => {
         refresh();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selected_period]);
 
     useEffect(() => {

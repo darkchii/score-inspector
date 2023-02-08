@@ -8,7 +8,6 @@ import { getGradeIcon } from '../Helpers/Assets';
 import { toFixedNumber } from '../Helpers/Misc';
 import { getBeatmapMaxscore, getHitsFromAccuracy, getModString, mods } from '../Helpers/Osu';
 import { getCalculator } from '../Helpers/Performance/Performance';
-import { getPerformanceLive } from '../Helpers/Performance/PerformanceLive';
 ChartJS.register(ArcElement, ChartTooltip, Legend);
 
 function ScoreView(props) {

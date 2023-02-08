@@ -2,7 +2,6 @@ import LaunchIcon from '@mui/icons-material/Launch';
 import { Button, Card, CardContent, Grid, Typography } from '@mui/material';
 import { useEffect } from 'react';
 import { useState } from 'react';
-import Marquee from 'react-fast-marquee';
 import { toFixedNumber } from '../../../Helpers/Misc';
 
 function PerformanceXexxar(props) {

@@ -1,5 +1,3 @@
-import { getUnix } from "./Misc";
-
 const ACTIVITY_THRESHOLD = 60 * 60 * 1.5; //this value dictates a new activity region
 export function getSessions(scores) {
     scores.sort((a, b) => a.date_played_moment.valueOf() - b.date_played_moment.valueOf());

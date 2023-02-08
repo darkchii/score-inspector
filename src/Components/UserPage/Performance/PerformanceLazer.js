@@ -2,10 +2,8 @@ import { Button, Card, CardContent, Grid, Typography } from "@mui/material";
 import { useEffect } from "react";
 import { useState } from "react";
 import { toFixedNumber } from "../../../Helpers/Misc";
-import { getGrade } from "../../../Helpers/Osu";
 import AutoGraphIcon from '@mui/icons-material/AutoGraph';
 import TopplaysModal from "../../Modals/TopplaysModal";
-import Marquee from "react-fast-marquee";
 
 function PerformanceLazer(props) {
     const [modalData, setModalData] = useState({ active: false });

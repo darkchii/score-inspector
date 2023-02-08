@@ -2,7 +2,7 @@ import { Box, Button, Divider, Grid, Paper, Stack, Typography } from "@mui/mater
 import { useEffect, useRef, useState } from "react";
 import MUIRichTextEditor from 'mui-rte';
 import { EditorState, convertFromRaw, convertToRaw } from 'draft-js';
-import { DeleteComment, GetComments, GetFormattedName, IsUserLoggedIn, IsUserLoggedInUnsafe, SendComment } from "../../Helpers/Account";
+import { DeleteComment, GetComments, GetFormattedName, IsUserLoggedInUnsafe, SendComment } from "../../Helpers/Account";
 import { showNotification } from "../../Helpers/Misc";
 import { stateToHTML } from "draft-js-export-html";
 import parse from 'html-react-parser';
@@ -57,6 +57,7 @@ function SectionComments(props) {
 
     useEffect(() => {
         refreshComments();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const onComment = () => {
@@ -124,7 +125,7 @@ function SectionComments(props) {
                                             {parse(comment.comment)}
                                         </Box>
                                         {
-                                            (comment.commentor_id == localStorage.getItem('auth_osu_id')) && <Button onClick={() => deleteComment(comment.id)} variant='contained'>Delete</Button>
+                                            (comment.commentor_id === localStorage.getItem('auth_osu_id')) && <Button onClick={() => deleteComment(comment.id)} variant='contained'>Delete</Button>
                                         }
                                     </Box>
                                     {

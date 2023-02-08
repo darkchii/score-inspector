@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, Grid, Paper, Skeleton, Table, TableBody, TableCell, TableRow, Tooltip, Typography } from "@mui/material";
+import { Button, Grid, Paper, Skeleton, Table, TableBody, TableCell, TableRow, Tooltip, Typography } from "@mui/material";
 import { useState } from "react";
 
 function SectionGraphs(props) {

@@ -1,4 +1,4 @@
-import { Card, CardContent, Divider, Grid, Paper, Typography, useTheme } from "@mui/material";
+import { Grid, Paper, Typography, useTheme } from "@mui/material";
 import moment from "moment";
 import BestScoreCard from "./BestScoreCard";
 import Performance2016 from "./Performance/Performance2016";

@@ -78,8 +78,7 @@ function SectionCompletion(props) {
             _graphs[key] = _data;
         });
         setGraphs(_graphs);
-        console.log(typeof theme.palette.primary.main);
-        console.log(_graphs);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.user]);
 
     if (props.user == null) return (<></>);

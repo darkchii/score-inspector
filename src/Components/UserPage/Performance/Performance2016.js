@@ -2,7 +2,6 @@ import AutoGraphIcon from '@mui/icons-material/AutoGraph';
 import { Button, Card, CardContent, Grid, Tooltip, Typography } from '@mui/material';
 import { useEffect } from 'react';
 import { useState } from 'react';
-import Marquee from 'react-fast-marquee';
 import { toFixedNumber } from '../../../Helpers/Misc';
 import TopplaysModal from '../../Modals/TopplaysModal';
 

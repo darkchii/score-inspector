@@ -1,6 +1,6 @@
 import moment from "moment";
-import { range, sleep } from "./Misc";
-import { calculatePP2014, calculatePP2016, calculatePPifFC, calculatePPifSS, calculatePPLazer, getBeatmapCount, getBeatmaps, getBonusPerformance, getLazerScore, getModString, mods } from "./Osu";
+import { sleep } from "./Misc";
+import { calculatePP2014, calculatePP2016, calculatePPifFC, calculatePPifSS, calculatePPLazer, getBeatmapCount, getBonusPerformance, getLazerScore, getModString, mods } from "./Osu";
 import { getCompletionData } from "./OsuAlt";
 import { getCalculator } from "./Performance/Performance";
 import { getPeriodicData } from "./ScoresPeriodProcessor";

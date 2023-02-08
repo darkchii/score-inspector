@@ -5,7 +5,6 @@ import { toFixedNumber } from "../../../Helpers/Misc";
 import { getGrade } from "../../../Helpers/Osu";
 import AutoGraphIcon from '@mui/icons-material/AutoGraph';
 import TopplaysModal from "../../Modals/TopplaysModal";
-import Marquee from "react-fast-marquee";
 
 function PerformanceFC(props) {
     const [modalData, setModalData] = useState({ active: false });

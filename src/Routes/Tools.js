@@ -39,6 +39,7 @@ function Tools() {
         if (index !== -1) {
             setTool(index);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [params.tool]);
 
     return (

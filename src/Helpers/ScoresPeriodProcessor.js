@@ -187,14 +187,14 @@ function processDailyData(chunks, user, data, f = 'm') {
     }
 
     //get the difference between chunks
-    for (var i = 0; i < chunks.length; i++) {
-        var prev = i > 0 ? chunks[i - 1].osudaily : null;
+    for (var index = 0; index < chunks.length; index++) {
+        var prev = index > 0 ? chunks[index - 1].osudaily : null;
         if (prev) {
-            chunks[i].osudaily.total_score = Math.max(0, chunks[i].osudaily.cumulative_total_score - (prev?.cumulative_total_score ?? 0));
-            chunks[i].osudaily.gained_level = Math.max(0, chunks[i].osudaily.cumulative_level - (prev?.cumulative_level ?? 0));
+            chunks[index].osudaily.total_score = Math.max(0, chunks[index].osudaily.cumulative_total_score - (prev?.cumulative_total_score ?? 0));
+            chunks[index].osudaily.gained_level = Math.max(0, chunks[index].osudaily.cumulative_level - (prev?.cumulative_level ?? 0));
         } else {
-            chunks[i].osudaily.total_score = 0;
-            chunks[i].osudaily.gained_level = 0;
+            chunks[index].osudaily.total_score = 0;
+            chunks[index].osudaily.gained_level = 0;
         }
     }
 

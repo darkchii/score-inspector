@@ -1,4 +1,4 @@
-import { Box, Button, ButtonGroup, Chip, Grid, Link, List, ListItem, Typography } from '@mui/material';
+import { Box, Button, Chip, Grid, Link, List, ListItem, Typography } from '@mui/material';
 import moment from 'moment/moment';
 import React from 'react';
 import { useEffect } from 'react';
@@ -7,7 +7,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { CHANGETYPES, updates } from '../updates';
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
-import { Link as RouterLink } from 'react-router-dom';
 
 function Update() {
     const [update, setUpdate] = useState(null);
@@ -40,6 +39,7 @@ function Update() {
 
     useEffect(() => {
         fn_update();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [params.id]);
 
     return (

@@ -1,8 +1,8 @@
-import { Accordion, AccordionDetails, AccordionSummary, Alert, Box, Button, CircularProgress, Collapse, Grid, Link, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Alert, Box, Button, CircularProgress, Grid, Link, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
 import axios from "axios";
 import { useEffect } from "react";
 import { useState } from "react";
-import { GetAPI, parseReadableStreamToJson, readFileAsync, showNotification } from "../../Helpers/Misc";
+import { GetAPI, readFileAsync, showNotification } from "../../Helpers/Misc";
 import { OsuDb } from "../../Helpers/OsuDb/OsuDb";
 
 function ToolMissingBeatmaps() {
@@ -132,6 +132,7 @@ function ToolMissingBeatmaps() {
             setBeatmaps(data);
             setReadyToUpload(true);
         })();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (

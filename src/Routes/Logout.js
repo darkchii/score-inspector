@@ -1,5 +1,4 @@
 import { Box, CircularProgress } from "@mui/material";
-import axios from "axios";
 import { useEffect } from "react";
 import { LogoutUser } from "../Helpers/Account";
 

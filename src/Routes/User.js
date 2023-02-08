@@ -3,14 +3,14 @@ import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom/dist';
-import { getUser as getAltUser, getUserScores, isUserRegistered } from '../Helpers/OsuAlt';
-import { getFullUser, getUser as getOsuUser, getUserLeaderboardStats } from '../Helpers/Osu';
+import { getUserScores, isUserRegistered } from '../Helpers/OsuAlt';
+import { getFullUser, getUserLeaderboardStats } from '../Helpers/Osu';
 import SectionHeader from '../Components/UserPage/SectionHeader';
 import { processScores } from '../Helpers/ScoresProcessor';
 import { Helmet } from 'react-helmet';
 import UserDataContainer from '../Components/UserPage/UserDataContainer';
 import config from '../config.json';
-import { GetLoginID, GetVisitors, UpdateVisitor } from '../Helpers/Account';
+import { GetVisitors, UpdateVisitor } from '../Helpers/Account';
 
 function User() {
     const [user, setUser] = useState(null);

@@ -1,6 +1,6 @@
 import { Avatar, Box, Grid, Paper, Stack, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableRow, Typography } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
-import { GetAPI, sleep } from "../../Helpers/Misc";
+import { GetAPI } from "../../Helpers/Misc";
 import moment from "moment";
 import { getGradeIcon } from "../../Helpers/Assets";
 import domtoimage from 'dom-to-image';
@@ -22,6 +22,7 @@ function SectionCompactCard(props) {
 
     useEffect(() => {
         convert();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [printRef.current]);
 
     return (

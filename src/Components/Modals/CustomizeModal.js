@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardContent, Container, FormControl, FormControlLabel, FormGroup, Modal, Stack, Switch, TextField, Typography } from "@mui/material";
+import { Box, Button, Card, CardContent, Container, Modal, Stack, TextField, Typography } from "@mui/material";
 import { useEffect, useImperativeHandle } from "react";
 import { forwardRef } from "react";
 import { useState } from "react";
@@ -15,7 +15,6 @@ const style = {
 function CustomizeModal(props, ref) {
     const [open, setOpen] = useState(false);
     const [isWorking, setIsWorking] = useState(false);
-    const [userData, setUserData] = useState(null);
     const [backgroundUrl, setBackgroundUrl] = useState('');
 
     useImperativeHandle(ref, () => ({
@@ -32,7 +31,6 @@ function CustomizeModal(props, ref) {
         (async () => {
             setIsWorking(true);
             const user = await GetInspectorUser(props.account.user_id);
-            setUserData(user);
             setIsWorking(false);
             if (user === null) {
                 showNotification('Error', 'Failed to get user data', 'error');
@@ -40,6 +38,7 @@ function CustomizeModal(props, ref) {
             }
             setBackgroundUrl(user.background_image);
         })();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [open]);
 
     const save = () => {
