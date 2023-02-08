@@ -144,7 +144,7 @@ export async function GetUser(osu_id) {
         }
         return null;
     } catch (e) {
-        console.log(e);
+        console.error(e);
         return null;
     }
 }
@@ -161,7 +161,7 @@ export async function UpdateVisitor(target_id) {
     let res = null;
     try {
         const visitor_id = await GetLoginID();
-        console.log(`Updating visitor data: Visitor:${visitor_id} -> Target:${target_id}`)
+        //console.log(`Updating visitor data: Visitor:${visitor_id} -> Target:${target_id}`)
         res = await fetch(`${GetAPI()}login/update_visitor`, {
             method: 'POST',
             headers: {

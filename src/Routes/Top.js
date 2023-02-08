@@ -29,7 +29,6 @@ function Top(props) {
     const refresh = () => {
         setIsWorking(true);
         (async () => {
-            console.log('getting scores');
             try {
                 let scores_pp = await getBestScores(selected_period.value, "pp", SCORES_TO_FETCH, false);
                 let scores_score = await getBestScores(selected_period.value, "score", SCORES_TO_FETCH, false);
@@ -50,7 +49,7 @@ function Top(props) {
                     },
                 });
             } catch (err) {
-                console.log(err);
+                console.error(err);
             }
             setIsWorking(false);
         })();

@@ -67,8 +67,6 @@ function ScoreView(props) {
                 (props.data.score.beatmap.modded_sr[props.data.pp_version] ?? props.data.score.beatmap.modded_sr) :
                 props.data.score.beatmap.modded_sr;
             setSR(_sr);
-
-            console.log(props.data.pp_version, props.data.score);
         }
     }, [props.data, props.data.score.score]);
 

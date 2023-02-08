@@ -24,7 +24,6 @@ function PerformanceLazer(props) {
             score.displayed_pp = structuredClone(score.pp_lazer);
             score.weight = score.displayed_pp.weight;
         })
-        console.log(_scores);
         setModalData({
             scores: _scores,
             active: true,

@@ -29,7 +29,6 @@ export async function getLeaderboard(stat, limit, offset, country) {
     try {
         const url = `${GetAPI()}leaderboards/${stat}?limit=${limit}&offset=${offset}${country && country !== 'world' ? `&country=${country}` : ""}`;
         const res = await axios.get(url, { headers: { "Access-Control-Allow-Origin": "*" } });
-        console.log(res);
         leaderboard = res.data;
     } catch (err) {
         return null;

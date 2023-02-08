@@ -122,10 +122,7 @@ function processDailyData(chunks, user, data, f = 'm') {
     const firstDate = chunks[0].actual_date;
     const firstDaily = user.daily.modes[0].lines[user.daily.modes[0].lines.length - 1];
     const firstDailyDate = moment(firstDaily.date);
-    console.log('firstDate', firstDate);
-    console.log('firstDailyDate', firstDailyDate);
     const pointsBetween = firstDailyDate.diff(firstDate, 'months');
-    console.log('pointsBetween', pointsBetween);
     const initial_rank = user.osu.id;
     const countryRankPercOfGlobal = 1 / user.osu.statistics.global_rank * user.osu.statistics.country_rank;
     const initial_c_rank = Math.round(countryRankPercOfGlobal * initial_rank);

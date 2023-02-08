@@ -17,7 +17,6 @@ function SectionCompactCard(props) {
     const convert = async () => {
         if (printRef.current === null) return;
         const data = await domtoimage.toPng(printRef.current);
-        console.log(data);
         setImage(data);
     }
 

@@ -13,7 +13,6 @@ export class OsuDb {
     }
 
     async Read(file) {
-        console.log(file);
         const buffer = new OsuBuffer(file);
         this.OsuVersion = buffer.ReadInt32();
         this.FolderCount = buffer.ReadInt32();
@@ -113,9 +112,6 @@ export class OsuDb {
         }
 
         this.AccountRank = buffer.ReadInt32();
-
-
-        console.log(this);
 
         // const beatmapCount = buffer.ReadInt32();
         // for (let i = 0; i < beatmapCount; i++) {

@@ -106,8 +106,6 @@ function ToolMissingBeatmaps() {
         };
         setProcessedData(data);
 
-        console.log(data);
-
         setUploading(false);
         setHasDataReady(true);
     };
