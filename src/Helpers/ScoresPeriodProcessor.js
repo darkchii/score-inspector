@@ -1,5 +1,6 @@
 // created array based on months or weeks or whatever with scores and interesting stats with it
 
+import { cloneDeep } from "lodash";
 import moment from "moment";
 import TimeGraph from "../Components/TimeGraph";
 import { dataToList } from "./MonthlyDataConfig";
@@ -25,10 +26,8 @@ export function getPeriodicData(scores, data, user, f = 'm') {
         f = 'm';
     }
     let chunks = [];
-    // let duplicate_scores = JSON.parse(JSON.stringify(scores));
-    let duplicate_scores = [...scores];
 
-    for (const score of duplicate_scores) {
+    for (const score of scores) {
         const _m = moment(score.date_played);
         const _v = _m.format(PERIOD_FORMATS[f].format_str);
 
@@ -87,7 +86,7 @@ export function getPeriodicData(scores, data, user, f = 'm') {
         dates.push(moment(m));
     }
 
-    const chunk_ref = JSON.parse(JSON.stringify(sortedChunks[0]));
+    const chunk_ref = cloneDeep(sortedChunks[0]);
     for (var p in chunk_ref) {
         chunk_ref[p] = 0;
     }
@@ -95,7 +94,7 @@ export function getPeriodicData(scores, data, user, f = 'm') {
     var r = dates.map(date => {
         var o = sortedChunks.findIndex(x => x.actual_date.isSame(date, PERIOD_FORMATS[f].format));
         if (o === -1) {
-            var clone = JSON.parse(JSON.stringify(chunk_ref));
+            var clone = cloneDeep(chunk_ref);
             clone.date = date.format(PERIOD_FORMATS[f].format_str);
             clone.actual_date = date;
             return clone;
