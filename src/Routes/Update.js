@@ -4,7 +4,7 @@ import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { CHANGETYPES, updates } from '../updates';
+import { CHANGETYPES, PLATFORMTYPES, updates } from '../updates';
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 
@@ -15,7 +15,7 @@ function Update() {
     const navigate = useNavigate();
 
     const fn_update = () => {
-        if(isNaN(params.id)) {
+        if (isNaN(params.id)) {
             return;
         }
         const _id = Number(params.id);
@@ -56,8 +56,18 @@ function Update() {
                         {
                             update.changes.map((change, index) => {
                                 let _typeText = '';
+                                let _platformText = '';
                                 let _typeColor = 'primary';
                                 switch (change[0]) {
+                                    default:
+                                    case PLATFORMTYPES.WEB:
+                                        _platformText = 'Web';
+                                        break;
+                                    case PLATFORMTYPES.API:
+                                        _platformText = 'API';
+                                        break;
+                                }
+                                switch (change[1]) {
                                     case CHANGETYPES.NEW:
                                         _typeText = 'New';
                                         _typeColor = 'success';
@@ -79,18 +89,21 @@ function Update() {
                                 return (
                                     <ListItem>
                                         <Grid container>
-                                            <Grid item xs={0.75} md={0.75}>
+                                            <Grid item xs={0.6} md={0.6}>
+                                                <Chip size="small" label={_platformText} />
+                                            </Grid>
+                                            <Grid item xs={0.6} md={0.6}>
                                                 <Chip color={_typeColor} size="small" label={_typeText} />
                                             </Grid>
                                             <Grid item xs={1} md={1}>
                                                 {
-                                                    change[2] ?
-                                                        <><Link target='_blank' href={`https://github.com/darkchii/score-inspector/commit/${change[2]}`}><Chip size="small" label={change[2].substr(0, 7)} /></Link> </>
+                                                    change[3] ?
+                                                        <><Link target='_blank' href={`https://github.com/darkchii/score-inspector/commit/${change[3]}`}><Chip size="small" label={change[3].substr(0, 7)} /></Link> </>
                                                         : <></>
                                                 }
                                             </Grid>
-                                            <Grid item xs={10.25} md={10.25}>
-                                                {change[1]}
+                                            <Grid item xs={9.8} md={9.8}>
+                                                {change[2]}
                                             </Grid>
                                         </Grid>
                                     </ListItem>
