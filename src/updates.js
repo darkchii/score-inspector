@@ -28,7 +28,9 @@ const updates = [
             [PLATFORMTYPES.WEB, CHANGETYPES.FIX, 'Fixed scoreview incorrect donut chart data', '9f0ccb59dd0900de4c35aaf7fc622fe731572884'],
             [PLATFORMTYPES.API, CHANGETYPES.FIX, 'Fixed unique rank leaderboards'],
             [PLATFORMTYPES.WEB, CHANGETYPES.FIX, 'Fixed (hopefully) uBlock failing user fetch (probably 3rd party score rank api call)', '917facde673778a50cd36139c9171207b06bcc1b'],
-            [PLATFORMTYPES.WEB, CHANGETYPES.MISC, 'Added simulated data where missing for osudaily', '6e0889eceb8db43ed47ccca1d14be06348cd5f61'],
+            [PLATFORMTYPES.API, CHANGETYPES.FIX, 'Fixed osu!alt showing up as offline on status check'],
+            [PLATFORMTYPES.API, CHANGETYPES.MISC, 'Cached parts of system info that are extremely slow to fetch'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.MISC, 'Added simulated data where missing for osudaily (except ranking)', '6e0889eceb8db43ed47ccca1d14be06348cd5f61'],
             [PLATFORMTYPES.API, CHANGETYPES.MISC, 'Converted most server-side database calls to Sequelize usage', 'c9092bbd1146745059025f1e0549aa0471d14714'],
         ]
     },

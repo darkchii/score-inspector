@@ -7,7 +7,7 @@ import domtoimage from 'dom-to-image';
 import ReactCountryFlag from "react-country-flag";
 
 const SIZE = {
-    width: '550px',
+    width: '650px',
     height: '320px',
 }
 function SectionCompactCard(props) {
@@ -33,7 +33,7 @@ function SectionCompactCard(props) {
                         <Grid sx={{ justifyContent: 'center', alignItems: 'center', display: 'flex' }}>
                             <img src={image} alt='user compact card' />
                         </Grid>
-                        <Typography sx={{ justifyContent: 'center', alignItems: 'center', display: 'flex' }}>Image is ready, you can copy it</Typography>
+                        <Typography sx={{ justifyContent: 'center', alignItems: 'center', display: 'flex' }}>Image is ready, you can copy it. If it messed up a bit, go to another user tab and back to this to regenerate. It is a bit buggy.</Typography>
                     </>
                 ) : (<>
                     <Grid sx={{ justifyContent: 'center', alignItems: 'center', display: 'flex' }}>
@@ -49,7 +49,7 @@ function SectionCompactCard(props) {
                                                 <Grid item xs={10.3} sx={{ m: 'auto' }}>
                                                     <Typography variant='h5' sx={{ color: 'white', display: 'inline-block' }}><ReactCountryFlag style={{ lineHeight: '1em', fontSize: '1.4em', borderRadius: '5px' }} cdnUrl="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/" countryCode={props.user.osu.country.code} /></Typography>
                                                     <Typography variant='h5' sx={{ color: 'white', display: 'inline-block', ml: 1 }}>{props.user.osu.username}</Typography>
-                                                    <Typography variant='body1' sx={{ color: 'white', float: 'right', display: 'inline-block' }}>{Math.round(props.user.osu.statistics.hit_accuracy*100)/100}% {Math.round(props.user.osu.statistics.pp)}pp</Typography>
+                                                    <Typography variant='body1' sx={{ color: 'white', float: 'right', display: 'inline-block' }}>{Math.round(props.user.osu.statistics.hit_accuracy*100)/100}% {Math.round(props.user.osu.statistics.pp).toLocaleString('en-US')}pp</Typography>
                                                 </Grid>
                                             </Grid>
                                             <Grid sx={{ height: '3rem' }}>
@@ -150,7 +150,7 @@ function SectionCompactCard(props) {
                             </Box>
                         </div>
                     </Grid>
-                    <Typography sx={{ justifyContent: 'center', alignItems: 'center', display: 'flex' }}>Image is still generating</Typography>
+                    <Typography sx={{ justifyContent: 'center', alignItems: 'center', display: 'flex' }}>PLEASE WAIT.... Image is still generating</Typography>
                 </>)
             }
         </>
