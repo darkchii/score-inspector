@@ -13,7 +13,7 @@ const PLATFORMTYPES = {
 const updates = [
     {
         version: '2.4.0',
-        date: 'n/a',
+        date: '2023-02-09',
         changes: [
             [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Added user card image generator', 'c83f957f1678c6c45f487ddd46f52a98097729ea'],
             [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Added highest star rating pass to monthly graphs', '9629338f388fc18814072a593a0ccd542d81d9bd'],
