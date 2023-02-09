@@ -166,9 +166,9 @@ function processDailyData(chunks, user, data, f = 'm') {
         if (cumulative_total_score === 0) cumulative_total_score = null;
         if (cumulative_level === 0) cumulative_level = null;
         if (pointsBetween > 1 && i <= pointsBetween) {
-            const perc = i / pointsBetween;
-            rank = initial_rank - (initial_rank - firstDaily.rankworld) * perc;
-            c_rank = initial_c_rank - (initial_c_rank - firstDaily.rankcountry) * perc;
+            // const perc = i / pointsBetween;
+            // rank = initial_rank - (initial_rank - firstDaily.rankworld) * perc;
+            // c_rank = initial_c_rank - (initial_c_rank - firstDaily.rankcountry) * perc;
             //c_rank = initial_c_rank - firstDaily.rankcountry / pointsBetween * i;
             raw_pp = firstDaily.pp / pointsBetween * i;
             cumulative_total_score = firstDaily.totalscore / pointsBetween * i;
