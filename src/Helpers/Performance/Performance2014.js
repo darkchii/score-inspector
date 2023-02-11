@@ -52,7 +52,12 @@ export function getPerformance2014(data, debug = false) {
         speed: data.speed,
         acc: data.acc,
         total: data.total,
-        version: '2014'
+        version: '2014',
+        accuracy: data.accuracy,
+        count300: data.count300,
+        count100: data.count100,
+        count50: data.count50,
+        countmiss: data.countmiss,
     }
 
     return output;

@@ -27,7 +27,12 @@ export function getPerformanceLive(data, debug = false) {
         acc: data.acc,
         flashlight: data.flashlight,
         total: data.total,
-        version: '2014'
+        version: '2014',
+        accuracy: data.accuracy,
+        count300: data.count300,
+        count100: data.count100,
+        count50: data.count50,
+        countmiss: data.countmiss,
     }
 
     return output;

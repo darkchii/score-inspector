@@ -22,6 +22,11 @@ export function getCalculator(version, data, debug = false) {
     }
     pp.version = version ?? 'live';
     const obj = {
+        accuracy: pp.accuracy,
+        count300: pp.count300,
+        count100: pp.count100,
+        count50: pp.count50,
+        countmiss: pp.countmiss,
         aim: pp.aim,
         speed: pp.speed,
         acc: pp.acc,
