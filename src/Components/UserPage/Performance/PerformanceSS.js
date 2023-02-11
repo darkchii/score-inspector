@@ -11,13 +11,13 @@ function PerformanceSS(props) {
     const [ppDiff, setPPDiff] = useState(0);
 
     const openModal = async () => {
-        var _scores = JSON.parse(JSON.stringify(props.data.scores));
+        console.time('Top plays modal');
+        var _scores = [...props.data.scores];
         _scores.sort((a, b) => {
             if (a.pp_ss.weight > b.pp_ss.weight) { return -1; }
             if (a.pp_ss.weight < b.pp_ss.weight) { return 1; }
             return 0;
         });
-        _scores = _scores.slice(0, 200);
         _scores.forEach(score => {
             score.pp = score.pp_ss.total;
             score.accuracy = score.pp_ss.accuracy * 100;
@@ -35,6 +35,7 @@ function PerformanceSS(props) {
             scores: _scores,
             active: true
         })
+        console.timeEnd('Top plays modal');
     }
 
     useEffect(() => {

@@ -10,13 +10,12 @@ function Performance2014(props) {
     const [ppDiff, setPPDiff] = useState(0);
 
     const openModal = async () => {
-        var _scores = JSON.parse(JSON.stringify(props.data.scores));
+        var _scores = [...props.data.scores];
         _scores.sort((a, b) => {
             if (a.pp_2014.weight > b.pp_2014.weight) { return -1; }
             if (a.pp_2014.weight < b.pp_2014.weight) { return 1; }
             return 0;
         });
-        _scores = _scores.slice(0, 200);
         _scores.forEach(score => {
             score.pp = score.pp_2014.total;
             score.displayed_pp = structuredClone(score.pp_2014);

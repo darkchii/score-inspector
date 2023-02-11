@@ -234,7 +234,8 @@ export function prepareScores(user, scores, onScoreProcessUpdate) {
 
         score.pp_fc = getCalculator('live', { count300: score.count300 + score.countmiss, count100: score.count100, count50: score.count50, countmiss: 0, combo: score.beatmap.maxcombo, score: score });
         score.pp_ss = getCalculator('live', { count300: score.count300 + score.countmiss + score.count100 + score.count50, count100: 0, count50: 0, countmiss: 0, combo: score.beatmap.maxcombo, score: score });
-        score.displayed_pp = getCalculator('live', { score: score });
+        score.pp_original = getCalculator('live', { score: score });
+        score.displayed_pp = structuredClone(score.pp_original);
         score.pp_2016 = getCalculator('2016', { score: score });
         score.pp_lazer = getCalculator('lazer', { score: score });
         score.pp_2014 = getCalculator('2014', { score: score });

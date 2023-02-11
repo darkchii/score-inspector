@@ -1,23 +1,29 @@
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
-import { Box, Card, Collapse, Grid, IconButton, LinearProgress, Tooltip, Typography } from '@mui/material';
+import { Box, Card, Collapse, Grid, IconButton, LinearProgress, setRef, Tooltip, Typography } from '@mui/material';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { getGradeIcon, getModIcon } from '../Helpers/Assets';
 import { toFixedNumber } from '../Helpers/Misc';
 import { getModString, mods, mod_strings_long } from '../Helpers/Osu';
-import ScoreView from './ScoreView';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 
 function ScoreTableRow(props) {
     const [score, setScore] = useState(null);
     const [viewerOpen, setViewerOpen] = useState(false);
+    const [height, setHeight] = useState(0);
+
+    const openScoreView = (index) => {
+        props?.openScoreView(index);
+    }
 
     useEffect(() => {
         setScore(props.data.score);
     }, [props.data]);
 
     const toggleViewer = () => {
-        setViewerOpen(!viewerOpen);
+        //setViewerOpen(!viewerOpen);
+        openScoreView(props.index);
     };
 
     return (
@@ -57,30 +63,11 @@ function ScoreTableRow(props) {
                                 </Grid>
                                 <Grid item xs={0.5} sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
                                     <IconButton onClick={toggleViewer} size="small">
-                                        {viewerOpen ? <ExpandLess /> : <ExpandMore />}
+                                        <VisibilityIcon />
                                     </IconButton>
                                 </Grid>
                             </Grid>
                         </Box>
-                        <Grid>
-                            {
-                                viewerOpen ?
-                                    <>
-                                        <Collapse in={viewerOpen}>
-                                            <ScoreView data={{
-                                                score: score, style: {
-                                                    bgcolor: 'background.paper',
-                                                    width: '100%',
-                                                    boxShadow: 24,
-                                                    borderRadius: 0,
-                                                },
-                                                pp_version: props.data.pp_version
-                                            }} />
-                                        </Collapse>
-                                    </>
-                                    : <></>
-                            }
-                        </Grid>
                     </>
                     : <>
                         <Box sx={{ width: '100%' }}>
