@@ -12,6 +12,15 @@ const PLATFORMTYPES = {
 
 const updates = [
     {
+        version: '2.4.1',
+        date: '2023-02-12',
+        changes: [
+            [PLATFORMTYPES.WEB, CHANGETYPES.FIX, 'Fixed missing properties when opening PP if FC/SS', 'faadce89f48e26a1ca072eb85758aa36eb0e6165'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.FIX, 'Fixed user scores page crash', '201df4345703825a33b632051ec050428eb7a9c3'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.MISC, 'Massive performance boost to "pp if ..." modals with virtualization', '825823251b976460a1f233a8e23f33d7aeb3824b'],
+        ]
+    },
+    {
         version: '2.4.0',
         date: '2023-02-09',
         changes: [
