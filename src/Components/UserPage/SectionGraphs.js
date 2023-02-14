@@ -1,4 +1,4 @@
-import { Button, Grid, Paper, Skeleton, Table, TableBody, TableCell, TableRow, Tooltip, Typography } from "@mui/material";
+import { Box, Button, Grid, Paper, Skeleton, Table, TableBody, TableCell, TableRow, Tooltip, Typography } from "@mui/material";
 import { useState } from "react";
 
 function SectionGraphs(props) {
@@ -79,7 +79,9 @@ function SectionGraphs(props) {
                                                             return (
                                                                 <>
                                                                     <Tooltip title={disableButton ? 'No data available from osu!daily api for this user' : ''}>
-                                                                        <Button sx={{m:0.2}} size='small' disabled={disableButton} variant={timeGraphValue === button.id ? 'contained' : 'outlined'} key={j} onClick={() => { setTimeGraphValue(button.id); }}>{button.title}</Button>
+                                                                        <Box sx={{ display: 'inline-block' }}>
+                                                                            <Button sx={{ m: 0.2 }} size='small' disabled={disableButton} variant={timeGraphValue === button.id ? 'contained' : 'outlined'} key={j} onClick={() => { setTimeGraphValue(button.id); }}>{button.title}</Button>
+                                                                        </Box>
                                                                     </Tooltip>
                                                                 </>
                                                             )
