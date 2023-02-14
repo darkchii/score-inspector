@@ -12,6 +12,13 @@ const PLATFORMTYPES = {
 
 const updates = [
     {
+        version: '2.4.2',
+        date: '2023-02-14',
+        changes: [
+            [PLATFORMTYPES.WEB, CHANGETYPES.FIX, 'Fixed missing osu!daily data causing crash', 'b364e3031042aaa16454d7d047dae63e4d80534e'],
+        ]
+    },
+    {
         version: '2.4.1',
         date: '2023-02-12',
         changes: [
