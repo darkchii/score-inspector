@@ -11,6 +11,7 @@ import { Helmet } from 'react-helmet';
 import UserDataContainer from '../Components/UserPage/UserDataContainer';
 import config from '../config.json';
 import { GetVisitors, UpdateVisitor } from '../Helpers/Account';
+import { formatBytes } from '../Helpers/Misc';
 
 function User() {
     const [user, setUser] = useState(null);
@@ -38,7 +39,7 @@ function User() {
                 const user_out = await getFullUser(user_in);
 
                 const onScoreDownloadProgress = (progress) => {
-                    setLoadingState(`Fetching user scores (${parseInt(Math.round(progress.loaded * 100) / progress.total)}%)`);
+                    setLoadingState(`Fetching user scores (${formatBytes(progress.loaded)})`);
                 };
 
                 if (user_out === null || user_out.error !== undefined) {
