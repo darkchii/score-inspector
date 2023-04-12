@@ -157,10 +157,6 @@ function Root() {
                                                             <TableCell><Link href='https://discord.gg/VZWRZZXcW4' target='_blank'>osu!alternative</Link></TableCell>
                                                         </TableRow>
                                                         <TableRow>
-                                                            <TableCell>top50s dataset</TableCell>
-                                                            <TableCell><Link href='https://github.com/respektive/osustats' target='_blank'>respektive</Link></TableCell>
-                                                        </TableRow>
-                                                        <TableRow>
                                                             <TableCell>score ranking</TableCell>
                                                             <TableCell><Link href='https://github.com/respektive/osustats' target='_blank'>respektive</Link></TableCell>
                                                         </TableRow>
