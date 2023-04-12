@@ -49,7 +49,7 @@ function SectionCompactCard(props) {
                                                 <Grid item xs={10.3} sx={{ m: 'auto' }}>
                                                     <Typography variant='h5' sx={{ color: 'white', display: 'inline-block' }}><ReactCountryFlag style={{ lineHeight: '1em', fontSize: '1.4em', borderRadius: '5px' }} cdnUrl="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/" countryCode={props.user.osu.country.code} /></Typography>
                                                     <Typography variant='h5' sx={{ color: 'white', display: 'inline-block', ml: 1 }}>{props.user.osu.username}</Typography>
-                                                    <Typography variant='body1' sx={{ color: 'white', float: 'right', display: 'inline-block' }}>{Math.round(props.user.osu.statistics.hit_accuracy*100)/100}% {Math.round(props.user.osu.statistics.pp).toLocaleString('en-US')}pp</Typography>
+                                                    <Typography variant='body1' sx={{ color: 'white', float: 'right', display: 'inline-block' }}>{Math.round(props.user.osu.statistics.hit_accuracy * 100) / 100}% {Math.round(props.user.osu.statistics.pp).toLocaleString('en-US')}pp</Typography>
                                                 </Grid>
                                             </Grid>
                                             <Grid sx={{ height: '3rem' }}>
@@ -69,77 +69,63 @@ function SectionCompactCard(props) {
                                                     }
                                                 </Grid>
                                             </Grid>
-                                            <Grid>
-                                                <TableContainer>
-                                                    <Table size='small' sx={{ [`& .${tableCellClasses.root}`]: { borderBottom: "none", fontSize: '0.75em', lineHeight: '0.5em' } }}>
-                                                        <TableBody>
-                                                            <TableRow>
-                                                                <TableCell>Worldrank</TableCell>
-                                                                <TableCell></TableCell>
-                                                                <TableCell>#{(props.user.osu.statistics.global_rank ?? 0).toLocaleString('en-US')}</TableCell>
-
-                                                                <TableCell>Clears</TableCell>
-                                                                <TableCell>{(props.user.scores?.length.toLocaleString('en-US') ?? 0)}</TableCell>
-                                                            </TableRow>
-                                                            <TableRow>
-                                                                <TableCell>Countryrank</TableCell>
-                                                                <TableCell></TableCell>
-                                                                <TableCell>#{(props.user.osu.statistics.country_rank ?? 0).toLocaleString('en-US')}</TableCell>
-
-                                                                <TableCell>Playcount</TableCell>
-                                                                <TableCell>{props.user.osu.statistics.play_count.toLocaleString('en-US')}</TableCell>
-                                                            </TableRow>
-                                                            <TableRow>
-                                                                <TableCell>Scorerank</TableCell>
-                                                                <TableCell></TableCell>
-                                                                <TableCell>#{(props.user.osu.scoreRank ?? 0).toLocaleString('en-US')}</TableCell>
-
-                                                                <TableCell>Completion</TableCell>
-                                                                <TableCell>{(props.user.scores?.length > 0 ? Math.round((100 / props.user.data.total_beatmaps * props.user.scores?.length) * 100) / 100 : 0) + '%'}</TableCell>
-                                                            </TableRow>
-                                                            <TableRow>
-                                                                <TableCell>Top 1s</TableCell>
-                                                                <TableCell>{(props.user.data.leaderboardStats?.top1s ?? 0).toLocaleString('en-US')}</TableCell>
-                                                                <TableCell>#{(props.user.data.leaderboardStats?.top1s_rank ?? 0).toLocaleString('en-US')}</TableCell>
-
-                                                                <TableCell>Playtime</TableCell>
-                                                                <TableCell>{Math.round(moment.duration(props.user.osu?.statistics.play_time ?? 0, 'seconds').asHours()) + ' hours'}</TableCell>
-                                                            </TableRow>
-                                                            <TableRow>
-                                                                <TableCell>Top 8s</TableCell>
-                                                                <TableCell>{(props.user.data.leaderboardStats?.top8s ?? 0).toLocaleString('en-US')}</TableCell>
-                                                                <TableCell>#{(props.user.data.leaderboardStats?.top8s_rank ?? 0).toLocaleString('en-US')}</TableCell>
-
-                                                                <TableCell>Total PP</TableCell>
-                                                                <TableCell>{Math.round(props.user.data?.total.pp ?? 0).toLocaleString('en-US')}pp</TableCell>
-                                                            </TableRow>
-                                                            <TableRow>
-                                                                <TableCell>Top 25s</TableCell>
-                                                                <TableCell>{(props.user.data.leaderboardStats?.top25s ?? 0).toLocaleString('en-US')}</TableCell>
-                                                                <TableCell>#{(props.user.data.leaderboardStats?.top25s_rank ?? 0).toLocaleString('en-US')}</TableCell>
-
-                                                                <TableCell>Highest Combo</TableCell>
-                                                                <TableCell>{(props.user.alt.maximum_combo ?? 0).toLocaleString('en-US') + 'x'}</TableCell>
-                                                            </TableRow>
-                                                            <TableRow>
-                                                                <TableCell>Top 50s</TableCell>
-                                                                <TableCell>{(props.user.data.leaderboardStats?.top50s ?? 0).toLocaleString('en-US')}</TableCell>
-                                                                <TableCell>#{(props.user.data.leaderboardStats?.top50s_rank ?? 0).toLocaleString('en-US')}</TableCell>
-
-                                                                <TableCell>Ranked Score</TableCell>
-                                                                <TableCell>{props.user.data.total.score.toLocaleString('en-US')}</TableCell>
-                                                            </TableRow>
-                                                            <TableRow>
-                                                                <TableCell>Top 100s</TableCell>
-                                                                <TableCell>{(props.user.data.leaderboardStats?.top100s ?? 0).toLocaleString('en-US')}</TableCell>
-                                                                <TableCell>#{(props.user.data.leaderboardStats?.top100s_rank ?? 0).toLocaleString('en-US')}</TableCell>
-
-                                                                <TableCell>Total Score</TableCell>
-                                                                <TableCell>{props.user.osu.statistics.total_score.toLocaleString('en-US')}</TableCell>
-                                                            </TableRow>
-                                                        </TableBody>
-                                                    </Table>
-                                                </TableContainer>
+                                            <Grid container>
+                                                <Grid item xs={6}>
+                                                    <TableContainer>
+                                                        <Table size='small' sx={{ [`& .${tableCellClasses.root}`]: { borderBottom: "none", fontSize: '0.75em', lineHeight: '0.5em' } }}>
+                                                            <TableBody>
+                                                                <TableRow>
+                                                                    <TableCell>Worldrank</TableCell>
+                                                                    <TableCell>#{(props.user.osu.statistics.global_rank ?? 0).toLocaleString('en-US')}</TableCell>
+                                                                </TableRow>
+                                                                <TableRow>
+                                                                    <TableCell>Countryrank</TableCell>
+                                                                    <TableCell>#{(props.user.osu.statistics.country_rank ?? 0).toLocaleString('en-US')}</TableCell>
+                                                                </TableRow>
+                                                            </TableBody>
+                                                        </Table>
+                                                    </TableContainer>
+                                                </Grid>
+                                                <Grid item xs={6}>
+                                                    <TableContainer>
+                                                        <Table size='small' sx={{ [`& .${tableCellClasses.root}`]: { borderBottom: "none", fontSize: '0.75em', lineHeight: '0.5em' } }}>
+                                                            <TableBody>
+                                                                <TableRow>
+                                                                    <TableCell>Clears</TableCell>
+                                                                    <TableCell>{(props.user.scores?.length.toLocaleString('en-US') ?? 0)}</TableCell>
+                                                                </TableRow>
+                                                                <TableRow>
+                                                                    <TableCell>Playcount</TableCell>
+                                                                    <TableCell>{props.user.osu.statistics.play_count.toLocaleString('en-US')}</TableCell>
+                                                                </TableRow>
+                                                                <TableRow>
+                                                                    <TableCell>Completion</TableCell>
+                                                                    <TableCell>{(props.user.scores?.length > 0 ? Math.round((100 / props.user.data.total_beatmaps * props.user.scores?.length) * 100) / 100 : 0) + '%'}</TableCell>
+                                                                </TableRow>
+                                                                <TableRow>
+                                                                    <TableCell>Playtime</TableCell>
+                                                                    <TableCell>{Math.round(moment.duration(props.user.osu?.statistics.play_time ?? 0, 'seconds').asHours()) + ' hours'}</TableCell>
+                                                                </TableRow>
+                                                                <TableRow>
+                                                                    <TableCell>Total PP</TableCell>
+                                                                    <TableCell>{Math.round(props.user.data?.total.pp ?? 0).toLocaleString('en-US')}pp</TableCell>
+                                                                </TableRow>
+                                                                <TableRow>
+                                                                    <TableCell>Highest Combo</TableCell>
+                                                                    <TableCell>{(props.user.alt.maximum_combo ?? 0).toLocaleString('en-US') + 'x'}</TableCell>
+                                                                </TableRow>
+                                                                <TableRow>
+                                                                    <TableCell>Ranked Score</TableCell>
+                                                                    <TableCell>{props.user.data.total.score.toLocaleString('en-US')}</TableCell>
+                                                                </TableRow>
+                                                                <TableRow>
+                                                                    <TableCell>Total Score</TableCell>
+                                                                    <TableCell>{props.user.osu.statistics.total_score.toLocaleString('en-US')}</TableCell>
+                                                                </TableRow>
+                                                            </TableBody>
+                                                        </Table>
+                                                    </TableContainer>
+                                                </Grid>
                                             </Grid>
                                             <Grid>
                                                 <Typography variant='body2' sx={{ m: 1, fontStyle: 'oblique', opacity: 0.4 }}>darkchii.nl/score</Typography>
