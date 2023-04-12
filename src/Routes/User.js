@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom/dist';
 import { getUserScores, isUserRegistered } from '../Helpers/OsuAlt';
-import { getFullUser, getUserLeaderboardStats } from '../Helpers/Osu';
+import { getFullUser } from '../Helpers/Osu';
 import SectionHeader from '../Components/UserPage/SectionHeader';
 import { processScores } from '../Helpers/ScoresProcessor';
 import { Helmet } from 'react-helmet';
@@ -85,10 +85,6 @@ function User() {
                 }
 
                 user_out.data = _data;
-
-                setLoadingState('Fetching user leaderboard positions');
-                const _leaderboardStats = await getUserLeaderboardStats(user_out.alt.user_id);
-                user_out.data.leaderboardStats = (_leaderboardStats === null || _leaderboardStats.error !== undefined) ? null : _leaderboardStats;
 
                 setLoadingState('Server side stuff');
 

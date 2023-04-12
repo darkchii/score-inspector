@@ -99,19 +99,6 @@ export async function getUsers(user_ids) {
     return users;
 }
 
-const osustats_api = 'https://osustats.respektive.pw/counts/';
-export async function getUserLeaderboardStats(id) {
-    let _stats = null;
-    try {
-        const url = `${osustats_api}${id}`;
-        const res = await axios.get(url, { headers: { "Access-Control-Allow-Origin": "*" } });
-        _stats = res.data;
-    } catch (err) {
-        return null;
-    }
-    return _stats;
-}
-
 export function getHitsFromAccuracy(acc, nobjects, nmiss = 0) {
     let n300 = 0, n100 = 0, n50 = 0
     const max300 = nobjects - nmiss
