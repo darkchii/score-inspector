@@ -20,7 +20,7 @@
     "chart.js": "^4.2.1",
     "chartjs-plugin-annotation": "^2.1.2",
     "chartjs-plugin-datalabels": "^2.2.0",
-    "chartjs-plugin-zoom": "^2.0.0",
+    "chartjs-plugin-zoom": "^2.0.1",
     "countries-list": "^2.6.1",
     "dom-to-image": "^2.6.0",
     "draft-js-export-html": "^1.4.1",
