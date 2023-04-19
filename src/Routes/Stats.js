@@ -261,7 +261,7 @@ function Stats(props) {
                                                 TIME_PERIODS.map((period) => {
                                                     const data = new Proxy({}, {
                                                         get(target, prop) {
-                                                            return scoreStats?.[period.name]?.most_scores[prop] || 0;
+                                                            return scoreStats?.[period.name]?.user_most_scores[prop] || 0;
                                                         }
                                                     })
                                                     return (
@@ -279,7 +279,7 @@ function Stats(props) {
                                                 TIME_PERIODS.map((period) => {
                                                     const data = new Proxy({}, {
                                                         get(target, prop) {
-                                                            return scoreStats?.[period.name]?.most_pp[prop] || 0;
+                                                            return scoreStats?.[period.name]?.user_most_pp[prop] || 0;
                                                         }
                                                     })
                                                     return (
