@@ -12,6 +12,17 @@ const PLATFORMTYPES = {
 
 const updates = [
     {
+        version: '2.5.0',
+        date: 'n/a',
+        changes: [
+            [PLATFORMTYPES.WEB, CHANGETYPES.FIX, 'Removed deprecated top leaderboard positions data', '8bfce404d800fba196c36a9394d2f8783b49ebe6'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.FIX, 'Changed score load percentage to downloaded size', '2683f60bf7f0c24995a0bf618ad1aaef54f6d8b4'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Added stats page with general data about the entire scores database', 'c39c0374d17edf0d4d3ed6265a6561845e0bfacb'],
+            [PLATFORMTYPES.API, CHANGETYPES.FIX, 'Fixed API server crash when adding new visitor row to database'],
+            [PLATFORMTYPES.API, CHANGETYPES.MISC, 'Enabled HTTP compression on all endpoints'],
+        ]
+    },
+    {
         version: '2.4.2',
         date: '2023-02-14',
         changes: [
