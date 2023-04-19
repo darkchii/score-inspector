@@ -63,7 +63,7 @@ function App() {
           </>
         }
         <Header account={loginData} />
-        <Container>
+        <Container maxWidth='xl'>
           <ToastContainer hideProgressBar />
           <Card sx={{ borderRadius: 0 }}>
             <CardContent>
