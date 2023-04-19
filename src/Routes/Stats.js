@@ -5,6 +5,7 @@ import { IMG_SVG_GRADE_A, IMG_SVG_GRADE_B, IMG_SVG_GRADE_C, IMG_SVG_GRADE_D, IMG
 import { getScoreStats } from "../Helpers/OsuAlt";
 
 const TIME_PERIODS = [
+    { name: '10min', label: 'Last 10 minutes' },
     { name: '24h', label: 'Last 24 hours' },
     { name: '7d', label: 'Last 7 days' },
     { name: 'all', label: 'All time' },
@@ -223,11 +224,69 @@ function Stats(props) {
                                             }
                                         </TableRow>
                                         <TableRow>
+                                            <TableCell>Map age</TableCell>
+                                            {
+                                                TIME_PERIODS.map((period) => {
+                                                    return (
+                                                        <TableCell key={period.name} align='right'>{scoreStats ? `${(moment(scoreStats?.[period.name]?.average_map_age)).fromNow(true)} old` : <CircularProgress size={15} />} </TableCell>
+                                                    );
+                                                })
+                                            }
+                                        </TableRow>
+                                        <TableRow>
                                             <TableCell>FC Rate</TableCell>
                                             {
                                                 TIME_PERIODS.map((period) => {
                                                     return (
                                                         <TableCell key={period.name} align='right'>{scoreStats ? `${(Math.round(10000*scoreStats?.[period.name]?.fc_rate) / 100).toLocaleString('en-US')}%` : <CircularProgress size={15} />} </TableCell>
+                                                    );
+                                                })
+                                            }
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell></TableCell>
+                                            {
+                                                TIME_PERIODS.map((period) => { return (<TableCell></TableCell>); })
+                                            }
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell variant='head'>Users</TableCell>
+                                            {
+                                                TIME_PERIODS.map((period) => { return (<TableCell></TableCell>); })
+                                            }
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell>Clears</TableCell>
+                                            {
+                                                TIME_PERIODS.map((period) => {
+                                                    const data = new Proxy({}, {
+                                                        get(target, prop) {
+                                                            return scoreStats?.[period.name]?.most_scores[prop] || 0;
+                                                        }
+                                                    })
+                                                    return (
+                                                        <TableCell key={period.name} align='right' style={{ whiteSpace: 'pre-line' }}>
+                                                            <Link target='_blank' href={`https://osu.ppy.sh/users/${data.user_id}`}>{scoreStats && (data.username)}</Link>
+                                                            <Typography>{scoreStats ?`${Math.round(data.c).toLocaleString('en-US')}` : <CircularProgress size={15} />}</Typography>
+                                                        </TableCell>
+                                                    );
+                                                })
+                                            }
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell>Total PP</TableCell>
+                                            {
+                                                TIME_PERIODS.map((period) => {
+                                                    const data = new Proxy({}, {
+                                                        get(target, prop) {
+                                                            return scoreStats?.[period.name]?.most_pp[prop] || 0;
+                                                        }
+                                                    })
+                                                    return (
+                                                        <TableCell key={period.name} align='right' style={{ whiteSpace: 'pre-line' }}>
+                                                            <Link style={{ whiteSpace: 'pre-line' }} href={`https://osu.ppy.sh/users/${data.user_id}`}>{scoreStats && (data.username)}</Link>
+                                                            <Typography>{scoreStats ? `${Math.round(data.c).toLocaleString('en-US')}pp` : <CircularProgress size={15} />}</Typography>
+                                                        </TableCell>
                                                     );
                                                 })
                                             }
