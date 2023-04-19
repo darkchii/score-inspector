@@ -9,6 +9,7 @@ import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import SettingsIcon from '@mui/icons-material/Settings';
 import StarIcon from '@mui/icons-material/Star';
 import BuildIcon from '@mui/icons-material/Build';
+import DataUsageIcon from '@mui/icons-material/DataUsage';
 import Login from './Navigation/Login';
 import { PNG_GUEST } from '../Helpers/Assets';
 import AccountDropdown from './Navigation/AccountDropdown';
@@ -46,6 +47,7 @@ function Header(props) {
                                     <Button size='small' startIcon={<LeaderboardIcon />} component={Link} to={'/leaderboard'}>Leaderboards</Button>
                                     {/* <Button size='small' startIcon={<SportsEsportsIcon />} component={Link} to={'/beatmaps'}>Beatmaps</Button> */}
                                     <Button size='small' startIcon={<StarIcon />} component={Link} to={'/top'}>Top Scores</Button>
+                                    <Button size='small' startIcon={<DataUsageIcon />} component={Link} to={'/stats'}>Stats</Button>
                                     <Button size='small' startIcon={<SettingsIcon />} onClick={() => settingsElement.current.setOpen(true)}>Settings</Button>
                                     <Button size='small' startIcon={<BuildIcon />} component={Link} to={'/tools'}>Tools</Button>
                                 </Stack>
