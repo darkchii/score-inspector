@@ -76,7 +76,7 @@ function CustomizeModal(props, ref) {
                         <Card sx={{ borderRadius: '10px' }}>
                             <CardContent>
                                 <Typography variant='h4'>Edit profile</Typography>
-                                <Stack spacing={2} direction='column'>
+                                <Stack spacing={2} direction='column' sx={{pt:1}}>
                                     {
                                         backgroundUrl !== '' && <>
                                             <img src={backgroundUrl} alt="Background" style={{ maxWidth: '300px', borderRadius: '10px' }} />

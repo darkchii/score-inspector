@@ -12,6 +12,39 @@ const TIME_PERIODS = [
     { name: '24h', label: 'Last 24 hours' },
     { name: '7d', label: 'Last 7 days' },
     { name: 'all', label: 'All time' },
+];
+
+const MISC_STATS = [
+    { name: 'scores', label: 'Clears', format: (value) => parseInt(value).toLocaleString('en-US') },
+    { name: 'total_score', label: 'Score', format: (value) => parseInt(value).toLocaleString('en-US') },
+    { name: 'total_length', label: 'Playtime', format: (value) => Math.round(moment.duration(parseInt(value), 'second').asHours()).toLocaleString('en-US') + ' hours' },
+    //these need images as labels
+    { name: 'scores_xh', label: (<img src={IMG_SVG_GRADE_XH} alt='XH' />), format: (value) => parseInt(value).toLocaleString('en-US') },
+    { name: 'scores_x', label: (<img src={IMG_SVG_GRADE_X} alt='X' />), format: (value) => parseInt(value).toLocaleString('en-US') },
+    { name: 'scores_sh', label: (<img src={IMG_SVG_GRADE_SH} alt='SH' />), format: (value) => parseInt(value).toLocaleString('en-US') },
+    { name: 'scores_s', label: (<img src={IMG_SVG_GRADE_S} alt='S' />), format: (value) => parseInt(value).toLocaleString('en-US') },
+    { name: 'scores_a', label: (<img src={IMG_SVG_GRADE_A} alt='A' />), format: (value) => parseInt(value).toLocaleString('en-US') },
+    { name: 'scores_b', label: (<img src={IMG_SVG_GRADE_B} alt='B' />), format: (value) => parseInt(value).toLocaleString('en-US') },
+    { name: 'scores_c', label: (<img src={IMG_SVG_GRADE_C} alt='C' />), format: (value) => parseInt(value).toLocaleString('en-US') },
+    { name: 'scores_d', label: (<img src={IMG_SVG_GRADE_D} alt='D' />), format: (value) => parseInt(value).toLocaleString('en-US') },
+    { name: '', label: '', format: (value) => '' }, //empty row
+    { name: '', label: 'Averages', format: (value) => '' }, //title row
+    { name: 'avg_stars', label: 'Stars', format: (value) => (Math.round(100 * value) / 100).toLocaleString('en-US') },
+    { name: 'avg_combo', label: 'Combo', format: (value) => (Math.round(value)).toLocaleString('en-US') },
+    { name: 'avg_length', label: 'Length', format: (value) => (Math.round(value)).toLocaleString('en-US') + ' sec' },
+    { name: 'avg_score', label: 'Score', format: (value) => (Math.round(value)).toLocaleString('en-US') },
+    { name: 'avg_pp', label: 'PP', format: (value) => (Math.round(value)).toLocaleString('en-US') },
+    { name: 'average_map_age', label: 'Map age', format: (value) => (moment(value).fromNow(true)) + ' old' },
+    { name: 'fc_rate', label: 'FC rate', format: (value) => (Math.round(100 * value) / 100).toLocaleString('en-US') + '%' },
+    { name: '', label: '', format: (value) => '' }, //empty row
+    { name: '', label: 'Users', format: (value) => '' }, //title row
+    { name: 'user_most_scores', label: 'Clears', format: (value) => (<><Link target='_blank' href={`https://osu.ppy.sh/users/${value.user_id}`}>{value.username}</Link><Typography>{`${Math.round(value.c).toLocaleString('en-US')}`}</Typography></>) },
+    { name: 'user_most_pp', label: 'Total PP', format: (value) => (<><Link target='_blank' href={`https://osu.ppy.sh/users/${value.user_id}`}>{value.username}</Link><Typography>{`${Math.round(value.c).toLocaleString('en-US')}pp`}</Typography></>) },
+    { name: 'user_top_pp', label: 'Top PP', format: (value) => (<><Link target='_blank' href={`https://osu.ppy.sh/users/${value.user_id}`}>{value.username}</Link><Typography>{`${Math.round(value.c).toLocaleString('en-US')}pp`}</Typography></>) },
+    { name: 'user_most_score', label: 'Score', format: (value) => (<><Link target='_blank' href={`https://osu.ppy.sh/users/${value.user_id}`}>{value.username}</Link><Typography>{`${Math.round(value.c).toLocaleString('en-US')}`}</Typography></>) },
+    { name: 'user_top_score', label: 'Top Score', format: (value) => (<><Link target='_blank' href={`https://osu.ppy.sh/users/${value.user_id}`}>{value.username}</Link><Typography>{`${Math.round(value.c).toLocaleString('en-US')}`}</Typography></>) },
+    { name: '', label: '', format: (value) => '' }, //empty row
+    { name: 'updated_at', label: 'Last updated', format: (value) => moment(value).fromNow() }, //empty row
 ]
 
 function Stats(props) {
@@ -54,316 +87,24 @@ function Stats(props) {
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        <TableRow>
-                                            <TableCell>Clears</TableCell>
-                                            {
-                                                TIME_PERIODS.map((period) => {
-                                                    return (
-                                                        <TableCell key={period.name} align='right'>{scoreStats ? parseInt(scoreStats?.[period.name]?.scores).toLocaleString('en-US') : <CircularProgress size={15} />} </TableCell>
-                                                    );
-                                                })
-                                            }
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell>Score</TableCell>
-                                            {
-                                                TIME_PERIODS.map((period) => {
-                                                    return (
-                                                        <TableCell key={period.name} align='right'>{scoreStats ? parseInt(scoreStats?.[period.name]?.total_score).toLocaleString('en-US') : <CircularProgress size={15} />} </TableCell>
-                                                    );
-                                                })
-                                            }
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell>Playtime</TableCell>
-                                            {
-                                                TIME_PERIODS.map((period) => {
-                                                    return (
-                                                        <TableCell key={period.name} align='right'>{scoreStats ? Math.round(moment.duration(parseInt(scoreStats?.[period.name]?.total_length), 'second').asHours()).toLocaleString('en-US') + ' hours' : <CircularProgress size={15} />} </TableCell>
-                                                    );
-                                                })
-                                            }
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell><img src={IMG_SVG_GRADE_XH} alt='XH' /></TableCell>
-                                            {
-                                                TIME_PERIODS.map((period) => {
-                                                    return (
-                                                        <TableCell key={period.name} align='right'>{scoreStats ? parseInt(scoreStats?.[period.name]?.scores_xh).toLocaleString('en-US') : <CircularProgress size={15} />} </TableCell>
-                                                    );
-                                                })
-                                            }
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell><img src={IMG_SVG_GRADE_X} alt='X' /></TableCell>
-                                            {
-                                                TIME_PERIODS.map((period) => {
-                                                    return (
-                                                        <TableCell key={period.name} align='right'>{scoreStats ? parseInt(scoreStats?.[period.name]?.scores_x).toLocaleString('en-US') : <CircularProgress size={15} />} </TableCell>
-                                                    );
-                                                })
-                                            }
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell><img src={IMG_SVG_GRADE_SH} alt='SH' /></TableCell>
-                                            {
-                                                TIME_PERIODS.map((period) => {
-                                                    return (
-                                                        <TableCell key={period.name} align='right'>{scoreStats ? parseInt(scoreStats?.[period.name]?.scores_sh).toLocaleString('en-US') : <CircularProgress size={15} />} </TableCell>
-                                                    );
-                                                })
-                                            }
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell><img src={IMG_SVG_GRADE_S} alt='S' /></TableCell>
-                                            {
-                                                TIME_PERIODS.map((period) => {
-                                                    return (
-                                                        <TableCell key={period.name} align='right'>{scoreStats ? parseInt(scoreStats?.[period.name]?.scores_s).toLocaleString('en-US') : <CircularProgress size={15} />} </TableCell>
-                                                    );
-                                                })
-                                            }
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell><img src={IMG_SVG_GRADE_A} alt='A' /></TableCell>
-                                            {
-                                                TIME_PERIODS.map((period) => {
-                                                    return (
-                                                        <TableCell key={period.name} align='right'>{scoreStats ? parseInt(scoreStats?.[period.name]?.scores_a).toLocaleString('en-US') : <CircularProgress size={15} />} </TableCell>
-                                                    );
-                                                })
-                                            }
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell><img src={IMG_SVG_GRADE_B} alt='B' /></TableCell>
-                                            {
-                                                TIME_PERIODS.map((period) => {
-                                                    return (
-                                                        <TableCell key={period.name} align='right'>{scoreStats ? parseInt(scoreStats?.[period.name]?.scores_b).toLocaleString('en-US') : <CircularProgress size={15} />} </TableCell>
-                                                    );
-                                                })
-                                            }
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell><img src={IMG_SVG_GRADE_C} alt='C' /></TableCell>
-                                            {
-                                                TIME_PERIODS.map((period) => {
-                                                    return (
-                                                        <TableCell key={period.name} align='right'>{scoreStats ? parseInt(scoreStats?.[period.name]?.scores_c).toLocaleString('en-US') : <CircularProgress size={15} />} </TableCell>
-                                                    );
-                                                })
-                                            }
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell><img src={IMG_SVG_GRADE_D} alt='D' /></TableCell>
-                                            {
-                                                TIME_PERIODS.map((period) => {
-                                                    return (
-                                                        <TableCell key={period.name} align='right'>{scoreStats ? parseInt(scoreStats?.[period.name]?.scores_d).toLocaleString('en-US') : <CircularProgress size={15} />} </TableCell>
-                                                    );
-                                                })
-                                            }
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell></TableCell>
-                                            {
-                                                TIME_PERIODS.map((period) => { return (<TableCell></TableCell>); })
-                                            }
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell variant='head'>Averages</TableCell>
-                                            {
-                                                TIME_PERIODS.map((period) => { return (<TableCell></TableCell>); })
-                                            }
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell>Stars</TableCell>
-                                            {
-                                                TIME_PERIODS.map((period) => {
-                                                    return (
-                                                        <TableCell key={period.name} align='right'>{scoreStats ? `${(Math.round(100 * scoreStats?.[period.name]?.avg_stars) / 100).toLocaleString('en-US')}*` : <CircularProgress size={15} />} </TableCell>
-                                                    );
-                                                })
-                                            }
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell>Combo</TableCell>
-                                            {
-                                                TIME_PERIODS.map((period) => {
-                                                    return (
-                                                        <TableCell key={period.name} align='right'>{scoreStats ? `${(Math.round(scoreStats?.[period.name]?.avg_combo)).toLocaleString('en-US')}x` : <CircularProgress size={15} />} </TableCell>
-                                                    );
-                                                })
-                                            }
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell>Length</TableCell>
-                                            {
-                                                TIME_PERIODS.map((period) => {
-                                                    return (
-                                                        <TableCell key={period.name} align='right'>{scoreStats ? `${(Math.round(scoreStats?.[period.name]?.avg_length)).toLocaleString('en-US')} sec` : <CircularProgress size={15} />} </TableCell>
-                                                    );
-                                                })
-                                            }
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell>Score</TableCell>
-                                            {
-                                                TIME_PERIODS.map((period) => {
-                                                    return (
-                                                        <TableCell key={period.name} align='right'>{scoreStats ? `${(Math.round(scoreStats?.[period.name]?.avg_score)).toLocaleString('en-US')}` : <CircularProgress size={15} />} </TableCell>
-                                                    );
-                                                })
-                                            }
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell>PP</TableCell>
-                                            {
-                                                TIME_PERIODS.map((period) => {
-                                                    return (
-                                                        <TableCell key={period.name} align='right'>{scoreStats ? `${(Math.round(100 * scoreStats?.[period.name]?.avg_pp) / 100).toLocaleString('en-US')}pp` : <CircularProgress size={15} />} </TableCell>
-                                                    );
-                                                })
-                                            }
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell>Map age</TableCell>
-                                            {
-                                                TIME_PERIODS.map((period) => {
-                                                    return (
-                                                        <TableCell key={period.name} align='right'>{scoreStats ? `${(moment(scoreStats?.[period.name]?.average_map_age)).fromNow(true)} old` : <CircularProgress size={15} />} </TableCell>
-                                                    );
-                                                })
-                                            }
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell>FC Rate</TableCell>
-                                            {
-                                                TIME_PERIODS.map((period) => {
-                                                    return (
-                                                        <TableCell key={period.name} align='right'>{scoreStats ? `${(Math.round(10000 * scoreStats?.[period.name]?.fc_rate) / 100).toLocaleString('en-US')}%` : <CircularProgress size={15} />} </TableCell>
-                                                    );
-                                                })
-                                            }
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell></TableCell>
-                                            {
-                                                TIME_PERIODS.map((period) => { return (<TableCell></TableCell>); })
-                                            }
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell variant='head'>Users</TableCell>
-                                            {
-                                                TIME_PERIODS.map((period) => { return (<TableCell></TableCell>); })
-                                            }
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell>Clears</TableCell>
-                                            {
-                                                TIME_PERIODS.map((period) => {
-                                                    const data = new Proxy({}, {
-                                                        get(target, prop) {
-                                                            return scoreStats?.[period.name]?.user_most_scores?.[prop] || 0;
-                                                        }
-                                                    })
-                                                    return (
-                                                        <TableCell key={period.name} align='right' style={{ whiteSpace: 'pre-line' }}>
-                                                            <Link target='_blank' href={`https://osu.ppy.sh/users/${data.user_id}`}>{scoreStats && (data.username)}</Link>
-                                                            <Typography>{scoreStats && data ? `${Math.round(data.c).toLocaleString('en-US')}` : <CircularProgress size={15} />}</Typography>
-                                                        </TableCell>
-                                                    );
-                                                })
-                                            }
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell>Total PP</TableCell>
-                                            {
-                                                TIME_PERIODS.map((period) => {
-                                                    const data = new Proxy({}, {
-                                                        get(target, prop) {
-                                                            return scoreStats?.[period.name]?.user_most_pp?.[prop] || 0;
-                                                        }
-                                                    })
-                                                    return (
-                                                        <TableCell key={period.name} align='right' style={{ whiteSpace: 'pre-line' }}>
-                                                            <Link style={{ whiteSpace: 'pre-line' }} href={`https://osu.ppy.sh/users/${data.user_id}`}>{scoreStats && (data.username)}</Link>
-                                                            <Typography>{scoreStats && data ? `${Math.round(data.c).toLocaleString('en-US')}pp` : <CircularProgress size={15} />}</Typography>
-                                                        </TableCell>
-                                                    );
-                                                })
-                                            }
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell>Top PP</TableCell>
-                                            {
-                                                TIME_PERIODS.map((period) => {
-                                                    const data = new Proxy({}, {
-                                                        get(target, prop) {
-                                                            return scoreStats?.[period.name]?.user_top_pp?.[prop] || 0;
-                                                        }
-                                                    })
-                                                    return (
-                                                        <TableCell key={period.name} align='right' style={{ whiteSpace: 'pre-line' }}>
-                                                            <Link style={{ whiteSpace: 'pre-line' }} href={`https://osu.ppy.sh/users/${data.user_id}`}>{scoreStats && (data.username)}</Link>
-                                                            <Typography>{scoreStats && data ? `${Math.round(data.c).toLocaleString('en-US')}pp` : <CircularProgress size={15} />}</Typography>
-                                                        </TableCell>
-                                                    );
-                                                })
-                                            }
-                                        </TableRow>
-                                        
-                                        <TableRow>
-                                            <TableCell>Score</TableCell>
-                                            {
-                                                TIME_PERIODS.map((period) => {
-                                                    const data = new Proxy({}, {
-                                                        get(target, prop) {
-                                                            return scoreStats?.[period.name]?.user_most_score?.[prop] || 0;
-                                                        }
-                                                    })
-                                                    return (
-                                                        <TableCell key={period.name} align='right' style={{ whiteSpace: 'pre-line' }}>
-                                                            <Link style={{ whiteSpace: 'pre-line' }} href={`https://osu.ppy.sh/users/${data.user_id}`}>{scoreStats && (data.username)}</Link>
-                                                            <Typography>{scoreStats && data ? `${Math.round(data.c).toLocaleString('en-US')}` : <CircularProgress size={15} />}</Typography>
-                                                        </TableCell>
-                                                    );
-                                                })
-                                            }
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell>Top Score</TableCell>
-                                            {
-                                                TIME_PERIODS.map((period) => {
-                                                    const data = new Proxy({}, {
-                                                        get(target, prop) {
-                                                            return scoreStats?.[period.name]?.user_top_score?.[prop] || 0;
-                                                        }
-                                                    })
-                                                    return (
-                                                        <TableCell key={period.name} align='right' style={{ whiteSpace: 'pre-line' }}>
-                                                            <Link style={{ whiteSpace: 'pre-line' }} href={`https://osu.ppy.sh/users/${data.user_id}`}>{scoreStats && (data.username)}</Link>
-                                                            <Typography>{scoreStats && data ? `${Math.round(data.c).toLocaleString('en-US')}` : <CircularProgress size={15} />}</Typography>
-                                                        </TableCell>
-                                                    );
-                                                })
-                                            }
-                                        </TableRow>
-
-                                        <TableRow>
-                                            <TableCell></TableCell>
-                                            {
-                                                TIME_PERIODS.map((period) => { return (<TableCell></TableCell>); })
-                                            }
-                                        </TableRow>
-                                        <TableRow>
-                                            <TableCell>Last update</TableCell>
-                                            {
-                                                TIME_PERIODS.map((period) => { return (<TableCell>
-                                                    {scoreStats && scoreStats[period.name] ? moment(scoreStats[period.name].last_update).fromNow() : <CircularProgress size={15} />}
-                                                </TableCell>); })
-                                            }
-                                        </TableRow>
+                                        {
+                                            MISC_STATS.map((stat) => {
+                                                return (
+                                                    <>
+                                                        <TableRow>
+                                                            <TableCell>{stat.label}</TableCell>
+                                                            {
+                                                                TIME_PERIODS.map((period) => {
+                                                                    return (
+                                                                        <TableCell key={period.name} align='right'>{scoreStats ? stat.format(scoreStats?.[period.name]?.[stat.name]) : <CircularProgress size={15} />} </TableCell>
+                                                                    );
+                                                                })
+                                                            }
+                                                        </TableRow>
+                                                    </>
+                                                )
+                                            })
+                                        }
                                     </TableBody>
                                 </Table>
                             </TableContainer>
@@ -378,65 +119,65 @@ function Stats(props) {
                                 scoreStats && TIME_PERIODS.map((period) => {
                                     return (
                                         <Grid>
-                                        <Typography key={period.name} variant='h6'>{period.label}</Typography>
-                                        <TableContainer key={period.name} style={{ marginBottom: 20 }}>
-                                            <Table size='small' sx={{
-                                                [`& .${tableCellClasses.root} `]: {
-                                                    mb: 1,
-                                                    borderBottom: "none",
-                                                },
-                                                [`& .${tableRowClasses.root} `]: {
-                                                    borderRadius: 10,
-                                                },
-                                                borderCollapse: 'separate',
-                                                borderSpacing: '0 0.4em',
-                                            }}>
-                                                <TableBody>
-                                                    {
-                                                        scoreStats[period.name].most_played_maps.map((map) => {
-                                                            const background = `https://assets.ppy.sh/beatmaps/${map.set_id}/covers/cover.jpg`;
-                                                            const black_overlay = background ? '0.8' : '0';
-                                                            return (
-                                                                <TableRow component={Card} key={map.beatmap_id} sx={{
-                                                                    "&:hover": {
-                                                                        opacity: 0.5,
-                                                                        cursor: 'pointer'
-                                                                    },
-                                                                    backgroundImage: `url(${background})`,
-                                                                    backgroundSize: 'cover',
-                                                                    backgroundPosition: 'center',
-                                                                    backgroundRepeat: 'no-repeat'
-                                                                }}
-                                                                    onClick={() => {
-                                                                        window.open(`https://osu.ppy.sh/beatmaps/${map.beatmap_id}`, "_blank");
+                                            <Typography key={period.name} variant='h6'>{period.label}</Typography>
+                                            <TableContainer key={period.name} style={{ marginBottom: 20 }}>
+                                                <Table size='small' sx={{
+                                                    [`& .${tableCellClasses.root} `]: {
+                                                        mb: 1,
+                                                        borderBottom: "none",
+                                                    },
+                                                    [`& .${tableRowClasses.root} `]: {
+                                                        borderRadius: 10,
+                                                    },
+                                                    borderCollapse: 'separate',
+                                                    borderSpacing: '0 0.4em',
+                                                }}>
+                                                    <TableBody>
+                                                        {
+                                                            scoreStats[period.name].most_played_maps.map((map) => {
+                                                                const background = `https://assets.ppy.sh/beatmaps/${map.set_id}/covers/cover.jpg`;
+                                                                const black_overlay = background ? '0.8' : '0';
+                                                                return (
+                                                                    <TableRow component={Card} key={map.beatmap_id} sx={{
+                                                                        "&:hover": {
+                                                                            opacity: 0.5,
+                                                                            cursor: 'pointer'
+                                                                        },
+                                                                        backgroundImage: `url(${background})`,
+                                                                        backgroundSize: 'cover',
+                                                                        backgroundPosition: 'center',
+                                                                        backgroundRepeat: 'no-repeat'
                                                                     }}
-                                                                >
-                                                                    <TableCell width={'3%'} sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})` }}>
-                                                                        <Tooltip title={`${approval_state[map?.approved] ?? ''}`}>
-                                                                            <Box>
-                                                                                {
-                                                                                    map?.approved === 1 || map?.approved === 2 ?
-                                                                                        <CheckIcon sx={{ color: 'green' }} />
-                                                                                        : map?.approved === 3 ?
-                                                                                            <CheckIcon sx={{ color: 'yellow' }} />
-                                                                                            : map?.approved === 4 ?
-                                                                                                <FavoriteIcon sx={{ color: 'red' }} />
-                                                                                                : <></>
-                                                                                }
-                                                                            </Box>
-                                                                        </Tooltip>
-                                                                    </TableCell>
-                                                                    <TableCell sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})` }}>
-                                                                        {map.title} [{map.diffname}]
-                                                                    </TableCell>
-                                                                    <TableCell width={'5%'} sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})` }} align='right'>{Math.round(map.count).toLocaleString('en-US')}</TableCell>
-                                                                </TableRow>
-                                                            )
-                                                        })
-                                                    }
-                                                </TableBody>
-                                            </Table>
-                                        </TableContainer>
+                                                                        onClick={() => {
+                                                                            window.open(`https://osu.ppy.sh/beatmaps/${map.beatmap_id}`, "_blank");
+                                                                        }}
+                                                                    >
+                                                                        <TableCell width={'3%'} sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})` }}>
+                                                                            <Tooltip title={`${approval_state[map?.approved] ?? ''}`}>
+                                                                                <Box>
+                                                                                    {
+                                                                                        map?.approved === 1 || map?.approved === 2 ?
+                                                                                            <CheckIcon sx={{ color: 'green' }} />
+                                                                                            : map?.approved === 3 ?
+                                                                                                <CheckIcon sx={{ color: 'yellow' }} />
+                                                                                                : map?.approved === 4 ?
+                                                                                                    <FavoriteIcon sx={{ color: 'red' }} />
+                                                                                                    : <></>
+                                                                                    }
+                                                                                </Box>
+                                                                            </Tooltip>
+                                                                        </TableCell>
+                                                                        <TableCell sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})` }}>
+                                                                            {map.title} [{map.diffname}]
+                                                                        </TableCell>
+                                                                        <TableCell width={'5%'} sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})` }} align='right'>{Math.round(map.count).toLocaleString('en-US')}</TableCell>
+                                                                    </TableRow>
+                                                                )
+                                                            })
+                                                        }
+                                                    </TableBody>
+                                                </Table>
+                                            </TableContainer>
                                         </Grid>
                                     )
                                 })
