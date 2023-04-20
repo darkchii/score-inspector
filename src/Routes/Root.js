@@ -7,6 +7,7 @@ import CircleIcon from '@mui/icons-material/Circle';
 import axios from 'axios';
 import moment from 'moment';
 import momentDurationFormatSetup from "moment-duration-format";
+import ScoreSubmissions from '../Components/ScoreSubmissions';
 momentDurationFormatSetup(moment);
 function Root() {
     const [isModalOpen, setIsModalOpen] = useState(true);
@@ -125,9 +126,9 @@ function Root() {
                 </Alert>
             </Box>
             <Grid container spacing={2}>
-                <Grid item xs={12} md={8}>
+                <Grid item xs={12} md={9}>
                     <Grid container spacing={2}>
-                        <Grid item xs={12}>
+                        <Grid item xs={8.5}>
                             <Card elevation={2}>
                                 <CardContent>
                                     <Typography variant='title'>What does it do</Typography>
@@ -143,47 +144,30 @@ function Root() {
                                 </CardContent>
                             </Card>
                         </Grid>
+                        <Grid item xs={3.5}>
+                            <Card elevation={2}>
+                                <CardContent>
+                                    <Typography variant='title'>For new users</Typography>
+                                    <TableContainer>
+                                        <Table size='small'>
+                                            <TableBody>
+                                                <TableRow><TableCell>Join the osu!alt discord</TableCell></TableRow>
+                                                <TableRow><TableCell>Follow the guide to fetch your scores (#info channel)</TableCell></TableRow>
+                                                <TableRow><TableCell>Wait a few hours. When done, you generally don't need to run it anymore</TableCell></TableRow>
+                                                <TableRow><TableCell>Enter your username above and fetch</TableCell></TableRow>
+                                            </TableBody>
+                                        </Table>
+                                    </TableContainer>
+                                </CardContent>
+                            </Card>
+                        </Grid>
                         <Grid item xs={12}>
                             <Grid container spacing={2}>
-                                <Grid item xs={6}>
+                                <Grid item xs={12}>
                                     <Card elevation={2}>
                                         <CardContent>
-                                            <Typography variant='title'>Credits</Typography>
-                                            <TableContainer>
-                                                <Table size='small'>
-                                                    <TableBody>
-                                                        <TableRow>
-                                                            <TableCell>scores dataset</TableCell>
-                                                            <TableCell><Link href='https://discord.gg/VZWRZZXcW4' target='_blank'>osu!alternative</Link></TableCell>
-                                                        </TableRow>
-                                                        <TableRow>
-                                                            <TableCell>score ranking</TableCell>
-                                                            <TableCell><Link href='https://github.com/respektive/osustats' target='_blank'>respektive</Link></TableCell>
-                                                        </TableRow>
-                                                        <TableRow>
-                                                            <TableCell>raw pp and rank data</TableCell>
-                                                            <TableCell><Link href='https://osudaily.net/' target='_blank'>osu!daily</Link></TableCell>
-                                                        </TableRow>
-                                                    </TableBody>
-                                                </Table>
-                                            </TableContainer>
-                                        </CardContent>
-                                    </Card>
-                                </Grid>
-                                <Grid item xs={6}>
-                                    <Card elevation={2}>
-                                        <CardContent>
-                                            <Typography variant='title'>For new users</Typography>
-                                            <TableContainer>
-                                                <Table size='small'>
-                                                    <TableBody>
-                                                        <TableRow><TableCell>Join the osu!alt discord</TableCell></TableRow>
-                                                        <TableRow><TableCell>Follow the guide to fetch your scores (#info channel)</TableCell></TableRow>
-                                                        <TableRow><TableCell>Wait a few hours. When done, you generally don't need to run it anymore</TableCell></TableRow>
-                                                        <TableRow><TableCell>Enter your username above and fetch</TableCell></TableRow>
-                                                    </TableBody>
-                                                </Table>
-                                            </TableContainer>
+                                            <Typography variant='title'>Score submissions</Typography>
+                                            <ScoreSubmissions />
                                         </CardContent>
                                     </Card>
                                 </Grid>
@@ -216,7 +200,7 @@ function Root() {
                         </Grid>
                     </Grid>
                 </Grid>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={3}>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
                             <Card elevation={2}>
@@ -286,6 +270,31 @@ function Root() {
                                                 <TableRow><TableCell><CircleIcon sx={{ color: serverStatus?.osuv2 === undefined ? 'grey' : (serverStatus?.osuv2 ? 'green' : 'red') }} /></TableCell><TableCell>osu!apiv2</TableCell><TableCell></TableCell></TableRow>
                                                 <TableRow><TableCell><CircleIcon sx={{ color: serverStatus?.osualt === undefined ? 'grey' : (serverStatus?.osualt ? 'green' : 'red') }} /></TableCell><TableCell>osu! alternative</TableCell><TableCell></TableCell></TableRow>
                                                 <TableRow><TableCell><CircleIcon sx={{ color: serverStatus?.osudaily === undefined ? 'grey' : (serverStatus?.osudaily ? 'green' : 'red') }} /></TableCell><TableCell>osu!daily</TableCell><TableCell></TableCell></TableRow>
+                                            </TableBody>
+                                        </Table>
+                                    </TableContainer>
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                        <Grid item xs={12}>
+                        <Card elevation={2}>
+                                <CardContent>
+                                    <Typography variant='title'>Credits</Typography>
+                                    <TableContainer>
+                                        <Table size='small'>
+                                            <TableBody>
+                                                <TableRow>
+                                                    <TableCell>scores dataset</TableCell>
+                                                    <TableCell><Link href='https://discord.gg/VZWRZZXcW4' target='_blank'>osu!alternative</Link></TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell>score ranking</TableCell>
+                                                    <TableCell><Link href='https://github.com/respektive/osustats' target='_blank'>respektive</Link></TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell>historical data</TableCell>
+                                                    <TableCell><Link href='https://osudaily.net/' target='_blank'>osu!daily</Link></TableCell>
+                                                </TableRow>
                                             </TableBody>
                                         </Table>
                                     </TableContainer>

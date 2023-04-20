@@ -86,6 +86,18 @@ export async function getBestScores(period, stat, limit, loved) {
     return scores;
 }
 
+export async function getScoreActivity(hours = 72){
+    try{
+        let activity = null;
+        const url = `${GetAPI()}scores/activity?hours=${hours}`;
+        const res = await axios.get(url, { headers: { "Access-Control-Allow-Origin": "*" } });
+        activity = res?.data?.[0];
+        return activity;
+    }catch(e){
+        return null;
+    }
+}
+
 export async function getScoreStats() {
     let stats = null;
     const url = `${GetAPI()}scores/stats`;
