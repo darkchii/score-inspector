@@ -14,6 +14,13 @@ const TIME_PERIODS = [
     { name: 'all', label: 'All time' },
 ];
 
+const USER_STAT = (data, prefix = '', suffix = '') => (
+    <>
+        <Link target='_blank' href={`https://osu.ppy.sh/users/${data.user_id}`}>{data.username}</Link>
+        <Typography>{`${prefix}${Math.round(data.c).toLocaleString('en-US')}${suffix}`}</Typography>
+    </>
+)
+
 const MISC_STATS = [
     { name: 'scores', label: 'Clears', format: (value) => parseInt(value).toLocaleString('en-US') },
     { name: 'total_score', label: 'Score', format: (value) => parseInt(value).toLocaleString('en-US') },
@@ -35,14 +42,14 @@ const MISC_STATS = [
     { name: 'avg_score', label: 'Score', format: (value) => (Math.round(value)).toLocaleString('en-US') },
     { name: 'avg_pp', label: 'PP', format: (value) => (Math.round(value)).toLocaleString('en-US') },
     { name: 'average_map_age', label: 'Map age', format: (value) => (moment(value).fromNow(true)) + ' old' },
-    { name: 'fc_rate', label: 'FC rate', format: (value) => (Math.round(100 * value) / 100).toLocaleString('en-US') + '%' },
+    { name: 'fc_rate', label: 'FC rate', format: (value) => (Math.round(10000 * value) / 100).toLocaleString('en-US') + '%' },
     { name: '', label: '', format: (value) => '' }, //empty row
     { name: '', label: 'Users', format: (value) => '' }, //title row
-    { name: 'user_most_scores', label: 'Clears', format: (value) => (<><Link target='_blank' href={`https://osu.ppy.sh/users/${value.user_id}`}>{value.username}</Link><Typography>{`${Math.round(value.c).toLocaleString('en-US')}`}</Typography></>) },
-    { name: 'user_most_pp', label: 'Total PP', format: (value) => (<><Link target='_blank' href={`https://osu.ppy.sh/users/${value.user_id}`}>{value.username}</Link><Typography>{`${Math.round(value.c).toLocaleString('en-US')}pp`}</Typography></>) },
-    { name: 'user_top_pp', label: 'Top PP', format: (value) => (<><Link target='_blank' href={`https://osu.ppy.sh/users/${value.user_id}`}>{value.username}</Link><Typography>{`${Math.round(value.c).toLocaleString('en-US')}pp`}</Typography></>) },
-    { name: 'user_most_score', label: 'Score', format: (value) => (<><Link target='_blank' href={`https://osu.ppy.sh/users/${value.user_id}`}>{value.username}</Link><Typography>{`${Math.round(value.c).toLocaleString('en-US')}`}</Typography></>) },
-    { name: 'user_top_score', label: 'Top Score', format: (value) => (<><Link target='_blank' href={`https://osu.ppy.sh/users/${value.user_id}`}>{value.username}</Link><Typography>{`${Math.round(value.c).toLocaleString('en-US')}`}</Typography></>) },
+    { name: 'user_most_scores', label: 'Clears', format: (value) => USER_STAT(value) },
+    { name: 'user_most_pp', label: 'Total PP', format: (value) => (USER_STAT(value, '', 'pp')) },
+    { name: 'user_top_pp', label: 'Top PP', format: (value) => (USER_STAT(value, '', 'pp'))},
+    { name: 'user_most_score', label: 'Score', format: (value) => (USER_STAT(value)) },
+    { name: 'user_top_score', label: 'Top Score', format: (value) => (USER_STAT(value)) },
     { name: '', label: '', format: (value) => '' }, //empty row
     { name: 'updated_at', label: 'Last updated', format: (value) => moment(value).fromNow() }, //empty row
 ]
