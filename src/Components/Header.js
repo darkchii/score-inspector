@@ -33,7 +33,7 @@ function Header(props) {
             <SettingsModal ref={settingsElement} />
             <Box>
                 <AppBar position="static">
-                    <Container>
+                    <Container maxWidth='xl'>
                         <Toolbar disableGutters>
                             <Typography variant='h6' noWrap component={Link} to={`/`} sx={{
                                 mr: 2,
