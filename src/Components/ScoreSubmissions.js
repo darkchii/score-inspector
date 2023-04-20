@@ -75,7 +75,7 @@ function ScoreSubmissions(props) {
             padding: {
                 left: 0,
                 right: 40,
-                top: 0,
+                top: 40,
                 bottom: 0
             }
         },
@@ -172,7 +172,7 @@ function ScoreSubmissions(props) {
                     <Button variant={hours === 720 ? 'contained' : 'outlined'} onClick={() => setHours(720)}>1 month</Button>
                 </ButtonGroup>
             </Grid>
-            <Grid sx={{ height: 250, position: "relative", pt: 2 }}>
+            <Grid sx={{ height: 280, position: "relative", pt: 2 }}>
                 {
                     isWorking ?
                         <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", backgroundColor: "rgba(0,0,0,0.5)", display: "flex", justifyContent: "center", alignItems: "center" }}>

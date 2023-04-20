@@ -86,14 +86,20 @@ export async function getBestScores(period, stat, limit, loved) {
     return scores;
 }
 
-export async function getScoreActivity(hours = 72){
-    try{
+export async function getScoreActivity(hours = 72) {
+    try {
         let activity = null;
         const url = `${GetAPI()}scores/activity?hours=${hours}`;
-        const res = await axios.get(url, { headers: { "Access-Control-Allow-Origin": "*" } });
+        const res = await axios.get(url, {
+            headers: {
+                "Access-Control-Allow-Origin": "*", 'Cache-Control': 'no-cache',
+                'Pragma': 'no-cache',
+                'Expires': '0'
+            }
+        });
         activity = res?.data?.[0];
         return activity;
-    }catch(e){
+    } catch (e) {
         return null;
     }
 }
@@ -106,7 +112,7 @@ export async function getScoreStats() {
     return stats;
 }
 
-export async function getCompletionData(user_id, allowLoved){
+export async function getCompletionData(user_id, allowLoved) {
     let data = null;
     const url = `${GetAPI()}scores/completion/${user_id}${allowLoved ? "?include_loved=true" : ""}`;
     const res = await axios.get(url, { headers: { "Access-Control-Allow-Origin": "*" } });
