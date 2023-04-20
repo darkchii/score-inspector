@@ -15,6 +15,9 @@ const updates = [
         version: '2.5.0',
         date: 'n/a',
         changes: [
+            [PLATFORMTYPES.WEB, CHANGETYPES.MISC, 'Page container is now wider', '68541793cd472ba48c3de2aa04e0d4159144a9ba'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Score submissions graph on index page', 'c9c9f0b133b2e17fa8751c8ab145b2a5928b925c'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Added button list to changelog to quickly jump to a specific version', '05079062c31ba2f298cea62f4bb6221e211160b6'],
             [PLATFORMTYPES.WEB, CHANGETYPES.FIX, 'Removed deprecated top leaderboard positions data', '8bfce404d800fba196c36a9394d2f8783b49ebe6'],
             [PLATFORMTYPES.WEB, CHANGETYPES.FIX, 'Changed score load percentage to downloaded size', '2683f60bf7f0c24995a0bf618ad1aaef54f6d8b4'],
             [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Added stats page with general data about the entire scores database', 'c39c0374d17edf0d4d3ed6265a6561845e0bfacb'],

@@ -1,8 +1,11 @@
-import { Alert, AlertTitle, Card, CardContent, CardHeader, CircularProgress, Grid, Link, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, tableCellClasses, tableRowClasses } from "@mui/material";
+import { Alert, AlertTitle, Box, Card, CardContent, CardHeader, CircularProgress, Grid, Link, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography, tableCellClasses, tableRowClasses } from "@mui/material";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { IMG_SVG_GRADE_A, IMG_SVG_GRADE_B, IMG_SVG_GRADE_C, IMG_SVG_GRADE_D, IMG_SVG_GRADE_S, IMG_SVG_GRADE_SH, IMG_SVG_GRADE_X, IMG_SVG_GRADE_XH } from "../Helpers/Assets";
 import { getScoreStats } from "../Helpers/OsuAlt";
+import { approval_state } from "../Helpers/Osu";
+import CheckIcon from '@mui/icons-material/Check';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 
 const TIME_PERIODS = [
     { name: '10min', label: 'Last 10 minutes' },
@@ -218,7 +221,7 @@ function Stats(props) {
                                             {
                                                 TIME_PERIODS.map((period) => {
                                                     return (
-                                                        <TableCell key={period.name} align='right'>{scoreStats ? `${(Math.round(100*scoreStats?.[period.name]?.avg_pp) / 100).toLocaleString('en-US')}pp` : <CircularProgress size={15} />} </TableCell>
+                                                        <TableCell key={period.name} align='right'>{scoreStats ? `${(Math.round(100 * scoreStats?.[period.name]?.avg_pp) / 100).toLocaleString('en-US')}pp` : <CircularProgress size={15} />} </TableCell>
                                                     );
                                                 })
                                             }
@@ -238,7 +241,7 @@ function Stats(props) {
                                             {
                                                 TIME_PERIODS.map((period) => {
                                                     return (
-                                                        <TableCell key={period.name} align='right'>{scoreStats ? `${(Math.round(10000*scoreStats?.[period.name]?.fc_rate) / 100).toLocaleString('en-US')}%` : <CircularProgress size={15} />} </TableCell>
+                                                        <TableCell key={period.name} align='right'>{scoreStats ? `${(Math.round(10000 * scoreStats?.[period.name]?.fc_rate) / 100).toLocaleString('en-US')}%` : <CircularProgress size={15} />} </TableCell>
                                                     );
                                                 })
                                             }
@@ -267,7 +270,7 @@ function Stats(props) {
                                                     return (
                                                         <TableCell key={period.name} align='right' style={{ whiteSpace: 'pre-line' }}>
                                                             <Link target='_blank' href={`https://osu.ppy.sh/users/${data.user_id}`}>{scoreStats && (data.username)}</Link>
-                                                            <Typography>{scoreStats ?`${Math.round(data.c).toLocaleString('en-US')}` : <CircularProgress size={15} />}</Typography>
+                                                            <Typography>{scoreStats ? `${Math.round(data.c).toLocaleString('en-US')}` : <CircularProgress size={15} />}</Typography>
                                                         </TableCell>
                                                     );
                                                 })
@@ -304,6 +307,8 @@ function Stats(props) {
                             {
                                 scoreStats && TIME_PERIODS.map((period) => {
                                     return (
+                                        <Grid>
+                                        <Typography key={period.name} variant='h6'>{period.label}</Typography>
                                         <TableContainer key={period.name} style={{ marginBottom: 20 }}>
                                             <Table size='small' sx={{
                                                 [`& .${tableCellClasses.root} `]: {
@@ -316,12 +321,6 @@ function Stats(props) {
                                                 borderCollapse: 'separate',
                                                 borderSpacing: '0 0.4em',
                                             }}>
-                                                <TableHead>
-                                                    <TableRow>
-                                                        <TableCell>{period.label}</TableCell>
-                                                        <TableCell align='right'></TableCell>
-                                                    </TableRow>
-                                                </TableHead>
                                                 <TableBody>
                                                     {
                                                         scoreStats[period.name].most_played_maps.map((map) => {
@@ -342,10 +341,25 @@ function Stats(props) {
                                                                         window.open(`https://osu.ppy.sh/beatmaps/${map.beatmap_id}`, "_blank");
                                                                     }}
                                                                 >
+                                                                    <TableCell width={'3%'} sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})` }}>
+                                                                        <Tooltip title={`${approval_state[map?.approved] ?? ''}`}>
+                                                                            <Box>
+                                                                                {
+                                                                                    map?.approved === 1 || map?.approved === 2 ?
+                                                                                        <CheckIcon sx={{ color: 'green' }} />
+                                                                                        : map?.approved === 3 ?
+                                                                                            <CheckIcon sx={{ color: 'yellow' }} />
+                                                                                            : map?.approved === 4 ?
+                                                                                                <FavoriteIcon sx={{ color: 'red' }} />
+                                                                                                : <></>
+                                                                                }
+                                                                            </Box>
+                                                                        </Tooltip>
+                                                                    </TableCell>
                                                                     <TableCell sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})` }}>
                                                                         {map.title} [{map.diffname}]
                                                                     </TableCell>
-                                                                    <TableCell sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})` }} align='right'>{Math.round(map.count).toLocaleString('en-US')}</TableCell>
+                                                                    <TableCell width={'5%'} sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})` }} align='right'>{Math.round(map.count).toLocaleString('en-US')}</TableCell>
                                                                 </TableRow>
                                                             )
                                                         })
@@ -353,6 +367,7 @@ function Stats(props) {
                                                 </TableBody>
                                             </Table>
                                         </TableContainer>
+                                        </Grid>
                                     )
                                 })
                             }
