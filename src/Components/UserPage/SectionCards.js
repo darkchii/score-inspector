@@ -157,9 +157,10 @@ function SectionCards(props) {
                 }
             </Grid>
             <Grid container>
-                <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={4}><BestScoreCard valueTitle={'performance'} valueLabel={`${props.user.data.bestScores.best_pp.pp.toFixed(1)}pp`} score={props.user.data.bestScores.best_pp} /></Grid>
-                <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={4}><BestScoreCard valueTitle={'score'} valueLabel={`${props.user.data.bestScores.best_score.score.toLocaleString('en-US')} score`} score={props.user.data.bestScores.best_score} /></Grid>
-                <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={4}><BestScoreCard valueTitle={'stars'} valueLabel={`${props.user.data.bestScores.best_sr.beatmap.modded_sr.star_rating.toFixed(1)}*`} score={props.user.data.bestScores.best_sr} /></Grid>
+                <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={3}><BestScoreCard valueTitle={'Top performance'} valueLabel={`${props.user.data.bestScores.best_pp.pp.toFixed(1)}pp`} score={props.user.data.bestScores.best_pp} /></Grid>
+                <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={3}><BestScoreCard valueTitle={'Top score'} valueLabel={`${props.user.data.bestScores.best_score.score.toLocaleString('en-US')} score`} score={props.user.data.bestScores.best_score} /></Grid>
+                <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={3}><BestScoreCard valueTitle={'Top stars'} valueLabel={`${props.user.data.bestScores.best_sr.beatmap.modded_sr.star_rating.toFixed(1)}*`} score={props.user.data.bestScores.best_sr} /></Grid>
+                <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={3}><BestScoreCard valueTitle={'Oldest'} valueLabel={`${moment(props.user.data.bestScores.oldest.date_played).format('MMMM Mo YYYY')}`} score={props.user.data.bestScores.oldest} /></Grid>
             </Grid>
             <Grid container>
                 <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={12/6}><PerformanceFC data={props.user} /></Grid>

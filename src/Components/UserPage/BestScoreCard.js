@@ -14,7 +14,7 @@ function BestScoreCard(props) {
             <Card sx={{ height: '100%', borderRadius: '11px', backgroundPosition: 'center', backgroundSize: 'auto', backgroundImage: `url(https://assets.ppy.sh/beatmaps/${props.score.beatmap.set_id}/covers/cover@2x.jpg)` }}>
                 <CardContent sx={{ height: '100%', backgroundColor: 'rgba(0,0,0,0.8)', borderRadius: '10px' }}>
                     <Stack spacing={1}>
-                        <Typography variant='h6' sx={{ fontSize: '0.9em' }}>Top {props.valueTitle} play</Typography>
+                        <Typography variant='h6' sx={{ fontSize: '0.9em' }}>{props.valueTitle} play</Typography>
                         <Marquee speed={40} gradient={false}>
                             <Typography variant='title' sx={{ fontSize: '1em' }}>{props.score.beatmap.artist} - {props.score.beatmap.title} [{props.score.beatmap.diffname}]&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </Typography>
                         </Marquee>

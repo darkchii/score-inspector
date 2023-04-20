@@ -255,7 +255,8 @@ function getBestScores(scores) {
     let _scores = {
         best_pp: null,
         best_sr: null,
-        best_score: null
+        best_score: null,
+        oldest: null
     };
 
     scores.forEach(score => {
@@ -270,6 +271,9 @@ function getBestScores(scores) {
             }
             if (_scores.best_score === null || score.score > _scores.best_score.score) {
                 _scores.best_score = score;
+            }
+            if (_scores.oldest === null || score.date_played < _scores.oldest.date_played) {
+                _scores.oldest = score;
             }
         }
     });
