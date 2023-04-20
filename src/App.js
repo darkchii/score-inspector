@@ -23,6 +23,7 @@ import { showNotification } from './Helpers/Misc';
 import Logout from './Routes/Logout';
 import config from './config';
 import Tools from './Routes/Tools';
+import { Helmet } from 'react-helmet';
 
 function App() {
   const [loginData, setLoginData] = useState(null);
@@ -51,6 +52,18 @@ function App() {
     <>
       <ThemeProvider theme={createTheme(Theme)}>
         <CssBaseline />
+        <Helmet>
+          <style>
+            {`
+              body { 
+              background-image: url(''); 
+              background-repeat: no-repeat;
+              background-size: cover;
+              background-position: center;
+              background-attachment: fixed;
+          }`}
+          </style>
+        </Helmet>
         {
           config.USE_DEV_API && <>
             <Alert severity="warning">
