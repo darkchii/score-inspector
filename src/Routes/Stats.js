@@ -36,11 +36,11 @@ const MISC_STATS = [
     { name: 'scores_d', label: (<img src={IMG_SVG_GRADE_D} alt='D' />), format: (value) => parseInt(value).toLocaleString('en-US') },
     { name: '', label: '', format: (value) => '' }, //empty row
     { name: '', label: 'Averages', format: (value) => '' }, //title row
-    { name: 'avg_stars', label: 'Stars', format: (value) => (Math.round(100 * value) / 100).toLocaleString('en-US') },
-    { name: 'avg_combo', label: 'Combo', format: (value) => (Math.round(value)).toLocaleString('en-US') },
+    { name: 'avg_stars', label: 'Stars', format: (value) => `${(Math.round(100 * value) / 100).toLocaleString('en-US')}*` },
+    { name: 'avg_combo', label: 'Combo', format: (value) => `${(Math.round(value)).toLocaleString('en-US')}x`},
     { name: 'avg_length', label: 'Length', format: (value) => (Math.round(value)).toLocaleString('en-US') + ' sec' },
     { name: 'avg_score', label: 'Score', format: (value) => (Math.round(value)).toLocaleString('en-US') },
-    { name: 'avg_pp', label: 'PP', format: (value) => (Math.round(value)).toLocaleString('en-US') },
+    { name: 'avg_pp', label: 'PP', format: (value) => `${(Math.round(value)).toLocaleString('en-US')}pp` },
     { name: 'average_map_age', label: 'Map age', format: (value) => (moment(value).fromNow(true)) + ' old' },
     { name: 'fc_rate', label: 'FC rate', format: (value) => (Math.round(10000 * value) / 100).toLocaleString('en-US') + '%' },
     { name: '', label: '', format: (value) => '' }, //empty row
@@ -103,7 +103,9 @@ function Stats(props) {
                                                             {
                                                                 TIME_PERIODS.map((period) => {
                                                                     return (
-                                                                        <TableCell key={period.name} align='right'>{scoreStats ? stat.format(scoreStats?.[period.name]?.[stat.name]) : <CircularProgress size={15} />} </TableCell>
+                                                                        <TableCell key={period.name} align='right'>
+                                                                            {scoreStats ? stat.format(scoreStats?.[period.name]?.[stat.name]) : <CircularProgress size={15} />}
+                                                                        </TableCell>
                                                                     );
                                                                 })
                                                             }
@@ -126,7 +128,7 @@ function Stats(props) {
                                 scoreStats && TIME_PERIODS.map((period) => {
                                     return (
                                         <Grid>
-                                            <Typography key={period.name} variant='h6'>{period.label}</Typography>
+                                            <Typography key={period.name} variant='body1'>{period.label}</Typography>
                                             <TableContainer key={period.name} style={{ marginBottom: 20 }}>
                                                 <Table size='small' sx={{
                                                     [`& .${tableCellClasses.root} `]: {
