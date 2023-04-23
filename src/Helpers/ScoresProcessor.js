@@ -204,7 +204,7 @@ async function weighPerformance(scores, onScoreProcessUpdate) {
     return data;
 }
 
-export function prepareScores(user, scores, onScoreProcessUpdate) {
+export function prepareScores(user, scores, onScoreProcessUpdate, calculateOtherPP = true) {
     scores.forEach(score => {
         onScoreProcessUpdate?.('' + score.id);
         score.is_loved = score.beatmap.approved === 4;
@@ -232,13 +232,15 @@ export function prepareScores(user, scores, onScoreProcessUpdate) {
         score.modString = getModString(score.enabled_mods).toString();
         score.totalhits = score.count300 + score.count100 + score.count50 + score.countmiss;
 
-        score.pp_fc = getCalculator('live', { count300: score.count300 + score.countmiss, count100: score.count100, count50: score.count50, countmiss: 0, combo: score.beatmap.maxcombo, score: score });
-        score.pp_ss = getCalculator('live', { count300: score.count300 + score.countmiss + score.count100 + score.count50, count100: 0, count50: 0, countmiss: 0, combo: score.beatmap.maxcombo, score: score });
         score.pp_original = getCalculator('live', { score: score });
         score.displayed_pp = structuredClone(score.pp_original);
-        score.pp_2016 = getCalculator('2016', { score: score });
-        score.pp_lazer = getCalculator('lazer', { score: score });
-        score.pp_2014 = getCalculator('2014', { score: score });
+        score.pp_fc = getCalculator('live', { count300: score.count300 + score.countmiss, count100: score.count100, count50: score.count50, countmiss: 0, combo: score.beatmap.maxcombo, score: score });
+        if(calculateOtherPP){
+            score.pp_ss = getCalculator('live', { count300: score.count300 + score.countmiss + score.count100 + score.count50, count100: 0, count50: 0, countmiss: 0, combo: score.beatmap.maxcombo, score: score });
+            score.pp_2016 = getCalculator('2016', { score: score });
+            score.pp_lazer = getCalculator('lazer', { score: score });
+            score.pp_2014 = getCalculator('2014', { score: score });
+        }
 
         score.is_fc = isScoreFullcombo(score);
         score.scoreLazer = Math.floor(getLazerScore(score));
