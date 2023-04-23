@@ -13,6 +13,7 @@ import { approval_state } from '../Helpers/Osu';
 import CheckIcon from '@mui/icons-material/Check';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import momentDurationFormatSetup from "moment-duration-format";
+import { GetFormattedName } from '../Helpers/Account';
 momentDurationFormatSetup(moment);
 
 const GROUPED_STATS = {
@@ -407,7 +408,7 @@ function Leaders() {
                                         borderRadius: 10,
                                     },
                                     borderCollapse: 'separate',
-                                    borderSpacing: '0 0.4em',
+                                    borderSpacing: '0 0.2em',
                                 }}>
                                     <TableBody>
                                         {
@@ -421,6 +422,15 @@ function Leaders() {
                                                 if (leaderboardType === 'users') {
                                                     detail = entry.osu_user;
                                                     name = detail?.username ?? entry?.username ?? 'n/a';
+                                                    let inspector_user = {
+                                                        known_username: name,
+                                                        osu_id: detail?.id ?? entry?.id ?? 0,
+                                                        roles: [],
+                                                    }
+                                                    if(entry?.inspector_user){
+                                                        inspector_user = entry?.inspector_user;
+                                                    }
+                                                    name = GetFormattedName(inspector_user);
                                                     background = detail?.cover?.custom_url;
                                                     country = detail?.country_code ?? '';
                                                     restricted = !detail;
@@ -454,12 +464,6 @@ function Leaders() {
                                                         <TableCell width={'3%'} sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})` }}>
                                                             <Typography variant='subtitles1' noWrap>#{entry.rank}</Typography>
                                                         </TableCell>
-                                                        {
-                                                            leaderboardType === 'users' ?
-                                                                <TableCell width={'5%'} sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})` }}>
-                                                                    <Avatar sx={{ width: 24, height: 24 }} alt={name} src={`https://a.ppy.sh/${entry.user_id}`} />
-                                                                </TableCell>
-                                                                : <></>}
                                                         <TableCell width={'5%'} sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})` }}>
                                                             {
                                                                 leaderboardType === 'users' ?
