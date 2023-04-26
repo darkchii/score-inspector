@@ -2,6 +2,7 @@ import { Alert, Box, ListItemIcon, ListItemText, MenuItem, MenuList } from "@mui
 import PersonIcon from '@mui/icons-material/Person';
 import LogoutIcon from '@mui/icons-material/Logout';
 import FilterIcon from '@mui/icons-material/Filter';
+import PersonSearchIcon from '@mui/icons-material/PersonSearch';
 import { useNavigate } from 'react-router-dom';
 
 function AccountDropdown(props) {
@@ -22,6 +23,10 @@ function AccountDropdown(props) {
                 <MenuItem onClick={() => { props.customizeModal.current.setOpen(true); closeMenu(); }}>
                     <ListItemIcon><FilterIcon /></ListItemIcon>
                     <ListItemText>Customize</ListItemText>
+                </MenuItem>
+                <MenuItem onClick={() => { props.visitorLogModal.current.setOpen(true); closeMenu(); }}>
+                    <ListItemIcon><PersonSearchIcon /></ListItemIcon>
+                    <ListItemText>Visited</ListItemText>
                 </MenuItem>
                 <MenuItem onClick={() => { navigate(`/logout`); closeMenu(); }}>
                     <ListItemIcon><LogoutIcon /></ListItemIcon>

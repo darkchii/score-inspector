@@ -14,11 +14,13 @@ import Login from './Navigation/Login';
 import { PNG_GUEST } from '../Helpers/Assets';
 import AccountDropdown from './Navigation/AccountDropdown';
 import CustomizeModal from './Modals/CustomizeModal';
+import VisitorLogModal from './Modals/VisitorLogModal';
 
 function Header(props) {
     const searchElement = useRef(null);
     const settingsElement = useRef(null);
     const customizeElement = useRef(null);
+    const visitorLogElement = useRef(null);
 
     const [showMenu, setShowMenu] = React.useState(null);
 
@@ -27,6 +29,7 @@ function Header(props) {
             {
                 props.account !== null ? <>
                     <CustomizeModal account={props.account} ref={customizeElement} />
+                    <VisitorLogModal account={props.account} ref={visitorLogElement} />
                 </> : <></>
             }
             <UserSearchModal ref={searchElement} />
@@ -75,7 +78,11 @@ function Header(props) {
                                     <Box sx={{ width: '20em' }}>
                                         {
                                             props.account !== null ? <>
-                                                <AccountDropdown customizeModal={customizeElement} onClose={() => setShowMenu(null)} account={props.account} />
+                                                <AccountDropdown 
+                                                    visitorLogModal={visitorLogElement}
+                                                    customizeModal={customizeElement} 
+                                                    onClose={() => setShowMenu(null)} 
+                                                    account={props.account} />
                                             </> : <>
                                                 <Login />
                                             </>

@@ -12,6 +12,15 @@ const PLATFORMTYPES = {
 
 const updates = [
     {
+        version: '2.6.0',
+        date: '2023-05-01',
+        changes: [
+            [PLATFORMTYPES.WEB, CHANGETYPES.MISC, 'Leaderboard username are now Inspector user chips', 'f5b317f4e73a816e9938b95d572081003fa3f041'],
+            [PLATFORMTYPES.API, CHANGETYPES.FIX, 'Optimized GetBestScores'],
+            [PLATFORMTYPES.API, CHANGETYPES.FIX, 'Fixed api crash caused by incorrect fetching full user profile (username vs id)'],
+        ]
+    },
+    {
         version: '2.5.0',
         date: '2023-04-20',
         changes: [
