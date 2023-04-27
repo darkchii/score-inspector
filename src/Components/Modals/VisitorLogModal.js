@@ -1,8 +1,11 @@
-import { Box, Button, Card, CardContent, Container, FormControl, FormControlLabel, FormGroup, Modal, Stack, Switch, Typography } from "@mui/material";
-import { useImperativeHandle } from "react";
+import { Box, Button, Card, CardContent, Container, FormControl, FormControlLabel, FormGroup, Modal, Stack, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
+import { useEffect, useImperativeHandle } from "react";
 import { forwardRef } from "react";
 import { useState } from "react";
 import { getSettings, saveSettings } from "../../Helpers/Settings";
+import { GetFormattedName, GetVisited } from "../../Helpers/Account";
+import moment from "moment";
+import { Link as RouterLink } from 'react-router-dom';
 
 const style = {
     position: 'absolute',
@@ -13,6 +16,7 @@ const style = {
 
 function VisitorLogModal(props, ref) {
     const [open, setOpen] = useState(false);
+    const [visitedList, setVisitedList] = useState([]);
 
     const [settings, setSettings] = useState(getSettings());
 
@@ -22,9 +26,12 @@ function VisitorLogModal(props, ref) {
         }
     }));
 
-    const save = () => {
-        setOpen(false);
-    }
+    useEffect(() => {
+        (async () => {
+            const data = await GetVisited();
+            setVisitedList(data ?? []);
+        })();
+    }, [open]);
 
 
     return (
@@ -35,9 +42,35 @@ function VisitorLogModal(props, ref) {
                         <Card sx={{ borderRadius: '10px' }}>
                             <CardContent>
                                 <Typography variant='h6'>Users visited</Typography>
-                                <Stack spacing={2} direction='column'>
-                                    
-                                </Stack>
+                                <Box sx={{ maxHeight: '600px', overflowY: 'auto' }}>
+                                    <TableContainer>
+                                        <Table size='small'>
+                                            <TableHead>
+                                                <TableRow>
+                                                    <TableCell>User</TableCell>
+                                                    <TableCell>Last visit</TableCell>
+                                                    <TableCell>Visits</TableCell>
+                                                </TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                                {
+                                                    visitedList && visitedList.map((item, index) => {
+                                                        return (
+                                                            <TableRow>
+                                                                <TableCell>
+                                                                <RouterLink to={`user/${item.target_user.inspector_user.osu_id}`}>
+                                                                    {GetFormattedName(item.target_user.inspector_user, null, true)}
+                                                                </RouterLink></TableCell>
+                                                                <TableCell>{moment(item.last_visit).fromNow()}</TableCell>
+                                                                <TableCell>{item.count}</TableCell>
+                                                            </TableRow>
+                                                        )
+                                                    })
+                                                }
+                                            </TableBody>
+                                        </Table>
+                                    </TableContainer>
+                                </Box>
                             </CardContent>
                         </Card>
                     </Container>

@@ -185,6 +185,27 @@ export async function GetVisitors(osu_id) {
     return res?.data;
 }
 
+export async function GetVisited() {
+    const token = localStorage.getItem('auth_token');
+    const user_id = localStorage.getItem('auth_osu_id');
+    let res = null;
+    if (token && user_id) {
+        try {
+            res = await axios.post(`${GetAPI()}login/visitors/get/${user_id}?check_visitor=true`, {
+                token: token
+            }, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+        } catch (e) {
+            console.error(e);
+        }
+    }
+    if (res === null || res?.data == null) return null;
+    return res?.data;
+}
+
 export async function GetTopVisited(order_by = 'count', limit = 10) {
     let res = null;
     try {
