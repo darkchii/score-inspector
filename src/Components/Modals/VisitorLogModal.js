@@ -6,6 +6,7 @@ import { getSettings, saveSettings } from "../../Helpers/Settings";
 import { GetFormattedName, GetVisited } from "../../Helpers/Account";
 import moment from "moment";
 import { Link as RouterLink } from 'react-router-dom';
+import { arr_sum } from "../../Helpers/Misc";
 
 const style = {
     position: 'absolute',
@@ -27,6 +28,7 @@ function VisitorLogModal(props, ref) {
     }));
 
     useEffect(() => {
+        if(!open) return;
         (async () => {
             const data = await GetVisited();
             setVisitedList(data ?? []);
@@ -49,7 +51,7 @@ function VisitorLogModal(props, ref) {
                                                 <TableRow>
                                                     <TableCell>User</TableCell>
                                                     <TableCell>Last visit</TableCell>
-                                                    <TableCell>Visits</TableCell>
+                                                    <TableCell>Visits (Total: {visitedList ? arr_sum(visitedList, 'count') : '-'})</TableCell>
                                                 </TableRow>
                                             </TableHead>
                                             <TableBody>

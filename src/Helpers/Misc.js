@@ -98,3 +98,12 @@ export function nestedSearch(object, keyArray) {
     }
     return nestedSearch(object[_currentKey], _keyArray);
 }
+
+
+export function arr_sum(array, prop) {
+    var total = 0
+    for ( var i = 0, _len = array.length; i < _len; i++ ) {
+        total += array[i][prop]
+    }
+    return total
+}
