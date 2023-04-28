@@ -10,7 +10,7 @@ import { Box, Card, CardContent, Tooltip, Typography } from '@mui/material';
 import { useEffect } from 'react';
 import ScoreModal from '../ScoreModal';
 import { DataGrid } from '@mui/x-data-grid';
-import BeatmapFilter from '../BeatmapFilter';
+import ScoreFilter from '../ScoreFilter';
 
 function SectionScores(props) {
     const [, updateState] = useState();
@@ -212,7 +212,7 @@ function SectionScores(props) {
                 <Box>
                     <Card>
                         <CardContent>
-                            <BeatmapFilter columns={columns} onApply={handleFilter} />
+                            <ScoreFilter columns={columns} onApply={handleFilter} />
                             <Typography variant="h6" style={{ marginBottom: 10 }}>Scores: {props.user.scoreRows.length.toLocaleString('en-US')}</Typography>
                             <DataGrid
                                 onRowClick={rowHandleClick}

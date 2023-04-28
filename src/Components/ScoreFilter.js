@@ -12,7 +12,7 @@ const FILTER_FIELD_SIZE = 12 / 7;
 const MIN_DATE = moment('6 Oct 2007');
 const MAX_DATE = moment();
 
-function BeatmapFilter(props) {
+function ScoreFilter(props) {
     //-1 in range values are simply ignored and no limit is set
     //null is ignored too
     const [enabledMods, setEnabledMods] = useState(0);
@@ -254,4 +254,4 @@ function BeatmapFilter(props) {
         </>
     );
 }
-export default BeatmapFilter;
+export default ScoreFilter;
