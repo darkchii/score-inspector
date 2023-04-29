@@ -207,50 +207,64 @@ async function weighPerformance(scores, onScoreProcessUpdate) {
 export function prepareScores(user, scores, onScoreProcessUpdate, calculateOtherPP = true) {
     scores.forEach(score => {
         onScoreProcessUpdate?.('' + score.id);
-        score.is_loved = score.beatmap.approved === 4;
-        if (user !== null) {
-            score.is_unique_ss = user.alt.unique_ss.includes(score.beatmap_id);
-            score.is_unique_fc = user.alt.unique_fc.includes(score.beatmap_id);
-            score.is_unique_dt_fc = user.alt.unique_dt_fc.includes(score.beatmap_id);
-        }
-        score.accuracy = parseFloat(score.accuracy);
-        score.pp = Math.max(0, parseFloat(score.pp));
-        score.date_played_moment = moment(score.date_played);
-        score.enabled_mods = parseInt(score.enabled_mods);
-
-        score.beatmap.objects = score.beatmap.sliders + score.beatmap.circles + score.beatmap.spinners;
-        score.beatmap.modded_length = score.beatmap.length;
-        score.beatmap.modded_bpm = score.beatmap.bpm;
-        score.beatmap.date_approved_moment = moment(score.beatmap.date_approved);
-        if (score.enabled_mods & mods.DT || score.enabled_mods & mods.NC) {
-            score.beatmap.modded_length /= 1.5;
-            score.beatmap.modded_bpm *= 1.5;
-        } else if (score.enabled_mods & mods.HT) {
-            score.beatmap.modded_length /= 0.75;
-            score.beatmap.modded_bpm *= 0.75;
-        }
-        score.modString = getModString(score.enabled_mods).toString();
-        score.totalhits = score.count300 + score.count100 + score.count50 + score.countmiss;
-
-        score.pp_original = getCalculator('live', { score: score });
-        score.displayed_pp = structuredClone(score.pp_original);
-        score.pp_fc = getCalculator('live', { count300: score.count300 + score.countmiss, count100: score.count100, count50: score.count50, countmiss: 0, combo: score.beatmap.maxcombo, score: score });
-        if(calculateOtherPP){
-            score.pp_ss = getCalculator('live', { count300: score.count300 + score.countmiss + score.count100 + score.count50, count100: 0, count50: 0, countmiss: 0, combo: score.beatmap.maxcombo, score: score });
-            score.pp_2016 = getCalculator('2016', { score: score });
-            score.pp_lazer = getCalculator('lazer', { score: score });
-            score.pp_2014 = getCalculator('2014', { score: score });
-        }
-
-        score.is_fc = isScoreFullcombo(score);
-        score.scoreLazer = Math.floor(getLazerScore(score));
-
-        if (!score.user && user) {
-            score.user = user.alt;
-        }
+        score = prepareScore(score, calculateOtherPP, user);
     });
 
     return scores;
+}
+
+export function prepareScore(score, calculateOtherPP = true, user = null) {
+    score.is_loved = score.beatmap.approved === 4;
+    if (user !== null) {
+        score.is_unique_ss = user.alt.unique_ss.includes(score.beatmap_id);
+        score.is_unique_fc = user.alt.unique_fc.includes(score.beatmap_id);
+        score.is_unique_dt_fc = user.alt.unique_dt_fc.includes(score.beatmap_id);
+    }
+    score.accuracy = parseFloat(score.accuracy);
+    score.pp = Math.max(0, parseFloat(score.pp));
+    score.date_played_moment = moment(score.date_played);
+    score.enabled_mods = parseInt(score.enabled_mods);
+
+    score.beatmap = prepareBeatmap(score.beatmap, score.enabled_mods);
+
+    score.modString = getModString(score.enabled_mods).toString();
+    score.totalhits = score.count300 + score.count100 + score.count50 + score.countmiss;
+
+    score.pp_original = getCalculator('live', { score: score });
+    score.displayed_pp = structuredClone(score.pp_original);
+    score.pp_fc = getCalculator('live', { count300: score.count300 + score.countmiss, count100: score.count100, count50: score.count50, countmiss: 0, combo: score.beatmap.maxcombo, score: score });
+    if (calculateOtherPP) {
+        score.pp_ss = getCalculator('live', { count300: score.count300 + score.countmiss + score.count100 + score.count50, count100: 0, count50: 0, countmiss: 0, combo: score.beatmap.maxcombo, score: score });
+        score.pp_2016 = getCalculator('2016', { score: score });
+        score.pp_lazer = getCalculator('lazer', { score: score });
+        score.pp_2014 = getCalculator('2014', { score: score });
+    }
+
+    score.is_fc = isScoreFullcombo(score);
+    score.scoreLazer = Math.floor(getLazerScore(score));
+
+    if (!score.user && user) {
+        score.user = user.alt;
+    }
+
+    return score;
+}
+
+export function prepareBeatmap(beatmap, enabled_mods = null) {
+    enabled_mods = enabled_mods ?? mods.None;
+
+    beatmap.objects = beatmap.sliders + beatmap.circles + beatmap.spinners;
+    beatmap.modded_length = beatmap.length;
+    beatmap.modded_bpm = beatmap.bpm;
+    beatmap.date_approved_moment = moment(beatmap.date_approved);
+    if (enabled_mods & mods.DT || enabled_mods & mods.NC) {
+        beatmap.modded_length /= 1.5;
+        beatmap.modded_bpm *= 1.5;
+    } else if (enabled_mods & mods.HT) {
+        beatmap.modded_length /= 0.75;
+        beatmap.modded_bpm *= 0.75;
+    }
+    return beatmap;
 }
 
 function getBestScores(scores) {

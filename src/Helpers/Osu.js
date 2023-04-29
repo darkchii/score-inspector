@@ -393,6 +393,17 @@ export async function getBeatmaps(loved = true) {
     return beatmaps;
 }
 
+export async function getBeatmap(beatmap_id) {
+    let beatmap;
+    try {
+        beatmap = await axios.get(`${GetAPI()}beatmaps/${beatmap_id}`, { headers: { "Access-Control-Allow-Origin": "*" } });
+    } catch (err) {
+        return null;
+    }
+
+    return beatmap?.data;
+}
+
 export function getGradeColor(grade) {
     switch (grade) {
         default:
@@ -414,4 +425,21 @@ export function getGradeColor(grade) {
         case 'D':
             return '#8B6996';
     }
+}
+
+const excluded_mods = [
+    1, //NF
+    8, //HD
+    32, //SD
+    128, //RX
+    512, //NC
+    2048, //AP
+    4096, //SO
+    16384, //PF
+];
+
+export function FilterStarratingArray(sr_arr, mods_enum){
+    mods_enum = parseInt(mods_enum);
+    mods_enum &= ~excluded_mods.reduce((a, b) => a | b, 0);
+    return sr_arr.filter(sr => sr.mods_enum === mods_enum)?.[0];
 }

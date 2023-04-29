@@ -63,6 +63,18 @@ export async function getUserScores(user_id, allowLoved, onScoreDownloadProgress
     return _scores;
 }
 
+export async function getBeatmapScores(beatmap_id, limit = 500, offset = 0){
+    let _scores = null;
+    try {
+        const url = `${GetAPI()}scores/beatmap/${beatmap_id}?${limit > 0 ? `limit=${limit}` : ""}${offset > 0 ? `?offset=${offset}` : ""}`;
+        const res = await axios.get(url, { headers: { "Access-Control-Allow-Origin": "*" }, ...config });
+        _scores = res.data;
+    } catch (err) {
+        return null;
+    }
+    return _scores;
+}
+
 export async function getUserTrackerStatus(user_id) {
     const currentlyTracking = await axios.get(`${(config.USE_DEV_API) ? config.API_DEV : config.API}proxy/aHR0cHM6Ly9vc3VhbHQucmVzcGVrdGl2ZS5wdy9hcGkvY3VycmVudA==`, { headers: { "Access-Control-Allow-Origin": "*" } });
 

@@ -9,7 +9,7 @@ export const MODAL_STYLE = {
     left: '50%',
     transform: 'translate(-50%, -50%)',
     bgcolor: 'background.paper',
-    minWidth: 800,
+    minWidth: '80%',
     boxShadow: 24,
     borderRadius: 3,
     '&:focus': {
