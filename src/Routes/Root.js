@@ -216,7 +216,10 @@ function Root() {
                                                                 <TableRow>
                                                                     <TableCell>
                                                                         <RouterLink to={`user/${v.target_user.osu_id}`}>
-                                                                            {GetFormattedName(v.target_user, `Last visit: ${moment(v.last_visit).fromNow()}`, true)}
+                                                                            {GetFormattedName(v.target_user, {
+                                                                                custom_tooltip: `Last visit: ${moment(v.last_visit).fromNow()}`,
+                                                                                is_link: true
+                                                                            })}
                                                                         </RouterLink>
                                                                     </TableCell>
                                                                     <TableCell>
@@ -242,7 +245,10 @@ function Root() {
                                                                 <TableRow>
                                                                     <TableCell>
                                                                         <RouterLink to={`user/${v.target_user.osu_id}`}>
-                                                                            {GetFormattedName(v.target_user, `Last visit: ${moment(v.last_visit).fromNow()}`, true)}
+                                                                            {GetFormattedName(v.target_user, {
+                                                                                custom_tooltip: `Last visit: ${moment(v.last_visit).fromNow()}`,
+                                                                                is_link: true
+                                                                            })}
                                                                         </RouterLink>
                                                                     </TableCell>
                                                                     <TableCell>

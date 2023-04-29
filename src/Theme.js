@@ -1,6 +1,7 @@
+import { createTheme, responsiveFontSizes } from "@mui/material";
 import { IMG_TRIANGLES } from "./Helpers/Assets";
 
-const DefaultTheme = {
+let DefaultTheme = createTheme({
     themeName: "osu!",
     palette: {
         mode: 'dark',
@@ -54,6 +55,6 @@ const DefaultTheme = {
             },
         },
     }
-}
-
+});
+DefaultTheme = responsiveFontSizes(DefaultTheme);
 export default DefaultTheme;

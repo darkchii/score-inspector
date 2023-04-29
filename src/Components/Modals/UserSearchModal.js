@@ -1,10 +1,12 @@
-import { Avatar, Box, Card, CardContent, Container, Input, Modal, Paper, Stack, Typography } from "@mui/material";
+import { Avatar, Box, Card, CardContent, CardHeader, CardMedia, Container, Grid, Input, Modal, Paper, Stack, Tooltip, Typography } from "@mui/material";
 import { useEffect, useImperativeHandle } from "react";
 import { forwardRef } from "react";
 import { useState } from "react";
 import { findUsers } from "../../Helpers/OsuAlt";
 import { useNavigate } from "react-router-dom/dist";
 import ReactCountryFlag from "react-country-flag";
+import { GetFormattedName } from "../../Helpers/Account";
+import PlayerCard from "../PlayerCard";
 
 const style = {
     position: 'absolute',
@@ -34,7 +36,7 @@ function UserSearchModal(props, ref) {
 
             return () => clearTimeout(delayDebounceFn);
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [searchVal]);
 
     useImperativeHandle(ref, () => ({
@@ -55,35 +57,15 @@ function UserSearchModal(props, ref) {
                                         <Input defaultValue={searchVal} disabled={isSearching} onChange={e => setSearchVal(e.target.value)} placeholder="Search for a user" sx={{ flexGrow: 1 }} />
                                     </Box>
                                     <Box sx={{ maxHeight: '70vh', overflowY: 'auto' }}>
-                                        <Stack direction='column' spacing={2} sx={{ m: 1 }}>
+                                        <Grid container spacing={1}>
                                             {
                                                 resultList.map((user, index) => (
-                                                    <Box component={Paper}
-                                                        onClick={() => { navigate(`/user/${user.user_id}`); setOpen(false); }}
-                                                        elevation={5}
-                                                        sx={{
-                                                            p: 1, borderRadius: '5px', "&:hover": {
-                                                                opacity: 0.9,
-                                                                cursor: 'pointer'
-                                                            }
-                                                        }}>
-                                                        <Box sx={{ textDecoration: 'none' }}>
-                                                            <Stack direction='row' alignItems='center' spacing={2}>
-                                                                <Avatar alt={user.username} src={`https://a.ppy.sh/${user.user_id}`} />
-                                                                <ReactCountryFlag
-                                                                    style={{ lineHeight: '1em', fontSize: '1.4em', borderRadius: '5px' }}
-                                                                    cdnUrl="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/"
-                                                                    countryCode={user.country_code}
-                                                                    />
-                                                                <Typography variant='h6' noWrap>
-                                                                    {user.username}
-                                                                </Typography>
-                                                            </Stack>
-                                                        </Box>
-                                                    </Box>
+                                                    <Grid item xs={4}>
+                                                        <PlayerCard onClick={() => { navigate(`/user/${user.user_id}`); setOpen(false); }} user={user} />
+                                                    </Grid>
                                                 ))
                                             }
-                                        </Stack>
+                                        </Grid>
                                     </Box>
                                 </Stack>
                             </CardContent>

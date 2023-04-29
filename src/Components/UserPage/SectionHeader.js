@@ -23,7 +23,11 @@ function SectionHeader(props) {
                         Recent visitors ({visitorCount.toLocaleString('en-US')} total): {props.user.visitors === null || props.user.visitors.length === 0 ? 'Noone yet :(' : ''} {props.user.visitors != null && props.user.visitors.slice(0, MAX_VISITORS).map((visitor, index) => {
                             return (
                                 <>
-                                    {GetFormattedName(visitor.visitor_user, `Last visit: ${moment(visitor.last_visit).fromNow()}`, null, 'large')}{index < MAX_VISITORS - 1 ? ' ' : ''}
+                                    {GetFormattedName(visitor.visitor_user, {
+                                        custom_tooltip: `Last visit: ${moment(visitor.last_visit).fromNow()}`,
+                                        is_link: null,
+                                        size: 'large'
+                                    })}{index < MAX_VISITORS - 1 ? ' ' : ''}
                                 </>
                             )
                         })}

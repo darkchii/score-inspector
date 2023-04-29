@@ -1,7 +1,7 @@
 import { GetAPI, GetOsuApiRedirect, parseReadableStreamToJson } from "./Misc";
 import config from '../config.json';
 import axios from "axios";
-import { Avatar, Chip, Tooltip } from "@mui/material";
+import { Avatar, Box, Chip, Tooltip } from "@mui/material";
 import CodeIcon from '@mui/icons-material/Code';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { green, pink } from "@mui/material/colors";
@@ -20,7 +20,14 @@ export const ROLES = [
     }
 ]
 
-export function GetFormattedName(inspector_user, custom_tooltip = null, is_link = false, size = 'small') {
+export function GetFormattedName(inspector_user, settings = null) {
+    let _settings = {
+        custom_tooltip: null,
+        is_link: false,
+        size: 'small',
+        show_avatar: true,
+        ...settings
+    };
     let name = inspector_user?.known_username;
     if (inspector_user === null || inspector_user.osu_id === null) {
         name = 'Guest';
@@ -32,29 +39,50 @@ export function GetFormattedName(inspector_user, custom_tooltip = null, is_link 
 
     return (
         <>
-            <Tooltip title={custom_tooltip ?? ''} placement='top'>
+            <Tooltip title={_settings.custom_tooltip ?? ''} placement='top'>
                 <Chip sx={{
                     pr: inspector_user.roles?.length > 0 ? 1 : 0, '&:hover': {
-                        cursor: is_link ? 'pointer' : 'default'
+                        cursor: _settings.is_link ? 'pointer' : 'default'
                     }
                 }}
                     onDelete={() => { }}
-                    deleteIcon={<>{Array.isArray(inspector_user.roles) && inspector_user.roles?.map(role => {
-                        const _role = ROLES.find(r => r.id === role);
-                        if (!_role) return null;
-                        return (
-                            <>
-                                <Tooltip title={_role.name}>
-                                    {_role.icon}
-                                </Tooltip>
-                            </>)
-                    })}</>}
-                    avatar={<Avatar alt={name} src={`https://a.ppy.sh/${inspector_user.osu_id}`} />}
+                    deleteIcon={<>{Array.isArray(inspector_user.roles) && GetRoleIcons(inspector_user.roles)}</>}
+                    avatar={_settings.show_avatar ? <Avatar alt={name} src={`https://a.ppy.sh/${inspector_user.osu_id}`} /> : null}
                     label={name}
-                    size={size} />
+                    size={_settings.size} />
             </Tooltip>
         </>
     );
+}
+
+export function GetRoleIcons(roles, chips = false) {
+    if (roles !== null && typeof roles === 'string') {
+        roles = JSON.parse(roles);
+    }
+
+    const wrapIcon = (icon) => (
+        <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            sx={{
+                borderRadius: '50%',
+                backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            }}>
+            {icon}
+        </Box>
+    );
+
+    return (roles?.map(role => {
+        const _role = ROLES.find(r => r.id === role);
+        if (!_role) return null;
+        return (
+            <>
+                <Tooltip title={_role.name}>
+                    {chips ? wrapIcon(_role.icon) : _role.icon}
+                </Tooltip>
+            </>)
+    }));
 }
 
 export function GetRoles(inspector_user) {

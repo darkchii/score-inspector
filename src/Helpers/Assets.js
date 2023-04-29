@@ -40,6 +40,8 @@ import PNG_MOD_NM from "../Assets/MOD_NM.png";
 
 import PNG_GUEST from "../Assets/Guest.png";
 
+import PNG_LEVEL_BADGE from "../Assets/levelbadge.png";
+
 function getModIcon(modString) {
     switch (modString) {
         default: return null;
@@ -156,5 +158,6 @@ export {
     IMG_SVG_GRADE_D,
     IMG_TRIANGLES,
     SVG_TRIANGLES,
-    PNG_GUEST
+    PNG_GUEST,
+    PNG_LEVEL_BADGE
 };

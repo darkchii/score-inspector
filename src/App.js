@@ -50,7 +50,7 @@ function App() {
 
   return (
     <>
-      <ThemeProvider theme={createTheme(Theme)}>
+      <ThemeProvider theme={Theme}>
         <CssBaseline />
         <Helmet>
           <style>

@@ -61,7 +61,9 @@ function VisitorLogModal(props, ref) {
                                                             <TableRow>
                                                                 <TableCell>
                                                                 <RouterLink to={`user/${item.target_user.inspector_user.osu_id}`}>
-                                                                    {GetFormattedName(item.target_user.inspector_user, null, true)}
+                                                                    {GetFormattedName(item.target_user.inspector_user, {
+                                                                        is_link: true
+                                                                    })}
                                                                 </RouterLink></TableCell>
                                                                 <TableCell>{moment(item.last_visit).fromNow()}</TableCell>
                                                                 <TableCell>{item.count}</TableCell>
