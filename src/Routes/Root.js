@@ -8,7 +8,10 @@ import axios from 'axios';
 import moment from 'moment';
 import momentDurationFormatSetup from "moment-duration-format";
 import ScoreSubmissions from '../Components/ScoreSubmissions';
+import { green } from '@mui/material/colors';
+
 momentDurationFormatSetup(moment);
+
 function Root() {
     const [isModalOpen, setIsModalOpen] = useState(true);
     const [osuAuthCode, setOsuAuthCode] = useState(null);
@@ -128,36 +131,36 @@ function Root() {
             <Grid container spacing={2}>
                 <Grid item xs={12} md={9}>
                     <Grid container spacing={2}>
-                        <Grid item xs={8.5}>
+                        <Grid item xs={12}>
                             <Card elevation={2}>
                                 <CardContent>
-                                    <Typography variant='title'>What does it do</Typography>
-                                    <Typography variant='body2'>This website takes the dump of all your scores, and generates statistics and graphs from it.</Typography>
-                                    <Typography variant='body2'>All of your scores means every TOP score on a beatmap, so not plays that are overridden or set with different mods.</Typography>
-                                    <Typography variant='body2'>Because of this, stats like periodic activity can be off due to missing scores, if they were overridden later in time.</Typography>
-                                    <Typography variant='title'>Can I see other users</Typography>
-                                    <Typography variant='body2'>Every user that has fetched their scores can be viewed here. The user in question has to fetch them themselves, others cannot do that.</Typography>
-                                    <Typography variant='title'>Where can I recommend changes</Typography>
-                                    <Typography variant='body2'>The following two places are fine:</Typography>
-                                    <Typography variant='body2'>- The #feature-ideas channel in the <Link href='https://discord.gg/VZWRZZXcW4' target='_blank'>osu!alt discord</Link> (make sure to tag Amayakase#9198)</Typography>
-                                    <Typography variant='body2'>- Opening an issue on the <Link href='https://github.com/darkchii/score-inspector' target='_blank'>GitHub</Link></Typography>
-                                </CardContent>
-                            </Card>
-                        </Grid>
-                        <Grid item xs={3.5}>
-                            <Card elevation={2}>
-                                <CardContent>
-                                    <Typography variant='title'>For new users</Typography>
-                                    <TableContainer>
-                                        <Table size='small'>
-                                            <TableBody>
-                                                <TableRow><TableCell>Join the osu!alt discord</TableCell></TableRow>
-                                                <TableRow><TableCell>Follow the guide to fetch your scores (#info channel)</TableCell></TableRow>
-                                                <TableRow><TableCell>Wait a few hours. When done, you generally don't need to run it anymore</TableCell></TableRow>
-                                                <TableRow><TableCell>Enter your username above and fetch</TableCell></TableRow>
-                                            </TableBody>
-                                        </Table>
-                                    </TableContainer>
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={8.5}>
+                                            <Typography variant='title'>What does it do</Typography>
+                                            <Typography variant='body2'>This website takes the dump of all your scores, and generates statistics and graphs from it.</Typography>
+                                            <Typography variant='body2'>All of your scores means every TOP score on a beatmap, so not plays that are overridden or set with different mods.</Typography>
+                                            <Typography variant='body2'>Because of this, stats like periodic activity can be off due to missing scores, if they were overridden later in time.</Typography>
+                                            <Typography variant='title'>Can I see other users</Typography>
+                                            <Typography variant='body2'>Every user that has fetched their scores can be viewed here. The user in question has to fetch them themselves, others cannot do that.</Typography>
+                                            <Typography variant='title'>Where can I recommend changes</Typography>
+                                            <Typography variant='body2'>The following two places are fine:</Typography>
+                                            <Typography variant='body2'>- The #feature-ideas channel in the <Link href='https://discord.gg/VZWRZZXcW4' target='_blank'>osu!alt discord</Link> (make sure to tag Amayakase#9198)</Typography>
+                                            <Typography variant='body2'>- Opening an issue on the <Link href='https://github.com/darkchii/score-inspector' target='_blank'>GitHub</Link></Typography>
+                                        </Grid>
+                                        <Grid item xs={3.5}>
+                                            <Typography variant='title'>For new users</Typography>
+                                            <TableContainer>
+                                                <Table size='small'>
+                                                    <TableBody>
+                                                        <TableRow><TableCell>Join the osu!alt discord</TableCell></TableRow>
+                                                        <TableRow><TableCell>Follow the guide to fetch your scores (#info channel)</TableCell></TableRow>
+                                                        <TableRow><TableCell>Wait a few hours. When done, you generally don't need to run it anymore</TableCell></TableRow>
+                                                        <TableRow><TableCell>Enter your username above and fetch</TableCell></TableRow>
+                                                    </TableBody>
+                                                </Table>
+                                            </TableContainer>
+                                        </Grid>
+                                    </Grid>
                                 </CardContent>
                             </Card>
                         </Grid>
@@ -272,10 +275,10 @@ function Root() {
                                     <TableContainer>
                                         <Table size='small'>
                                             <TableBody>
-                                                <TableRow><TableCell><CircleIcon sx={{ color: serverStatus?.inspector === undefined ? 'grey' : (serverStatus?.inspector ? 'green' : 'red') }} /></TableCell><TableCell>inspector api</TableCell><TableCell></TableCell></TableRow>
-                                                <TableRow><TableCell><CircleIcon sx={{ color: serverStatus?.osuv2 === undefined ? 'grey' : (serverStatus?.osuv2 ? 'green' : 'red') }} /></TableCell><TableCell>osu!apiv2</TableCell><TableCell></TableCell></TableRow>
-                                                <TableRow><TableCell><CircleIcon sx={{ color: serverStatus?.osualt === undefined ? 'grey' : (serverStatus?.osualt ? 'green' : 'red') }} /></TableCell><TableCell>osu! alternative</TableCell><TableCell></TableCell></TableRow>
-                                                <TableRow><TableCell><CircleIcon sx={{ color: serverStatus?.osudaily === undefined ? 'grey' : (serverStatus?.osudaily ? 'green' : 'red') }} /></TableCell><TableCell>osu!daily</TableCell><TableCell></TableCell></TableRow>
+                                                <TableRow><TableCell><CircleIcon sx={{ color: serverStatus?.inspector === undefined ? 'grey' : (serverStatus?.inspector ? green[500] : 'red') }} /></TableCell><TableCell>inspector api</TableCell><TableCell></TableCell></TableRow>
+                                                <TableRow><TableCell><CircleIcon sx={{ color: serverStatus?.osuv2 === undefined ? 'grey' : (serverStatus?.osuv2 ? green[500] : 'red') }} /></TableCell><TableCell>osu!apiv2</TableCell><TableCell></TableCell></TableRow>
+                                                <TableRow><TableCell><CircleIcon sx={{ color: serverStatus?.osualt === undefined ? 'grey' : (serverStatus?.osualt ? green[500] : 'red') }} /></TableCell><TableCell>osu! alternative</TableCell><TableCell></TableCell></TableRow>
+                                                <TableRow><TableCell><CircleIcon sx={{ color: serverStatus?.osudaily === undefined ? 'grey' : (serverStatus?.osudaily ? green[500] : 'red') }} /></TableCell><TableCell>osu!daily</TableCell><TableCell></TableCell></TableRow>
                                             </TableBody>
                                         </Table>
                                     </TableContainer>
@@ -283,7 +286,7 @@ function Root() {
                             </Card>
                         </Grid>
                         <Grid item xs={12}>
-                        <Card elevation={2}>
+                            <Card elevation={2}>
                                 <CardContent>
                                     <Typography variant='title'>Credits</Typography>
                                     <TableContainer>
