@@ -12,22 +12,24 @@ function LevelIcon(props) {
     }
     return (
         <Box sx={{
-            position: 'relative'
+            position: 'relative',
+            height: '100%',
+            width: '100%',
         }}>
             <Box
                 sx={{
+                    position: 'absolute',
                     background: "-webkit-linear-gradient(-45deg, #8CF6FA, #F68DC4, #FEB887)",
                     maskImage: `url(${PNG_LEVEL_BADGE})`,
                     maskSize: 'cover',
                     aspectRatio: '1/1',
-                    width: _props.size * 0.5,
-                    height: _props.size * 0.5,
-                    borderRadius: _props.borderRadius,
-                    display: 'flex'
+                    height: '100%',
+                    width: '100%',
+                    display: 'flex',
                 }} />
             <Box sx={{
                 position: 'absolute',
-                top: '55%',
+                top: '50%',
                 left: '50%',
                 transform: 'translate(-50%, -50%)',
                 display: 'flex',
@@ -37,10 +39,10 @@ function LevelIcon(props) {
                         display: 'flex',
                         flexDirection: 'column',
                         justifyContent: 'center',
-                        alignItems: 'center',
+                        //alignItems: 'center',
                         textAlign: 'center'
                     }}>
-                        <Typography sx={{fontSize: 'calc(10px + 0.4vw)' }}>{_props.level}</Typography>
+                        <Typography sx={{fontSize: 'calc(12px + 0.4vw)' }}>{_props.level}</Typography>
                         {
                             _props.showLevelProgress &&
                             <Typography variant='subtitle1' sx={{ fontSize: 10, lineHeight: '1em' }}>{_props.levelProgress}%</Typography>

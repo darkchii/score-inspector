@@ -72,10 +72,11 @@ function PlayerCard(props) {
                             </CardContent>
                         </Box>
                         <Box sx={{
-                            display: 'flex'
+                            display: 'flex',
+                            width: CARD_HEIGHT*0.5
                         }}>
                             <LevelIcon
-                                size={CARD_HEIGHT}
+                                size={CARD_HEIGHT*0.5}
                                 borderRadius={BORDER_RADIUS}
                                 level={props.user.osu.statistics_rulesets.osu.level.current} 
                                 levelProgress={props.user.osu.statistics_rulesets.osu.level.progress}/>
