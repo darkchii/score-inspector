@@ -3,30 +3,30 @@ import { Button, Card, CardContent, Grid, Typography } from '@mui/material';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { toFixedNumber } from '../../../Helpers/Misc';
+import GlowBar from '../../UI/GlowBar';
 
 function PerformanceXexxar(props) {
     const [ppDiff, setPPDiff] = useState(0);
 
     useEffect(() => {
         setPPDiff(props.data.data.performance.weighted.xexxar - props.data.osu.statistics.pp);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
         <>
-            <Card>
-                <CardContent>
-                    <Grid container spacing={3} sx={{ justifyContent: 'space-between' }}>
-                        <Grid item>
-                            <Typography component="div" color="textPrimary" variant="body1">
-                                {toFixedNumber(props.data.data.performance.weighted.xexxar, 0).toLocaleString('en-US')}pp <Typography sx={{fontSize: '0.7rem'}} color={'' + (ppDiff >= 0 ? '#11cb5f' : 'error')} variant='subtitle2' display="inline">{(ppDiff >= 0 ? '+' : '')}{ppDiff.toFixed(1)}pp</Typography>
-                            </Typography>
-                            <Typography color="textSecondary">xexxar bonus</Typography>
-                            <Button size='small' startIcon={<LaunchIcon />} href='https://github.com/ppy/osu/discussions/20210' target='_blank' variant='contained' sx={{ mt: 2 }}>Proposal</Button>
-                        </Grid>
+            <Grid container spacing={3} sx={{ justifyContent: 'space-between' }}>
+                <Grid item>
+                    <Grid position={'relative'}>
+                        <GlowBar />
+                        <Typography component="div" color="textPrimary" variant="body1">
+                            {toFixedNumber(props.data.data.performance.weighted.xexxar, 0).toLocaleString('en-US')}pp <Typography sx={{ fontSize: '0.7rem' }} color={'' + (ppDiff >= 0 ? '#11cb5f' : 'error')} variant='subtitle2' display="inline">{(ppDiff >= 0 ? '+' : '')}{ppDiff.toFixed(1)}pp</Typography>
+                        </Typography>
                     </Grid>
-                </CardContent>
-            </Card>
+                    <Typography color="textSecondary">xexxar bonus</Typography>
+                    <Button size='small' startIcon={<LaunchIcon />} href='https://github.com/ppy/osu/discussions/20210' target='_blank' variant='contained' sx={{ mt: 2 }}>Proposal</Button>
+                </Grid>
+            </Grid>
         </>
     );
 }

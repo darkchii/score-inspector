@@ -5,6 +5,7 @@ import { toFixedNumber } from "../../../Helpers/Misc";
 import { getGrade } from "../../../Helpers/Osu";
 import AutoGraphIcon from '@mui/icons-material/AutoGraph';
 import TopplaysModal from "../../Modals/TopplaysModal";
+import GlowBar from "../../UI/GlowBar";
 
 function PerformanceFC(props) {
     const [modalData, setModalData] = useState({ active: false });
@@ -43,19 +44,18 @@ function PerformanceFC(props) {
 
     return (
         <>
-            <Card>
-                <CardContent>
-                    <Grid container sx={{ justifyContent: 'space-between' }}>
-                        <Grid item>
-                            <Typography component="div" color="textPrimary" variant="body1">
-                                {toFixedNumber(props.data.data.performance.weighted.fc, 0).toLocaleString('en-US')}pp <Typography sx={{fontSize: '0.7rem'}} color={'' + (ppDiff >= 0 ? '#11cb5f' : 'error')} variant='subtitle2' display="inline">{(ppDiff >= 0 ? '+' : '')}{ppDiff.toFixed(1)}pp</Typography>
-                            </Typography>
-                            <Typography color="textSecondary">all FC</Typography>
-                            <Button size='small' startIcon={<AutoGraphIcon />} onClick={openModal} variant='contained' sx={{ mt: 2 }}>Top plays</Button>
-                        </Grid>
+            <Grid container sx={{ justifyContent: 'space-between' }}>
+                <Grid item>
+                    <Grid sx={{position:'relative'}}>
+                        <GlowBar />
+                        <Typography component="div" color="textPrimary" variant="body1">
+                            {toFixedNumber(props.data.data.performance.weighted.fc, 0).toLocaleString('en-US')}pp <Typography sx={{ fontSize: '0.7rem' }} color={'' + (ppDiff >= 0 ? '#11cb5f' : 'error')} variant='subtitle2' display="inline">{(ppDiff >= 0 ? '+' : '')}{ppDiff.toFixed(1)}pp</Typography>
+                        </Typography>
                     </Grid>
-                </CardContent>
-            </Card>
+                    <Typography color="textSecondary">all FC</Typography>
+                    <Button size='small' startIcon={<AutoGraphIcon />} onClick={openModal} variant='contained' sx={{ mt: 2 }}>Top plays</Button>
+                </Grid>
+            </Grid>
             <TopplaysModal data={modalData} />
         </>
     );

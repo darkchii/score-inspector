@@ -164,14 +164,16 @@ function SectionCards(props) {
                 <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={3}><BestScoreCard valueTitle={'Top stars'} valueLabel={`${props.user.data.bestScores.best_sr.beatmap.modded_sr.star_rating.toFixed(1)}*`} score={props.user.data.bestScores.best_sr} /></Grid>
                 <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={3}><BestScoreCard valueTitle={'Oldest'} valueLabel={`${moment(props.user.data.bestScores.oldest.date_played).format('MMMM Mo YYYY')}`} score={props.user.data.bestScores.oldest} /></Grid>
             </Grid>
-            <Grid container>
-                <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={12 / 6}><PerformanceFC data={props.user} /></Grid>
-                <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={12 / 6}><PerformanceSS data={props.user} /></Grid>
-                <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={12 / 6}><Performance2014 data={props.user} /></Grid>
-                <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={12 / 6}><Performance2016 data={props.user} /></Grid>
-                <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={12 / 6}><PerformanceLazer data={props.user} /></Grid>
-                <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={12 / 6}><PerformanceXexxar data={props.user} /></Grid>
-            </Grid>
+            <Paper elevation={2} sx={{p:2}}>
+                <Grid container spacing={2}>
+                    <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={12 / 6}><PerformanceFC data={props.user} /></Grid>
+                    <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={12 / 6}><PerformanceSS data={props.user} /></Grid>
+                    <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={12 / 6}><Performance2014 data={props.user} /></Grid>
+                    <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={12 / 6}><Performance2016 data={props.user} /></Grid>
+                    <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={12 / 6}><PerformanceLazer data={props.user} /></Grid>
+                    <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={12 / 6}><PerformanceXexxar data={props.user} /></Grid>
+                </Grid>
+            </Paper>
             <Grid>
                 {
                     props?.user?.data?.averageDaySpread && props?.user?.data?.averageDaySpread?.hours && props?.user?.data?.averageDaySpread?.values ?
