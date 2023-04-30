@@ -2,7 +2,7 @@
 
 A visualizer web app that consumes data from the osu!alternative Discord: https://discord.gg/VZWRZZXcW4
 
-This repository is used in conjunction with the server-side repository (https://github.com/darkchii/osu-api) for fetching users, beatmaps etc.
+This repository is used in conjunction with the server-side repository (https://github.com/darkchii/score-inspector-api) for fetching users, beatmaps etc.
 Most processing is done client-side however.
 
 ## Software dependencies
