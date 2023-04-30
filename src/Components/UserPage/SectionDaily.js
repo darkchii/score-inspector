@@ -255,7 +255,6 @@ function SectionDaily(props) {
                                 <Button disabled={isWorking || props.user.data.activeDays.length === 0 || getDateIndex(selectedDay) <= 0} onClick={() => { setSelectedDay(moment(props.user.data.activeDays[getDateIndex(selectedDay) - 1])) }}>Previous</Button>
                                 <Grid sx={{ px: 1, m: 1 }}>
                                     <DesktopDatePicker
-                                        format="dd-MMM-yyyy"
                                         disabled={isWorking}
                                         minDate={MIN_DATE}
                                         maxDate={MAX_DATE}
