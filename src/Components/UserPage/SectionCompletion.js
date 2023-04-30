@@ -87,7 +87,7 @@ function SectionCompletion(props) {
         <>
             {
                 graphs && graphs[selectedGraph] ? <>
-                    <Bar height={'120px'} data={graphs[selectedGraph]} options={config} />
+                    <Bar height={'80px'} data={graphs[selectedGraph]} options={config} />
                     {
                         Object.keys(graphs).map((key, index) => {
                             const stylizedKey = key.length === 2 ? key.toUpperCase() : capitalize(key);
