@@ -1,5 +1,4 @@
 import { createTheme, responsiveFontSizes } from "@mui/material";
-import { IMG_TRIANGLES } from "./Helpers/Assets";
 
 let DefaultTheme = createTheme({
     themeName: "osu!",
@@ -9,9 +8,9 @@ let DefaultTheme = createTheme({
             main: '#C8598A',
         },
         background: {
-            default: '#18171C',
+            default: '#171C1A',
             dark: '#fff',
-            paper: '#221F2Edd',
+            paper: '#222A27',
         },
     },
     shape: {
@@ -21,7 +20,7 @@ let DefaultTheme = createTheme({
         fontFamily: 'Comfortaa',
         fontWeight: 700,
         title: {
-            color: '#C2B8E0',
+            color: '#66FFCC',
             fontSize: 26,
             fontWeight: 500,
         },
@@ -29,16 +28,9 @@ let DefaultTheme = createTheme({
     components: {
         MuiButton: {
             styleOverrides: {
-                contained: {
-                    backgroundImage: 'url(' + IMG_TRIANGLES + ')',
-                    backgroundSize: '175%',
-                    transition: 'all .12s ease-in-out',
-                    '--bg-move': '0px',
-                    backgroundPosition: 'calc(50% + var(--bg-move)) 50%',
-                    '&:hover': {
-                        '--bg-move': '-10px',
-                    }
-                },
+                root: {
+                    borderRadius: 20,
+                }
             }
         },
         MuiInput: {

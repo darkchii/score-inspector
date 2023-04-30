@@ -16,6 +16,7 @@ const updates = [
         date: '2023-05-01',
         changes: [
             [PLATFORMTYPES.WEB, CHANGETYPES.MISC, 'Leaderboard username are now Inspector user chips', 'f5b317f4e73a816e9938b95d572081003fa3f041'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.MISC, 'User search modal design overhaul', '03646898d45c95bc03aeac33fe595888fd57a7b0'],
             [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Added beatmap leaderboards to scoreview', '6dfcf01c07a3e2eae82b47dd66d5b6b8f99019a2'],
             [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Added visited users list for logged in user', '59eb47877587e1daa6a9058816d424f893f8119b'],
             [PLATFORMTYPES.API, CHANGETYPES.FIX, 'Fixed user search not showing non-priority users'],
