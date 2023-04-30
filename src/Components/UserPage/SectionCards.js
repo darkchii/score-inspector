@@ -11,6 +11,7 @@ import { Bar } from "react-chartjs-2";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import PerformanceLazer from "./Performance/PerformanceLazer";
 import Performance2014 from "./Performance/Performance2014";
+import GlowBar from "../UI/GlowBar";
 Chart.register(...registerables, ChartDataLabels)
 momentDurationFormatSetup(moment);
 
@@ -141,7 +142,7 @@ function SectionCards(props) {
                                 <>
                                     <Grid item xs={card.size}>
                                         <Grid container sx={{ p: 0.2, position: 'relative' }}>
-                                            <Box sx={{position: 'absolute', left:-8,borderRadius: 3, height: '100%', width: '4px', backgroundColor: theme.typography.title.color, boxShadow: `0px 0px 4px 2px ${theme.typography.title.color}22`}} />
+                                            <GlowBar />
                                             <Grid item xs={12} sx={{ textAlign: 'left' }}>
                                                 <Typography variant='title' sx={{ fontSize: '0.75em' }}>{card.title}</Typography>
                                             </Grid>
