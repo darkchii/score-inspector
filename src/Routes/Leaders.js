@@ -13,8 +13,12 @@ import { approval_state } from '../Helpers/Osu';
 import CheckIcon from '@mui/icons-material/Check';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import momentDurationFormatSetup from "moment-duration-format";
-import { GetFormattedName } from '../Helpers/Account';
+import { GetFormattedName, GetRoleIcons } from '../Helpers/Account';
+import LevelIcon from '../Components/UI/LevelIcon';
+import GlowBar from '../Components/UI/GlowBar';
 momentDurationFormatSetup(moment);
+
+const ROW_HEIGHT = 60;
 
 const GROUPED_STATS = {
     'pp': [
@@ -401,11 +405,11 @@ function Leaders() {
                             <TableContainer>
                                 <Table size='small' sx={{
                                     [`& .${tableCellClasses.root} `]: {
-                                        mb: 1,
                                         borderBottom: "none",
                                     },
                                     [`& .${tableRowClasses.root} `]: {
-                                        borderRadius: 10,
+                                        height: `${ROW_HEIGHT}px`,
+                                        maxHeight: `${ROW_HEIGHT}px`,
                                     },
                                     borderCollapse: 'separate',
                                     borderSpacing: '0 0.2em',
@@ -427,10 +431,10 @@ function Leaders() {
                                                         osu_id: detail?.id ?? entry?.id ?? 0,
                                                         roles: [],
                                                     }
-                                                    if(entry?.inspector_user){
+                                                    if (entry?.inspector_user) {
                                                         inspector_user = entry?.inspector_user;
                                                     }
-                                                    name = GetFormattedName(inspector_user);
+                                                    name = inspector_user.known_username;
                                                     background = detail?.cover?.custom_url;
                                                     country = detail?.country_code ?? '';
                                                     restricted = !detail;
@@ -441,7 +445,7 @@ function Leaders() {
                                                 }
                                                 const black_overlay = background ? '0.8' : '0';
                                                 return (
-                                                    <TableRow component={Card}
+                                                    <TableRow
                                                         sx={{
                                                             "&:hover": {
                                                                 opacity: 0.5,
@@ -450,7 +454,7 @@ function Leaders() {
                                                             backgroundImage: `url(${background})`,
                                                             backgroundSize: 'cover',
                                                             backgroundPosition: 'center',
-                                                            backgroundRepeat: 'no-repeat'
+                                                            backgroundRepeat: 'no-repeat',
                                                         }}
                                                         onClick={() => {
                                                             if (leaderboardType === 'users')
@@ -461,21 +465,47 @@ function Leaders() {
                                                                 window.open(`https://osu.ppy.sh/beatmapsets/${detail?.beatmapset_id}`, "_blank");
                                                         }}
                                                         elevation={5}>
+                                                        {
+                                                            leaderboardType === 'users' ?
+                                                                <TableCell width={`${ROW_HEIGHT}px`} sx={{
+                                                                    backgroundColor: `rgba(0,0,0,${black_overlay})`,
+                                                                    height: '100%',
+                                                                    p: 0
+                                                                }}>
+                                                                    <Box sx={{
+                                                                        backgroundImage: `url(https://a.ppy.sh/${detail?.id})`,
+                                                                        backgroundSize: 'cover',
+                                                                        backgroundPosition: 'center',
+                                                                        backgroundRepeat: 'no-repeat',
+                                                                        borderTopRightRadius: '15px',
+                                                                        borderBottomRightRadius: '15px',
+                                                                        width: '100%',
+                                                                        height: '100%',
+                                                                    }}></Box>
+                                                                    {/* <Box
+                                                                        component="img"
+                                                                        src={`https://a.ppy.sh/${detail?.id}`}
+                                                                        sx={{ aspectRatio: '1/1', height: `${ROW_HEIGHT}px`, width: 'auto', borderRadius: 0 }} /> */}
+                                                                </TableCell> : <></>
+
+                                                        }
                                                         <TableCell width={'3%'} sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})` }}>
-                                                            <Typography variant='subtitles1' noWrap>#{entry.rank}</Typography>
+                                                            <Typography variant='h6' sx={{fontSize: '1.3em'}} noWrap>#{entry.rank}</Typography>
                                                         </TableCell>
-                                                        <TableCell width={'5%'} sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})` }}>
+                                                        <TableCell width={'3%'} sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})`, p:0 }}>
                                                             {
                                                                 leaderboardType === 'users' ?
-                                                                    <Tooltip title={countries.countries[country.toUpperCase()]?.name ?? 'Unknown name'}>
-                                                                        <Box>
-                                                                            <ReactCountryFlag
-                                                                                style={{ lineHeight: '1em', fontSize: '1.8em', borderRadius: '5px' }}
-                                                                                cdnUrl="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/"
-                                                                                countryCode={country}
+                                                                    <>
+                                                                        <Box sx={{ position: 'relative' }}>
+                                                                            <GlowBar />
+                                                                            <LevelIcon
+                                                                                size={'100%'}
+                                                                                showLevelProgress={false}
+                                                                                level={detail?.statistics_rulesets?.osu?.level?.current ?? 0}
+                                                                                levelProgress={detail?.statistics_rulesets?.osu?.level?.progress ?? 0}
                                                                             />
                                                                         </Box>
-                                                                    </Tooltip>
+                                                                    </>
                                                                     : <></>
                                                             }
                                                             {
@@ -499,13 +529,34 @@ function Leaders() {
                                                                     : <></>
                                                             }
                                                         </TableCell>
+                                                        {
+                                                            leaderboardType === 'users' ?
+                                                                <TableCell width={'25px'} sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})` }}>
+                                                                    <Tooltip title={countries.countries[country.toUpperCase()]?.name ?? 'Unknown name'}>
+                                                                        <Box>
+                                                                            <ReactCountryFlag
+                                                                                style={{ lineHeight: '1em', fontSize: '1.8em', borderRadius: '5px' }}
+                                                                                cdnUrl="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/"
+                                                                                countryCode={country}
+                                                                            />
+                                                                        </Box>
+                                                                    </Tooltip>
+                                                                </TableCell> : <></>
+                                                        }
                                                         <TableCell sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})` }}>
                                                             <Stack direction='row' spacing={1} alignItems='center'>
                                                                 <Tooltip title={restricted ? 'This user is likely restricted' : ''}>
-                                                                    <Typography variant='subtitles1' sx={{ textDecoration: restricted ? 'line-through' : 'none' }} noWrap>
-                                                                        {name ?? 'Unknown'}
+                                                                    <Typography variant='body1' sx={{ textDecoration: restricted ? 'line-through' : 'none' }} noWrap>
                                                                     </Typography>
                                                                 </Tooltip>
+                                                                <Typography variant='body1' noWrap>
+                                                                    {name ?? 'Unknown'}
+                                                                </Typography>
+                                                                {
+                                                                    leaderboardType === 'users' ?
+                                                                        GetRoleIcons(entry?.inspector_user?.roles ?? [])
+                                                                        : <></>
+                                                                }
                                                                 {
                                                                     entry?.tracked ?
                                                                         <Tooltip title='This user is actively being tracked by osu!alternative and should be viewable'>
@@ -534,7 +585,7 @@ function Leaders() {
                                                                 </>
                                                         }
                                                         <TableCell sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})` }}>
-                                                            <Typography variant='subtitles1' noWrap>
+                                                            <Typography textAlign={'right'} variant='body1' noWrap>
                                                                 {
                                                                     (statistic.customFormat !== undefined && statistic.customFormat != null) ?
                                                                         <>

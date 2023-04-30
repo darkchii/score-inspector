@@ -3,6 +3,7 @@ import ReactCountryFlag from "react-country-flag";
 import { Navigate } from "react-router-dom";
 import { GetFormattedName, GetRoleIcons } from "../Helpers/Account";
 import { PNG_LEVEL_BADGE } from "../Helpers/Assets";
+import LevelIcon from "./UI/LevelIcon";
 //expected user object:
 // {
 //     ...users2 user
@@ -71,37 +72,13 @@ function PlayerCard(props) {
                             </CardContent>
                         </Box>
                         <Box sx={{
-                            position: 'relative',
                             display: 'flex'
                         }}>
-                            <Box
-                                alt={props.user.username}
-                                sx={{ 
-                                    background: "-webkit-linear-gradient(-45deg, #8CF6FA, #F68DC4, #FEB887)",
-                                    maskImage: `url(${PNG_LEVEL_BADGE})`,
-                                    maskSize: 'cover',
-                                    aspectRatio: '1/1', 
-                                    width: CARD_HEIGHT * 0.5, 
-                                    height: CARD_HEIGHT * 0.5, 
-                                    borderRadius: BORDER_RADIUS, display: 'flex' }} />
-                            <Box sx={{
-                                position: 'absolute',
-                                top: '55%',
-                                left: '50%',
-                                transform: 'translate(-50%, -50%)',
-                                display: 'flex',
-                            }}>
-                                <Stack sx={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    textAlign: 'center'
-                                }}>
-                                    <Typography variant='h5'>{props.user.osu.statistics_rulesets.osu.level.current}</Typography>
-                                    <Typography variant='subtitle1' sx={{fontSize: '10px', lineHeight: '1em'}}>{props.user.osu.statistics_rulesets.osu.level.progress}%</Typography>
-                                </Stack>
-                            </Box>
+                            <LevelIcon
+                                size={CARD_HEIGHT}
+                                borderRadius={BORDER_RADIUS}
+                                level={props.user.osu.statistics_rulesets.osu.level.current} 
+                                levelProgress={props.user.osu.statistics_rulesets.osu.level.progress}/>
                         </Box>
                     </Box>
                 </Grid>
@@ -125,11 +102,11 @@ function PlayerCard(props) {
                                     background: "-webkit-linear-gradient(0deg, #8CF6FA, #F68DC4, #FEB887)",
                                     WebkitBackgroundClip: 'text',
                                     WebkitTextFillColor: 'transparent'
-                                }}>#{props.user.osu.statistics_rulesets.osu.global_rank>0?(Math.max(0, props.user.osu.statistics_rulesets.osu.global_rank)).toLocaleString('en-US'):'-'}</Typography>
+                                }}>#{props.user.osu.statistics_rulesets.osu.global_rank > 0 ? (Math.max(0, props.user.osu.statistics_rulesets.osu.global_rank)).toLocaleString('en-US') : '-'}</Typography>
                             </Grid>
                             <Grid item xs={6}>
                                 <Typography variant='subtitle1'>Score Rank</Typography>
-                                <Typography variant='h5'>#{props.user.score_rank !== undefined ? ((Math.max(0, props.user.score_rank?.rank)).toLocaleString('en-US')): '10.000+'}</Typography>
+                                <Typography variant='h5'>#{props.user.score_rank !== undefined ? ((Math.max(0, props.user.score_rank?.rank)).toLocaleString('en-US')) : '10.000+'}</Typography>
                             </Grid>
                         </Grid>
                     </Box>
