@@ -11,6 +11,6 @@ Most processing is done client-side however.
 
 ## Running and building
 - Configure `src/config.json` if necessary
-- For running a build, make sure an instance of `osu-api` is also active on the local machine
+- For running a build, make sure an instance of `score-inspector-api` is also active on the local machine
 - Run `npm start` to run
 - Run `npm run build` to compile to a build
