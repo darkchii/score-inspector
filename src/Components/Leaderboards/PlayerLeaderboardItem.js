@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useEffect } from "react";
-import { Box, Stack, Tooltip, Typography } from "@mui/material";
+import { Box, Stack, Tooltip, Typography, useTheme } from "@mui/material";
 import GlowBar from "../UI/GlowBar";
 import LevelIcon from "../UI/LevelIcon";
 import { LEADERBOARD_BORDER_RADIUS, LEADERBOARD_ITEM_HEIGHT, LeaderboardItem } from "./LeaderboardItem";
@@ -12,6 +12,7 @@ function PlayerLeaderboardItem(props) {
     const [osu_user, setOsuUser] = useState({});
     const [inspector_user, setInspectorUser] = useState({});
     const [base_user, setBaseUser] = useState({});
+    const theme = useTheme();
 
     useEffect(() => {
         const _base_user = props.user;
@@ -38,8 +39,10 @@ function PlayerLeaderboardItem(props) {
                 <img
                     src={`https://a.ppy.sh/${base_user?.user_id}`}
                     alt={base_user?.username}
-                    style={{ aspectRatio: '1/1', display: 'flex',
-                    borderRadius: LEADERBOARD_BORDER_RADIUS }} />
+                    style={{
+                        aspectRatio: '1/1', display: 'flex',
+                        borderRadius: LEADERBOARD_BORDER_RADIUS
+                    }} />
 
                 <Box sx={{
                     display: 'flex',
@@ -60,7 +63,10 @@ function PlayerLeaderboardItem(props) {
                 }}>
                     <Box sx={{ position: 'absolute', height: '100%', p: 1, pt: 2, pb: 2, left: -10 }}>
                         <Box sx={{ position: 'relative', height: '100%' }}>
-                            <GlowBar size='6px' />
+                            <GlowBar
+                                color={osu_user?.groups?.[0]?.colour ?? theme.typography.title.color}
+                                size='6px'
+                            />
                         </Box>
                     </Box>
                     <LevelIcon

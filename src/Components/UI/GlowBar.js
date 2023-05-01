@@ -5,6 +5,7 @@ function GlowBar(props) {
     const _props = {
         direction: 'left',
         size: '4px',
+        color: theme.typography.title.color,
         ...props
     };
 
@@ -19,8 +20,8 @@ function GlowBar(props) {
             // height: '100%',
             height: _props.direction === 'left' || _props.direction === 'right' ? '100%' : _props.size,
             width: _props.direction === 'top' || _props.direction === 'bottom' ? '100%' : _props.size,            
-            backgroundColor: theme.typography.title.color,
-            boxShadow: `0px 0px 4px 2px ${theme.typography.title.color}22`,
+            backgroundColor: _props.color,
+            boxShadow: `0px 0px 4px 2px ${_props.color}22`,
             ..._props.sx
         }} />
     )
