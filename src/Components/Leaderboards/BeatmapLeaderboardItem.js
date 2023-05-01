@@ -7,6 +7,10 @@ import { LEADERBOARD_BORDER_RADIUS, LEADERBOARD_ITEM_HEIGHT, LeaderboardItem } f
 import ReactCountryFlag from "react-country-flag";
 import { GetRoleIcons } from "../../Helpers/Account";
 import NotInterestedIcon from '@mui/icons-material/NotInterested';
+import CheckIcon from '@mui/icons-material/Check';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import { approval_state } from "../../Helpers/Osu";
+import { green, red, yellow } from "@mui/material/colors";
 
 function BeatmapLeaderboardItem(props) {
     const [base_beatmap, setBaseBeatmap] = useState({});
@@ -29,11 +33,32 @@ function BeatmapLeaderboardItem(props) {
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
-                    width: '80px'
+                    width: '50px'
                 }}>
                     <Typography variant='h6' sx={{ fontSize: '1.3em' }} noWrap>
                         #{base_beatmap?.rank ?? 0}
                     </Typography>
+                </Box>
+
+                <Box sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    width: '40px'
+                }}>
+                    <Tooltip title={`${approval_state[osu_beatmap?.approved] ?? ''}`}>
+                        <Box>
+                            {
+                                osu_beatmap?.approved === 1 || osu_beatmap?.approved === 2 ?
+                                    <CheckIcon sx={{ color: green[400] }} />
+                                    : osu_beatmap?.approved === 3 ?
+                                        <CheckIcon sx={{ color: yellow[400] }} />
+                                        : osu_beatmap?.approved === 4 ?
+                                            <FavoriteIcon sx={{ color: red[400] }} />
+                                            : <></>
+                            }
+                        </Box>
+                    </Tooltip>
                 </Box>
 
                 <Box sx={{
@@ -45,18 +70,20 @@ function BeatmapLeaderboardItem(props) {
                     justifyContent: 'center',
                     flexDirection: 'column'
                 }}>
-                    <Box sx={{ position: 'absolute', height: '100%', p: 1, pt: 2, pb: 2, left: -12 }}>
+                    <Box sx={{ position: 'absolute', height: '100%', p: 1, pt: 2, pb: 2 }}>
                         <Box sx={{ position: 'relative', height: '100%' }}>
                             <GlowBar
                                 size='6px'
                             />
                         </Box>
                     </Box>
-                    <Typography>
-                        {
-                            `${osu_beatmap?.artist} - ${osu_beatmap?.title} ${type === 'beatmaps' ? `[${osu_beatmap?.version}]` : ''} `
-                        }
-                    </Typography>
+                    <Box sx={{pl: 2}}>
+                        <Typography>
+                            {
+                                `${osu_beatmap?.artist} - ${osu_beatmap?.title} ${type === 'beatmaps' ? `[${osu_beatmap?.version}]` : ''} `
+                            }
+                        </Typography>
+                    </Box>
                 </Box>
 
                 <Box sx={{
@@ -82,7 +109,7 @@ function BeatmapLeaderboardItem(props) {
                                 <>
                                     {props.statistic?.customFormat(base_beatmap?.stat)}
                                 </> : <>
-                                    {Math.round(base_beatmap?.stat).toLocaleString('en-US')}
+                                    {Math.round(base_beatmap?.stat ?? 0).toLocaleString('en-US')}
                                 </>
 
                         }

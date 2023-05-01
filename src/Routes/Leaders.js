@@ -230,7 +230,7 @@ const GROUPED_STATS = {
             name: 'longest_approval', title: 'Longest Rank Time',
             description: 'List of beatmaps sorted by longest time from submission to ranked',
             customFormat: (value) => `
-                ${Object.keys(value).length === 0 ? 'Instant' :
+                ${value===undefined ? '' : (Object.keys(value).length === 0 ? 'Instant' :
                     `
                     ${value.years ? value.years + 'y ' : ''}
                     ${value.months ? value.months + 'm ' : ''}
@@ -241,7 +241,7 @@ const GROUPED_STATS = {
                         ${value.seconds ? value.seconds + 's' : ''}
                         ` : ''
                     }
-                    `
+                    `)
                 }
             `
         },
@@ -412,7 +412,7 @@ function Leaders() {
                                         );
                                     }
 
-                                    if (leaderboardType === 'beatmaps') {
+                                    if (leaderboardType === 'beatmaps' || leaderboardType === 'beatmapsets') {
                                         return (
                                             <BeatmapLeaderboardItem statistic={statistic} map={entry} type={leaderboardType} />
                                         );
