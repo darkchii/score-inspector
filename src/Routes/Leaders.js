@@ -17,6 +17,7 @@ import { GetFormattedName, GetRoleIcons } from '../Helpers/Account';
 import LevelIcon from '../Components/UI/LevelIcon';
 import GlowBar from '../Components/UI/GlowBar';
 import PlayerLeaderboardItem from '../Components/Leaderboards/PlayerLeaderboardItem';
+import BeatmapLeaderboardItem from '../Components/Leaderboards/BeatmapLeaderboardItem';
 momentDurationFormatSetup(moment);
 
 const ROW_HEIGHT = 60;
@@ -411,6 +412,13 @@ function Leaders() {
                                         );
                                     }
 
+                                    if (leaderboardType === 'beatmaps') {
+                                        return (
+                                            <BeatmapLeaderboardItem statistic={statistic} map={entry} type={leaderboardType} />
+                                        );
+                                    }
+
+
                                     return (
                                         <></>
                                     )
@@ -418,208 +426,6 @@ function Leaders() {
                             }
                         </Stack>
                     </> : <><p>Couldn't get data. Try later...</p></>
-                // <TableContainer>
-                //     <Table size='small' sx={{
-                //         [`& .${tableCellClasses.root} `]: {
-                //             borderBottom: "none",
-                //         },
-                //         [`& .${tableRowClasses.root} `]: {
-                //             height: `${ROW_HEIGHT}px`,
-                //             maxHeight: `${ROW_HEIGHT}px`,
-                //         },
-                //         borderCollapse: 'separate',
-                //         borderSpacing: '0 0.2em',
-                //     }}>
-                //         <TableBody>
-                //             {
-                //                 leaderboard.map((entry) => {
-                //                     //const osu_user = entry.osu_user;
-                //                     let detail;
-                //                     let name;
-                //                     let background;
-                //                     let country;
-                //                     let restricted = false;
-                //                     if (leaderboardType === 'users') {
-                //                         detail = entry.osu_user;
-                //                         name = detail?.username ?? entry?.username ?? 'n/a';
-                //                         let inspector_user = {
-                //                             known_username: name,
-                //                             osu_id: detail?.id ?? entry?.id ?? 0,
-                //                             roles: [],
-                //                         }
-                //                         if (entry?.inspector_user) {
-                //                             inspector_user = entry?.inspector_user;
-                //                         }
-                //                         name = inspector_user.known_username;
-                //                         background = detail?.cover?.custom_url;
-                //                         country = detail?.country_code ?? '';
-                //                         restricted = !detail;
-                //                     } else if (leaderboardType === 'beatmaps' || leaderboardType === 'beatmapsets') {
-                //                         detail = entry.osu_beatmap;
-                //                         name = `${detail?.artist} - ${detail?.title} ${leaderboardType === 'beatmaps' ? `[${detail?.version}]` : ''} `;
-                //                         background = `https://assets.ppy.sh/beatmaps/${detail?.beatmapset_id}/covers/cover.jpg`;
-                //                     }
-                //                     const black_overlay = background ? '0.8' : '0';
-                //                     return (
-                //                         <TableRow
-                //                             sx={{
-                //                                 "&:hover": {
-                //                                     opacity: 0.5,
-                //                                     cursor: 'pointer'
-                //                                 },
-                //                                 backgroundImage: `url(${background})`,
-                //                                 backgroundSize: 'cover',
-                //                                 backgroundPosition: 'center',
-                //                                 backgroundRepeat: 'no-repeat',
-                //                             }}
-                //                             onClick={() => {
-                //                                 if (leaderboardType === 'users')
-                //                                     navigate(`/user/${entry.user_id}`);
-                //                                 else if (leaderboardType === 'beatmaps')
-                //                                     window.open(`https://osu.ppy.sh/beatmaps/${detail?.beatmap_id}`, "_blank");
-                //                                 else if (leaderboardType === 'beatmapsets')
-                //                                     window.open(`https://osu.ppy.sh/beatmapsets/${detail?.beatmapset_id}`, "_blank");
-                //                             }}
-                //                             elevation={5}>
-                //                             {
-                //                                 leaderboardType === 'users' ?
-                //                                     <TableCell width={`${ROW_HEIGHT}px`} sx={{
-                //                                         backgroundColor: `rgba(0,0,0,${black_overlay})`,
-                //                                         height: '100%',
-                //                                         p: 0
-                //                                     }}>
-                //                                         <Box sx={{
-                //                                             backgroundImage: `url(https://a.ppy.sh/${detail?.id})`,
-                //                                             backgroundSize: 'cover',
-                //                                             backgroundPosition: 'center',
-                //                                             backgroundRepeat: 'no-repeat',
-                //                                             borderTopRightRadius: '15px',
-                //                                             borderBottomRightRadius: '15px',
-                //                                             width: '100%',
-                //                                             height: '100%',
-                //                                         }}></Box>
-                //                                         {/* <Box
-                //                                             component="img"
-                //                                             src={`https://a.ppy.sh/${detail?.id}`}
-                //                                             sx={{ aspectRatio: '1/1', height: `${ROW_HEIGHT}px`, width: 'auto', borderRadius: 0 }} /> */}
-                //                                     </TableCell> : <></>
-
-                //                             }
-                //                             <TableCell width={'3%'} sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})` }}>
-                //                                 <Typography variant='h6' sx={{ fontSize: '1.3em' }} noWrap>#{entry.rank}</Typography>
-                //                             </TableCell>
-                //                             <TableCell width={'3%'} sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})`, p: 0 }}>
-                //                                 {
-                //                                     leaderboardType === 'users' ?
-                //                                         <>
-                //                                             <Box sx={{ position: 'relative' }}>
-                //                                                 <GlowBar />
-                //                                                 <LevelIcon
-                //                                                     size={'100%'}
-                //                                                     showLevelProgress={false}
-                //                                                     level={detail?.statistics_rulesets?.osu?.level?.current ?? 0}
-                //                                                     levelProgress={detail?.statistics_rulesets?.osu?.level?.progress ?? 0}
-                //                                                 />
-                //                                             </Box>
-                //                                         </>
-                //                                         : <></>
-                //                                 }
-                //                                 {
-                //                                     leaderboardType === 'beatmaps' || leaderboardType === 'beatmapsets' ?
-                //                                         <>
-                //                                             {/* {approval_state[detail?.approved]} */}
-                //                                             <Tooltip title={`${approval_state[detail?.approved] ?? ''}`}>
-                //                                                 <Box>
-                //                                                     {
-                //                                                         detail?.approved === 1 || detail?.approved === 2 ?
-                //                                                             <CheckIcon sx={{ color: 'green' }} />
-                //                                                             : detail?.approved === 3 ?
-                //                                                                 <CheckIcon sx={{ color: 'yellow' }} />
-                //                                                                 : detail?.approved === 4 ?
-                //                                                                     <FavoriteIcon sx={{ color: 'red' }} />
-                //                                                                     : <></>
-                //                                                     }
-                //                                                 </Box>
-                //                                             </Tooltip>
-                //                                         </>
-                //                                         : <></>
-                //                                 }
-                //                             </TableCell>
-                //                             {
-                //                                 leaderboardType === 'users' ?
-                //                                     <TableCell width={'25px'} sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})` }}>
-                //                                         <Tooltip title={countries.countries[country.toUpperCase()]?.name ?? 'Unknown name'}>
-                //                                             <Box>
-                //                                                 <ReactCountryFlag
-                //                                                     style={{ lineHeight: '1em', fontSize: '1.8em', borderRadius: '5px' }}
-                //                                                     cdnUrl="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/"
-                //                                                     countryCode={country}
-                //                                                 />
-                //                                             </Box>
-                //                                         </Tooltip>
-                //                                     </TableCell> : <></>
-                //                             }
-                //                             <TableCell sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})` }}>
-                //                                 <Stack direction='row' spacing={1} alignItems='center'>
-                //                                     <Tooltip title={restricted ? 'This user is likely restricted' : ''}>
-                //                                         <Typography variant='body1' sx={{ textDecoration: restricted ? 'line-through' : 'none' }} noWrap>
-                //                                         </Typography>
-                //                                     </Tooltip>
-                //                                     <Typography variant='body1' noWrap>
-                //                                         {name ?? 'Unknown'}
-                //                                     </Typography>
-                //                                     {
-                //                                         leaderboardType === 'users' ?
-                //                                             GetRoleIcons(entry?.inspector_user?.roles ?? [])
-                //                                             : <></>
-                //                                     }
-                //                                     {
-                //                                         entry?.tracked ?
-                //                                             <Tooltip title='This user is actively being tracked by osu!alternative and should be viewable'>
-                //                                                 <VerifiedIcon color='primary' fontSize='small' />
-                //                                             </Tooltip>
-                //                                             : <></>
-                //                                     }
-                //                                     {
-                //                                         entry?.is_bot ? <>
-                //                                             <Tooltip title='This is a bot account'>
-                //                                                 <SmartToyIcon sx={{ color: '#ffac33' }} fontSize='small' />
-                //                                             </Tooltip>
-                //                                         </> : <></>
-                //                                     }
-                //                                 </Stack>
-                //                             </TableCell>
-                //                             {
-                //                                 leaderboardType === 'beatmaps' ?
-                //                                     <>
-                //                                         <TableCell sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})` }}>
-                //                                             <Typography variant='subtitles1' noWrap>
-                //                                                 {Math.round(detail?.star_rating * 100) / 100}*
-                //                                             </Typography>
-                //                                         </TableCell>
-                //                                     </> : <>
-                //                                     </>
-                //                             }
-                //                             <TableCell sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})` }}>
-                //                                 <Typography textAlign={'right'} variant='body1' noWrap>
-                //                                     {
-                //                                         (statistic.customFormat !== undefined && statistic.customFormat != null) ?
-                //                                             <>
-                //                                                 {statistic.customFormat(entry.stat)}
-                //                                             </> : <>
-                //                                                 {Math.round(entry.stat).toLocaleString('en-US')}
-                //                                             </>
-
-                //                                     }
-                //                                 </Typography>
-                //                             </TableCell>
-                //                         </TableRow>
-                //                     );
-                //                 })
-                //             }
-                //         </TableBody >
-                //     </Table >
-                // </TableContainer >
             }
             <Alert severity='info' sx={{ marginTop: 2 }}>
                 <AlertTitle>Information</AlertTitle>
