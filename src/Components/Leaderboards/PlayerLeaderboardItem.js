@@ -53,13 +53,10 @@ function PlayerLeaderboardItem(props) {
                 </Box>
 
                 <Box sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
                     width: '60px',
                     position: 'relative',
                     p: 0,
-                    height: '100%'
+                    height: '100%',
                 }}>
                     <Box sx={{ position: 'absolute', height: '100%', p: 1, pt: 2, pb: 2, left: -10 }}>
                         <Box sx={{ position: 'relative', height: '100%' }}>

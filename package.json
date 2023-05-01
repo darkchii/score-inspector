@@ -37,6 +37,7 @@
     "react-helmet": "^6.1.0",
     "react-rainbow-text": "^1.0.3",
     "react-router-dom": "^6.10.0",
+    "react-scale-text": "^1.2.2",
     "react-scripts": "^5.0.1",
     "react-snowfall": "^1.2.1",
     "react-toastify": "^9.1.2",

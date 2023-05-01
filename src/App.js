@@ -24,6 +24,7 @@ import Logout from './Routes/Logout';
 import config from './config';
 import Tools from './Routes/Tools';
 import { Helmet } from 'react-helmet';
+import CompDev from './Routes/CompDev';
 
 function App() {
   const [loginData, setLoginData] = useState(null);
@@ -86,6 +87,7 @@ function App() {
                 <Route path="update/:id" element={<Update />} />
                 <Route path="*" element={<Error />} />
                 <Route path="user/:id" element={<User />} />
+                <Route path="dev" element={<CompDev />} />
                 <Route path="top" element={<Top />} />
                 <Route path="stats" element={<Stats />} />
                 <Route path="beatmaps" element={<Beatmaps />} />
