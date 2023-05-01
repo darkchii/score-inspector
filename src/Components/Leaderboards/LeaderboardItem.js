@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
 
-export const LEADERBOARD_ITEM_HEIGHT = 64;
+export const LEADERBOARD_ITEM_HEIGHT = 50;
 export const LEADERBOARD_BORDER_RADIUS = '15px';
 
 export function LeaderboardItem(props) {
@@ -17,7 +17,7 @@ export function LeaderboardItem(props) {
             borderRadius: LEADERBOARD_BORDER_RADIUS
         }}>
             <Box sx={{
-                backgroundColor: "rgba(0, 0, 0, 0.5)",
+                backgroundColor: "rgba(0, 0, 0, 0.7)",
                 width: "100%",
                 height: "100%",
                 position: 'absolute',
