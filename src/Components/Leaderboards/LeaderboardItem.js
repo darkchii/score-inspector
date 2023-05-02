@@ -23,7 +23,15 @@ export function LeaderboardItem(props) {
                 position: 'absolute',
                 display: 'flex',
                 borderRadius: LEADERBOARD_BORDER_RADIUS,
-            }}>
+                transition: 'all 0.2s',
+                '&:hover': {
+                    transition: 'all 0.2s',
+                    backgroundColor: "rgba(0, 0, 0, 0.5)",
+                    cursor: props.onClick ? 'pointer' : 'default'
+                }
+            }}
+                onClick={props.onClick}
+            >
                 {props.children}
             </Box>
         </Box>

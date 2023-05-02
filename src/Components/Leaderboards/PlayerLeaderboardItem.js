@@ -7,12 +7,14 @@ import { LEADERBOARD_BORDER_RADIUS, LEADERBOARD_ITEM_HEIGHT, LeaderboardItem } f
 import ReactCountryFlag from "react-country-flag";
 import { GetRoleIcons } from "../../Helpers/Account";
 import NotInterestedIcon from '@mui/icons-material/NotInterested';
+import { useNavigate } from "react-router-dom";
 
 function PlayerLeaderboardItem(props) {
     const [osu_user, setOsuUser] = useState({});
     const [inspector_user, setInspectorUser] = useState({});
     const [base_user, setBaseUser] = useState({});
     const theme = useTheme();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const _base_user = props.user;
@@ -35,7 +37,11 @@ function PlayerLeaderboardItem(props) {
 
     return (
         <>
-            <LeaderboardItem background={osu_user?.cover?.custom_url}>
+            <LeaderboardItem
+                background={osu_user?.cover?.custom_url}
+                onClick={() => {
+                    navigate(`/user/${base_user?.user_id}`);
+                }}>
                 <img
                     src={`https://a.ppy.sh/${base_user?.user_id}`}
                     alt={base_user?.username}

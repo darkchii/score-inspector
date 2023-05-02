@@ -28,7 +28,15 @@ function BeatmapLeaderboardItem(props) {
 
     return (
         <>
-            <LeaderboardItem background={`https://assets.ppy.sh/beatmaps/${osu_beatmap?.beatmapset_id}/covers/cover.jpg`}>
+            <LeaderboardItem
+                background={`https://assets.ppy.sh/beatmaps/${osu_beatmap?.beatmapset_id}/covers/cover.jpg`}
+                onClick={() => {
+                    if(type === 'beatmapsets')
+                        window.open(`https://osu.ppy.sh/beatmapsets/${base_beatmap?.beatmapset_id}`, "_blank");
+                    else if(type === 'beatmaps')
+                        window.open(`https://osu.ppy.sh/beatmaps/${base_beatmap?.beatmap_id}`, "_blank");
+                }}
+            >
                 <Box sx={{
                     display: 'flex',
                     justifyContent: 'center',
@@ -77,7 +85,7 @@ function BeatmapLeaderboardItem(props) {
                             />
                         </Box>
                     </Box>
-                    <Box sx={{pl: 2}}>
+                    <Box sx={{ pl: 2 }}>
                         <Typography>
                             {
                                 `${osu_beatmap?.artist} - ${osu_beatmap?.title} ${type === 'beatmaps' ? `[${osu_beatmap?.version}]` : ''} `
