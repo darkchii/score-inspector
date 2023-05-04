@@ -88,10 +88,12 @@ function App() {
             </Alert>
           </>
         }
-        <Header account={loginData} />
+        <Box sx={{pb: 2}}>
+          <Header account={loginData} />
+        </Box>
         <Container maxWidth='xl'>
           <ToastContainer hideProgressBar />
-          <Card sx={{ borderRadius: 0 }}>
+          <Card>
             <CardContent>
               {/* <RouterProvider router={router} /> */}
               <Routes>
@@ -121,7 +123,9 @@ function App() {
               </Routes>
             </CardContent>
           </Card>
-          <Footer />
+          <Box sx={{pt: 2, pb: 2}}>
+            <Footer />
+          </Box>
         </Container>
       </ThemeProvider>
       {
