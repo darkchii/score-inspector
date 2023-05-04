@@ -4,6 +4,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import FilterIcon from '@mui/icons-material/Filter';
 import PersonSearchIcon from '@mui/icons-material/PersonSearch';
 import { useNavigate } from 'react-router-dom';
+import PlayerCard from "../PlayerCard";
 
 function AccountDropdown(props) {
     const navigate = useNavigate();
@@ -14,7 +15,13 @@ function AccountDropdown(props) {
 
     return (
         <Box sx={{ p: 2 }}>
-            <Alert severity="info">Welcome, {props.account.username}</Alert>
+            {
+                props.account.osu_user ? <>
+                    <PlayerCard user={props.account.osu_user} />
+                </> : <>
+                    <Alert severity="info">Welcome, {props.account.username}</Alert>
+                </>
+            }
             <MenuList>
                 <MenuItem onClick={() => { navigate(`/user/${props.account.user_id}`); closeMenu(); }}>
                     <ListItemIcon><PersonIcon /></ListItemIcon>

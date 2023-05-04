@@ -9,6 +9,7 @@ import moment from 'moment';
 import momentDurationFormatSetup from "moment-duration-format";
 import ScoreSubmissions from '../Components/ScoreSubmissions';
 import { green } from '@mui/material/colors';
+import GlowBar from '../Components/UI/GlowBar';
 
 momentDurationFormatSetup(moment);
 
@@ -209,62 +210,60 @@ function Root() {
                             <Card elevation={2}>
                                 <CardContent>
                                     <Typography variant='title'>Most visited</Typography>
-                                    <TableContainer>
-                                        <Table size='small' sx={{ [`& .${tableCellClasses.root}`]: { borderBottom: "none" } }}>
-                                            <TableBody>
-                                                {
-                                                    visitorStats && visitorStats.most_visited.map((v, i) => {
-                                                        return (
-                                                            <>
-                                                                <TableRow>
-                                                                    <TableCell>
-                                                                        <RouterLink to={`user/${v.target_user.osu_id}`}>
-                                                                            {GetFormattedName(v.target_user, {
-                                                                                custom_tooltip: `Last visit: ${moment(v.last_visit).fromNow()}`,
-                                                                                is_link: true
-                                                                            })}
-                                                                        </RouterLink>
-                                                                    </TableCell>
-                                                                    <TableCell>
-                                                                        {v.count.toLocaleString('en-US')}
-                                                                    </TableCell>
-                                                                </TableRow>
-                                                            </>
-                                                        )
-                                                    })
-                                                }
-                                            </TableBody>
-                                        </Table>
-                                    </TableContainer>
+                                    <Stack spacing={1} sx={{pl:1}}>
+                                        {
+                                            visitorStats && visitorStats.most_visited.map((v, i) => {
+                                                return (
+                                                    <>
+                                                        <Grid container>
+                                                            <Grid item xs={8}>
+                                                                <Box sx={{ position: 'relative' }}>
+                                                                    <GlowBar />
+                                                                    <RouterLink to={`user/${v.target_user.osu_id}`}>
+                                                                        {GetFormattedName(v.target_user, {
+                                                                            custom_tooltip: `Last visit: ${moment(v.last_visit).fromNow()}`,
+                                                                            is_link: true
+                                                                        })}
+                                                                    </RouterLink>
+                                                                </Box>
+                                                            </Grid>
+                                                            <Grid item xs={4}>
+                                                                <Typography variant='body2' align='right'>{v.count.toLocaleString('en-US')}</Typography>
+                                                            </Grid>
+                                                        </Grid>
+                                                    </>
+                                                )
+                                            })
+                                        }
+                                    </Stack>
                                     <Divider style={{ margin: '10px 0' }} />
                                     <Typography variant='title'>Recent visited</Typography>
-                                    <TableContainer>
-                                        <Table size='small' sx={{ [`& .${tableCellClasses.root}`]: { borderBottom: "none" } }}>
-                                            <TableBody>
-                                                {
-                                                    visitorStats && visitorStats.last_visited.map((v, i) => {
-                                                        return (
-                                                            <>
-                                                                <TableRow>
-                                                                    <TableCell>
-                                                                        <RouterLink to={`user/${v.target_user.osu_id}`}>
-                                                                            {GetFormattedName(v.target_user, {
-                                                                                custom_tooltip: `Last visit: ${moment(v.last_visit).fromNow()}`,
-                                                                                is_link: true
-                                                                            })}
-                                                                        </RouterLink>
-                                                                    </TableCell>
-                                                                    <TableCell>
-                                                                        {moment(v.last_visit).fromNow(true)}
-                                                                    </TableCell>
-                                                                </TableRow>
-                                                            </>
-                                                        )
-                                                    })
-                                                }
-                                            </TableBody>
-                                        </Table>
-                                    </TableContainer>
+                                    <Stack spacing={1} sx={{pl:1}}>
+                                        {
+                                            visitorStats && visitorStats.last_visited.map((v, i) => {
+                                                return (
+                                                    <>
+                                                        <Grid container>
+                                                            <Grid item xs={8}>
+                                                                <Box sx={{ position: 'relative' }}>
+                                                                    <GlowBar />
+                                                                    <RouterLink to={`user/${v.target_user.osu_id}`}>
+                                                                        {GetFormattedName(v.target_user, {
+                                                                            custom_tooltip: `Last visit: ${moment(v.last_visit).fromNow()}`,
+                                                                            is_link: true
+                                                                        })}
+                                                                    </RouterLink>
+                                                                </Box>
+                                                            </Grid>
+                                                            <Grid item xs={4}>
+                                                                <Typography variant='body2' align='right'>{moment(v.last_visit).fromNow()}</Typography>
+                                                            </Grid>
+                                                        </Grid>
+                                                    </>
+                                                )
+                                            })
+                                        }
+                                    </Stack>
                                 </CardContent>
                             </Card>
                         </Grid>
@@ -272,16 +271,22 @@ function Root() {
                             <Card elevation={2}>
                                 <CardContent>
                                     <Typography variant='title'>Server Status</Typography>
-                                    <TableContainer>
-                                        <Table size='small'>
-                                            <TableBody>
-                                                <TableRow><TableCell><CircleIcon sx={{ color: serverStatus?.inspector === undefined ? 'grey' : (serverStatus?.inspector ? green[500] : 'red') }} /></TableCell><TableCell>inspector api</TableCell><TableCell></TableCell></TableRow>
-                                                <TableRow><TableCell><CircleIcon sx={{ color: serverStatus?.osuv2 === undefined ? 'grey' : (serverStatus?.osuv2 ? green[500] : 'red') }} /></TableCell><TableCell>osu!apiv2</TableCell><TableCell></TableCell></TableRow>
-                                                <TableRow><TableCell><CircleIcon sx={{ color: serverStatus?.osualt === undefined ? 'grey' : (serverStatus?.osualt ? green[500] : 'red') }} /></TableCell><TableCell>osu! alternative</TableCell><TableCell></TableCell></TableRow>
-                                                <TableRow><TableCell><CircleIcon sx={{ color: serverStatus?.osudaily === undefined ? 'grey' : (serverStatus?.osudaily ? green[500] : 'red') }} /></TableCell><TableCell>osu!daily</TableCell><TableCell></TableCell></TableRow>
-                                            </TableBody>
-                                        </Table>
-                                    </TableContainer>
+                                    <Box sx={{pl: 1}}>
+                                        <Grid container spacing={1}>
+                                            {
+                                                serverStatus && Object.keys(serverStatus).map((k, i) => {
+                                                    return (
+                                                        <Grid item xs={6}>
+                                                            <Box sx={{ position: 'relative' }}>
+                                                                <GlowBar color={serverStatus[k] === undefined ? 'grey' : (serverStatus[k] ? green[500] : 'red')} />
+                                                                <Typography variant='body2'>{k}</Typography>
+                                                            </Box>
+                                                        </Grid>
+                                                    )
+                                                })
+                                            }
+                                        </Grid>
+                                    </Box>
                                 </CardContent>
                             </Card>
                         </Grid>

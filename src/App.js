@@ -25,6 +25,7 @@ import config from './config';
 import Tools from './Routes/Tools';
 import { Helmet } from 'react-helmet';
 import CompDev from './Routes/CompDev';
+import { getFullUser, getUser } from './Helpers/Osu';
 
 function App() {
   const [loginData, setLoginData] = useState(null);
@@ -33,13 +34,24 @@ function App() {
   useEffect(() => {
     (async () => {
       if (await IsUserLoggedIn()) {
-        setLoginData({
+        let loginData = {
           token: localStorage.getItem('auth_token'),
           user_id: localStorage.getItem('auth_osu_id'),
           username: localStorage.getItem('auth_username'),
-        });
+        }
+        setLoginData(loginData);
 
         showNotification('Logged in!', `Welcome, ${localStorage.getItem('auth_username')}!`, 'success');
+
+        //also store the general user data (osu, inspector etc)
+        const user = await getFullUser(loginData.user_id);
+
+        if(!user) {
+          showNotification('Warning', 'Unable to get your osu! account data. This may affect some features of the site.', 'warning');
+        } else {
+          loginData.osu_user = user;
+          setLoginData(loginData);
+        }
       }
     })();
 

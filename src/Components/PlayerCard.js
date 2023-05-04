@@ -22,6 +22,7 @@ function PlayerCard(props) {
     const [cardHeight, setCardHeight] = useState(0);
     const [cardWidth, setCardWidth] = useState(0);
     const boxRef = useRef();
+    const [rulesetStats, setRulesetStats] = useState(null);
 
     const sx = {
         rowHeight: SECTIONAL_HEIGHT,
@@ -32,7 +33,19 @@ function PlayerCard(props) {
         //get height of card element
         setCardHeight(boxRef?.current?.clientHeight);
         setCardWidth(boxRef?.current?.clientWidth);
+
     });
+    
+    useEffect(()=>{
+        //get ruleset stats
+        if(props.user.osu?.statistics_rulesets){
+            setRulesetStats(props.user.osu.statistics_rulesets.osu);
+        }else{
+            setRulesetStats(props.user.osu.statistics);
+        }
+
+        console.log(props.user);
+    }, []);
 
     return (
         <Box
@@ -58,7 +71,7 @@ function PlayerCard(props) {
                     backgroundImage: `url(${props.user.osu?.cover?.url})`,
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
-                    borderRadius: BORDER_RADIUS,
+                    borderRadius: `calc(${BORDER_RADIUS} + 1px)`,
                     width: '100%'
                 }}>
                     <Box sx={{
@@ -69,8 +82,8 @@ function PlayerCard(props) {
                     }}>
                         <CardMedia
                             component="img"
-                            image={`https://a.ppy.sh/${props.user.user_id}`}
-                            alt={props.user.username}
+                            image={`https://a.ppy.sh/${props.user.osu?.id}`}
+                            alt={props.user.osu.username}
                             sx={{ aspectRatio: '1/1', width: sx.rowHeight, borderRadius: BORDER_RADIUS, display: 'flex' }} />
                         <Box sx={{ display: 'flex', flexDirection: 'column', flex: '1 0 auto' }}>
                             <CardContent>
@@ -84,9 +97,9 @@ function PlayerCard(props) {
                                                     paddingRight: '0.4em'
                                                 }}
                                                 cdnUrl="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/"
-                                                countryCode={props.user.country_code}
+                                                countryCode={props.user.osu?.country_code}
                                             />
-                                            {props.user.username}
+                                            {props.user.osu?.username}
                                         </Typography>
                                         {
                                             sx.rowHeight >= SECTIONAL_HEIGHT &&
@@ -105,8 +118,8 @@ function PlayerCard(props) {
                             <LevelIcon
                                 size={sx.rowHeight}
                                 borderRadius={BORDER_RADIUS}
-                                level={props.user.osu.statistics_rulesets.osu.level.current}
-                                levelProgress={props.user.osu.statistics_rulesets.osu.level.progress} />
+                                level={rulesetStats?.level.current ?? 0}
+                                levelProgress={rulesetStats?.level.progress ?? 0} />
                         </Box>
                     </Box>
                 </Grid>
@@ -132,7 +145,7 @@ function PlayerCard(props) {
                                         background: "-webkit-linear-gradient(0deg, #8CF6FA, #F68DC4, #FEB887)",
                                         WebkitBackgroundClip: 'text',
                                         WebkitTextFillColor: 'transparent'
-                                    }}>#{props.user.osu.statistics_rulesets.osu.global_rank > 0 ? (Math.max(0, props.user.osu.statistics_rulesets.osu.global_rank)).toLocaleString('en-US') : '-'}</Typography>
+                                    }}>#{rulesetStats?.global_rank > 0 ? (Math.max(0, rulesetStats?.global_rank)).toLocaleString('en-US') : '-'}</Typography>
                                 </Grid>
                                 <Grid item xs={6}>
                                     <Typography variant='subtitle1'>Score Rank</Typography>
