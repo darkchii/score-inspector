@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardContent, Container, Modal, Stack, TextField, Typography } from "@mui/material";
+import { Box, Button, Card, CardContent, Container, Grid, Modal, Stack, TextField, Typography } from "@mui/material";
 import { useEffect, useImperativeHandle } from "react";
 import { forwardRef } from "react";
 import { useState } from "react";
@@ -43,7 +43,7 @@ function CustomizeModal(props, ref) {
 
     const save = () => {
         // setOpen(false);
-        if(isWorking){
+        if (isWorking) {
             return;
         }
         setIsWorking(false);
@@ -58,7 +58,7 @@ function CustomizeModal(props, ref) {
                 background_image: backgroundUrl
             });
 
-            if (res!==null && res.status === 200) {
+            if (res !== null && res.status === 200) {
                 showNotification('Success', 'Profile updated', 'success');
                 setOpen(false);
             } else {
@@ -76,20 +76,46 @@ function CustomizeModal(props, ref) {
                         <Card sx={{ borderRadius: '10px' }}>
                             <CardContent>
                                 <Typography variant='h4'>Edit profile</Typography>
-                                <Stack spacing={2} direction='column' sx={{pt:1}}>
-                                    {
-                                        backgroundUrl !== '' && <>
-                                            <img src={backgroundUrl} alt="Background" style={{ maxWidth: '300px', borderRadius: '10px' }} />
-                                        </>
-                                    }
-                                    <TextField
-                                        disabled={isWorking}
-                                        onChange={(e) => setBackgroundUrl(e.target.value)}
-                                        value={backgroundUrl}
-                                        label="Background Image (URL)"
-                                        variant="standard" />
-                                    <Button onClick={save}>Save</Button>
-                                    <Typography variant='caption'>Feel free to use suggestive content, just don't go over the top with full on naked anime girls.</Typography>
+                                <Stack spacing={2} direction='column' sx={{ pt: 1 }}>
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={3} sx={{height: '200px'}}>
+                                            <Box sx={{
+                                                backgroundColor: 'rgba(0, 0, 0, 0.1)',
+                                                height: '100%',
+                                                //align center
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                borderRadius: '10px'
+                                            }}>
+                                                {
+                                                    backgroundUrl !== '' && <>
+                                                        <img
+                                                            src={backgroundUrl}
+                                                            alt="Background"
+                                                            style={{
+                                                                maxWidth: '100%',
+                                                                maxHeight: '100%',
+                                                                borderRadius: '10px'
+                                                            }} />
+                                                    </>
+                                                }
+                                            </Box>
+                                        </Grid>
+                                        <Grid item xs={9}>
+                                            <Stack spacing={2} direction='column' sx={{ pt: 1 }}>
+                                                <TextField
+                                                    disabled={isWorking}
+                                                    onChange={(e) => setBackgroundUrl(e.target.value)}
+                                                    value={backgroundUrl}
+                                                    label="Background Image (URL)"
+                                                    variant="standard" />
+                                                <Button onClick={save}>Save</Button>
+                                                <Typography variant='caption'>Feel free to use suggestive content, just don't go over the top with full on naked anime girls.</Typography>
+                                            </Stack>
+                                        </Grid>
+                                    </Grid>
+
                                 </Stack>
                             </CardContent>
                         </Card>
