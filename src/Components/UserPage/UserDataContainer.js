@@ -7,7 +7,6 @@ import AutoGraphIcon from '@mui/icons-material/AutoGraph';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import InsertCommentIcon from '@mui/icons-material/InsertComment';
 import GradingIcon from '@mui/icons-material/Grading';
-import ImageIcon from '@mui/icons-material/Image';
 import SectionCards from "./SectionCards";
 import SectionGrades from "./SectionGrades";
 import SectionGraphs from "./SectionGraphs";
@@ -16,7 +15,6 @@ import SectionDaily from "./SectionDaily";
 import SectionComments from "./SectionComments";
 import styled from "@emotion/styled";
 import SectionCompletion from "./SectionCompletion";
-import SectionCompactCard from "./SectionCompactCard";
 
 const StyledTab = styled(Tab)({
     minHeight: 'auto',
@@ -47,7 +45,6 @@ function UserDataContainer(props) {
                         <StyledTab icon={<FormatListBulletedIcon />} iconPosition='start' label='Scores' value={_IDs['scores']} />
                         <StyledTab icon={<GradingIcon />} iconPosition='start' label='Completion' value={_IDs['completion']} />
                         <StyledTab icon={<InsertCommentIcon />} iconPosition='start' label='Comments' value={_IDs['comments']} />
-                        <StyledTab icon={<ImageIcon />} iconPosition='start' label='Card' value={_IDs['card']} />
                     </TabList>
                 </Box>
                 <TabPanel sx={{ p: 0 }} value={_IDs['profile']}>
@@ -70,9 +67,6 @@ function UserDataContainer(props) {
                 </TabPanel>
                 <TabPanel sx={{ p: 0 }} value={_IDs['completion']}>
                     <SectionCompletion user={props.user} />
-                </TabPanel>
-                <TabPanel sx={{ p: 0 }} value={_IDs['card']}>
-                    <SectionCompactCard user={props.user} />
                 </TabPanel>
             </TabContext>
         </>
