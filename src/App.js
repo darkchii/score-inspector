@@ -93,7 +93,9 @@ function App() {
         </Box>
         <Container maxWidth='xl'>
           <ToastContainer hideProgressBar />
-          <Card>
+          <Card sx={{
+            backgroundColor: `${Theme.palette.background.paper}dd`,
+          }}>
             <CardContent>
               {/* <RouterProvider router={router} /> */}
               <Routes>
