@@ -17,6 +17,7 @@ const updates = [
         changes: [
             [PLATFORMTYPES.WEB, CHANGETYPES.MISC, 'Leaderboard username are now Inspector user chips', 'f5b317f4e73a816e9938b95d572081003fa3f041'],
             [PLATFORMTYPES.WEB, CHANGETYPES.MISC, 'User search modal design overhaul', '03646898d45c95bc03aeac33fe595888fd57a7b0'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.MISC, 'Removed compact card section', '766eaf95b10634e4e53195396e456693ec7d9491'],
             [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Added beatmap leaderboards to scoreview', '6dfcf01c07a3e2eae82b47dd66d5b6b8f99019a2'],
             [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Added visited users list for logged in user', '59eb47877587e1daa6a9058816d424f893f8119b'],
             [PLATFORMTYPES.WEB, CHANGETYPES.FIX, 'Fixed chart height on completion page', '934512f257c1b181378e4aaba32e84c8b344e04b'],

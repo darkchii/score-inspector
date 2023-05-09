@@ -404,6 +404,17 @@ export async function getBeatmap(beatmap_id) {
     return beatmap?.data;
 }
 
+export async function getBeatmapPacks(sets_only = false){
+    let beatmapPacks;
+    try {
+        beatmapPacks = await axios.get(`${GetAPI()}beatmaps/packs?sets_only=${sets_only}`, { headers: { "Access-Control-Allow-Origin": "*" } });
+    } catch (err) {
+        return null;
+    }
+
+    return beatmapPacks?.data;
+}
+
 export function getGradeColor(grade) {
     switch (grade) {
         default:

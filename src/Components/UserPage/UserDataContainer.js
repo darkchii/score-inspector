@@ -7,6 +7,8 @@ import AutoGraphIcon from '@mui/icons-material/AutoGraph';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import InsertCommentIcon from '@mui/icons-material/InsertComment';
 import GradingIcon from '@mui/icons-material/Grading';
+import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
+import LayersIcon from '@mui/icons-material/Layers';
 import SectionCards from "./SectionCards";
 import SectionGrades from "./SectionGrades";
 import SectionGraphs from "./SectionGraphs";
@@ -15,6 +17,8 @@ import SectionDaily from "./SectionDaily";
 import SectionComments from "./SectionComments";
 import styled from "@emotion/styled";
 import SectionCompletion from "./SectionCompletion";
+import SectionPacks from "./SectionPacks";
+import SectionMedals from "./SectionMedals";
 
 const StyledTab = styled(Tab)({
     minHeight: 'auto',
@@ -31,7 +35,8 @@ function UserDataContainer(props) {
         'scores': '3',
         'completion': '4',
         'comments': '5',
-        'card': '6'
+        'medals': '6',
+        'packs': '7'
     }
 
     return (
@@ -45,6 +50,8 @@ function UserDataContainer(props) {
                         <StyledTab icon={<FormatListBulletedIcon />} iconPosition='start' label='Scores' value={_IDs['scores']} />
                         <StyledTab icon={<GradingIcon />} iconPosition='start' label='Completion' value={_IDs['completion']} />
                         <StyledTab icon={<InsertCommentIcon />} iconPosition='start' label='Comments' value={_IDs['comments']} />
+                        <StyledTab icon={<MilitaryTechIcon />} iconPosition='start' label='Medals' value={_IDs['medals']} />
+                        <StyledTab icon={<LayersIcon />} iconPosition='start' label='Packs' value={_IDs['packs']} />
                     </TabList>
                 </Box>
                 <TabPanel sx={{ p: 0 }} value={_IDs['profile']}>
@@ -67,6 +74,12 @@ function UserDataContainer(props) {
                 </TabPanel>
                 <TabPanel sx={{ p: 0 }} value={_IDs['completion']}>
                     <SectionCompletion user={props.user} />
+                </TabPanel>
+                <TabPanel sx={{ p: 0 }} value={_IDs['medals']}>
+                    <SectionMedals user={props.user} />
+                </TabPanel>
+                <TabPanel sx={{ p: 0 }} value={_IDs['packs']}>
+                    <SectionPacks user={props.user} />
                 </TabPanel>
             </TabContext>
         </>
