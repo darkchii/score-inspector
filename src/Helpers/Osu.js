@@ -404,7 +404,7 @@ export async function getBeatmap(beatmap_id) {
     return beatmap?.data;
 }
 
-export async function getBeatmapPacks(sets_only = false){
+export async function getBeatmapPacks(sets_only = false) {
     let beatmapPacks;
     try {
         beatmapPacks = await axios.get(`${GetAPI()}beatmaps/packs?sets_only=${sets_only}`, { headers: { "Access-Control-Allow-Origin": "*" } });
@@ -449,7 +449,7 @@ const excluded_mods = [
     16384, //PF
 ];
 
-export function FilterStarratingArray(sr_arr, mods_enum){
+export function FilterStarratingArray(sr_arr, mods_enum) {
     mods_enum = parseInt(mods_enum);
     mods_enum &= ~excluded_mods.reduce((a, b) => a | b, 0);
     return sr_arr.filter(sr => sr.mods_enum === mods_enum)?.[0];

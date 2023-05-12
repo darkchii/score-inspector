@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import { List } from "react-virtualized";
 import ScoreTableRow from "../ScoreTableRow";
 import ScoreView from "../ScoreView";
+import { MODAL_STYLE } from "../../Helpers/Misc";
 
 const style = {
     position: 'absolute',
@@ -23,6 +24,7 @@ function TopplaysModal(props) {
     const [scores, setScores] = React.useState(null);
     const handleClose = () => setOpen(false);
     const [viewingScore, setViewingScore] = React.useState(null);
+    const [allowScoreViewer, setAllowScoreViewer] = React.useState(true);
 
     const openScoreView = (index) => {
         console.log('opening score view for index ' + index + '')
@@ -34,6 +36,10 @@ function TopplaysModal(props) {
 
         setScores(props.data.scores);
     }, [props.data]);
+
+    useEffect(() => {
+        setAllowScoreViewer(props.allowScoreViewer!==undefined ? props.allowScoreViewer : true);
+    }, [props.allowScoreViewer])
 
     const rowHeight = ({ index }) => {
         const score = scores[index];
@@ -49,7 +55,7 @@ function TopplaysModal(props) {
                         <Typography variant="subtitle1">{index + 1}</Typography>
                     </Grid>
                     <Grid item xs={11.4}>
-                        <ScoreTableRow openScoreView={openScoreView} index={index} data={{ score: score, pp_version: props.data.pp_version }} />
+                        <ScoreTableRow allowScoreViewer={allowScoreViewer} openScoreView={openScoreView} index={index} data={{ score: score, pp_version: props.data.pp_version }} />
                     </Grid>
                 </Grid>
             </ListItem>
@@ -75,24 +81,21 @@ function TopplaysModal(props) {
                                 rowCount={scores.length}
                                 rowHeight={rowHeight}
                             />
-                            <Modal
-                                open={viewingScore !== null}
-                                onClose={() => setViewingScore(null)}
-                            >
-                                <Box sx={{ ...style, width: '1000px', p: 0 }}>
-                                    <ScoreView
-                                        data={{
-                                            score: viewingScore, style: {
-                                                bgcolor: 'background.paper',
-                                                width: '100%',
-                                                boxShadow: 24,
-                                                borderRadius: 0,
-                                            },
-                                            pp_version: props.data.pp_version
-                                        }}
-                                    />
-                                </Box>
-                            </Modal>
+                            {
+                                allowScoreViewer ?
+                                    <Modal
+                                        open={viewingScore !== null}
+                                        onClose={() => setViewingScore(null)}
+                                    >
+                                        <ScoreView
+                                            data={{
+                                                score: viewingScore, style: MODAL_STYLE,
+                                                pp_version: props.data.pp_version
+                                            }}
+                                        />
+                                    </Modal> : <></>
+
+                            }
                         </CardContent>
                     </Card>
                 </Modal>

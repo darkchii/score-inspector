@@ -41,7 +41,8 @@
     "react-scripts": "^5.0.1",
     "react-snowfall": "^1.2.1",
     "react-toastify": "^9.1.2",
-    "react-virtualized": "^9.22.5"
+    "react-virtualized": "^9.22.5",
+    "react-virtualized-auto-sizer": "^1.0.15"
   },
   "scripts": {
     "start": "set PORT=3006 && react-scripts start",

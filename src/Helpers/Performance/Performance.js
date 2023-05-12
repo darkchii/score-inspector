@@ -3,6 +3,7 @@ import { getPerformance2016 } from "./Performance2016";
 import { getPerformanceLazer } from "./PerformanceLazer";
 import { getPerformanceLive } from "./PerformanceLive";
 import { cloneDeep } from "lodash";
+import { getPerformanceV1 } from "./PerformanceV1";
 
 export function getCalculator(version, data, debug = false) {
     let pp;
@@ -15,6 +16,9 @@ export function getCalculator(version, data, debug = false) {
             break;
         case 'lazer':
             pp = new getPerformanceLazer(data, debug);
+            break;
+        case 'v1':
+            pp = new getPerformanceV1(data, debug);
             break;
         default:
             pp = new getPerformanceLive(data, debug);

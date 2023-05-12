@@ -12,6 +12,7 @@ function ScoreTableRow(props) {
     const [score, setScore] = useState(null);
     const [viewerOpen, setViewerOpen] = useState(false);
     const [height, setHeight] = useState(0);
+    const [allowScoreViewer, setAllowScoreViewer] = useState(true);
 
     const openScoreView = (index) => {
         props?.openScoreView(index);
@@ -20,6 +21,10 @@ function ScoreTableRow(props) {
     useEffect(() => {
         setScore(props.data.score);
     }, [props.data]);
+
+    useEffect(() => {
+        setAllowScoreViewer(props.allowScoreViewer!==undefined ? props.allowScoreViewer : true);
+    }, [props.allowScoreViewer])
 
     const toggleViewer = () => {
         //setViewerOpen(!viewerOpen);
@@ -61,11 +66,14 @@ function ScoreTableRow(props) {
                                         <Typography variant="h5">{toFixedNumber(score.displayed_pp.total, 0).toLocaleString('en-US')}pp</Typography>
                                     </Tooltip>
                                 </Grid>
-                                <Grid item xs={0.5} sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
-                                    <IconButton onClick={toggleViewer} size="small">
-                                        <VisibilityIcon />
-                                    </IconButton>
-                                </Grid>
+                                {
+                                    allowScoreViewer ?
+                                        <Grid item xs={0.5} sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
+                                            <IconButton onClick={toggleViewer} size="small">
+                                                <VisibilityIcon />
+                                            </IconButton>
+                                        </Grid> : null
+                                }
                             </Grid>
                         </Box>
                     </>

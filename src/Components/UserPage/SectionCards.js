@@ -12,6 +12,7 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 import PerformanceLazer from "./Performance/PerformanceLazer";
 import Performance2014 from "./Performance/Performance2014";
 import GlowBar from "../UI/GlowBar";
+import PerformanceV1 from "./Performance/PerformanceV1";
 Chart.register(...registerables, ChartDataLabels)
 momentDurationFormatSetup(moment);
 
@@ -167,12 +168,13 @@ function SectionCards(props) {
             <Grid sx={{ p: 0.5 }}>
                 <Paper elevation={2} sx={{ p: 2 }}>
                     <Grid container spacing={2}>
-                        <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={12 / 6}><PerformanceFC data={props.user} /></Grid>
-                        <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={12 / 6}><PerformanceSS data={props.user} /></Grid>
-                        <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={12 / 6}><Performance2014 data={props.user} /></Grid>
-                        <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={12 / 6}><Performance2016 data={props.user} /></Grid>
-                        <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={12 / 6}><PerformanceLazer data={props.user} /></Grid>
-                        <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={12 / 6}><PerformanceXexxar data={props.user} /></Grid>
+                        <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={12 / 7}><PerformanceFC data={props.user} /></Grid>
+                        <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={12 / 7}><PerformanceSS data={props.user} /></Grid>
+                        <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={12 / 7}><PerformanceV1 data={props.user} /></Grid>
+                        <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={12 / 7}><Performance2014 data={props.user} /></Grid>
+                        <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={12 / 7}><Performance2016 data={props.user} /></Grid>
+                        <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={12 / 7}><PerformanceLazer data={props.user} /></Grid>
+                        <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={12 / 7}><PerformanceXexxar data={props.user} /></Grid>
                     </Grid>
                 </Paper>
             </Grid>

@@ -162,6 +162,7 @@ async function weighPerformance(scores, onScoreProcessUpdate) {
 
     data.weighted = {};
 
+    data.weighted.v1 = 0;
     data.weighted.fc = 0;
     data.weighted.ss = 0;
     data.weighted.xexxar = 0;
@@ -201,13 +202,44 @@ async function weighPerformance(scores, onScoreProcessUpdate) {
     data.weighted._2016 += bonus;
     // data.weighted.lazer += bonus;
 
+    scores.sort((a, b) => {
+        return b.pp_v1?.total - a.pp_v1?.total;
+    });
+
+    let j = 1;
+    let rank_score = 0;
+    scores.forEach(score => {
+        rank_score += score.pp_v1.total * j;
+        j *= 0.994;
+    });
+
+    j = 1;
+    let accuracy = 0;
+    let accuracy_total = 0;
+    scores.forEach(score => {
+        accuracy += score.pp_v1.acc * j;
+        accuracy_total += j;
+        j *= 0.996;
+    });
+
+    accuracy /= accuracy_total;
+
+    rank_score = Math.max(0, Math.log(rank_score + 1) * 400);
+    data.weighted.v1 = rank_score;
+
     return data;
 }
 
 export function prepareScores(user, scores, onScoreProcessUpdate, calculateOtherPP = true) {
-    scores.forEach(score => {
+    let debugged = false;
+    scores.forEach((score, index) => {
         onScoreProcessUpdate?.('' + score.id);
         score = prepareScore(score, calculateOtherPP, user);
+
+        if(score.top_score && score.top_score.user_id && !debugged){
+            console.log(score);
+            debugged = true;
+        }
     });
 
     return scores;
@@ -238,6 +270,7 @@ export function prepareScore(score, calculateOtherPP = true, user = null) {
         score.pp_2016 = getCalculator('2016', { score: score });
         score.pp_lazer = getCalculator('lazer', { score: score });
         score.pp_2014 = getCalculator('2014', { score: score });
+        score.pp_v1 = getCalculator('v1', { score: score });
     }
 
     score.is_fc = isScoreFullcombo(score);
@@ -264,6 +297,7 @@ export function prepareBeatmap(beatmap, enabled_mods = null) {
         beatmap.modded_length /= 0.75;
         beatmap.modded_bpm *= 0.75;
     }
+
     return beatmap;
 }
 
