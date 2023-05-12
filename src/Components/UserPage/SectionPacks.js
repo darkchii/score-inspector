@@ -97,12 +97,14 @@ function SectionPacks(props) {
                     if (score.beatmap === undefined) {
                         console.log("undefined beatmap", score);
                     } else {
-                        let pack_id = score.beatmap.packs?.pack_id;
-                        if (pack_id && _packData[pack_id]) {
-                            if (!_packData[pack_id].played.includes(score.beatmap_id)) {
-                                _packData[pack_id].played.push(score.beatmap_id);
+                        let pack_ids = score.beatmap.packs?.map(pack => pack.pack_id) ?? [];
+                        pack_ids.forEach(pack_id => {
+                            if (pack_id && _packData[pack_id]) {
+                                if (!_packData[pack_id].played.includes(score.beatmap_id)) {
+                                    _packData[pack_id].played.push(score.beatmap_id);
+                                }
                             }
-                        }
+                        });
                     }
                 });
 
