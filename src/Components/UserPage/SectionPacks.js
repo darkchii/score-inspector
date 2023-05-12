@@ -1,17 +1,18 @@
 import { useEffect } from "react";
 import { useState } from "react";
-import { getBeatmapPacks } from "../../Helpers/Osu";
+import { getBeatmapPackDetails, getBeatmapPacks } from "../../Helpers/Osu";
 import { Accordion, Box, Button, ButtonGroup, Grid, LinearProgress, Paper, Stack, Typography } from "@mui/material";
 import GlowBar from "../UI/GlowBar";
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-const PACK_GROUP_SIZE = 100;
+const PACK_GROUP_SIZE = 25;
 
 function SectionPacks(props) {
     const [selectedPackType, setSelectedPackType] = useState(0);
     const [packData, setPackData] = useState([]);
+    const [packDetails, setPackDetails] = useState([]);
     const packTypes = [
         {
             name: 'Default',
@@ -54,8 +55,10 @@ function SectionPacks(props) {
     useEffect(() => {
         (async () => {
             const data = await getBeatmapPacks();
-
+            
             if (data) {
+                const _packDetails = await getBeatmapPackDetails();
+                setPackDetails(_packDetails);
                 //remove non-std packs ('SC', 'ST', 'SM', keep 'S')
                 let _data = data.filter(pack => {
                     let pack_type = pack.pack_id.replace(/[0-9]/g, '');
@@ -66,6 +69,8 @@ function SectionPacks(props) {
                 //count the types
                 _data.forEach(pack => {
                     let pack_type = pack.pack_id.replace(/[0-9]/g, '');
+
+                    pack.details = _packDetails.find(details => details.tag === pack.pack_id);
 
                     let identified = false;
                     packTypes.forEach(type => {
@@ -89,6 +94,7 @@ function SectionPacks(props) {
                         name: key,
                         sortName: parseInt(key.replace(/\D/g, '')),
                         total: parseInt(row.count ?? 0),
+                        details: row.details,
                         played: []
                     }
                 });
@@ -219,11 +225,11 @@ function SectionPacks(props) {
                                                 {
                                                     groupedPack.packs.map(pack => {
                                                         return (
-                                                            <Grid item xs={12 / 4}>
+                                                            <Grid item xs={12 / 1}>
                                                                 <Paper elevation={2} sx={{ height: '100%', position: 'relative', borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }}>
                                                                     <Stack direction='column'>
                                                                         <Box sx={{ p: 0.5, pb: 0, position: 'relative' }}>
-                                                                            <Typography variant='subtitles1' sx={{ float: 'left' }}>{pack.name} ({pack.played.length}/{pack.total})</Typography>
+                                                                            <Typography variant='subtitles1' sx={{ float: 'left' }}>{pack.name} {pack.details?.name} ({pack.played.length}/{pack.total})</Typography>
                                                                             <Typography variant='subtitles1' sx={{ float: 'right' }}>{Math.round(pack.played.length / pack.total * 100)}%</Typography>
                                                                         </Box>
                                                                         <Box sx={{ width: '100%', position: 'relative', top: '1px' }}>

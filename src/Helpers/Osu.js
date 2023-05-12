@@ -404,15 +404,26 @@ export async function getBeatmap(beatmap_id) {
     return beatmap?.data;
 }
 
-export async function getBeatmapPacks(sets_only = false) {
+export async function getBeatmapPacks() {
     let beatmapPacks;
     try {
-        beatmapPacks = await axios.get(`${GetAPI()}beatmaps/packs?sets_only=${sets_only}`, { headers: { "Access-Control-Allow-Origin": "*" } });
+        beatmapPacks = await axios.get(`${GetAPI()}beatmaps/packs`, { headers: { "Access-Control-Allow-Origin": "*" } });
     } catch (err) {
         return null;
     }
 
     return beatmapPacks?.data;
+}
+
+export async function getBeatmapPackDetails() {
+    let beatmapPackDetails;
+    try {
+        beatmapPackDetails = await axios.get(`${GetAPI()}beatmaps/pack_details`, { headers: { "Access-Control-Allow-Origin": "*" } });
+    } catch (err) {
+        return null;
+    }
+
+    return beatmapPackDetails?.data;
 }
 
 export function getGradeColor(grade) {

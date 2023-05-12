@@ -21,6 +21,7 @@ const updates = [
             [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Added beatmap pack completion page', 'c96c190db22fe9a8366c38fbfca7e0257d5bdbf2'],
             [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Added beatmap leaderboards to scoreview', '6dfcf01c07a3e2eae82b47dd66d5b6b8f99019a2'],
             [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Added visited users list for logged in user', '59eb47877587e1daa6a9058816d424f893f8119b'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Added ppv1', '1b64b0adcb02bd1d6ff044c0026d632c754659cb'],
             [PLATFORMTYPES.WEB, CHANGETYPES.FIX, 'Fixed chart height on completion page', '934512f257c1b181378e4aaba32e84c8b344e04b'],
             [PLATFORMTYPES.WEB, CHANGETYPES.FIX, 'Fixed date picker display on daily page', 'df1261f77c06aa27ed287447b185bd6f5822b41e'],
             [PLATFORMTYPES.API, CHANGETYPES.FIX, 'Fixed user search not showing non-priority users'],
