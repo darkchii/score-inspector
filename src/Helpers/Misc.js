@@ -102,8 +102,25 @@ export function nestedSearch(object, keyArray) {
 
 export function arr_sum(array, prop) {
     var total = 0
-    for ( var i = 0, _len = array.length; i < _len; i++ ) {
+    for (var i = 0, _len = array.length; i < _len; i++) {
         total += array[i][prop]
     }
     return total
+}
+
+export function is_numeric(str) {
+    return /^\d+$/.test(str);
+}
+
+export function lerpColor(a, b, amount) {
+
+    var ah = parseInt(a.replace(/#/g, ''), 16),
+        ar = ah >> 16, ag = ah >> 8 & 0xff, ab = ah & 0xff,
+        bh = parseInt(b.replace(/#/g, ''), 16),
+        br = bh >> 16, bg = bh >> 8 & 0xff, bb = bh & 0xff,
+        rr = ar + amount * (br - ar),
+        rg = ag + amount * (bg - ag),
+        rb = ab + amount * (bb - ab);
+
+    return '#' + ((1 << 24) + (rr << 16) + (rg << 8) + rb | 0).toString(16).slice(1);
 }

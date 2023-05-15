@@ -14,7 +14,8 @@ export function LeaderboardItem(props) {
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
             position: 'relative',
-            borderRadius: LEADERBOARD_BORDER_RADIUS
+            borderRadius: LEADERBOARD_BORDER_RADIUS,
+            ...props.sx
         }}>
             <Box sx={{
                 backgroundColor: "rgba(0, 0, 0, 0.7)",

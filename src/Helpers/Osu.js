@@ -382,10 +382,12 @@ export async function getBeatmapCount(loved = true) {
     return bmCount;
 }
 
-export async function getBeatmaps(loved = true) {
+export async function getBeatmaps(urlCfg = {}) {
     let beatmaps;
     try {
-        beatmaps = await axios.get(`${GetAPI()}beatmaps/all?include_loved=${loved ? 'true' : 'false'}`, { headers: { "Access-Control-Allow-Origin": "*" } });
+        //beatmaps = await axios.get(`${GetAPI()}beatmaps/all?include_loved=${loved ? 'true' : 'false'}`, { headers: { "Access-Control-Allow-Origin": "*" } });
+        let stringConfig = new URLSearchParams(urlCfg).toString();
+        beatmaps = await axios.get(`${GetAPI()}beatmaps/all?${stringConfig}`, { headers: { "Access-Control-Allow-Origin": "*" } });
     } catch (err) {
         return null;
     }
