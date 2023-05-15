@@ -143,7 +143,7 @@ function SectionPacks(props) {
                                                         <Typography variant='body2'>Completion: {progressPercentage}%</Typography>
                                                         <Typography variant='body2'>{pack.played} / {pack.total}</Typography>
                                                     </React.Fragment>
-                                                } placement='top'>
+                                                } placement='top' disableInteractive={true}>
                                                     <Box 
                                                         onClick={() => setSelectedPack(pack)}
                                                         sx={{
