@@ -1,6 +1,4 @@
-import { Box, Button, ButtonGroup, Card, CardContent, Chip, chipClasses, Grid, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableRow, TextField, Typography } from "@mui/material";
-import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
+import { Box, Button, ButtonGroup, Card, CardContent, Chip, chipClasses, Grid, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableRow, TextField, Typography, useTheme, Tooltip as MUITooltip } from "@mui/material";
 import moment from "moment";
 import momentDurationFormatSetup from "moment-duration-format";
 import { useEffect, useState } from "react";
@@ -19,7 +17,7 @@ import {
     Legend,
 } from 'chart.js';
 import Annotations from "chartjs-plugin-annotation";
-import { nestedSearch } from "../../Helpers/Misc";
+import { lerpColor, nestedSearch } from "../../Helpers/Misc";
 ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend, Annotations);
 momentDurationFormatSetup(moment);
 
@@ -37,14 +35,18 @@ const heightDefiners = [
 ]
 
 function SectionDaily(props) {
+    const theme = useTheme();
     const MIN_DATE = moment(props.user.osu.join_date);
     const [MAX_DATE, setMaxDate] = useState(moment());
-    const [selectedDay, setSelectedDay] = useState(MAX_DATE.endOf('day'));
+    const [selectedYear, setSelectedYear] = useState(moment(MAX_DATE).startOf('year').year());
+    const [selectedDay, setSelectedDay] = useState(MAX_DATE.endOf('day').format("YYYY-MM-DD"));
     const [isWorking, setWorkingState] = useState(false);
     const [scores, setScores] = useState(null);
     const [graphOptions, setGraphOptions] = useState(null);
     const [graphData, setGraphData] = useState(null);
     const [heightDefiner, setHeightDefiner] = useState(heightDefiners[0]);
+    const [yearGraphData, setYearGraphData] = useState(null);
+    const [themeColor, setThemeColor] = useState(theme.typography.title.color);
 
     const [sessionCount, setSessionCount] = useState(0);
     const [totalSessionLength, setTotalSessionLength] = useState(0);
@@ -55,11 +57,6 @@ function SectionDaily(props) {
         const index = props.user.data.activeDays.findIndex(day => day === date.format("YYYY-MM-DD"));
         return index;
     }
-
-    useEffect(() => {
-        setMaxDate(moment.unix((props.user.scores !== null && props.user.scores.length > 0) ? Math.max(...props.user.scores.map(score => moment(score.date_played).unix())) : moment().unix()));
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, props.user.scores);
 
     useEffect(() => {
         if (scores === null) {
@@ -94,15 +91,15 @@ function SectionDaily(props) {
 
             annotations[`sectionStart`] = {
                 type: 'box',
-                xMin: moment(selectedDay).startOf('day').unix(),
-                xMax: moment(selectedDay).startOf('day').unix(),
+                xMin: moment(selectedDay, 'YYYY-MM-DD').startOf('day').unix(),
+                xMax: moment(selectedDay, 'YYYY-MM-DD').startOf('day').unix(),
                 backgroundColor: 'rgba(0, 0, 0, 0.25)',
                 z: -1000
             }
             annotations[`sectionEnd`] = {
                 type: 'box',
-                xMin: moment(selectedDay).endOf('day').unix(),
-                xMax: moment(selectedDay).endOf('day').unix(),
+                xMin: moment(selectedDay, 'YYYY-MM-DD').endOf('day').unix(),
+                xMax: moment(selectedDay, 'YYYY-MM-DD').endOf('day').unix(),
                 backgroundColor: 'rgba(0, 0, 0, 0.25)',
                 z: -1000
             }
@@ -117,8 +114,8 @@ function SectionDaily(props) {
                                 return moment.unix(value).format("MMMM Do, YYYY HH:mm");
                             },
                         },
-                        min: selectedDay.startOf('day').format("YYYY-MM-DD HH:mm:ss"),
-                        max: selectedDay.endOf('day').format("YYYY-MM-DD HH:mm:ss")
+                        min: moment(selectedDay, 'YYYY-MM-DD').startOf('day').format("YYYY-MM-DD HH:mm:ss"),
+                        max: moment(selectedDay, 'YYYY-MM-DD').endOf('day').format("YYYY-MM-DD HH:mm:ss")
                     }
                 },
                 plugins: {
@@ -153,7 +150,7 @@ function SectionDaily(props) {
                     },
                     {
                         label: "hidden",
-                        data: [{ x: selectedDay.startOf('day').unix(), y: 0 }, { x: selectedDay.endOf('day').unix(), y: 0 }],
+                        data: [{ x: moment(selectedDay, 'YYYY-MM-DD').startOf('day').unix(), y: 0 }, { x: moment(selectedDay, 'YYYY-MM-DD').endOf('day').unix(), y: 0 }],
                         backgroundColor: 'rgba(255, 99, 132, 1)',
                         pointRadius: 0,
                         datalabels: {
@@ -173,10 +170,13 @@ function SectionDaily(props) {
             return;
         }
 
-        if (selectedDay > MAX_DATE) {
-            setSelectedDay(MAX_DATE);
-            return;
-        }
+        // if (moment(selectedDay, 'YYYY-MM-DD') > MAX_DATE) {
+        //     console.log(`Selected day (${selectedDay}) is after max date (${MAX_DATE.format("YYYY-MM-DD")})`);
+        //     console.log('Current', moment(selectedDay, 'YYYY-MM-DD'));
+        //     console.log('Max', MAX_DATE);
+        //     setSelectedDay(MAX_DATE.format("YYYY-MM-DD"));
+        //     return;
+        // }
 
         const handleDayChange = async (date) => {
             setWorkingState(true);
@@ -241,15 +241,131 @@ function SectionDaily(props) {
             setScores(sorted);
             setWorkingState(false);
         };
+        console.log('selected day updated',selectedDay);
         handleDayChange(selectedDay);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedDay, MAX_DATE]);
+
+    useEffect(() => {
+        //loop from jan 1st to dec 31st
+        let y = moment().year(selectedYear);
+        const days = [];
+        const scores = props.user.scores.filter(score => score.date_played_moment.isSame(y, 'year'));
+        for (let i = 0; i < 12; i++) {
+            const m = y.month(i);
+            const scores_month = scores.filter(score => score.date_played_moment.isSame(m, 'month'));
+            let daysInMonth = y.month(i).daysInMonth();
+            for (let j = 0; j < daysInMonth; j++) {
+                //days.push(moment().year(year).dayOfYear(i + 1));
+                let d = moment().year(selectedYear).month(i).date(j + 1);
+                const scores_day = scores_month.filter(score => score.date_played_moment.isSame(d, 'day'));
+                const obj = {
+                    date: d.format('YYYY-MM-DD'),
+                    clears: scores_day.length,
+                }
+                days.push(obj);
+            }
+        }
+    
+        setYearGraphData(days);
+    }, [selectedYear])
+
+    const updateYear = async (y) => {
+        const year = y.year();
+        setSelectedYear(year);
+    }
 
     return (
         <>
             <Card>
                 <CardContent>
-                    <LocalizationProvider dateAdapter={AdapterMoment}>
+                    <Paper elevation={3} sx={{ p: 2 }}>
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                            <ButtonGroup size="small">
+                                {
+                                    //button for each year between min and max
+                                    Array.from(Array(moment().year() - MIN_DATE.year() + 1).keys()).map((year) => {
+                                        const y = MIN_DATE.year() + year;
+                                        return <Button
+                                            key={year}
+                                            disabled={isWorking}
+                                            variant={selectedYear === y ? "contained" : "outlined"}
+                                            onClick={() => updateYear(moment().year(y))}>{y}</Button>
+                                    }
+                                    )
+                                }
+                            </ButtonGroup>
+                        </Box>
+                        <Box sx={{ pt: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                            <Grid className="graph">
+                                <Grid className="months">
+                                    <li>Jan</li>
+                                    <li>Feb</li>
+                                    <li>Mar</li>
+                                    <li>Apr</li>
+                                    <li>May</li>
+                                    <li>Jun</li>
+                                    <li>Jul</li>
+                                    <li>Aug</li>
+                                    <li>Sep</li>
+                                    <li>Oct</li>
+                                    <li>Nov</li>
+                                    <li>Dec</li>
+                                </Grid>
+                                <Grid className="days">
+                                    <li>Sun</li>
+                                    <li>Mon</li>
+                                    <li>Tue</li>
+                                    <li>Wed</li>
+                                    <li>Thu</li>
+                                    <li>Fri</li>
+                                    <li>Sat</li>
+                                </Grid>
+                                <Grid className="squares">
+                                    {
+                                        //add empty spots if first day is not sunday
+                                        yearGraphData && Array.from(Array(moment(yearGraphData[0].date).day()).keys()).map((day) => {
+                                            return <Box></Box>
+                                        })
+                                    }
+                                    {
+                                        yearGraphData && yearGraphData.map((day, index) => {
+                                            const _clears = day.clears;
+                                            const _progress = Math.min(_clears, 100) / 100;
+                                            const _color = lerpColor('#3c3c3c', themeColor, _progress);
+
+                                            return (
+                                                <MUITooltip title={
+                                                    <Typography variant="body2">
+                                                        {`${day.date}: ${_clears} clears`}
+                                                    </Typography>
+                                                } placement='top' disableInteractive={true}>
+                                                    <Box 
+                                                    onClick={() => {_clears > 0 && setSelectedDay(day.date);console.log('selected day clicked',day.date)}}
+                                                    sx={{
+                                                        borderRadius: '3px',
+                                                        height: '12px',
+                                                        position: 'relative',
+                                                        width: '12px',
+                                                        backgroundColor: `${_color}`,
+                                                        margin: '2px',
+                                                        boxShadow: `0 0 5px 5px ${themeColor}${selectedDay === day.date?'40':'00'}`,
+                                                        '&:hover': {
+                                                            cursor: _clears>0?'pointer':'default',
+                                                            opacity: 0.5
+                                                        }
+                                                    }}>
+
+                                                    </Box>
+                                                </MUITooltip>
+                                            )
+                                        })
+                                    }
+                                </Grid>
+                            </Grid>
+                        </Box>
+                    </Paper>
+                    {/* <LocalizationProvider dateAdapter={AdapterMoment}>
                         <Paper elevation={3}>
                             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                                 <Button disabled={isWorking || props.user.data.activeDays.length === 0 || getDateIndex(selectedDay) <= 0} onClick={() => { setSelectedDay(moment(props.user.data.activeDays[getDateIndex(selectedDay) - 1])) }}>Previous</Button>
@@ -269,7 +385,7 @@ function SectionDaily(props) {
                                 <Button disabled={isWorking || props.user.data.activeDays.length === 0 || !(getDateIndex(selectedDay) < props.user.data.activeDays.length - 1)} onClick={() => { setSelectedDay(moment(props.user.data.activeDays[getDateIndex(selectedDay) + 1])) }}>Next</Button>
                             </Box>
                         </Paper>
-                    </LocalizationProvider>
+                    </LocalizationProvider> */}
 
                     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                         <Grid sx={{ my: 2 }}>
