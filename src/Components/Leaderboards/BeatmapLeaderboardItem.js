@@ -29,11 +29,11 @@ function BeatmapLeaderboardItem(props) {
     return (
         <>
             <LeaderboardItem
-                background={`https://assets.ppy.sh/beatmaps/${osu_beatmap?.beatmapset_id}/covers/cover.jpg`}
+                background={`https://assets.ppy.sh/beatmaps/${osu_beatmap?.set_id}/covers/cover.jpg`}
                 onClick={() => {
-                    if(type === 'beatmapsets')
-                        window.open(`https://osu.ppy.sh/beatmapsets/${base_beatmap?.beatmapset_id}`, "_blank");
-                    else if(type === 'beatmaps')
+                    if (type === 'beatmapsets')
+                        window.open(`https://osu.ppy.sh/beatmapsets/${base_beatmap?.set_id}`, "_blank");
+                    else if (type === 'beatmaps')
                         window.open(`https://osu.ppy.sh/beatmaps/${base_beatmap?.beatmap_id}`, "_blank");
                 }}
             >
@@ -88,7 +88,7 @@ function BeatmapLeaderboardItem(props) {
                     <Box sx={{ pl: 2 }}>
                         <Typography>
                             {
-                                `${osu_beatmap?.artist} - ${osu_beatmap?.title} ${type === 'beatmaps' ? `[${osu_beatmap?.version}]` : ''} `
+                                `${osu_beatmap?.artist} - ${osu_beatmap?.title} ${type === 'beatmaps' ? `[${osu_beatmap?.diffname}]` : ''} `
                             }
                         </Typography>
                     </Box>
@@ -100,11 +100,14 @@ function BeatmapLeaderboardItem(props) {
                     alignItems: 'center',
                     width: '5%'
                 }}>
-                    <Typography variant='subtitles1' noWrap>
-                        {Math.round(osu_beatmap?.star_rating * 100) / 100}*
-                    </Typography>
+                    {
+                        type === 'beatmaps' ?
+                            <Typography variant='subtitles1' noWrap>
+                                {Math.round(osu_beatmap?.stars * 100) / 100}*
+                            </Typography> : <></>
+                    }
                 </Box>
-
+                
                 <Box sx={{
                     display: 'flex',
                     justifyContent: 'right',

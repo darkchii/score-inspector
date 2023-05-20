@@ -18,6 +18,7 @@ function SectionPacks(props) {
     const [packData, setPackData] = useState([]);
     const [selectedPack, setSelectedPack] = useState(null);
     const [selectedPackData, setSelectedPackData] = useState(null);
+    const [themeColor, setThemeColor] = useState(theme.typography.title.color);
     const packInfoModalElement = useRef(null);
 
     useEffect(() => {
@@ -80,15 +81,22 @@ function SectionPacks(props) {
                 packs: _otherPacks
             }];
 
+            //add color to each pack
+            _packData.forEach(packType => {
+                packType.packs.forEach(pack => {
+                    let progressPercentage = Math.round(pack.played / pack.total * 100);
+                    pack.color = lerpColor('#3c3c3c', themeColor, progressPercentage / 100);
+                });
+            });
+
             setPackData(_packData);
         })();
     }, []);
 
-    useEffect(()=>{
+    useEffect(() => {
         (async () => {
             if (!selectedPack) return;
             setSelectedPackData(null);
-            packInfoModalElement.current.setOpen(true);
 
             const beatmaps = (await getBeatmaps({
                 include_loved: true,
@@ -110,12 +118,20 @@ function SectionPacks(props) {
                 total: beatmaps?.length,
                 played: scores.length,
                 beatmaps: beatmaps,
-                scores: scores
+                scores: scores,
             }
 
-            setSelectedPackData(_selectedPackData);
+            if(selectedPack){
+                setSelectedPackData(_selectedPackData);
+            }
         })()
     }, [selectedPack]);
+
+    const openPackInfo = (pack) => {
+        setSelectedPackData(null);
+        packInfoModalElement.current.setOpen(true);
+        setSelectedPack(pack);
+    }
 
     return (
         <>
@@ -134,8 +150,6 @@ function SectionPacks(props) {
                                     {
                                         packType.packs && packType.packs.length > 0 ? packType.packs.map(pack => {
                                             let progressPercentage = Math.round(pack.played / pack.total * 100);
-                                            let themeColor = theme.typography.title.color;
-                                            let color = lerpColor('#3c3c3c', themeColor, progressPercentage / 100);
                                             return (
                                                 <Tooltip title={
                                                     <React.Fragment>
@@ -144,21 +158,20 @@ function SectionPacks(props) {
                                                         <Typography variant='body2'>{pack.played} / {pack.total}</Typography>
                                                     </React.Fragment>
                                                 } placement='top' disableInteractive={true}>
-                                                    <Box 
-                                                        onClick={() => setSelectedPack(pack)}
+                                                    <Box
+                                                        onClick={() => openPackInfo(pack)}
                                                         sx={{
-                                                        borderRadius: '3px',
-                                                        height: '12px',
-                                                        position: 'relative',
-                                                        width: '12px',
-                                                        backgroundColor: `${color}`,
-                                                        boxShadow: `0px 0px 5px 5px ${themeColor}${pack.played === pack.total ? 'ff' : '00'}`,
-                                                        margin: '2px',
-                                                        '&:hover': {
-                                                            cursor: 'pointer',
-                                                            opacity: 0.5
-                                                        }
-                                                    }}>
+                                                            borderRadius: '3px',
+                                                            height: '12px',
+                                                            position: 'relative',
+                                                            width: '12px',
+                                                            backgroundColor: `${pack.color}`,
+                                                            margin: '2px',
+                                                            '&:hover': {
+                                                                cursor: 'pointer',
+                                                                opacity: 0.5
+                                                            }
+                                                        }}>
 
                                                     </Box>
                                                 </Tooltip>
