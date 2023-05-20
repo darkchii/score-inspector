@@ -27,6 +27,11 @@ const GROUPED_STATS = {
             group: 'pp'
         },
         {
+            name: 'pp_v1', title: 'PP v1', customFormat: (value) => (Math.round(value)).toLocaleString('en-US') + 'pp',
+            description: 'The old pp system',
+            group: 'pp'
+        },
+        {
             name: 'total_pp', title: 'Total PP', customFormat: (value) => (Math.round(value)).toLocaleString('en-US') + 'pp',
             description: 'Total pp of all scores.',
             group: 'pp'
@@ -246,6 +251,10 @@ const GROUPED_STATS = {
             name: 'longest_maps', title: 'Longest Maps',
             description: 'List of beatmaps sorted by length',
             customFormat: (value) => moment.duration(value, 'seconds').format('h[h] m[m] s[s]')
+        },
+        {
+            name: 'set_with_most_maps', title: 'Most difficulties',
+            description: 'Sets with the most difficulties'
         }
     ]
 }
@@ -364,6 +373,7 @@ function Leaders() {
                                     onChange={e => navigate(`stat/${statistic.name}/page/1/country/${e.target.value}`)}
                                     labelId={`country_dropdown_label`}
                                     label='Country'
+                                    disabled={!(!isLoading && leaderboardType==='users')}
                                 >
                                     {
                                         countryList.map((value) => {
