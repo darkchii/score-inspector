@@ -13,7 +13,7 @@ const PLATFORMTYPES = {
 const updates = [
     {
         version: '2.6.0',
-        date: '2023-05-01',
+        date: '2023-05-23',
         changes: [
             [PLATFORMTYPES.WEB, CHANGETYPES.MISC, 'Leaderboard username are now Inspector user chips', 'f5b317f4e73a816e9938b95d572081003fa3f041'],
             [PLATFORMTYPES.WEB, CHANGETYPES.MISC, 'User search modal design overhaul', '03646898d45c95bc03aeac33fe595888fd57a7b0'],
