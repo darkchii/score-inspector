@@ -18,7 +18,7 @@
     "axios": "^1.4.0",
     "buffer": "^6.0.3",
     "chart.js": "^4.2.1",
-    "chartjs-plugin-annotation": "^2.2.1",
+    "chartjs-plugin-annotation": "^3.0.1",
     "chartjs-plugin-datalabels": "^2.2.0",
     "chartjs-plugin-zoom": "^2.0.1",
     "countries-list": "^2.6.1",
