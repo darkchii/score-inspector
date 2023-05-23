@@ -24,6 +24,8 @@ const updates = [
             [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Added ppv1 to profile', '1b64b0adcb02bd1d6ff044c0026d632c754659cb'],
             [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Added ppv1 leaderboard', '13058078af8f9c424af0065d22465812cd3e6651'],
             [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Added beatmap set difficulty count leaderboard', '13058078af8f9c424af0065d22465812cd3e6651'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Added medals listing page to user', '9bd26a2dfc5dc5a3e7e51a3406b22cf84f563ce6'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.MISC, 'Reworked date picker for daily data', '2793facc7929a8608f17bfa2b24dc068e8f331d6'],
             [PLATFORMTYPES.WEB, CHANGETYPES.FIX, 'Fixed chart height on completion page', '934512f257c1b181378e4aaba32e84c8b344e04b'],
             [PLATFORMTYPES.WEB, CHANGETYPES.FIX, 'Fixed date picker display on daily page', 'df1261f77c06aa27ed287447b185bd6f5822b41e'],
             [PLATFORMTYPES.API, CHANGETYPES.FIX, 'Fixed user search not showing non-priority users'],

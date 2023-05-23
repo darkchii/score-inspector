@@ -52,7 +52,6 @@ function Header(props) {
                                     {/* <Button size='small' startIcon={<SportsEsportsIcon />} component={Link} to={'/beatmaps'}>Beatmaps</Button> */}
                                     <Button size='small' startIcon={<StarIcon />} component={Link} to={'/top'}>Top Scores</Button>
                                     <Button size='small' startIcon={<DataUsageIcon />} component={Link} to={'/stats'}>Stats</Button>
-                                    <Button size='small' startIcon={<MapIcon />} component={Link} to={'/beatmaps'}>Beatmaps</Button>
                                     <Button size='small' startIcon={<SettingsIcon />} onClick={() => settingsElement.current.setOpen(true)}>Settings</Button>
                                     <Button size='small' startIcon={<BuildIcon />} component={Link} to={'/tools'}>Tools</Button>
                                 </Stack>
