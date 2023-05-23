@@ -428,6 +428,18 @@ export async function getBeatmapPackDetails() {
     return beatmapPackDetails?.data;
 }
 
+export async function getMedals(){
+    let medals;
+    try {
+        medals = await axios.get(`${GetAPI()}medals/get/`, { headers: { "Access-Control-Allow-Origin": "*" } });
+    }
+    catch (err) {
+        return null;
+    }
+
+    return medals?.data;
+}
+
 export function getGradeColor(grade) {
     switch (grade) {
         default:

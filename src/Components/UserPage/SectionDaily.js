@@ -47,6 +47,7 @@ function SectionDaily(props) {
     const [heightDefiner, setHeightDefiner] = useState(heightDefiners[0]);
     const [yearGraphData, setYearGraphData] = useState(null);
     const [themeColor, setThemeColor] = useState(theme.typography.title.color);
+    const [dynamicRange, setDynamicRange] = useState(100);
 
     const [sessionCount, setSessionCount] = useState(0);
     const [totalSessionLength, setTotalSessionLength] = useState(0);
@@ -241,7 +242,7 @@ function SectionDaily(props) {
             setScores(sorted);
             setWorkingState(false);
         };
-        console.log('selected day updated',selectedDay);
+        console.log('selected day updated', selectedDay);
         handleDayChange(selectedDay);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedDay, MAX_DATE]);
@@ -250,10 +251,11 @@ function SectionDaily(props) {
         //loop from jan 1st to dec 31st
         let y = moment().year(selectedYear);
         const days = [];
-        const scores = props.user.scores.filter(score => score.date_played_moment.isSame(y, 'year'));
+        const scores_year = props.user.scores.filter(score => score.date_played_moment.isSame(y, 'year'));
+        let highestClears = 0;
         for (let i = 0; i < 12; i++) {
             const m = y.month(i);
-            const scores_month = scores.filter(score => score.date_played_moment.isSame(m, 'month'));
+            const scores_month = scores_year.filter(score => score.date_played_moment.isSame(m, 'month'));
             let daysInMonth = y.month(i).daysInMonth();
             for (let j = 0; j < daysInMonth; j++) {
                 //days.push(moment().year(year).dayOfYear(i + 1));
@@ -264,9 +266,14 @@ function SectionDaily(props) {
                     clears: scores_day.length,
                 }
                 days.push(obj);
+                if (scores_day.length > highestClears) {
+                    highestClears = scores_day.length;
+                }
             }
         }
-    
+
+        setDynamicRange(Math.max(0, highestClears));
+
         setYearGraphData(days);
     }, [selectedYear])
 
@@ -331,7 +338,8 @@ function SectionDaily(props) {
                                     {
                                         yearGraphData && yearGraphData.map((day, index) => {
                                             const _clears = day.clears;
-                                            const _progress = Math.min(_clears, 100) / 100;
+                                            //const _progress = Math.min(_clears, 100) / 100;
+                                            const _progress = Math.min(1, (dynamicRange > 0 ? ((100 / dynamicRange * _clears) / 100) : 0));
                                             const _color = lerpColor('#3c3c3c', themeColor, _progress);
 
                                             return (
@@ -340,21 +348,21 @@ function SectionDaily(props) {
                                                         {`${day.date}: ${_clears} clears`}
                                                     </Typography>
                                                 } placement='top' disableInteractive={true}>
-                                                    <Box 
-                                                    onClick={() => {_clears > 0 && setSelectedDay(day.date);console.log('selected day clicked',day.date)}}
-                                                    sx={{
-                                                        borderRadius: '3px',
-                                                        height: '12px',
-                                                        position: 'relative',
-                                                        width: '12px',
-                                                        backgroundColor: `${_color}`,
-                                                        margin: '2px',
-                                                        boxShadow: `0 0 5px 5px ${themeColor}${selectedDay === day.date?'40':'00'}`,
-                                                        '&:hover': {
-                                                            cursor: _clears>0?'pointer':'default',
-                                                            opacity: 0.5
-                                                        }
-                                                    }}>
+                                                    <Box
+                                                        onClick={() => { _clears > 0 && setSelectedDay(day.date); console.log('selected day clicked', day.date) }}
+                                                        sx={{
+                                                            borderRadius: '3px',
+                                                            height: '12px',
+                                                            position: 'relative',
+                                                            width: '12px',
+                                                            backgroundColor: `${_color}`,
+                                                            margin: '2px',
+                                                            boxShadow: `0 0 5px 5px ${themeColor}${selectedDay === day.date ? '40' : '00'}`,
+                                                            '&:hover': {
+                                                                cursor: _clears > 0 ? 'pointer' : 'default',
+                                                                opacity: 0.5
+                                                            }
+                                                        }}>
 
                                                     </Box>
                                                 </MUITooltip>
@@ -364,28 +372,33 @@ function SectionDaily(props) {
                                 </Grid>
                             </Grid>
                         </Box>
-                    </Paper>
-                    {/* <LocalizationProvider dateAdapter={AdapterMoment}>
-                        <Paper elevation={3}>
-                            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                <Button disabled={isWorking || props.user.data.activeDays.length === 0 || getDateIndex(selectedDay) <= 0} onClick={() => { setSelectedDay(moment(props.user.data.activeDays[getDateIndex(selectedDay) - 1])) }}>Previous</Button>
-                                <Grid sx={{ px: 1, m: 1 }}>
-                                    <DesktopDatePicker
-                                        disabled={isWorking}
-                                        minDate={MIN_DATE}
-                                        maxDate={MAX_DATE}
-                                        label="Select day"
-                                        inputFormat="MMMM Do, yyyy"
-                                        value={selectedDay}
-                                        onChange={setSelectedDay}
-                                        renderInput={(params) => <TextField variant="standard" size="small" {...params} />}
-                                        shouldDisableDate={(date) => (props.user.data.activeDays !== null && props.user.data.activeDays.length > 0) ? !props.user.data.activeDays.includes(date.format("YYYY-MM-DD")) : false}
-                                    />
-                                </Grid>
-                                <Button disabled={isWorking || props.user.data.activeDays.length === 0 || !(getDateIndex(selectedDay) < props.user.data.activeDays.length - 1)} onClick={() => { setSelectedDay(moment(props.user.data.activeDays[getDateIndex(selectedDay) + 1])) }}>Next</Button>
+                        <Paper elevation={1} sx={{ pt: 1}}>
+                            <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                                <Box
+                                    sx={{
+                                        borderRadius: '3px',
+                                        height: '12px',
+                                        position: 'relative',
+                                        width: '12px',
+                                        backgroundColor: '#3c3c3c',
+                                        margin: '2px',
+                                    }}></Box><Typography variant="body2">0 clears</Typography>
+                                <Box sx={{ width: '30px' }}></Box>
+                                <Box
+                                    sx={{
+                                        borderRadius: '3px',
+                                        height: '12px',
+                                        position: 'relative',
+                                        width: '12px',
+                                        backgroundColor: themeColor,
+                                        margin: '2px',
+                                    }}></Box><Typography variant="body2">{Math.min(dynamicRange, 100)}{dynamicRange > 100 ? '+' : ''} clear{dynamicRange > 0 ? 's' : ''}</Typography>
+                            </Box>
+                            <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                                <Typography variant="body2">Currently viewing {selectedDay}</Typography>
                             </Box>
                         </Paper>
-                    </LocalizationProvider> */}
+                    </Paper>
 
                     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                         <Grid sx={{ my: 2 }}>
