@@ -46,7 +46,7 @@ function App() {
         //also store the general user data (osu, inspector etc)
         const user = await getFullUser(loginData.user_id);
 
-        if(!user) {
+        if (!user) {
           showNotification('Warning', 'Unable to get your osu! account data. This may affect some features of the site.', 'warning');
         } else {
           loginData.osu_user = user;
@@ -88,7 +88,7 @@ function App() {
             </Alert>
           </>
         }
-        <Box sx={{pb: 2}}>
+        <Box sx={{ pb: 2 }}>
           <Header account={loginData} />
         </Box>
         <Container maxWidth='xl'>
@@ -125,7 +125,7 @@ function App() {
               </Routes>
             </CardContent>
           </Card>
-          <Box sx={{pt: 2, pb: 2}}>
+          <Box sx={{ pt: 2, pb: 2 }}>
             <Footer />
           </Box>
         </Container>

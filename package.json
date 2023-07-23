@@ -2,7 +2,7 @@
   "name": "score-inspector",
   "version": "2.0.0",
   "private": true,
-  "homepage": "https://darkchii.nl/score",
+  "homepage": "https://score.kirino.sh",
   "dependencies": {
     "@emotion/react": "^11.11.0",
     "@emotion/styled": "^11.10.8",
@@ -33,6 +33,7 @@
     "react-chartjs-2": "^5.0.0",
     "react-country-flag": "^3.0.2",
     "react-dom": "^18.2.0",
+    "react-error-overlay": "^6.0.11",
     "react-fast-marquee": "^1.5.2",
     "react-helmet": "^6.1.0",
     "react-rainbow-text": "^1.0.3",

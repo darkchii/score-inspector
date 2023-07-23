@@ -1,7 +1,7 @@
 {
-    "BASE_URL": "https://darkchii.nl",
+    "BASE_URL": "https://score.kirino.sh",
     "BASE_URL_DEV": "http://localhost:3006",
-    "API": "http://darkchii.nl/score_api/apiv2/",
+    "API": "https://api.kirino.sh/inspector/",
     "API_DEV": "http://localhost:3863/",
     "SCORE_API": "https://score.respektive.pw/u/",
     "DONATE_URL": "https://www.buymeacoffee.com/darkchii",

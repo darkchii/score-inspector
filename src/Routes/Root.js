@@ -210,7 +210,7 @@ function Root() {
                             <Card elevation={2}>
                                 <CardContent>
                                     <Typography variant='title'>Most visited</Typography>
-                                    <Stack spacing={1} sx={{pl:1}}>
+                                    <Stack spacing={1} sx={{ pl: 1 }}>
                                         {
                                             visitorStats && visitorStats.most_visited.map((v, i) => {
                                                 return (
@@ -238,7 +238,7 @@ function Root() {
                                     </Stack>
                                     <Divider style={{ margin: '10px 0' }} />
                                     <Typography variant='title'>Recent visited</Typography>
-                                    <Stack spacing={1} sx={{pl:1}}>
+                                    <Stack spacing={1} sx={{ pl: 1 }}>
                                         {
                                             visitorStats && visitorStats.last_visited.map((v, i) => {
                                                 return (
@@ -271,7 +271,7 @@ function Root() {
                             <Card elevation={2}>
                                 <CardContent>
                                     <Typography variant='title'>Server Status</Typography>
-                                    <Box sx={{pl: 1}}>
+                                    <Box sx={{ pl: 1 }}>
                                         <Grid container spacing={1}>
                                             {
                                                 serverStatus && Object.keys(serverStatus).map((k, i) => {
