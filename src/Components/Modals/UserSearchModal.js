@@ -69,7 +69,7 @@ function UserSearchModal(props, ref) {
                                         <Grid container spacing={1}>
                                             {
                                                 resultList.map((user, index) => (
-                                                    <Grid item xs={4} sx={{height: '160px'}}>
+                                                    <Grid item xs={12} md={6} lg={4} sx={{height: '160px'}}>
                                                         <PlayerCard onClick={() => { navigate(`/user/${user.user_id}`); setOpen(false); }} user={user} />
                                                     </Grid>
                                                 ))

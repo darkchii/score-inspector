@@ -136,7 +136,7 @@ function Root() {
                             <Card elevation={2}>
                                 <CardContent>
                                     <Grid container spacing={2}>
-                                        <Grid item xs={8.5}>
+                                        <Grid item xs={12} md={8.5}>
                                             <Typography variant='title'>What does it do</Typography>
                                             <Typography variant='body2'>This website takes the dump of all your scores, and generates statistics and graphs from it.</Typography>
                                             <Typography variant='body2'>All of your scores means every TOP score on a beatmap, so not plays that are overridden or set with different mods.</Typography>
@@ -148,7 +148,7 @@ function Root() {
                                             <Typography variant='body2'>- The #feature-ideas channel in the <Link href='https://discord.gg/VZWRZZXcW4' target='_blank'>osu!alt discord</Link> (make sure to tag Amayakase#9198)</Typography>
                                             <Typography variant='body2'>- Opening an issue on the <Link href='https://github.com/darkchii/score-inspector' target='_blank'>GitHub</Link></Typography>
                                         </Grid>
-                                        <Grid item xs={3.5}>
+                                        <Grid item xs={12} md={3.5}>
                                             <Typography variant='title'>For new users</Typography>
                                             <TableContainer>
                                                 <Table size='small'>
