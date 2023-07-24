@@ -112,7 +112,7 @@ export function is_numeric(str) {
     return /^\d+$/.test(str);
 }
 
-export function lerpColor(a, b, amount) {
+export function lerpColor(a, b, amount, alpha_a, alpha_b) {
 
     var ah = parseInt(a.replace(/#/g, ''), 16),
         ar = ah >> 16, ag = ah >> 8 & 0xff, ab = ah & 0xff,
@@ -122,5 +122,19 @@ export function lerpColor(a, b, amount) {
         rg = ag + amount * (bg - ag),
         rb = ab + amount * (bb - ab);
 
-    return '#' + ((1 << 24) + (rr << 16) + (rg << 8) + rb | 0).toString(16).slice(1);
+    var alpha = null;
+    if (alpha_a !== undefined && alpha_b !== undefined) {
+        alpha = alpha_a + amount * (alpha_b - alpha_a);
+    }
+
+    var res = '#' + ((1 << 24) + (rr << 16) + (rg << 8) + rb | 0).toString(16).slice(1);
+    if (alpha !== null) {
+        res += Math.round(alpha * 255).toString(16).padStart(2, '0');
+    }
+    return res;
+}
+
+export function linearToLogarithmic(x) {
+    const yLog = Math.log10(9 * x + 1) / Math.log10(10);
+    return yLog;
 }

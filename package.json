@@ -17,7 +17,8 @@
     "@mui/x-date-pickers": "^6.5.0",
     "axios": "^1.4.0",
     "buffer": "^6.0.3",
-    "chart.js": "^4.2.1",
+    "chart.js": "^4.3.0",
+    "chartjs-chart-geo": "^4.2.4",
     "chartjs-plugin-annotation": "^3.0.1",
     "chartjs-plugin-datalabels": "^2.2.0",
     "chartjs-plugin-zoom": "^2.0.1",
@@ -43,7 +44,8 @@
     "react-snowfall": "^1.2.1",
     "react-toastify": "^9.1.3",
     "react-virtualized": "^9.22.5",
-    "react-virtualized-auto-sizer": "^1.0.20"
+    "react-virtualized-auto-sizer": "^1.0.20",
+    "world-atlas": "^2.0.2"
   },
   "scripts": {
     "start": "set PORT=3006 && react-scripts start",

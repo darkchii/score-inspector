@@ -64,6 +64,18 @@ export async function getUserScores(user_id, allowLoved, onScoreDownloadProgress
     return _scores;
 }
 
+export async function getPopulation(){
+    let _pop = null;
+    try {
+        const url = `${GetAPI()}country_list`;
+        const res = await axios.get(url, { headers: { "Access-Control-Allow-Origin": "*" }, ...config });
+        _pop = res.data;
+    } catch (err) {
+        return null;
+    }
+    return _pop;
+}
+
 export async function getBeatmapScores(beatmap_id, limit = 500, offset = 0){
     let _scores = null;
     try {

@@ -17,6 +17,7 @@ import CustomizeModal from './Modals/CustomizeModal';
 import VisitorLogModal from './Modals/VisitorLogModal';
 import MapIcon from '@mui/icons-material/Map';
 import MenuIcon from '@mui/icons-material/Menu';
+import PublicIcon from '@mui/icons-material/Public';
 
 function Header(props) {
     const { window } = props;
@@ -35,6 +36,7 @@ function Header(props) {
         { name: 'Stats', icon: <DataUsageIcon />, onClick: () => { }, linkTo: '/stats' },
         { name: 'Settings', icon: <SettingsIcon />, onClick: () => settingsElement.current.setOpen(true) },
         { name: 'Tools', icon: <BuildIcon />, onClick: () => { }, linkTo: '/tools' },
+        { name: 'Population', icon: <PublicIcon />, onClick: () => { }, linkTo: '/population' },
     ];
 
     const handleDrawerToggle = () => {
