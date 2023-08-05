@@ -138,3 +138,7 @@ export function linearToLogarithmic(x) {
     const yLog = Math.log10(9 * x + 1) / Math.log10(10);
     return yLog;
 }
+
+export function pxToRem(number, baseNumber = 16) {
+    return `${number / baseNumber}rem`;
+}
