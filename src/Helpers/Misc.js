@@ -115,9 +115,9 @@ export function is_numeric(str) {
 export function lerpColor(a, b, amount, alpha_a, alpha_b) {
 
     var ah = parseInt(a.replace(/#/g, ''), 16),
-        ar = ah >> 16, ag = ah >> 8 & 0xff, ab = ah & 0xff,
+        ar = ah >> 16, ag = (ah >> 8) & 0xff, ab = ah & 0xff,
         bh = parseInt(b.replace(/#/g, ''), 16),
-        br = bh >> 16, bg = bh >> 8 & 0xff, bb = bh & 0xff,
+        br = bh >> 16, bg = (bh >> 8) & 0xff, bb = bh & 0xff,
         rr = ar + amount * (br - ar),
         rg = ag + amount * (bg - ag),
         rb = ab + amount * (bb - ab);

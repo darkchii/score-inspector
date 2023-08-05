@@ -1,24 +1,17 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useRef } from "react";
 import { useState } from "react";
 import { getBeatmapPackDetails, getBeatmapPacks, getBeatmaps } from "../../Helpers/Osu";
-import { Accordion, Box, Button, ButtonGroup, Grid, LinearProgress, Modal, Paper, Stack, Tooltip, Typography, useTheme } from "@mui/material";
-import GlowBar from "../UI/GlowBar";
-import AccordionSummary from '@mui/material/AccordionSummary';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { Box, Grid, Paper, Tooltip, Typography, useTheme } from "@mui/material";
 import { is_numeric, lerpColor } from "../../Helpers/Misc";
-import HtmlTooltip from "../UI/HtmlTooltip";
 import PackCompletionModal from "../Modals/PackCompletionModal";
 
 function SectionPacks(props) {
     const theme = useTheme();
-    const [selectedPackType, setSelectedPackType] = useState(0);
-    const [standardPacks, setStandardPacks] = useState([]);
-    const [otherPacks, setOtherPacks] = useState([]);
     const [packData, setPackData] = useState([]);
     const [selectedPack, setSelectedPack] = useState(null);
     const [selectedPackData, setSelectedPackData] = useState(null);
-    const [themeColor, setThemeColor] = useState(theme.typography.title.color);
+    const [themeColor] = useState(theme.typography.title.color);
     const packInfoModalElement = useRef(null);
 
     useEffect(() => {

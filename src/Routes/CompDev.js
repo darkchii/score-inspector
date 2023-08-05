@@ -1,5 +1,4 @@
 import { Grid, Paper } from "@mui/material";
-import LevelIcon from "../Components/UI/LevelIcon";
 import PlayerCard from "../Components/PlayerCard";
 
 function CompDev() {

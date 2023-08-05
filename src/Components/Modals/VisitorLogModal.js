@@ -1,8 +1,7 @@
-import { Box, Button, Card, CardContent, Container, FormControl, FormControlLabel, FormGroup, Modal, Stack, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
+import { Box, Card, CardContent, Container, Modal, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import { useEffect, useImperativeHandle } from "react";
 import { forwardRef } from "react";
 import { useState } from "react";
-import { getSettings, saveSettings } from "../../Helpers/Settings";
 import { GetFormattedName, GetVisited } from "../../Helpers/Account";
 import moment from "moment";
 import { Link as RouterLink } from 'react-router-dom';
@@ -18,8 +17,6 @@ const style = {
 function VisitorLogModal(props, ref) {
     const [open, setOpen] = useState(false);
     const [visitedList, setVisitedList] = useState([]);
-
-    const [settings, setSettings] = useState(getSettings());
 
     useImperativeHandle(ref, () => ({
         setOpen(value) {

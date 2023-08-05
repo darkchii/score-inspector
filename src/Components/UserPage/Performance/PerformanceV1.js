@@ -1,5 +1,5 @@
 import AutoGraphIcon from '@mui/icons-material/AutoGraph';
-import { Button, Card, CardContent, Grid, Tooltip, Typography } from '@mui/material';
+import { Button, Grid, Tooltip, Typography } from '@mui/material';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { toFixedNumber } from '../../../Helpers/Misc';

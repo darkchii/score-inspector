@@ -1,12 +1,7 @@
-import { useState } from "react";
-import { useEffect } from "react";
-import { Box, Stack, Tooltip, Typography, useTheme } from "@mui/material";
+import { useState, useEffect } from "react";
+import { Box, Tooltip, Typography } from "@mui/material";
 import GlowBar from "../UI/GlowBar";
-import LevelIcon from "../UI/LevelIcon";
-import { LEADERBOARD_BORDER_RADIUS, LEADERBOARD_ITEM_HEIGHT, LeaderboardItem } from "./LeaderboardItem";
-import ReactCountryFlag from "react-country-flag";
-import { GetRoleIcons } from "../../Helpers/Account";
-import NotInterestedIcon from '@mui/icons-material/NotInterested';
+import { LeaderboardItem } from "./LeaderboardItem";
 import CheckIcon from '@mui/icons-material/Check';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { approval_state } from "../../Helpers/Osu";
@@ -16,7 +11,6 @@ function BeatmapLeaderboardItem(props) {
     const [base_beatmap, setBaseBeatmap] = useState({});
     const [osu_beatmap, setOsuBeatmap] = useState({});
     const [type, setType] = useState('');
-    const theme = useTheme();
 
     useEffect(() => {
         const _base_beatmap = props.map;

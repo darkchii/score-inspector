@@ -1,5 +1,5 @@
 import LaunchIcon from '@mui/icons-material/Launch';
-import { Button, Card, CardContent, Grid, Typography } from '@mui/material';
+import { Button, Grid, Typography } from '@mui/material';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { toFixedNumber } from '../../../Helpers/Misc';

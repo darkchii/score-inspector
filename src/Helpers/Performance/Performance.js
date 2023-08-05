@@ -2,7 +2,6 @@ import { getPerformance2014 } from "./Performance2014";
 import { getPerformance2016 } from "./Performance2016";
 import { getPerformanceLazer } from "./PerformanceLazer";
 import { getPerformanceLive } from "./PerformanceLive";
-import { cloneDeep } from "lodash";
 import { getPerformanceV1 } from "./PerformanceV1";
 
 export function getCalculator(version, data, debug = false) {

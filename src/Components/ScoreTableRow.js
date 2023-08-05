@@ -1,6 +1,4 @@
-import ExpandLess from '@mui/icons-material/ExpandLess';
-import ExpandMore from '@mui/icons-material/ExpandMore';
-import { Box, Card, Collapse, Grid, IconButton, LinearProgress, setRef, Tooltip, Typography } from '@mui/material';
+import { Box, Card, Grid, IconButton, LinearProgress, Tooltip, Typography } from '@mui/material';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { getGradeIcon, getModIcon } from '../Helpers/Assets';
@@ -10,8 +8,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 
 function ScoreTableRow(props) {
     const [score, setScore] = useState(null);
-    const [viewerOpen, setViewerOpen] = useState(false);
-    const [height, setHeight] = useState(0);
+    const [viewerOpen] = useState(false);
     const [allowScoreViewer, setAllowScoreViewer] = useState(true);
 
     const openScoreView = (index) => {

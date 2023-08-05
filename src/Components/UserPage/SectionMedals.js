@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Alert, Box, Grid, Paper, Tooltip, Typography } from "@mui/material";
 import React, { useEffect } from "react";
 import { useState } from "react";

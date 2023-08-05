@@ -15,7 +15,6 @@ import { PNG_GUEST } from '../Helpers/Assets';
 import AccountDropdown from './Navigation/AccountDropdown';
 import CustomizeModal from './Modals/CustomizeModal';
 import VisitorLogModal from './Modals/VisitorLogModal';
-import MapIcon from '@mui/icons-material/Map';
 import MenuIcon from '@mui/icons-material/Menu';
 import PublicIcon from '@mui/icons-material/Public';
 

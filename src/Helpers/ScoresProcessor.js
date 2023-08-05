@@ -213,17 +213,6 @@ async function weighPerformance(scores, onScoreProcessUpdate) {
         j *= 0.994;
     });
 
-    j = 1;
-    let accuracy = 0;
-    let accuracy_total = 0;
-    scores.forEach(score => {
-        accuracy += score.pp_v1.acc * j;
-        accuracy_total += j;
-        j *= 0.996;
-    });
-
-    accuracy /= accuracy_total;
-
     rank_score = Math.max(0, Math.log(rank_score + 1) * 400);
     data.weighted.v1 = rank_score;
 

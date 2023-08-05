@@ -1,6 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useRef, useState } from "react";
-import RotateLeftIcon from '@mui/icons-material/RotateLeft';
-import { Button, ButtonGroup, CircularProgress, FormControlLabel, FormGroup, Grid, Switch } from "@mui/material";
+import { Button, ButtonGroup, CircularProgress, Grid } from "@mui/material";
 import { Line } from "react-chartjs-2";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {

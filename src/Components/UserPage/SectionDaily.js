@@ -1,4 +1,5 @@
-import { Box, Button, ButtonGroup, Card, CardContent, Chip, chipClasses, Grid, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableRow, TextField, Typography, useTheme, Tooltip as MUITooltip } from "@mui/material";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { Box, Button, ButtonGroup, Card, CardContent, Chip, chipClasses, Grid, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography, useTheme, Tooltip as MUITooltip } from "@mui/material";
 import moment from "moment";
 import momentDurationFormatSetup from "moment-duration-format";
 import { useEffect, useState } from "react";
@@ -37,7 +38,7 @@ const heightDefiners = [
 function SectionDaily(props) {
     const theme = useTheme();
     const MIN_DATE = moment(props.user.osu.join_date);
-    const [MAX_DATE, setMaxDate] = useState(moment());
+    const [MAX_DATE] = useState(moment());
     const [selectedYear, setSelectedYear] = useState(moment(MAX_DATE).startOf('year').year());
     const [selectedDay, setSelectedDay] = useState(MAX_DATE.endOf('day').format("YYYY-MM-DD"));
     const [isWorking, setWorkingState] = useState(false);
@@ -46,18 +47,13 @@ function SectionDaily(props) {
     const [graphData, setGraphData] = useState(null);
     const [heightDefiner, setHeightDefiner] = useState(heightDefiners[0]);
     const [yearGraphData, setYearGraphData] = useState(null);
-    const [themeColor, setThemeColor] = useState(theme.typography.title.color);
+    const [themeColor] = useState(theme.typography.title.color);
     const [dynamicRange, setDynamicRange] = useState(100);
 
     const [sessionCount, setSessionCount] = useState(0);
     const [totalSessionLength, setTotalSessionLength] = useState(0);
 
     const [stats, setStats] = useState(null);
-
-    const getDateIndex = (date) => {
-        const index = props.user.data.activeDays.findIndex(day => day === date.format("YYYY-MM-DD"));
-        return index;
-    }
 
     useEffect(() => {
         if (scores === null) {

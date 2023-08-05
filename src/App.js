@@ -1,5 +1,5 @@
 import { Alert, Box, Card, CardContent, Container, CssBaseline, Typography } from '@mui/material';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { ThemeProvider } from '@mui/material/styles';
 import React, { useEffect, useState } from 'react';
 import './App.css';
 import Theme from './Theme';
@@ -25,7 +25,7 @@ import config from './config';
 import Tools from './Routes/Tools';
 import { Helmet } from 'react-helmet';
 import CompDev from './Routes/CompDev';
-import { getFullUser, getUser } from './Helpers/Osu';
+import { getFullUser } from './Helpers/Osu';
 import Population from './Routes/Population';
 
 function App() {

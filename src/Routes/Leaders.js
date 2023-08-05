@@ -1,23 +1,16 @@
-import { Alert, AlertTitle, Avatar, Box, Button, Card, CircularProgress, FormControl, InputLabel, Link, MenuItem, Pagination, Paper, Select, Stack, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableRow, tableRowClasses, Tooltip, Typography } from '@mui/material';
+import { Alert, AlertTitle, Box, Button, CircularProgress, FormControl, InputLabel, Link, MenuItem, Pagination, Paper, Select, Stack, Tooltip, Typography } from '@mui/material';
 import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import ReactCountryFlag from 'react-country-flag';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getLeaderboard } from '../Helpers/OsuAlt';
-import VerifiedIcon from '@mui/icons-material/Verified';
 import moment from 'moment/moment';
-import SmartToyIcon from '@mui/icons-material/SmartToy';
 import countries from "countries-list";
 import momentDurationFormatSetup from "moment-duration-format";
-import { GetFormattedName, GetRoleIcons } from '../Helpers/Account';
-import LevelIcon from '../Components/UI/LevelIcon';
-import GlowBar from '../Components/UI/GlowBar';
 import PlayerLeaderboardItem from '../Components/Leaderboards/PlayerLeaderboardItem';
 import BeatmapLeaderboardItem from '../Components/Leaderboards/BeatmapLeaderboardItem';
 momentDurationFormatSetup(moment);
-
-const ROW_HEIGHT = 60;
 
 const GROUPED_STATS = {
     'pp': [

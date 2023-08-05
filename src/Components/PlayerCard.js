@@ -1,26 +1,17 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Box, Card, CardContent, CardMedia, Grid, Stack, Typography } from "@mui/material";
 import ReactCountryFlag from "react-country-flag";
-import { Navigate } from "react-router-dom";
-import { GetFormattedName, GetRoleIcons } from "../Helpers/Account";
-import { PNG_LEVEL_BADGE } from "../Helpers/Assets";
+import { GetRoleIcons } from "../Helpers/Account";
 import LevelIcon from "./UI/LevelIcon";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useRef } from "react";
-//expected user object:
-// {
-//     ...users2 user
-//     inspector_user: {
-//         ...
-//     }
-//}
 
 const SECTIONAL_HEIGHT = 75;
 const BORDER_RADIUS = '15px';
 
 function PlayerCard(props) {
     const [cardHeight, setCardHeight] = useState(0);
-    const [cardWidth, setCardWidth] = useState(0);
     const boxRef = useRef();
     const [rulesetStats, setRulesetStats] = useState(null);
 
@@ -32,8 +23,6 @@ function PlayerCard(props) {
     useEffect(() => {
         //get height of card element
         setCardHeight(boxRef?.current?.clientHeight);
-        setCardWidth(boxRef?.current?.clientWidth);
-
     });
     
     useEffect(()=>{

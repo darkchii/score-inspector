@@ -1,4 +1,4 @@
-import { Box, Stack, Tooltip, Typography } from "@mui/material";
+import { Box, Stack, Tooltip } from "@mui/material";
 import { PNG_LEVEL_BADGE } from "../../Helpers/Assets";
 import ScaleText from "react-scale-text";
 

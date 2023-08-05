@@ -1,5 +1,4 @@
 import axios from "axios";
-import config from "../config.json";
 import { GetUser as GetInspectorUser } from "./Account";
 import { GetAPI } from "./Misc";
 

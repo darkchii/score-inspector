@@ -1,10 +1,7 @@
-import { Box, Button, Card, CardContent, CircularProgress, Container, Grid, Modal, Stack, TextField, Tooltip, Typography } from "@mui/material";
+import { Box, Card, CardContent, CircularProgress, Container, Modal, Stack, Tooltip, Typography } from "@mui/material";
 import { useEffect, useImperativeHandle } from "react";
 import { forwardRef } from "react";
 import { useState } from "react";
-import { GetUser as GetInspectorUser, UpdateProfile } from "../../Helpers/Account";
-import { showNotification, validateImage } from "../../Helpers/Misc";
-import BeatmapLeaderboardItem from "../Leaderboards/BeatmapLeaderboardItem";
 import { LeaderboardItem } from "../Leaderboards/LeaderboardItem";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';

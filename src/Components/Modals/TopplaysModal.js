@@ -1,4 +1,4 @@
-import { Card, CardContent, Modal, Typography, Grid, ListItem, Box, LinearProgress } from "@mui/material";
+import { Card, CardContent, Modal, Typography, Grid, ListItem } from "@mui/material";
 import React, { useEffect } from "react";
 import { List } from "react-virtualized";
 import ScoreTableRow from "../ScoreTableRow";
@@ -42,7 +42,7 @@ function TopplaysModal(props) {
     }, [props.allowScoreViewer])
 
     const rowHeight = ({ index }) => {
-        const score = scores[index];
+        // const score = scores[index];
         return 40;
     };
 
