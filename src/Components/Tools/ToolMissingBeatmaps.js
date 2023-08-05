@@ -5,11 +5,15 @@ import { useState } from "react";
 import { GetAPI, readFileAsync, showNotification } from "../../Helpers/Misc";
 import { OsuDb } from "../../Helpers/OsuDb/OsuDb";
 
+const modeNames = {
+    0: "Standard",
+    1: "Taiko",
+    2: "Catch the Beat",
+    3: "Mania"
+}
+
 function ToolMissingBeatmaps() {
     const [beatmaps, setBeatmaps] = useState(null);
-    const [rankedBeatmaps, setRankedBeatmaps] = useState(null);
-    const [qualifiedBeatmaps, setQualifiedBeatmaps] = useState(null);
-    const [lovedBeatmaps, setLovedBeatmaps] = useState(null);
     const [readyToUpload, setReadyToUpload] = useState(false);
     const [uploading, setUploading] = useState(false);
     const [hasDataReady, setHasDataReady] = useState(false);
@@ -28,84 +32,74 @@ function ToolMissingBeatmaps() {
             setUploading(false);
             return;
         }
-        const duplicateRankedBeatmaps = (JSON.parse(JSON.stringify(rankedBeatmaps)));
-        const duplicateQualifiedBeatmaps = (JSON.parse(JSON.stringify(qualifiedBeatmaps)));
-        const duplicateLovedBeatmaps = (JSON.parse(JSON.stringify(lovedBeatmaps)));
+
+        const duplicatedModes = (JSON.parse(JSON.stringify(beatmaps)));
+
         const osuDbData = await readFileAsync(e.target.files[0]);
 
         const osuDb = new OsuDb();
         try {
             await osuDb.Read(osuDbData);
-        } catch (e) {
-            showNotification("", "Failed to read osu!.db file", "error");
+        } catch (err) {
+            showNotification("", `Failed to read osu!.db file: ${err.message}`, "error");
             setUploading(false);
             return;
         }
 
-        let missingRanked;
-        let missingQualified;
-        let missingLoved;
-        let missingRankedSets = [];
-        let missingQualifiedSets = [];
-        let missingLovedSets = [];
+        let missingModes = [];
+        let existingIds = [];
         try {
-            const existingIds = osuDb.Beatmaps.map((beatmap) => beatmap.beatmapID);
-
-            missingRanked = duplicateRankedBeatmaps.filter((beatmap) => !existingIds.includes(beatmap.beatmap_id));
-            missingQualified = duplicateQualifiedBeatmaps.filter((beatmap) => !existingIds.includes(beatmap.beatmap_id));
-            missingLoved = duplicateLovedBeatmaps.filter((beatmap) => !existingIds.includes(beatmap.beatmap_id));
-
-            for (let i = 0; i < missingRanked.length; i++) {
-                const beatmap = missingRanked[i];
-                const set = missingRankedSets.find((set) => set.beatmapset_id === beatmap.beatmapset_id);
-                if (set === undefined) {
-                    missingRankedSets.push({
-                        beatmapset_id: beatmap.beatmapset_id,
-                        artist: beatmap.artist,
-                        title: beatmap.title
-                    });
-                }
-            }
-
-            for (let i = 0; i < missingQualified.length; i++) {
-                const beatmap = missingQualified[i];
-                const set = missingQualifiedSets.find((set) => set.beatmapset_id === beatmap.beatmapset_id);
-                if (set === undefined) {
-                    missingQualifiedSets.push({
-                        beatmapset_id: beatmap.beatmapset_id,
-                        artist: beatmap.artist,
-                        title: beatmap.title
-                    });
-                }
-            }
-
-            for (let i = 0; i < missingLoved.length; i++) {
-                const beatmap = missingLoved[i];
-                const set = missingLovedSets.find((set) => set.beatmapset_id === beatmap.beatmapset_id);
-                if (set === undefined) {
-                    missingLovedSets.push({
-                        beatmapset_id: beatmap.beatmapset_id,
-                        artist: beatmap.artist,
-                        title: beatmap.title
-                    });
-                }
-            }
-        } catch (e) {
-            showNotification("", "Failed to process data", "error");
+            existingIds = osuDb.Beatmaps.map((beatmap) => beatmap.beatmapID);
+        } catch (err) {
+            showNotification("", `Failed to read osu!.db file: ${err.message}`, "error");
             setUploading(false);
             return;
         }
 
-        const data = {
-            missingRanked,
-            missingQualified,
-            missingLoved,
-            missingRankedSets,
-            missingQualifiedSets,
-            missingLovedSets,
-        };
-        setProcessedData(data);
+        for (let i = 0; i < duplicatedModes.length; i++) {
+            let mode = duplicatedModes[i];
+            let out = {};
 
+            try {
+                out.missingRanked = mode.ranked.filter((beatmap) => !existingIds.includes(beatmap.beatmap_id));
+                out.missingLoved = mode.loved.filter((beatmap) => !existingIds.includes(beatmap.beatmap_id));
+                out.missingRankedSets = [];
+                out.missingLovedSets = [];
+
+                for (let i = 0; i < out.missingRanked.length; i++) {
+                    const beatmap = out.missingRanked[i];
+                    const set = out.missingRankedSets.find((set) => set.set_id === beatmap.set_id);
+                    if (set === undefined) {
+                        out.missingRankedSets.push({
+                            set_id: beatmap.set_id,
+                            artist: beatmap.artist,
+                            title: beatmap.title
+                        });
+                    }
+                }
+
+                for (let i = 0; i < out.missingLoved.length; i++) {
+                    const beatmap = out.missingLoved[i];
+                    const set = out.missingLovedSets.find((set) => set.set_id === beatmap.set_id);
+                    if (set === undefined) {
+                        out.missingLovedSets.push({
+                            set_id: beatmap.set_id,
+                            artist: beatmap.artist,
+                            title: beatmap.title
+                        });
+                    }
+                }
+
+                missingModes.push(out);
+            } catch (err) {
+                showNotification("", `Failed to process beatmaps: ${err.message}`, "error");
+                setUploading(false);
+                return;
+            }
+        }
+
+        console.log('missing beatmaps', missingModes);
+        setProcessedData(missingModes);
         setUploading(false);
         setHasDataReady(true);
     };
@@ -114,7 +108,7 @@ function ToolMissingBeatmaps() {
         (async () => {
             if (beatmaps !== null && beatmaps.length > 0) return;
             //get beatmaps
-            const { data } = await axios.get(`${GetAPI()}beatmaps/all?compact=1&include_loved=true&include_qualified=true`);
+            const { data } = await axios.get(`${GetAPI()}beatmaps/all?compact=1&include_loved=true&include_qualified=true&mode=0,1,2,3`);
 
             if (!data || data.error !== undefined || data.length === 0) {
                 showNotification("", "Failed to get beatmaps", "error");
@@ -122,15 +116,38 @@ function ToolMissingBeatmaps() {
             }
             showNotification("", "Got beatmaps", "success");
 
-            const ranked = data.filter((beatmap) => beatmap.approved === 1 || beatmap.approved === 2);
-            const qualified = data.filter((beatmap) => beatmap.approved === 3);
-            const loved = data.filter((beatmap) => beatmap.approved === 4);
+            const modes = [];
+            modes[0] = data.filter((beatmap) => beatmap.mode === 0);
+            modes[1] = data.filter((beatmap) => beatmap.mode === 1);
+            modes[2] = data.filter((beatmap) => beatmap.mode === 2);
+            modes[3] = data.filter((beatmap) => beatmap.mode === 3);
 
-            setRankedBeatmaps(ranked);
-            setQualifiedBeatmaps(qualified);
-            setLovedBeatmaps(loved);
-            setBeatmaps(data);
+            const _modes = [];
+
+            for (let i = 0; i < modes.length; i++) {
+                const mode = modes[i];
+                const ranked = mode.filter((beatmap) => beatmap.approved === 1 || beatmap.approved === 2);
+                const qualified = mode.filter((beatmap) => beatmap.approved === 3);
+                const loved = mode.filter((beatmap) => beatmap.approved === 4);
+
+                _modes[i] = {
+                    ranked,
+                    qualified,
+                    loved,
+                };
+            }
+
+            setBeatmaps(_modes);
             setReadyToUpload(true);
+
+            // const ranked = data.filter((beatmap) => beatmap.approved === 1 || beatmap.approved === 2);
+            // const qualified = data.filter((beatmap) => beatmap.approved === 3);
+            // const loved = data.filter((beatmap) => beatmap.approved === 4);
+
+            // setRankedBeatmaps(ranked);
+            // setQualifiedBeatmaps(qualified);
+            // setLovedBeatmaps(loved);
+            // setBeatmaps(data);
         })();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -144,31 +161,34 @@ function ToolMissingBeatmaps() {
                 <Alert severity="warning">
                     Don't be alarmed if the web page freezes for a while. It takes longer to process larger files.
                 </Alert>
-                <Grid container>
-                    <Grid item xs={3}>
-                        <Paper elevation={2} sx={{ p: 2, m: 1 }}>
-                            <Typography variant="title">Total</Typography>
-                            <Typography variant="h6">{beatmaps?.length?.toLocaleString('en-US') ?? '-'}</Typography>
-                        </Paper>
-                    </Grid>
-                    <Grid item xs={3}>
-                        <Paper elevation={2} sx={{ p: 2, m: 1 }}>
-                            <Typography variant="title">Ranked</Typography>
-                            <Typography variant="h6">{rankedBeatmaps?.length?.toLocaleString('en-US') ?? '-'}</Typography>
-                        </Paper>
-                    </Grid>
-                    <Grid item xs={3}>
-                        <Paper elevation={2} sx={{ p: 2, m: 1 }}>
-                            <Typography variant="title">Qualified</Typography>
-                            <Typography variant="h6">{qualifiedBeatmaps?.length?.toLocaleString('en-US') ?? '-'}</Typography>
-                        </Paper>
-                    </Grid>
-                    <Grid item xs={3}>
-                        <Paper elevation={2} sx={{ p: 2, m: 1 }}>
-                            <Typography variant="title">Loved</Typography>
-                            <Typography variant="h6">{lovedBeatmaps?.length?.toLocaleString('en-US') ?? '-'}</Typography>
-                        </Paper>
-                    </Grid>
+                <Grid container spacing={1}>
+                    {
+                        beatmaps?.map((mode, index) => {
+                            const total = mode?.ranked?.length + mode?.qualified?.length + mode?.loved?.length;
+                            return (
+                                <>
+                                    <Grid item xs={4}>
+                                        <Paper elevation={2} sx={{ p: 1 }}>
+                                            <Typography variant="subtitle1">{modeNames[index]}</Typography>
+                                            <Typography variant="h6">{total?.toLocaleString('en-US') ?? '-'}</Typography>
+                                        </Paper>
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <Paper elevation={2} sx={{ p: 1 }}>
+                                            <Typography variant="subtitle1">Ranked</Typography>
+                                            <Typography variant="h6">{mode?.ranked?.length?.toLocaleString('en-US') ?? '-'}</Typography>
+                                        </Paper>
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <Paper elevation={2} sx={{ p: 1 }}>
+                                            <Typography variant="subtitle1">Loved</Typography>
+                                            <Typography variant="h6">{mode?.loved?.length?.toLocaleString('en-US') ?? '-'}</Typography>
+                                        </Paper>
+                                    </Grid>
+                                </>
+                            )
+                        })
+                    }
                 </Grid>
                 <Button disable={!readyToUpload || uploading} variant="contained" component="label">
                     {
@@ -182,97 +202,81 @@ function ToolMissingBeatmaps() {
                 </Button>
                 {
                     hasDataReady && <>
-                        <Grid container>
-                            <Grid item xs={12 / 3}>
-                                <Paper elevation={2} sx={{ p: 2, m: 1 }}>
-                                    <Typography variant="title" fontSize={'1em'}>Missing Ranked</Typography>
-                                    <Typography variant="h6">{processedData?.missingRanked?.length?.toLocaleString('en-US') ?? '-'} ({processedData?.missingRankedSets?.length?.toLocaleString('en-US') ?? '-'} sets)</Typography>
-                                </Paper>
-                            </Grid>
-                            <Grid item xs={12 / 3}>
-                                <Paper elevation={2} sx={{ p: 2, m: 1 }}>
-                                    <Typography variant="title" fontSize={'1em'}>Missing Qualified</Typography>
-                                    <Typography variant="h6">{processedData?.missingQualified?.length?.toLocaleString('en-US') ?? '-'} ({processedData?.missingQualifiedSets?.length?.toLocaleString('en-US') ?? '-'} sets)</Typography>
-                                </Paper>
-                            </Grid>
-                            <Grid item xs={12 / 3}>
-                                <Paper elevation={2} sx={{ p: 2, m: 1 }}>
-                                    <Typography variant="title" fontSize={'1em'}>Missing Loved</Typography>
-                                    <Typography variant="h6">{processedData?.missingLoved?.length?.toLocaleString('en-US') ?? '-'} ({processedData?.missingLovedSets?.length?.toLocaleString('en-US') ?? '-'} sets)</Typography>
-                                </Paper>
-                            </Grid>
-                        </Grid>
-                        <Box>
-                            <Accordion>
-                                <AccordionSummary>
-                                    <Typography>Ranked</Typography>
-                                </AccordionSummary>
-                                <AccordionDetails>
-                                    <TableContainer component={Paper}>
-                                        <Table size='small'>
-                                            <TableBody>
-                                                {
-                                                    processedData?.missingRankedSets?.map((set) => (
-                                                        <TableRow key={set.beatmapset_id}>
-                                                            <TableCell>{set.beatmapset_id}</TableCell>
-                                                            <TableCell>{set.artist} - {set.title}</TableCell>
-                                                            <TableCell><Link href={`https://osu.ppy.sh/beatmapsets/${set.beatmapset_id}`} target='_blank'>osu!</Link></TableCell>
-                                                            <TableCell><Link href={`osu://dl/${set.beatmapset_id}`} target='_blank'>osu!direct</Link></TableCell>
-                                                        </TableRow>
-                                                    ))
-                                                }
-                                            </TableBody>
-                                        </Table>
-                                    </TableContainer>
-                                </AccordionDetails>
-                            </Accordion>
-                            <Accordion>
-                                <AccordionSummary>
-                                    <Typography>Qualified</Typography>
-                                </AccordionSummary>
-                                <AccordionDetails>
-                                    <TableContainer component={Paper}>
-                                        <Table size='small'>
-                                            <TableBody>
-                                                {
-                                                    processedData?.missingQualifiedSets?.map((set) => (
-                                                        <TableRow key={set.beatmapset_id}>
-                                                            <TableCell>{set.beatmapset_id}</TableCell>
-                                                            <TableCell>{set.artist} - {set.title}</TableCell>
-                                                            <TableCell><Link href={`https://osu.ppy.sh/beatmapsets/${set.beatmapset_id}`} target='_blank'>osu!</Link></TableCell>
-                                                            <TableCell><Link href={`osu://dl/${set.beatmapset_id}`} target='_blank'>osu!direct</Link></TableCell>
-                                                        </TableRow>
-                                                    ))
-                                                }
-                                            </TableBody>
-                                        </Table>
-                                    </TableContainer>
-                                </AccordionDetails>
-                            </Accordion>
-                            <Accordion>
-                                <AccordionSummary>
-                                    <Typography>Loved</Typography>
-                                </AccordionSummary>
-                                <AccordionDetails>
-                                    <TableContainer component={Paper}>
-                                        <Table size='small'>
-                                            <TableBody>
-                                                {
-                                                    processedData?.missingLovedSets?.map((set) => (
-                                                        <TableRow key={set.beatmapset_id}>
-                                                            <TableCell>{set.beatmapset_id}</TableCell>
-                                                            <TableCell>{set.artist} - {set.title}</TableCell>
-                                                            <TableCell><Link href={`https://osu.ppy.sh/beatmapsets/${set.beatmapset_id}`} target='_blank'>osu!</Link></TableCell>
-                                                            <TableCell><Link href={`osu://dl/${set.beatmapset_id}`} target='_blank'>osu!direct</Link></TableCell>
-                                                        </TableRow>
-                                                    ))
-                                                }
-                                            </TableBody>
-                                        </Table>
-                                    </TableContainer>
-                                </AccordionDetails>
-                            </Accordion>
-                        </Box>
+                        {
+                            processedData?.map((mode, index) => {
+                                return (
+                                    <>
+                                        <Paper elevation={2}>
+                                            <Box sx={{m:1}}>
+                                                <Typography variant="h5">{modeNames[index]}</Typography>
+                                                <Grid container>
+                                                    <Grid item xs={12 / 2}>
+                                                        <Paper elevation={4} sx={{ p: 2, m: 1 }}>
+                                                            <Typography variant="title" fontSize={'1em'}>Missing Ranked</Typography>
+                                                            <Typography variant="h6">{mode?.missingRanked?.length?.toLocaleString('en-US') ?? '-'} ({mode?.missingRankedSets?.length?.toLocaleString('en-US') ?? '-'} sets)</Typography>
+                                                        </Paper>
+                                                    </Grid>
+                                                    <Grid item xs={12 / 2}>
+                                                        <Paper elevation={4} sx={{ p: 2, m: 1 }}>
+                                                            <Typography variant="title" fontSize={'1em'}>Missing Loved</Typography>
+                                                            <Typography variant="h6">{mode?.missingLoved?.length?.toLocaleString('en-US') ?? '-'} ({mode?.missingLovedSets?.length?.toLocaleString('en-US') ?? '-'} sets)</Typography>
+                                                        </Paper>
+                                                    </Grid>
+                                                </Grid>
+                                            </Box>
+                                            <Box>
+                                                <Accordion>
+                                                    <AccordionSummary>
+                                                        <Typography>Ranked</Typography>
+                                                    </AccordionSummary>
+                                                    <AccordionDetails>
+                                                        <TableContainer component={Paper}>
+                                                            <Table size='small'>
+                                                                <TableBody>
+                                                                    {
+                                                                        mode?.missingRankedSets?.map((set) => (
+                                                                            <TableRow key={set.set_id}>
+                                                                                <TableCell>{set.set_id}</TableCell>
+                                                                                <TableCell>{set.artist} - {set.title}</TableCell>
+                                                                                <TableCell><Link href={`https://osu.ppy.sh/beatmapsets/${set.set_id}`} target='_blank'>osu!</Link></TableCell>
+                                                                                <TableCell><Link href={`osu://dl/${set.set_id}`} target='_blank'>osu!direct</Link></TableCell>
+                                                                            </TableRow>
+                                                                        ))
+                                                                    }
+                                                                </TableBody>
+                                                            </Table>
+                                                        </TableContainer>
+                                                    </AccordionDetails>
+                                                </Accordion>
+                                                <Accordion>
+                                                    <AccordionSummary>
+                                                        <Typography>Loved</Typography>
+                                                    </AccordionSummary>
+                                                    <AccordionDetails>
+                                                        <TableContainer component={Paper}>
+                                                            <Table size='small'>
+                                                                <TableBody>
+                                                                    {
+                                                                        mode?.missingLovedSets?.map((set) => (
+                                                                            <TableRow key={set.set_id}>
+                                                                                <TableCell>{set.set_id}</TableCell>
+                                                                                <TableCell>{set.artist} - {set.title}</TableCell>
+                                                                                <TableCell><Link href={`https://osu.ppy.sh/beatmapsets/${set.set_id}`} target='_blank'>osu!</Link></TableCell>
+                                                                                <TableCell><Link href={`osu://dl/${set.set_id}`} target='_blank'>osu!direct</Link></TableCell>
+                                                                            </TableRow>
+                                                                        ))
+                                                                    }
+                                                                </TableBody>
+                                                            </Table>
+                                                        </TableContainer>
+                                                    </AccordionDetails>
+                                                </Accordion>
+                                            </Box>
+                                        </Paper>
+                                    </>
+                                )
+                            })
+                        }
                     </>
                 }
             </Stack >
