@@ -26,7 +26,7 @@
     "countries-list": "^2.6.1",
     "dom-to-image": "^2.6.0",
     "draft-js-export-html": "^1.4.1",
-    "html-react-parser": "^3.0.16",
+    "html-react-parser": "^4.2.0",
     "lodash": "^4.17.21",
     "moment": "^2.29.4",
     "moment-duration-format": "^2.3.2",
