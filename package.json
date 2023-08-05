@@ -5,7 +5,7 @@
   "homepage": "https://score.kirino.sh",
   "dependencies": {
     "@emotion/react": "^11.11.0",
-    "@emotion/styled": "^11.10.8",
+    "@emotion/styled": "^11.11.0",
     "@fontsource/comfortaa": "^4.5.11",
     "@fontsource/roboto": "^5.0.5",
     "@material-ui/icons": "^4.11.3",
