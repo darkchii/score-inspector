@@ -14,7 +14,7 @@ function TriCheckbox(props) {
             setChecked(null);
         }
 
-        props.checked = checked;
+        //props.checked = checked;
     };
 
     useEffect(() => {

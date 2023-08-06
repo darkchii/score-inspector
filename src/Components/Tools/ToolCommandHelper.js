@@ -394,7 +394,7 @@ function ToolCommandHelper() {
                                                                         disabled={!compatible}
                                                                         control={
                                                                             <Checkbox
-                                                                                checked={argumentData[argument.name] !== undefined ? argumentData[argument.name] : argument.default}
+                                                                                //checked={argumentData[argument.name] !== undefined ? argumentData[argument.name] : argument.default}
                                                                                 onChange={e => updateArgumentData(argument.name, e.target.checked)} />
                                                                         }
                                                                         label={argument.name} />
@@ -405,7 +405,7 @@ function ToolCommandHelper() {
                                                                         disabled={!compatible}
                                                                         control={
                                                                             <TriCheckbox
-                                                                                checked={argumentData[argument.name] !== undefined ? argumentData[argument.name] : argument.default}
+                                                                                //checked={argumentData[argument.name] !== undefined ? argumentData[argument.name] : argument.default}
                                                                                 onChange={val => updateArgumentData(argument.name, val)} />
                                                                         }
                                                                         label={argument.name} />
