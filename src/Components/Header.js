@@ -1,4 +1,4 @@
-import { AppBar, Avatar, Box, Button, Container, Divider, Drawer, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Menu, Stack, Toolbar, Typography } from '@mui/material';
+import { AppBar, Avatar, Box, Button, ButtonGroup, Container, Divider, Drawer, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Menu, MenuItem, Stack, Toolbar, Typography, alpha, styled } from '@mui/material';
 import React from 'react';
 import { useRef } from 'react';
 import { Link } from 'react-router-dom';
@@ -17,6 +17,49 @@ import CustomizeModal from './Modals/CustomizeModal';
 import VisitorLogModal from './Modals/VisitorLogModal';
 import MenuIcon from '@mui/icons-material/Menu';
 import PublicIcon from '@mui/icons-material/Public';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
+
+const HeaderButtonMenu = styled((props) => (
+    <Menu
+        elevation={0}
+        anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right',
+        }}
+        transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+        }}
+        {...props}
+    />
+))(({ theme }) => ({
+    '& .MuiPaper-root': {
+        borderRadius: 6,
+        marginTop: theme.spacing(1),
+        minWidth: 180,
+        color:
+            theme.palette.mode === 'light' ? 'rgb(55, 65, 81)' : theme.palette.grey[300],
+        boxShadow:
+            'rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px',
+        '& .MuiMenu-list': {
+            padding: '4px 0',
+        },
+        '& .MuiMenuItem-root': {
+            '& .MuiSvgIcon-root': {
+                fontSize: 18,
+                color: theme.palette.text.secondary,
+                marginRight: theme.spacing(1.5),
+            },
+            '&:active': {
+                backgroundColor: alpha(
+                    theme.palette.primary.main,
+                    theme.palette.action.selectedOpacity,
+                ),
+            },
+        },
+    },
+}));
 
 function Header(props) {
     const { window } = props;
@@ -28,8 +71,16 @@ function Header(props) {
 
     const [showMenu, setShowMenu] = React.useState(null);
 
+    const [activeDropDownIndex, setActiveDropDownIndex] = React.useState(null);
+    const [showDropDown, setShowDropDown] = React.useState(null);
+    const [anchorElDropDown, setAnchorElDropDown] = React.useState(null);
+
     const headerNavItems = [
-        { name: 'Search', icon: <SearchIcon />, onClick: () => searchElement.current.setOpen(true) },
+        {
+            name: 'Search', icon: <SearchIcon />, onClick: () => searchElement.current.setOpen(true), dropDown: [
+                { name: 'Staff', icon: <SupervisorAccountIcon />, onClick: () => { }, linkTo: '/staff' },
+            ],
+        },
         { name: 'Leaderboards', icon: <LeaderboardIcon />, onClick: () => { }, linkTo: '/leaderboard' },
         { name: 'Top Scores', icon: <StarIcon />, onClick: () => { }, linkTo: '/top' },
         { name: 'Stats', icon: <DataUsageIcon />, onClick: () => { }, linkTo: '/stats' },
@@ -38,13 +89,25 @@ function Header(props) {
         { name: 'Population', icon: <PublicIcon />, onClick: () => { }, linkTo: '/population' },
     ];
 
+    const handleHeaderMenuOpen = (event, index) => {
+        setActiveDropDownIndex(index);
+        setShowDropDown(true);
+        setAnchorElDropDown(event.currentTarget);
+    };
+
+    const handleHeaderMenuClose = (index) => {
+        setActiveDropDownIndex(null);
+        setShowDropDown(false);
+        setAnchorElDropDown(null);
+    };
+
     const handleDrawerToggle = () => {
         setMobileOpen((prevState) => !prevState);
     };
 
     const drawerWidth = 240;
     const navDropDownRenderer = (
-        <Box onClick={handleDrawerToggle} sx={{p:1}}>
+        <Box onClick={handleDrawerToggle} sx={{ p: 1 }}>
             <Typography variant="h6" sx={{ my: 2 }}>
                 osu! scores inspector
             </Typography>
@@ -74,6 +137,36 @@ function Header(props) {
             }
             <UserSearchModal ref={searchElement} />
             <SettingsModal ref={settingsElement} />
+
+            <HeaderButtonMenu
+                anchorEl={anchorElDropDown}
+                open={showDropDown}
+                onClose={handleHeaderMenuClose}
+            >
+                {/* <ListItemIcon sx={{ minWidth: '40px' }}>{item.icon}</ListItemIcon> */}
+                {/* <ListItemText primary={'test'} /> */}
+
+                {
+                    headerNavItems[activeDropDownIndex] !== undefined ? headerNavItems[activeDropDownIndex].dropDown.map((item, index) => {
+                        return (
+                            // {
+                            // item.linkTo ?
+                            //     <Button key={index} size='small' startIcon={item.icon} component={Link} to={item.linkTo}>{item.name}</Button>
+                            //     :
+                            //     <Button key={index} size='small' startIcon={item.icon} onClick={item.onClick}>{item.name}</Button>
+                            // }
+                            <MenuItem onClick={(e) => {
+                                item.onClick();
+                                handleHeaderMenuClose();
+                            }} component={item.linkTo ? Link : null} to={item.linkTo ?? null}>
+                                <ListItemIcon sx={{ minWidth: '40px' }}>{item.icon}</ListItemIcon>
+                                <ListItemText primary={item.name} />
+                            </MenuItem>
+                        )
+                    }) : <></>
+                }
+            </HeaderButtonMenu>
+
             <Box>
                 <AppBar position="static">
                     <Container maxWidth='xl'>
@@ -96,11 +189,22 @@ function Header(props) {
                                 <Stack direction="row" spacing={2} sx={{ display: 'flex' }}>
                                     {
                                         headerNavItems.map((item, index) => {
-                                            if (item.linkTo) {
-                                                return <Button key={index} size='small' startIcon={item.icon} component={Link} to={item.linkTo}>{item.name}</Button>
-                                            } else {
-                                                return <Button key={index} size='small' startIcon={item.icon} onClick={item.onClick}>{item.name}</Button>
-                                            }
+                                            return (
+                                                <ButtonGroup size='small' variant='text'>
+                                                    {
+                                                        item.linkTo ?
+                                                            <Button key={index} size='small' startIcon={item.icon} component={Link} to={item.linkTo}>{item.name}</Button>
+                                                            :
+                                                            <Button key={index} size='small' startIcon={item.icon} onClick={item.onClick}>{item.name}</Button>
+                                                    }
+
+                                                    {
+                                                        item.dropDown ?
+                                                            <IconButton onClick={(e) => handleHeaderMenuOpen(e, index)} size='small' sx={{ p: 0 }}><KeyboardArrowDownIcon /></IconButton>
+                                                            : <></>
+                                                    }
+                                                </ButtonGroup>
+                                            )
                                         }
                                         )
                                     }

@@ -5,20 +5,14 @@ import { Avatar, Box, Chip, Tooltip } from "@mui/material";
 import CodeIcon from '@mui/icons-material/Code';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { green, pink } from "@mui/material/colors";
+import * as Muicon from "@mui/icons-material";
 
 const ROLE_PADDING = 0.2;
-export const ROLES = [
-    {
-        name: 'Developer',
-        id: 'dev',
-        icon: <CodeIcon sx={{ p: ROLE_PADDING, color: pink[500] }} />
-    },
-    {
-        name: 'Trusted',
-        id: 'trusted',
-        icon: <CheckCircleIcon sx={{ p: ROLE_PADDING * 1.5, color: green[500] }} />
-    }
-]
+
+export function GetRoleIcon(role) {
+    const Icon = Muicon[role.icon ?? 'QuestionMark'];
+    return <Icon sx={{ p: ROLE_PADDING, color: `#${role.color}` }} />
+}
 
 export function GetFormattedName(inspector_user, settings = null) {
     let _settings = {
@@ -73,13 +67,14 @@ export function GetRoleIcons(roles, chips = false) {
         </Box>
     );
 
+    console.log(roles);
+    
     return (roles?.map(role => {
-        const _role = ROLES.find(r => r.id === role);
-        if (!_role) return null;
+        if(!role.is_visible) return <></>;
         return (
             <>
-                <Tooltip title={_role.name}>
-                    {chips ? wrapIcon(_role.icon) : _role.icon}
+                <Tooltip title={role.name}>
+                    {chips ? wrapIcon(GetRoleIcon(role)) : GetRoleIcon(role)}
                 </Tooltip>
             </>)
     }));
@@ -94,6 +89,7 @@ export function GetRoles(inspector_user) {
     return inspector_user.roles;
 }
 
+
 export function IsUserAdmin(inspector_user) {
     const roles = GetRoles(inspector_user);
     const isAdmin = roles?.includes('admin') || roles?.includes('dev');
@@ -104,7 +100,7 @@ export function IsUserLoggedInUnsafe() {
     const token = localStorage.getItem('auth_token');
     const user_id = localStorage.getItem('auth_osu_id');
     const username = localStorage.getItem('auth_username');
-
+    
     if (token && user_id && username) {
         return true;
     }
@@ -283,6 +279,24 @@ export async function GetComments(user_id) {
     let res = null;
     try {
         res = await axios.get(`${GetAPI()}login/comments/get/${user_id}`);
+    } catch (e) { }
+    if (res === null) return null;
+    return res?.data;
+}
+
+export async function GetRemoteUsersByRole(role) {
+    let res = null;
+    try {
+        res = await axios.get(`${GetAPI()}roles/${role}`);
+    } catch (e) { }
+    if (res === null) return null;
+    return res?.data;
+}
+
+export async function GetRemoteRoles(){
+    let res = null;
+    try {
+        res = await axios.get(`${GetAPI()}roles`);
     } catch (e) { }
     if (res === null) return null;
     return res?.data;

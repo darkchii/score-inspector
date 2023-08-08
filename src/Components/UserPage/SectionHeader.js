@@ -2,7 +2,7 @@ import { Avatar, Box, Chip, Grid, Paper, Stack, Table, TableBody, TableCell, tab
 import moment from "moment";
 import { useEffect, useState } from "react";
 import ReactCountryFlag from "react-country-flag";
-import { GetFormattedName, GetRoles, ROLES } from "../../Helpers/Account";
+import { GetFormattedName, GetRoleIcon, GetRoles, ROLES } from "../../Helpers/Account";
 
 const MAX_VISITORS = 5;
 function SectionHeader(props) {
@@ -54,13 +54,17 @@ function SectionHeader(props) {
                                         props.user.inspector !== undefined ? <>
                                             {
                                                 GetRoles(props.user.inspector).map((role, index) => {
-                                                    const _role = ROLES.find(r => r.id === role);
-                                                    if (_role === undefined) return <></>;
+                                                    //const _role = ROLES.find(r => r.id === role);
+                                                    //if (_role === undefined) return <></>;
+                                                    //if(!role.is_visible) return <></>
                                                     return (
                                                         <>
                                                             <Box sx={{ display: 'inline-block' }}>
-                                                                <Tooltip title={_role.name}>
-                                                                    {_role.icon}
+                                                                {/* <Tooltip title={role.title}>
+                                                                    {GetRoleIcon(role)}
+                                                                </Tooltip> */}
+                                                                <Tooltip title={role.description}>
+                                                                    <Chip size='small' sx={{ m: 0.2, backgroundColor: `#${role.color}aa` }} icon={GetRoleIcon(role)} label={role.title} />
                                                                 </Tooltip>
                                                             </Box>
                                                         </>

@@ -27,6 +27,7 @@ import { Helmet } from 'react-helmet';
 import CompDev from './Routes/CompDev';
 import { getFullUser } from './Helpers/Osu';
 import Population from './Routes/Population';
+import Staff from './Routes/Staff';
 
 function App() {
   const [loginData, setLoginData] = useState(null);
@@ -108,6 +109,7 @@ function App() {
                 <Route path="top" element={<Top />} />
                 <Route path="stats" element={<Stats />} />
                 <Route path="beatmaps" element={<Beatmaps />} />
+                <Route path="staff" element={<Staff />} />
                 <Route path="population" element={<Population />} />
                 <Route path="logout" element={<Logout />} />
                 <Route path="tools" element={<Tools />}>

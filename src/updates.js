@@ -12,6 +12,16 @@ const PLATFORMTYPES = {
 
 const updates = [
     {
+        version: '2.7.0',
+        date: '2023-06-23',
+        changes: [
+            [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Missing beatmaps tool now supports all modes', 'd1dd30f8287d74c451c82229dba325711512e3ce'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Added country based statistics', '09e40bf12281deb6b679d9566fd3ea9c701cf4fd'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.MISC, 'Better mobile support', '9fff5c3259ddf19d778203fc2b2f5b23c1d7818a'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.MISC, 'Website moved to score.kirino.sh', 'cc6641698fef53dbb1e2e76e0f296f4f99744acc'],
+        ]
+    },
+    {
         version: '2.6.0',
         date: '2023-05-23',
         changes: [
