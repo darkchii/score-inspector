@@ -17,6 +17,7 @@ import {
 import Zoom from "chartjs-plugin-zoom";
 import { getScoreActivity } from "../Helpers/OsuAlt";
 import moment from "moment";
+import Loader from "./UI/Loader";
 ChartJS.register(
     CategoryScale,
     LinearScale,
@@ -174,11 +175,7 @@ function ScoreSubmissions(props) {
             </Grid>
             <Grid sx={{ height: 280, position: "relative", pt: 2 }}>
                 {
-                    isWorking ?
-                        <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", backgroundColor: "rgba(0,0,0,0.5)", display: "flex", justifyContent: "center", alignItems: "center" }}>
-                            <CircularProgress />
-                        </div>
-                        : <Line ref={chart} options={options} data={data} />
+                    isWorking ? <Loader /> : <Line ref={chart} options={options} data={data} />
                 }
             </Grid>
         </>

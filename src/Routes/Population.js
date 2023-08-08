@@ -17,6 +17,7 @@ import { lerpColor, linearToLogarithmic } from "../Helpers/Misc";
 import { useTheme } from "@mui/styles";
 import { Box, Button, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableRow, Tooltip as MUITooltip, Typography, TableHead, Container } from "@mui/material";
 import ReactCountryFlag from "react-country-flag";
+import Loader from "../Components/UI/Loader";
 
 ChartJS.register(
     Title,
@@ -293,7 +294,7 @@ function Population() {
             alignItems: 'center'
         }}>
             {
-                chartData &&
+                chartData ?
                 <>
                     <Box sx={{ width: '100%', height: '100%', p: 2 }}>
                         <Container size={'md'}>
@@ -320,7 +321,7 @@ function Population() {
                     <Typography sx={{ mt: 2, mb: 1 }} variant='subtitle1'>
                         {chartTypes.find((t) => t.value === activeChartType).description}
                         {totalValue !== null ? ` (${chartTypes.find((t) => t.value === activeChartType).output(totalValue)})` : ''}</Typography>
-                </>
+                </> : <Loader />
             }
             {
                 orderedCountries &&

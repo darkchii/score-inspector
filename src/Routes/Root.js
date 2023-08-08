@@ -9,6 +9,7 @@ import momentDurationFormatSetup from "moment-duration-format";
 import ScoreSubmissions from '../Components/ScoreSubmissions';
 import { green } from '@mui/material/colors';
 import GlowBar from '../Components/UI/GlowBar';
+import Loader from '../Components/UI/Loader';
 
 momentDurationFormatSetup(moment);
 
@@ -180,24 +181,28 @@ function Root() {
                             <Card elevation={2}>
                                 <CardContent>
                                     <Typography variant='title'>Server Info</Typography>
-                                    <Grid container spacing={2}>
-                                        <Grid item xs={12} md={6}>
-                                            <Typography variant='body2'>inspector registrations: {(parseInt(serverInfo?.database?.inspector?.user_count ?? 0)).toLocaleString('en-US')}</Typography>
-                                            <Typography variant='body2'>inspector profile visits: {(parseInt(serverInfo?.database?.inspector?.total_visits ?? 0)).toLocaleString('en-US')}</Typography>
-                                            <Typography variant='body2'>osu!alt users: {(parseInt(serverInfo?.database?.alt?.total_users ?? 0)).toLocaleString('en-US')}</Typography>
-                                            <Typography variant='body2'>osu!alt live users: {(parseInt(serverInfo?.database?.alt?.tracked_users ?? 0)).toLocaleString('en-US')}</Typography>
-                                            <Typography variant='body2'>osu!alt scores: {(parseInt(serverInfo?.database?.alt?.total_scores ?? 0)).toLocaleString('en-US')}</Typography>
-                                            <Typography variant='body2'>osu!alt size: {formatBytes(serverInfo?.database?.alt?.size ?? 0)}</Typography>
-                                        </Grid>
-                                        <Grid item xs={12} md={6}>
-                                            <Typography variant='body2'>API Uptime: {moment.duration(serverInfo?.system?.uptime ?? 0, 'second').format()}</Typography>
-                                            <Typography variant='body2'>API Requests: {(serverInfo?.database?.inspector?.api?.requests ?? 0).toLocaleString('en-US')}</Typography>
-                                            <Typography variant='body2'>API Data Sent: {formatBytes(serverInfo?.database?.inspector?.api?.bytes_sent ?? 0)}</Typography>
-                                            <Typography variant='body2'>Uptime: {moment.duration(serverInfo?.system?.system_time?.uptime ?? 0, 'second').format()}</Typography>
-                                            <Typography variant='body2'>OS: {serverInfo?.system?.os?.distro ?? 'n/a'}</Typography>
-                                            <Typography variant='body2'>CPU: {serverInfo?.system?.cpu?.manufacturer ?? ''} {serverInfo?.system?.cpu?.brand ?? ''}</Typography>
-                                        </Grid>
-                                    </Grid>
+                                    {
+                                        serverInfo ? <>
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12} md={6}>
+                                                    <Typography variant='body2'>inspector registrations: {(parseInt(serverInfo?.database?.inspector?.user_count ?? 0)).toLocaleString('en-US')}</Typography>
+                                                    <Typography variant='body2'>inspector profile visits: {(parseInt(serverInfo?.database?.inspector?.total_visits ?? 0)).toLocaleString('en-US')}</Typography>
+                                                    <Typography variant='body2'>osu!alt users: {(parseInt(serverInfo?.database?.alt?.total_users ?? 0)).toLocaleString('en-US')}</Typography>
+                                                    <Typography variant='body2'>osu!alt live users: {(parseInt(serverInfo?.database?.alt?.tracked_users ?? 0)).toLocaleString('en-US')}</Typography>
+                                                    <Typography variant='body2'>osu!alt scores: {(parseInt(serverInfo?.database?.alt?.total_scores ?? 0)).toLocaleString('en-US')}</Typography>
+                                                    <Typography variant='body2'>osu!alt size: {formatBytes(serverInfo?.database?.alt?.size ?? 0)}</Typography>
+                                                </Grid>
+                                                <Grid item xs={12} md={6}>
+                                                    <Typography variant='body2'>API Uptime: {moment.duration(serverInfo?.system?.uptime ?? 0, 'second').format()}</Typography>
+                                                    <Typography variant='body2'>API Requests: {(serverInfo?.database?.inspector?.api?.requests ?? 0).toLocaleString('en-US')}</Typography>
+                                                    <Typography variant='body2'>API Data Sent: {formatBytes(serverInfo?.database?.inspector?.api?.bytes_sent ?? 0)}</Typography>
+                                                    <Typography variant='body2'>Uptime: {moment.duration(serverInfo?.system?.system_time?.uptime ?? 0, 'second').format()}</Typography>
+                                                    <Typography variant='body2'>OS: {serverInfo?.system?.os?.distro ?? 'n/a'}</Typography>
+                                                    <Typography variant='body2'>CPU: {serverInfo?.system?.cpu?.manufacturer ?? ''} {serverInfo?.system?.cpu?.brand ?? ''}</Typography>
+                                                </Grid>
+                                            </Grid>
+                                        </> : <Loader />
+                                    }
                                 </CardContent>
                             </Card>
                         </Grid>
@@ -211,7 +216,7 @@ function Root() {
                                     <Typography variant='title'>Most visited</Typography>
                                     <Stack spacing={1} sx={{ pl: 1 }}>
                                         {
-                                            visitorStats && visitorStats.most_visited.map((v, i) => {
+                                            visitorStats ? visitorStats.most_visited.map((v, i) => {
                                                 return (
                                                     <>
                                                         <Grid container>
@@ -232,14 +237,14 @@ function Root() {
                                                         </Grid>
                                                     </>
                                                 )
-                                            })
+                                            }) : <Loader />
                                         }
                                     </Stack>
                                     <Divider style={{ margin: '10px 0' }} />
                                     <Typography variant='title'>Recent visited</Typography>
                                     <Stack spacing={1} sx={{ pl: 1 }}>
                                         {
-                                            visitorStats && visitorStats.last_visited.map((v, i) => {
+                                            visitorStats ? visitorStats.last_visited.map((v, i) => {
                                                 return (
                                                     <>
                                                         <Grid container>
@@ -260,7 +265,7 @@ function Root() {
                                                         </Grid>
                                                     </>
                                                 )
-                                            })
+                                            }) : <Loader />
                                         }
                                     </Stack>
                                 </CardContent>
@@ -273,7 +278,7 @@ function Root() {
                                     <Box sx={{ pl: 1 }}>
                                         <Grid container spacing={1}>
                                             {
-                                                serverStatus && Object.keys(serverStatus).map((k, i) => {
+                                                serverStatus ? Object.keys(serverStatus).map((k, i) => {
                                                     return (
                                                         <Grid item xs={6}>
                                                             <Box sx={{ position: 'relative' }}>
@@ -282,7 +287,7 @@ function Root() {
                                                             </Box>
                                                         </Grid>
                                                     )
-                                                })
+                                                }) : <Loader />
                                             }
                                         </Grid>
                                     </Box>

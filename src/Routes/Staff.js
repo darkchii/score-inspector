@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, Chip, Grid, Paper, Stack, Typography } f
 import PlayerCard from "../Components/PlayerCard";
 import { useNavigate } from "react-router-dom/dist";
 import { getFullUser } from "../Helpers/Osu";
+import Loader from "../Components/UI/Loader";
 
 function Staff(props) {
     const [roles, setRoles] = useState(null);
@@ -76,7 +77,9 @@ function Staff(props) {
                                 </Grid>
                             )
                         })
-                        : <></>
+                        : <>
+                            <Loader />
+                        </>
                 }
             </Stack>
         </>
