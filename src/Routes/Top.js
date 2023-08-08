@@ -35,7 +35,7 @@ function Top(props) {
                 scores_pp = prepareScores(null, scores_pp, null, false);
                 scores_score = prepareScores(null, scores_score, null, false);
 
-                setScores({
+                const _scores = {
                     0: {
                         name: 'Performance',
                         scores: scores_pp,
@@ -46,7 +46,11 @@ function Top(props) {
                         scores: scores_score,
                         significantStat: 'score'
                     },
-                });
+                }
+
+                console.log(_scores);
+
+                setScores(_scores);
             } catch (err) {
                 console.error(err);
             }
@@ -85,6 +89,9 @@ function Top(props) {
                                             Array.from(Array(SCORES_TO_FETCH).keys()).map((j) => {
                                                 if (scores?.[i]?.scores?.[j] && !isWorking) {
                                                     const score = scores[i].scores[j];
+                                                    if(!score || !score.user) return (<>
+                                                        <Skeleton animation='wave' variant='rectangular' height={SCORE_CARD_HEIGHT} />
+                                                    </>);
                                                     return (
                                                         <Box
                                                             sx={{
