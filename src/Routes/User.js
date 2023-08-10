@@ -132,13 +132,13 @@ function User() {
 
                 </> : <>
                     {
-                        user.inspector !== null && user.inspector !== undefined && user.inspector.background_image !== null ? <>
+                        user.inspector_user !== null && user.inspector_user !== undefined && user.inspector_user.background_image !== null ? <>
                             {
                                 <Helmet>
                                     <style>
                                         {`
                                             body { 
-                                            background-image: url('${user.inspector.background_image}'); 
+                                            background-image: url('${user.inspector_user.background_image}'); 
                                             background-repeat: no-repeat;
                                             background-size: cover;
                                             background-position: center;

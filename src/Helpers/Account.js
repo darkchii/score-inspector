@@ -67,10 +67,8 @@ export function GetRoleIcons(roles, chips = false) {
         </Box>
     );
 
-    console.log(roles);
-    
     return (roles?.map(role => {
-        if(!role.is_visible) return <></>;
+        if (!role.is_visible) return <></>;
         return (
             <>
                 <Tooltip title={role.name}>
@@ -89,18 +87,11 @@ export function GetRoles(inspector_user) {
     return inspector_user.roles;
 }
 
-
-export function IsUserAdmin(inspector_user) {
-    const roles = GetRoles(inspector_user);
-    const isAdmin = roles?.includes('admin') || roles?.includes('dev');
-    return isAdmin;
-}
-
 export function IsUserLoggedInUnsafe() {
     const token = localStorage.getItem('auth_token');
     const user_id = localStorage.getItem('auth_osu_id');
     const username = localStorage.getItem('auth_username');
-    
+
     if (token && user_id && username) {
         return true;
     }
@@ -293,7 +284,7 @@ export async function GetRemoteUsersByRole(role) {
     return res?.data;
 }
 
-export async function GetRemoteRoles(){
+export async function GetRemoteRoles() {
     let res = null;
     try {
         res = await axios.get(`${GetAPI()}roles`);
@@ -320,4 +311,57 @@ export async function SendComment(sender, recipient, reply_to, content) {
     });
 
     return res;
+}
+
+export async function AdminValidate(osu_id, session_token) {
+    if (!osu_id || !session_token) {
+        osu_id = localStorage.getItem('auth_osu_id');
+        session_token = localStorage.getItem('auth_token');
+    }
+
+    try {
+        const res = await fetch(`${GetAPI()}admin/validate`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                user_id: osu_id,
+                session_token: session_token
+            })
+        });
+
+        const body = await parseReadableStreamToJson(res.body);
+
+        return body?.has_admin === true;
+    } catch (e) {
+        console.error(e);
+        return false;
+    }
+}
+
+export async function AdminGetUsers() {
+    const osu_id = localStorage.getItem('auth_osu_id');
+    const session_token = localStorage.getItem('auth_token');
+
+    try {
+        const res = await axios.post(`${GetAPI()}admin/get_users`, {
+            user_id: osu_id,
+            session_token: session_token
+        }, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        });
+
+        // const body = await parseReadableStreamToJson(res.body);
+
+        console.log(res);
+
+        return res?.data;
+    } catch (e) {
+        console.error(e);
+        return null;
+    }
 }

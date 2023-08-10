@@ -31,7 +31,10 @@ function Staff(props) {
                             continue;
                         }
 
-                        const user = await getFullUser(user_id);
+                        const user = await getFullUser(user_id, {
+                            skipDailyData: true,
+                            skipAltData: true,
+                        });
                         if (user) {
                             _users.push(user);
                             _added_ids.push(user_id);
@@ -64,7 +67,7 @@ function Staff(props) {
                                                 {
                                                     role.users && role.users.length > 0 ?
                                                         role.users?.map((user, index) => (
-                                                            <Grid item xs={12} md={6} lg={4} sx={{ height: '75px' }}>
+                                                            <Grid item xs={12} md={6} lg={4} sx={{ height: '160px', mt: 1 }}>
                                                                 <PlayerCard onClick={() => { navigate(`/user/${user.osu.id}`); }} user={user} />
                                                             </Grid>
                                                         )) : <>

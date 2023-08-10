@@ -51,9 +51,9 @@ function SectionHeader(props) {
                             <Grid item xs={8}>
                                 <Stack direction='row' spacing={1} sx={{ m: 0.5 }}>
                                     <Typography variant='h4'>{props.user.osu.username}{
-                                        props.user.inspector !== undefined ? <>
+                                        props.user.inspector_user !== undefined ? <>
                                             {
-                                                GetRoles(props.user.inspector).map((role, index) => {
+                                                GetRoles(props.user.inspector_user).map((role, index) => {
                                                     //const _role = ROLES.find(r => r.id === role);
                                                     //if (_role === undefined) return <></>;
                                                     //if(!role.is_visible) return <></>

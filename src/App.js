@@ -28,6 +28,7 @@ import CompDev from './Routes/CompDev';
 import { getFullUser } from './Helpers/Osu';
 import Population from './Routes/Population';
 import Staff from './Routes/Staff';
+import Admin from './Routes/Admin';
 
 function App() {
   const [loginData, setLoginData] = useState(null);
@@ -112,6 +113,10 @@ function App() {
                 <Route path="staff" element={<Staff />} />
                 <Route path="population" element={<Population />} />
                 <Route path="logout" element={<Logout />} />
+                <Route path="admin" element={<Admin />}>
+                  <Route index element={<Admin />} />
+                  <Route path=":tool" element={<Admin />} />
+                </Route>
                 <Route path="tools" element={<Tools />}>
                   <Route index element={<Tools />} />
                   <Route path=":tool" element={<Tools />} />

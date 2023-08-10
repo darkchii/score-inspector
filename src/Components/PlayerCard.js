@@ -138,7 +138,7 @@ function PlayerCard(props) {
                                 </Grid>
                                 <Grid item xs={6}>
                                     <Typography variant='subtitle1'>Score Rank</Typography>
-                                    <Typography variant='h5'>#{props.user.score_rank !== undefined ? ((Math.max(0, props.user.score_rank?.rank)).toLocaleString('en-US')) : '10.000+'}</Typography>
+                                    <Typography variant='h5'>#{props.user.osu.scoreRank !== undefined ? ((Math.max(0, props.user.osu.scoreRank)).toLocaleString('en-US')) : '10.000+'}</Typography>
                                 </Grid>
                             </Grid>
                         </Box>
