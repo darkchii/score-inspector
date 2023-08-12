@@ -4,12 +4,15 @@ import { capitalize } from "../../Helpers/Misc";
 import { Chart, registerables } from 'chart.js'
 import { Bar } from "react-chartjs-2";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+import { getCompletionData } from "../../Helpers/OsuAlt";
+import Loader from "../UI/Loader";
 Chart.register(...registerables, ChartDataLabels)
 
 function SectionCompletion(props) {
     const theme = useTheme();
     const [graphs, setGraphs] = useState({});
     const [selectedGraph, setSelectedGraph] = useState('stars');
+    const [isWorking, setIsWorking] = useState(false);
     const config = {
         type: 'bar',
         data: {},
@@ -48,40 +51,50 @@ function SectionCompletion(props) {
 
     useEffect(() => {
         if (props.user == null) return;
-        if (!props.user.data.completion) return;
 
-        const _graphs = {};
-        Object.keys(props.user.data.completion).forEach((key, index) => {
-            const data = props.user.data.completion[key];
-            const labels = data.map((item, index) => item.range);
-            const values = data.map((item, index) => {
-                return {
-                    x: item.range,
-                    val: (Math.round(item.completion * 100) / 100),
-                    item: item
-                }
-            });
-            const stylizedKey = key.length === 2 ? key.toUpperCase() : capitalize(key);
-            const _data = {
-                labels: labels,
-                datasets: [{
-                    label: stylizedKey + ' Completion',
-                    data: values,
-                    backgroundColor: `${theme.palette.primary.main}dd`,
-                    borderRadius: 10,
-                    parsing: {
-                        yAxisKey: 'val'
-                    }
-
-                }],
+        (async () => {
+            if (!props.user.data.completion) {
+                setIsWorking(true);
+                props.user.data.completion = await getCompletionData(props.user.osu.id);
             }
-            _graphs[key] = _data;
-        });
-        setGraphs(_graphs);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+
+            const _graphs = {};
+            Object.keys(props.user.data.completion).forEach((key, index) => {
+                const data = props.user.data.completion[key];
+                const labels = data.map((item, index) => item.range);
+                const values = data.map((item, index) => {
+                    return {
+                        x: item.range,
+                        val: (Math.round(item.completion * 100) / 100),
+                        item: item
+                    }
+                });
+                const stylizedKey = key.length === 2 ? key.toUpperCase() : capitalize(key);
+                const _data = {
+                    labels: labels,
+                    datasets: [{
+                        label: stylizedKey + ' Completion',
+                        data: values,
+                        backgroundColor: `${theme.palette.primary.main}dd`,
+                        borderRadius: 10,
+                        parsing: {
+                            yAxisKey: 'val'
+                        }
+
+                    }],
+                }
+                _graphs[key] = _data;
+            });
+            setGraphs(_graphs);
+            setIsWorking(false);
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+        })();
     }, [props.user]);
 
     if (props.user == null) return (<></>);
+    if (isWorking) return (<>
+        <Loader />
+    </>);
     if (!props.user.data.completion) return (<></>);
     return (
         <>

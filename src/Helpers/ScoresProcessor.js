@@ -55,16 +55,17 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
             acc: 0,
             length: 0,
             star_rating: 0
-        }
+        },
+        allow_loved: allow_loved,
     };
 
     bmCount.data.forEach(monthData => {
         data.total_beatmaps += monthData.amount;
     });
 
-    await sleep(FEEDBACK_SLEEP_TIME);
-    onScoreProcessUpdate('Completion data');
-    data.completion = await getCompletionData(user.alt.user_id, allow_loved);
+    // await sleep(FEEDBACK_SLEEP_TIME);
+    // onScoreProcessUpdate('Completion data');
+    // data.completion = await getCompletionData(user.alt.user_id, allow_loved);
 
     await sleep(FEEDBACK_SLEEP_TIME);
     onScoreProcessUpdate('Generate monthly beatmap data');
