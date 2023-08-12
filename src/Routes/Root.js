@@ -10,8 +10,23 @@ import ScoreSubmissions from '../Components/ScoreSubmissions';
 import { green } from '@mui/material/colors';
 import GlowBar from '../Components/UI/GlowBar';
 import Loader from '../Components/UI/Loader';
+import config from "../config.json";
 
 momentDurationFormatSetup(moment);
+
+const IMPORTANT_NOTES = [
+    'Only plays with highest score on a beatmap are counted, not highest PP',
+    'Only scores that osu!alt has are available, join the Discord',
+    'You can\'t add missing users, they have to add themselves',
+    'For feature requests etc. join the Discord',
+];
+
+const GUIDE_NEW_USERS = [
+    'Join the osu!alt discord',
+    'Follow the guide to fetch your scores (#info channel)',
+    'Wait a few hours. When done, you generally don\'t need to run it anymore',
+    'Enter your username above and fetch'
+];
 
 function Root() {
     const [isModalOpen, setIsModalOpen] = useState(true);
@@ -137,26 +152,33 @@ function Root() {
                                 <CardContent>
                                     <Grid container spacing={2}>
                                         <Grid item xs={12} md={8.5}>
-                                            <Typography variant='title'>What does it do</Typography>
-                                            <Typography variant='body2'>This website takes the dump of all your scores, and generates statistics and graphs from it.</Typography>
-                                            <Typography variant='body2'>All of your scores means every TOP score on a beatmap, so not plays that are overridden or set with different mods.</Typography>
-                                            <Typography variant='body2'>Because of this, stats like periodic activity can be off due to missing scores, if they were overridden later in time.</Typography>
-                                            <Typography variant='title'>Can I see other users</Typography>
-                                            <Typography variant='body2'>Every user that has fetched their scores can be viewed here. The user in question has to fetch them themselves, others cannot do that.</Typography>
-                                            <Typography variant='title'>Where can I recommend changes</Typography>
-                                            <Typography variant='body2'>The following two places are fine:</Typography>
-                                            <Typography variant='body2'>- The #feature-ideas channel in the <Link href='https://discord.gg/VZWRZZXcW4' target='_blank'>osu!alt discord</Link> (make sure to tag Amayakase#9198)</Typography>
-                                            <Typography variant='body2'>- Opening an issue on the <Link href='https://github.com/darkchii/score-inspector' target='_blank'>GitHub</Link></Typography>
+                                            <Typography variant='title'>Info</Typography>
+                                            <Stack spacing={1}>
+                                                {
+                                                    IMPORTANT_NOTES.map((note, index) => {
+                                                        return (
+                                                            <Alert icon={false} severity='warning'>
+                                                                <Typography>{note}</Typography>
+                                                            </Alert>
+                                                        );
+                                                    })
+                                                }
+                                            </Stack>
                                         </Grid>
                                         <Grid item xs={12} md={3.5}>
                                             <Typography variant='title'>For new users</Typography>
                                             <TableContainer>
                                                 <Table size='small'>
                                                     <TableBody>
-                                                        <TableRow><TableCell>Join the osu!alt discord</TableCell></TableRow>
-                                                        <TableRow><TableCell>Follow the guide to fetch your scores (#info channel)</TableCell></TableRow>
-                                                        <TableRow><TableCell>Wait a few hours. When done, you generally don't need to run it anymore</TableCell></TableRow>
-                                                        <TableRow><TableCell>Enter your username above and fetch</TableCell></TableRow>
+                                                        {
+                                                            GUIDE_NEW_USERS.map((note, index) => {
+                                                                return (
+                                                                    <TableRow><TableCell>
+                                                                        {note}
+                                                                    </TableCell></TableRow>
+                                                                );
+                                                            })
+                                                        }
                                                     </TableBody>
                                                 </Table>
                                             </TableContainer>
@@ -180,29 +202,50 @@ function Root() {
                         <Grid item xs={12}>
                             <Card elevation={2}>
                                 <CardContent>
-                                    <Typography variant='title'>Server Info</Typography>
-                                    {
-                                        serverInfo ? <>
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={12} md={8}>
+                                            <Typography variant='title'>Server Info</Typography>
                                             <Grid container spacing={2}>
-                                                <Grid item xs={12} md={6}>
-                                                    <Typography variant='body2'>inspector registrations: {(parseInt(serverInfo?.database?.inspector?.user_count ?? 0)).toLocaleString('en-US')}</Typography>
-                                                    <Typography variant='body2'>inspector profile visits: {(parseInt(serverInfo?.database?.inspector?.total_visits ?? 0)).toLocaleString('en-US')}</Typography>
-                                                    <Typography variant='body2'>osu!alt users: {(parseInt(serverInfo?.database?.alt?.total_users ?? 0)).toLocaleString('en-US')}</Typography>
-                                                    <Typography variant='body2'>osu!alt live users: {(parseInt(serverInfo?.database?.alt?.tracked_users ?? 0)).toLocaleString('en-US')}</Typography>
-                                                    <Typography variant='body2'>osu!alt scores: {(parseInt(serverInfo?.database?.alt?.total_scores ?? 0)).toLocaleString('en-US')}</Typography>
-                                                    <Typography variant='body2'>osu!alt size: {formatBytes(serverInfo?.database?.alt?.size ?? 0)}</Typography>
-                                                </Grid>
-                                                <Grid item xs={12} md={6}>
-                                                    <Typography variant='body2'>API Uptime: {moment.duration(serverInfo?.system?.uptime ?? 0, 'second').format()}</Typography>
-                                                    <Typography variant='body2'>API Requests: {(serverInfo?.database?.inspector?.api?.requests ?? 0).toLocaleString('en-US')}</Typography>
-                                                    <Typography variant='body2'>API Data Sent: {formatBytes(serverInfo?.database?.inspector?.api?.bytes_sent ?? 0)}</Typography>
-                                                    <Typography variant='body2'>Uptime: {moment.duration(serverInfo?.system?.system_time?.uptime ?? 0, 'second').format()}</Typography>
-                                                    <Typography variant='body2'>OS: {serverInfo?.system?.os?.distro ?? 'n/a'}</Typography>
-                                                    <Typography variant='body2'>CPU: {serverInfo?.system?.cpu?.manufacturer ?? ''} {serverInfo?.system?.cpu?.brand ?? ''}</Typography>
-                                                </Grid>
+                                                {
+                                                    serverInfo ? <>
+                                                        <Grid item xs={12} md={6}>
+                                                            <Typography variant='body2'>inspector registrations: {(parseInt(serverInfo?.database?.inspector?.user_count ?? 0)).toLocaleString('en-US')}</Typography>
+                                                            <Typography variant='body2'>inspector profile visits: {(parseInt(serverInfo?.database?.inspector?.total_visits ?? 0)).toLocaleString('en-US')}</Typography>
+                                                            <Typography variant='body2'>osu!alt users: {(parseInt(serverInfo?.database?.alt?.total_users ?? 0)).toLocaleString('en-US')}</Typography>
+                                                            <Typography variant='body2'>osu!alt live users: {(parseInt(serverInfo?.database?.alt?.tracked_users ?? 0)).toLocaleString('en-US')}</Typography>
+                                                            <Typography variant='body2'>osu!alt scores: {(parseInt(serverInfo?.database?.alt?.total_scores ?? 0)).toLocaleString('en-US')}</Typography>
+                                                            <Typography variant='body2'>osu!alt size: {formatBytes(serverInfo?.database?.alt?.size ?? 0)}</Typography>
+                                                        </Grid>
+                                                        <Grid item xs={12} md={6}>
+                                                            <Typography variant='body2'>API Uptime: {moment.duration(serverInfo?.system?.uptime ?? 0, 'second').format()}</Typography>
+                                                            <Typography variant='body2'>API Requests: {(serverInfo?.database?.inspector?.api?.requests ?? 0).toLocaleString('en-US')}</Typography>
+                                                            <Typography variant='body2'>API Data Sent: {formatBytes(serverInfo?.database?.inspector?.api?.bytes_sent ?? 0)}</Typography>
+                                                            <Typography variant='body2'>Uptime: {moment.duration(serverInfo?.system?.system_time?.uptime ?? 0, 'second').format()}</Typography>
+                                                            <Typography variant='body2'>OS: {serverInfo?.system?.os?.distro ?? 'n/a'}</Typography>
+                                                            <Typography variant='body2'>CPU: {serverInfo?.system?.cpu?.manufacturer ?? ''} {serverInfo?.system?.cpu?.brand ?? ''}</Typography>
+                                                        </Grid>
+                                                    </> : <Loader />
+                                                }
                                             </Grid>
-                                        </> : <Loader />
-                                    }
+                                        </Grid>
+                                        <Grid item xs={12} md={4}>
+                                            <Typography variant='title'>Server Status</Typography>
+                                            <Box sx={{ pl: 1 }}>
+                                                {
+                                                    serverStatus ? Object.keys(serverStatus).map((k, i) => {
+                                                        return (
+                                                            <Grid item xs={6}>
+                                                                <Box sx={{ position: 'relative' }}>
+                                                                    <GlowBar color={serverStatus[k] === undefined ? 'grey' : (serverStatus[k] ? green[500] : 'red')} />
+                                                                    <Typography variant='body2'>{k}</Typography>
+                                                                </Box>
+                                                            </Grid>
+                                                        )
+                                                    }) : <Loader />
+                                                }
+                                            </Box>
+                                        </Grid>
+                                    </Grid>
                                 </CardContent>
                             </Card>
                         </Grid>
@@ -274,22 +317,15 @@ function Root() {
                         <Grid item xs={12}>
                             <Card elevation={2}>
                                 <CardContent>
-                                    <Typography variant='title'>Server Status</Typography>
+                                    <Typography variant='title'>Discord</Typography>
                                     <Box sx={{ pl: 1 }}>
-                                        <Grid container spacing={1}>
-                                            {
-                                                serverStatus ? Object.keys(serverStatus).map((k, i) => {
-                                                    return (
-                                                        <Grid item xs={6}>
-                                                            <Box sx={{ position: 'relative' }}>
-                                                                <GlowBar color={serverStatus[k] === undefined ? 'grey' : (serverStatus[k] ? green[500] : 'red')} />
-                                                                <Typography variant='body2'>{k}</Typography>
-                                                            </Box>
-                                                        </Grid>
-                                                    )
-                                                }) : <Loader />
-                                            }
-                                        </Grid>
+                                        <iframe
+                                            src={`https://ptb.discord.com/widget?id=${config.DISCORD_SERVER_ID}&theme=dark`}
+                                            width="350"
+                                            height="350"
+                                            allowtransparency="true"
+                                            frameborder="0"
+                                            sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
                                     </Box>
                                 </CardContent>
                             </Card>

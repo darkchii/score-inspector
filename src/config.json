@@ -11,5 +11,6 @@
     "NOTIFICATIONS": {
         "position": "top-right",
         "theme": "dark"
-    }
+    },
+    "DISCORD_SERVER_ID": "792807563980308481"
 }
