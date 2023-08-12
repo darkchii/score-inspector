@@ -12,8 +12,7 @@ function PerformanceSS(props) {
     const [ppDiff, setPPDiff] = useState(0);
 
     const openModal = async () => {
-        console.time('Top plays modal');
-        var _scores = [...props.data.scores];
+        var _scores = JSON.parse(JSON.stringify(props.data.scores));
         _scores.sort((a, b) => {
             if (a.pp_ss.weight > b.pp_ss.weight) { return -1; }
             if (a.pp_ss.weight < b.pp_ss.weight) { return 1; }

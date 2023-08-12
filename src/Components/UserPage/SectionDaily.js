@@ -167,14 +167,6 @@ function SectionDaily(props) {
             return;
         }
 
-        // if (moment(selectedDay, 'YYYY-MM-DD') > MAX_DATE) {
-        //     console.log(`Selected day (${selectedDay}) is after max date (${MAX_DATE.format("YYYY-MM-DD")})`);
-        //     console.log('Current', moment(selectedDay, 'YYYY-MM-DD'));
-        //     console.log('Max', MAX_DATE);
-        //     setSelectedDay(MAX_DATE.format("YYYY-MM-DD"));
-        //     return;
-        // }
-
         const handleDayChange = async (date) => {
             setWorkingState(true);
             setScores(null);

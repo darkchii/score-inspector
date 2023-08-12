@@ -11,7 +11,7 @@ function Performance2016(props) {
     const [ppDiff, setPPDiff] = useState(0);
 
     const openModal = async () => {
-        var _scores = [...props.data.scores];
+        var _scores = JSON.parse(JSON.stringify(props.data.scores));
         _scores.sort((a, b) => {
             if (a.pp_2016.weight > b.pp_2016.weight) { return -1; }
             if (a.pp_2016.weight < b.pp_2016.weight) { return 1; }

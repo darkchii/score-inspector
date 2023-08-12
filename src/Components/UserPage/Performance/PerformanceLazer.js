@@ -11,7 +11,7 @@ function PerformanceLazer(props) {
     const [ppDiff, setPPDiff] = useState(0);
 
     const openModal = async () => {
-        var _scores = [...props.data.scores];
+        var _scores = JSON.parse(JSON.stringify(props.data.scores));
         _scores.sort((a, b) => {
             if (a.pp_lazer.weight > b.pp_lazer.weight) { return -1; }
             if (a.pp_lazer.weight < b.pp_lazer.weight) { return 1; }
