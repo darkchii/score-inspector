@@ -15,6 +15,7 @@ const updates = [
         version: '2.7.0',
         date: '2023-06-23',
         changes: [
+            [PLATFORMTYPES.WEB, CHANGETYPES.MISC, 'Landing page container widths adjusted', '80fc790df4edf59233aa0edd216bcc7c105ba2d2'],
             [PLATFORMTYPES.WEB, CHANGETYPES.FIX, 'Added load spinners to slow loading components', '2ea69769903a4c5ba5dec7e4ac4e71a399e224f3'],
             [PLATFORMTYPES.WEB, CHANGETYPES.MISC, 'Better role system', '58c85b1f57bab6162a0e7c4557bbf7ede4ec13a9'],
             [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Missing beatmaps tool now supports all modes', 'd1dd30f8287d74c451c82229dba325711512e3ce'],

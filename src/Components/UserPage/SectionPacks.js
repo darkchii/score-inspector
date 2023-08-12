@@ -5,6 +5,7 @@ import { getBeatmapPackDetails, getBeatmapPacks, getBeatmaps } from "../../Helpe
 import { Box, Grid, Paper, Tooltip, Typography, useTheme } from "@mui/material";
 import { is_numeric, lerpColor } from "../../Helpers/Misc";
 import PackCompletionModal from "../Modals/PackCompletionModal";
+import Loader from "../UI/Loader";
 
 function SectionPacks(props) {
     const theme = useTheme();
@@ -169,7 +170,7 @@ function SectionPacks(props) {
                                                     </Box>
                                                 </Tooltip>
                                             )
-                                        }) : <></>
+                                        }) : <Loader />
                                     }
                                 </Paper>
                             </>

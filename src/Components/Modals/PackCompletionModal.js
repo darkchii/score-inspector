@@ -6,6 +6,7 @@ import { LeaderboardItem } from "../Leaderboards/LeaderboardItem";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { green, red } from "@mui/material/colors";
+import Loader from "../UI/Loader";
 
 const style = {
     position: 'absolute',
@@ -96,9 +97,7 @@ function PackCompletionModal(props, ref) {
                                                 </Stack>
                                             </Box>
                                         </> : <>
-                                            <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", backgroundColor: "rgba(0,0,0,0.5)", display: "flex", justifyContent: "center", alignItems: "center" }}>
-                                                <CircularProgress />
-                                            </div>
+                                            <Loader />
                                         </>
                                 }
                             </CardContent>
