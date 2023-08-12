@@ -16,6 +16,9 @@ const updates = [
         date: '2023-06-23',
         changes: [
             [PLATFORMTYPES.WEB, CHANGETYPES.MISC, 'Landing page container widths adjusted', '80fc790df4edf59233aa0edd216bcc7c105ba2d2'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Added osu!alt Discord server widget to landing', 'a7345873e987b4f08e742dd5202ea731135743b0'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.FIX, 'Fixed pp calculators incorrectly duplicating score array', 'f7a2311a12a62fd65411c9210459b88dab457eb7'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.FIX, 'Completion data is now only loaded when tab is opened', '0b822a37da27ab1a76db2db1dc9df5654ac592ab'],
             [PLATFORMTYPES.WEB, CHANGETYPES.FIX, 'Added load spinners to slow loading components', '2ea69769903a4c5ba5dec7e4ac4e71a399e224f3'],
             [PLATFORMTYPES.WEB, CHANGETYPES.MISC, 'Better role system', '58c85b1f57bab6162a0e7c4557bbf7ede4ec13a9'],
             [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Missing beatmaps tool now supports all modes', 'd1dd30f8287d74c451c82229dba325711512e3ce'],

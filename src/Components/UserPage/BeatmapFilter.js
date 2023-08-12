@@ -39,7 +39,6 @@ function BeatmapFilter(props) {
             }
         });
         setColumns(_c);
-        console.log(_c);
     };
 
     return (

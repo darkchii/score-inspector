@@ -24,10 +24,6 @@ function PackCompletionModal(props, ref) {
         }
     }));
 
-    useEffect(() => {
-        console.log(props.data);
-    }, [open, props.data]);
-
     return (
         <>
             <Modal open={open} onClose={() => setOpen(false)}>

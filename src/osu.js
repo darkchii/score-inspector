@@ -79,7 +79,6 @@ export async function getUser(id) {
             _user.daily = _dailyUser.data;
         }else{
             _user.daily = null;
-            console.log(_dailyUser.data);
         }
     }catch (err) {
         _user.daily = null;

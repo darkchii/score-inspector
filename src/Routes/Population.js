@@ -87,10 +87,10 @@ function Population() {
                     //percentage of total value
                     feature.valuePercent = (feature.value ?? 0) / totalSumValue;
                 } else {
-                    //console.log(country.id+' not found');
+                    console.warn(country.id+' not found');
                 }
             } else {
-                //console.log(cc + ' not found');
+                console.warn(cc + ' not found');
             }
         });
 
@@ -101,7 +101,6 @@ function Population() {
             return b.value - a.value;
         });
 
-        console.log(countries);
         setOrderedCountries(countries);
 
         const chartData = {

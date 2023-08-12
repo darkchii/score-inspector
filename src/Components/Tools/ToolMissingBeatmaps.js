@@ -98,7 +98,6 @@ function ToolMissingBeatmaps() {
             }
         }
 
-        console.log('missing beatmaps', missingModes);
         setProcessedData(missingModes);
         setUploading(false);
         setHasDataReady(true);

@@ -117,8 +117,6 @@ function ScoreSubmissions(props) {
                 countData.push(count);
             }
 
-            console.log(newData);
-
             const color = {
                 r: 255, g: 102, b: 158
             }

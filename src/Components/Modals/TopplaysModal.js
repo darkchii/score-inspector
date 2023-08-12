@@ -27,7 +27,6 @@ function TopplaysModal(props) {
     const [allowScoreViewer, setAllowScoreViewer] = React.useState(true);
 
     const openScoreView = (index) => {
-        console.log('opening score view for index ' + index + '')
         setViewingScore(scores[index]);
     }
 

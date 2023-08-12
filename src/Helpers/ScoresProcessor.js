@@ -227,7 +227,6 @@ export function prepareScores(user, scores, onScoreProcessUpdate, calculateOther
         score = prepareScore(score, calculateOtherPP, user);
 
         if(score.top_score && score.top_score.user_id && !debugged){
-            console.log(score);
             debugged = true;
         }
     });

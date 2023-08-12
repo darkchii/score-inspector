@@ -22,7 +22,6 @@ function SectionCompletion(props) {
                 backgroundColor: '#00000088',
                 borderRadius: 5,
                 formatter: ((_, context) => {
-                    //console.log(context);
                     const { dataset, dataIndex } = context;
                     const value = dataset.data[dataIndex];
                     return `${value.item.scores}/${value.item.beatmaps}`;

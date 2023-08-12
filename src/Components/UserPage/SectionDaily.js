@@ -230,7 +230,6 @@ function SectionDaily(props) {
             setScores(sorted);
             setWorkingState(false);
         };
-        console.log('selected day updated', selectedDay);
         handleDayChange(selectedDay);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedDay, MAX_DATE]);
@@ -337,7 +336,7 @@ function SectionDaily(props) {
                                                     </Typography>
                                                 } placement='top' disableInteractive={true}>
                                                     <Box
-                                                        onClick={() => { _clears > 0 && setSelectedDay(day.date); console.log('selected day clicked', day.date) }}
+                                                        onClick={() => { _clears > 0 && setSelectedDay(day.date); }}
                                                         sx={{
                                                             borderRadius: '3px',
                                                             height: '12px',

@@ -198,19 +198,6 @@ function processDailyData(chunks, user, data, f = 'm') {
         }
     }
 
-    //console.log(chunks[20].osudaily);
-
-    // //get cumulative osu!daily data
-    // if (user.daily !== null && user.daily.error === undefined) {
-    //     for (var i = 0; i < chunks.length; i++) {
-    //         var prev = i > 0 ? chunks[i - 1].osudaily.total_score : 0;
-    //         if (prev) {
-    //             chunks[i].osudaily.total_score = chunks[i].osudaily.cumulative_total_score + prev;
-    //         } else {
-    //             chunks[i].osudaily.total_score = chunks[i].osudaily.cumulative_total_score;
-    //         }
-    //     }
-    // }
     return chunks;
 }
 

@@ -96,7 +96,6 @@ function User() {
                 const visitors = await GetVisitors(user_out.osu.id);
                 user_out.visitors = visitors;
 
-                //console.log(user_out);
                 setUser(user_out);
                 setIsLoading(false);
             } catch (e) {

@@ -176,7 +176,6 @@ export async function UpdateVisitor(target_id) {
     let res = null;
     try {
         const visitor_id = await GetLoginID();
-        //console.log(`Updating visitor data: Visitor:${visitor_id} -> Target:${target_id}`)
         res = await fetch(`${GetAPI()}login/update_visitor`, {
             method: 'POST',
             headers: {
@@ -354,10 +353,6 @@ export async function AdminGetUsers() {
                 'Content-Type': 'application/json'
             },
         });
-
-        // const body = await parseReadableStreamToJson(res.body);
-
-        console.log(res);
 
         return res?.data;
     } catch (e) {

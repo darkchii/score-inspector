@@ -41,7 +41,6 @@ function SectionComments(props) {
     const refreshComments = async () => {
         setComments([]);
         const data = await GetComments(props.user.osu.id);
-        console.log(data);
 
         data.forEach(comment => {
             comment.comment = stateToHTML(convertFromRaw(JSON.parse(comment.comment)), htmlOptions);
@@ -75,9 +74,8 @@ function SectionComments(props) {
             let res;
             try {
                 res = await SendComment(localStorage.getItem('auth_osu_id'), props.user.osu.id, -1, data);
-                console.log(res);
             } catch (e) {
-                console.log(e);
+                console.error(e);
             }
             if (res?.status === 200) {
                 showNotification('Success', 'Comment send', 'success');

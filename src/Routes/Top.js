@@ -48,8 +48,6 @@ function Top(props) {
                     },
                 }
 
-                console.log(_scores);
-
                 setScores(_scores);
             } catch (err) {
                 console.error(err);

@@ -129,7 +129,6 @@ function AdminUsers(props) {
     useEffect(() => {
         (async () => {
             const _users = await AdminGetUsers();
-            console.log(_users)
             setUsers(_users);
         })();
     }, []);

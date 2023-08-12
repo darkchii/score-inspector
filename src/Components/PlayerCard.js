@@ -32,8 +32,6 @@ function PlayerCard(props) {
         }else{
             setRulesetStats(props.user.osu.statistics);
         }
-
-        console.log(props.user);
     }, []);
 
     return (

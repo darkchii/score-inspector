@@ -105,7 +105,6 @@ function ScoreFilter(props) {
             }
         });
         setColumns(_c);
-        console.log(_c);
     };
 
     return (

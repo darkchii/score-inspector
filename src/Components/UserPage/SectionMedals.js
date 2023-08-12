@@ -27,7 +27,6 @@ function SectionMedals(props) {
                 grouped_medals[medal.category].push(medal);
             });
             setMedals(grouped_medals);
-            console.log(grouped_medals);
         })();
     }, []);
 
