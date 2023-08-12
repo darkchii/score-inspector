@@ -1,15 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Alert, Box, Grid, Paper, Tooltip, Typography } from "@mui/material";
+import { Alert, AlertTitle, Box, Grid, Paper, Tooltip, Typography } from "@mui/material";
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { getMedals } from "../../Helpers/Osu";
 import { makeStyles } from "@mui/styles";
+import { Masonry } from "@mui/lab";
 
 const useStyles = makeStyles({
     tooltip: {
-      background: 'transparent',
+        background: 'transparent',
     },
-  });
+});
 
 function SectionMedals(props) {
     const classes = useStyles();
@@ -18,6 +19,10 @@ function SectionMedals(props) {
     useEffect(() => {
         (async () => {
             let _medals = await getMedals();
+
+            // order by .ordering
+            _medals.sort((a, b) => a.ordering - b.ordering);
+
             let grouped_medals = {};
             _medals.forEach(medal => {
                 if (grouped_medals[medal.category] === undefined) {
@@ -26,6 +31,7 @@ function SectionMedals(props) {
                 medal.achieved = props.user.osu.user_achievements.some(achievement => achievement.achievement_id === medal.medal_id);
                 grouped_medals[medal.category].push(medal);
             });
+
             setMedals(grouped_medals);
         })();
     }, []);
@@ -33,12 +39,12 @@ function SectionMedals(props) {
     return (
         <>
             <Alert severity="info">Use osekai.net for more in-depth information on medals and how to clear them.</Alert>
-            <Paper elevation={3} sx={{ pt: 2 }}>
-                <Grid container spacing={2} sx={{p:2}}>
+            <Paper elevation={3} sx={{ pt: 2, pl: 1 }}>
+                <Masonry columns={3} spacing={2}>
                     {Object.keys(medals).map(category => {
                         return (
-                            <Grid item xs={4}>
-                                <Typography variant="title">{category}</Typography>
+                            <Alert icon={false} severity='info'>
+                                <AlertTitle>{category}</AlertTitle>
                                 <Grid container spacing={0.5}>
                                     {
                                         medals[category].map(medal => {
@@ -82,10 +88,10 @@ function SectionMedals(props) {
                                         })
                                     }
                                 </Grid>
-                            </Grid>
+                            </Alert>
                         )
                     })}
-                </Grid>
+                </Masonry>
             </Paper>
         </>
     );
