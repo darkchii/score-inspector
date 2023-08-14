@@ -34,7 +34,7 @@
     "react-dom": "^18.2.0",
     "react-fast-marquee": "^1.5.2",
     "react-helmet": "^6.1.0",
-    "react-router-dom": "^6.11.0",
+    "react-router-dom": "^6.15.0",
     "react-scale-text": "^1.2.2",
     "react-scripts": "^5.0.1",
     "react-snowfall": "^1.2.1",
