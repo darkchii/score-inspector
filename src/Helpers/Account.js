@@ -79,12 +79,12 @@ export function GetRoleIcons(roles, chips = false) {
 }
 
 export function GetRoles(inspector_user) {
-    if (inspector_user === null || inspector_user.roles === null) return null;
+    if (inspector_user === null || inspector_user.roles === null) return [];
     if (inspector_user.roles !== null && typeof inspector_user.roles === 'string') {
         inspector_user.roles = JSON.parse(inspector_user.roles);
     }
 
-    return inspector_user.roles;
+    return inspector_user.roles ?? [];
 }
 
 export function IsUserLoggedInUnsafe() {

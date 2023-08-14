@@ -2,7 +2,7 @@ import { Avatar, Box, Chip, Grid, Paper, Stack, Table, TableBody, TableCell, tab
 import moment from "moment";
 import { useEffect, useState } from "react";
 import ReactCountryFlag from "react-country-flag";
-import { GetFormattedName, GetRoleIcon, GetRoles, ROLES } from "../../Helpers/Account";
+import { GetFormattedName, GetRoleIcon, GetRoles } from "../../Helpers/Account";
 
 const MAX_VISITORS = 5;
 function SectionHeader(props) {
@@ -53,7 +53,7 @@ function SectionHeader(props) {
                                     <Typography variant='h4'>{props.user.osu.username}{
                                         props.user.inspector_user !== undefined ? <>
                                             {
-                                                GetRoles(props.user.inspector_user).map((role, index) => {
+                                                GetRoles(props.user.inspector_user)?.map((role, index) => {
                                                     //const _role = ROLES.find(r => r.id === role);
                                                     //if (_role === undefined) return <></>;
                                                     //if(!role.is_visible) return <></>
