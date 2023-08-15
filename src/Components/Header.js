@@ -19,6 +19,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import PublicIcon from '@mui/icons-material/Public';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
+import HistoryIcon from '@mui/icons-material/History';
 
 const HeaderButtonMenu = styled((props) => (
     <Menu
@@ -81,12 +82,14 @@ function Header(props) {
                 { name: 'Staff', icon: <SupervisorAccountIcon />, onClick: () => { }, linkTo: '/staff' },
             ],
         },
-        { name: 'Leaderboards', icon: <LeaderboardIcon />, onClick: () => { }, linkTo: '/leaderboard' },
+        { name: 'Leaderboards', icon: <LeaderboardIcon />, onClick: () => { }, linkTo: '/leaderboard', dropDown: [
+            { name: 'Historic Score Rank', icon: <HistoryIcon />, onClick: () => { }, linkTo: '/score' },
+            { name: 'Countries', icon: <PublicIcon />, onClick: () => { }, linkTo: '/population' },
+        ] },
         { name: 'Top Scores', icon: <StarIcon />, onClick: () => { }, linkTo: '/top' },
         { name: 'Stats', icon: <DataUsageIcon />, onClick: () => { }, linkTo: '/stats' },
         { name: 'Settings', icon: <SettingsIcon />, onClick: () => settingsElement.current.setOpen(true) },
         { name: 'Tools', icon: <BuildIcon />, onClick: () => { }, linkTo: '/tools' },
-        { name: 'Population', icon: <PublicIcon />, onClick: () => { }, linkTo: '/population' },
     ];
 
     const handleHeaderMenuOpen = (event, index) => {
@@ -143,18 +146,9 @@ function Header(props) {
                 open={showDropDown}
                 onClose={handleHeaderMenuClose}
             >
-                {/* <ListItemIcon sx={{ minWidth: '40px' }}>{item.icon}</ListItemIcon> */}
-                {/* <ListItemText primary={'test'} /> */}
-
                 {
                     headerNavItems[activeDropDownIndex] !== undefined ? headerNavItems[activeDropDownIndex].dropDown.map((item, index) => {
                         return (
-                            // {
-                            // item.linkTo ?
-                            //     <Button key={index} size='small' startIcon={item.icon} component={Link} to={item.linkTo}>{item.name}</Button>
-                            //     :
-                            //     <Button key={index} size='small' startIcon={item.icon} onClick={item.onClick}>{item.name}</Button>
-                            // }
                             <MenuItem onClick={(e) => {
                                 item.onClick();
                                 handleHeaderMenuClose();
@@ -186,11 +180,11 @@ function Header(props) {
                                 textDecoration: 'none',
                             }}>osu! scores inspector</Typography>
                             <Box sx={{ display: { xs: 'none', sm: 'none', md: 'none', lg: 'block', flexGrow: 1 } }}>
-                                <Stack direction="row" spacing={2} sx={{ display: 'flex' }}>
+                                <Stack direction="row" spacing={2}>
                                     {
                                         headerNavItems.map((item, index) => {
                                             return (
-                                                <ButtonGroup size='small' variant='text'>
+                                                <Stack direction="row">
                                                     {
                                                         item.linkTo ?
                                                             <Button key={index} size='small' startIcon={item.icon} component={Link} to={item.linkTo}>{item.name}</Button>
@@ -200,10 +194,10 @@ function Header(props) {
 
                                                     {
                                                         item.dropDown ?
-                                                            <IconButton onClick={(e) => handleHeaderMenuOpen(e, index)} size='small' sx={{ p: 0 }}><KeyboardArrowDownIcon /></IconButton>
+                                                            <IconButton onClick={(e) => handleHeaderMenuOpen(e, index)} size='small'><KeyboardArrowDownIcon /></IconButton>
                                                             : <></>
                                                     }
-                                                </ButtonGroup>
+                                                </Stack>
                                             )
                                         }
                                         )

@@ -29,6 +29,7 @@ import { getFullUser } from './Helpers/Osu';
 import Population from './Routes/Population';
 import Staff from './Routes/Staff';
 import Admin from './Routes/Admin';
+import LeadersScore from './Routes/LeadersScore';
 
 function App() {
   const [loginData, setLoginData] = useState(null);
@@ -120,6 +121,13 @@ function App() {
                 <Route path="tools" element={<Tools />}>
                   <Route index element={<Tools />} />
                   <Route path=":tool" element={<Tools />} />
+                </Route>
+                <Route path="score" element={<LeadersScore />}>
+                  <Route index element={<LeadersScore />} />
+                  <Route path="page/:page" element={<LeadersScore />}>
+                    <Route index element={<LeadersScore />} />
+                    <Route path="date/:date" element={<LeadersScore />} />
+                  </Route>
                 </Route>
                 <Route path="leaderboard" element={<Leaders />}>
                   <Route index element={<Leaders />} />

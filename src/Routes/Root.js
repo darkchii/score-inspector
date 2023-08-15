@@ -1,4 +1,4 @@
-import { Alert, Box, Button, Card, CardContent, CircularProgress, Divider, Grid, Link, Modal, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from '@mui/material';
+import { Alert, Box, Button, Card, CardContent, CircularProgress, Divider, Grid, Link, Modal, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from '@mui/material';
 import { Link as RouterLink, useSearchParams } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import { formatBytes, GetAPI, MODAL_STYLE, parseReadableStreamToJson, showNotification } from '../Helpers/Misc';
@@ -157,7 +157,7 @@ function Root() {
                                                 {
                                                     IMPORTANT_NOTES.map((note, index) => {
                                                         return (
-                                                            <Alert icon={false} severity='warning'>
+                                                            <Alert icon={false} variant='outlined' severity='info'>
                                                                 <Typography>{note}</Typography>
                                                             </Alert>
                                                         );
@@ -315,20 +315,21 @@ function Root() {
                             </Card>
                         </Grid>
                         <Grid item xs={12}>
-                            <Card elevation={2}>
+                            <Box>
+                                <iframe
+                                    title='osu!alternative discord'
+                                    src={`https://ptb.discord.com/widget?id=${config.DISCORD_SERVER_ID}&theme=dark`}
+                                    width="100%"
+                                    height="400"
+                                    allowtransparency="true"
+                                    frameborder="0"
+                                    sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
+                            </Box>
+                            {/* <Card elevation={2}>
                                 <CardContent>
                                     <Typography variant='title'>Discord</Typography>
-                                    <Box sx={{ pl: 1 }}>
-                                        <iframe
-                                            src={`https://ptb.discord.com/widget?id=${config.DISCORD_SERVER_ID}&theme=dark`}
-                                            width="350"
-                                            height="350"
-                                            allowtransparency="true"
-                                            frameborder="0"
-                                            sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
-                                    </Box>
                                 </CardContent>
-                            </Card>
+                            </Card> */}
                         </Grid>
                         <Grid item xs={12}>
                             <Card elevation={2}>
