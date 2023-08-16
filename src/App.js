@@ -30,6 +30,7 @@ import Population from './Routes/Population';
 import Staff from './Routes/Staff';
 import Admin from './Routes/Admin';
 import LeadersScore from './Routes/LeadersScore';
+import Milestones from './Routes/Milestones';
 
 function App() {
   const [loginData, setLoginData] = useState(null);
@@ -114,6 +115,7 @@ function App() {
                 <Route path="staff" element={<Staff />} />
                 <Route path="population" element={<Population />} />
                 <Route path="logout" element={<Logout />} />
+                <Route path="milestones" element={<Milestones />} />
                 <Route path="admin" element={<Admin />}>
                   <Route index element={<Admin />} />
                   <Route path=":tool" element={<Admin />} />

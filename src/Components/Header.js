@@ -20,6 +20,7 @@ import PublicIcon from '@mui/icons-material/Public';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 import HistoryIcon from '@mui/icons-material/History';
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 
 const HeaderButtonMenu = styled((props) => (
     <Menu
@@ -90,6 +91,7 @@ function Header(props) {
         { name: 'Stats', icon: <DataUsageIcon />, onClick: () => { }, linkTo: '/stats' },
         { name: 'Settings', icon: <SettingsIcon />, onClick: () => settingsElement.current.setOpen(true) },
         { name: 'Tools', icon: <BuildIcon />, onClick: () => { }, linkTo: '/tools' },
+        { name: 'Milestones', icon: <EmojiEventsIcon />, onClick: () => { }, linkTo: '/milestones' },
     ];
 
     const handleHeaderMenuOpen = (event, index) => {

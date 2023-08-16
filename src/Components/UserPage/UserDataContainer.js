@@ -1,5 +1,5 @@
 import { TabContext, TabList, TabPanel } from "@mui/lab";
-import { Box, Paper, Stack, Tab } from "@mui/material";
+import { Box, Paper, Stack, Tab, Tooltip } from "@mui/material";
 import { useState } from "react";
 import PersonIcon from '@mui/icons-material/Person';
 import TodayIcon from '@mui/icons-material/Today';
@@ -19,6 +19,7 @@ import styled from "@emotion/styled";
 import SectionCompletion from "./SectionCompletion";
 import SectionPacks from "./SectionPacks";
 import SectionMedals from "./SectionMedals";
+import GroupIcon from '@mui/icons-material/Group';
 
 const StyledTab = styled(Tab)({
     minHeight: 'auto',
@@ -36,7 +37,8 @@ function UserDataContainer(props) {
         'completion': '4',
         'comments': '5',
         'medals': '6',
-        'packs': '7'
+        'packs': '7',
+        'friends': '8'
     }
 
     return (
@@ -52,6 +54,9 @@ function UserDataContainer(props) {
                         <StyledTab icon={<InsertCommentIcon />} iconPosition='start' label='Comments' value={_IDs['comments']} />
                         <StyledTab icon={<MilitaryTechIcon />} iconPosition='start' label='Medals' value={_IDs['medals']} />
                         <StyledTab icon={<LayersIcon />} iconPosition='start' label='Packs' value={_IDs['packs']} />
+                        <Tooltip title='Coming soon!'>
+                            <StyledTab disabled={true} icon={<GroupIcon />} iconPosition='start' label='Friends' value={_IDs['friends']} />
+                        </Tooltip>
                     </TabList>
                 </Box>
                 <TabPanel sx={{ p: 0 }} value={_IDs['profile']}>

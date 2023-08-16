@@ -15,6 +15,9 @@ const updates = [
         version: '2.7.0',
         date: '2023-06-23',
         changes: [
+            [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Added score rank history tracking', '101e3581715041165ad1593a9dee33f7e51b6389'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.MISC, 'Improved medals user page section', '5d3370f4d21e9c028a76bb722dc2fb95b7ab13b5'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.MISC, 'New medals added'],
             [PLATFORMTYPES.WEB, CHANGETYPES.MISC, 'Landing page container widths adjusted', '80fc790df4edf59233aa0edd216bcc7c105ba2d2'],
             [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Added osu!alt Discord server widget to landing', 'a7345873e987b4f08e742dd5202ea731135743b0'],
             [PLATFORMTYPES.WEB, CHANGETYPES.FIX, 'Fixed pp calculators incorrectly duplicating score array', 'f7a2311a12a62fd65411c9210459b88dab457eb7'],
@@ -25,6 +28,7 @@ const updates = [
             [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Added country based statistics', '09e40bf12281deb6b679d9566fd3ea9c701cf4fd'],
             [PLATFORMTYPES.WEB, CHANGETYPES.MISC, 'Better mobile support', '9fff5c3259ddf19d778203fc2b2f5b23c1d7818a'],
             [PLATFORMTYPES.WEB, CHANGETYPES.MISC, 'Website moved to score.kirino.sh', 'cc6641698fef53dbb1e2e76e0f296f4f99744acc'],
+            [PLATFORMTYPES.API, CHANGETYPES.FIX, 'Inspector database using correct Amsterdam timezone now'],
         ]
     },
     {
