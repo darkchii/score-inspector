@@ -15,6 +15,7 @@ import HorizontalRuleIcon from '@mui/icons-material/HorizontalRule';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { GetFormattedName } from "../Helpers/Account";
+import FiberNewIcon from '@mui/icons-material/FiberNew';
 
 const USERS_PER_PAGE = 50;
 const MAX_TOTAL_USERS = 10000;
@@ -32,6 +33,8 @@ function LeadersScore(props) {
     const [isLoadingDates, setIsLoadingDates] = useState(false);
     const [isLoadingLeaderboard, setIsLoadingLeaderboard] = useState(false);
     const [error, setError] = useState(null);
+    const [isPreviousDayRecorded, setIsPreviousDayRecorded] = useState(false);
+    const [sorting, setSorting] = useState('rank');
 
     useEffect(() => {
         if (allDates.length === 0) {
@@ -52,8 +55,9 @@ function LeadersScore(props) {
                     setIsLoadingDates(false);
                 }
 
-                if(date === null && _allDates.length > 0 && !params.date) {
+                if (date === null && _allDates.length > 0 && !params.date) {
                     console.log(`setting date to ${_allDates[_allDates.length - 1]}`);
+
                     setDate(_allDates[_allDates.length - 1]);
                 }
             })();
@@ -62,11 +66,17 @@ function LeadersScore(props) {
 
     useEffect(() => {
         console.log(`page: ${page}, date: ${date}`);
-        if(!date || !page) return;
+        if (!date || !page) return;
         (async () => {
             setIsLoadingLeaderboard(true);
             try {
-                const data = await axios.get(`${GetAPI()}scores/ranking?date=${date}&limit=${USERS_PER_PAGE}&page=${page}`);
+                const data = await axios.get(`${GetAPI()}scores/ranking?date=${date}&limit=${USERS_PER_PAGE}&page=${page}&sort=${sorting}`);
+                //check if previous day is recorded (if old_rank is null on all users, then no)
+                let _isPreviousDayRecorded = data?.data?.every((item) => {
+                    return item.old_rank !== null;
+                });
+                console.log(`[DEBUG] Previous day recorded: ${_isPreviousDayRecorded}`);
+                setIsPreviousDayRecorded(_isPreviousDayRecorded);
                 setLeaderboard(data?.data);
             } catch (err) {
                 setError(err);
@@ -74,7 +84,7 @@ function LeadersScore(props) {
                 setIsLoadingLeaderboard(false);
             }
         })();
-    }, [page, date]);
+    }, [page, date, sorting]);
 
     const disableDate = (date) => {
         const dateStr = moment(date).format("YYYY-MM-DD");
@@ -101,6 +111,13 @@ function LeadersScore(props) {
                                         }
                                     }></DatePicker>
                                 </LocalizationProvider>
+                            </Box>
+                            <Box sx={{ pb: 2, justifyContent: 'center', display: 'flex' }}>
+                                <ButtonGroup size='small'>
+                                    <Button onClick={() => { setSorting('rank') }} variant={sorting === 'rank' ? 'contained' : 'outlined'}>Rank</Button>
+                                    <Button onClick={() => { setSorting('rank_gain') }} variant={sorting === 'rank_gain' ? 'contained' : 'outlined'}>Gained ranks</Button>
+                                    <Button onClick={() => { setSorting('score_gain') }} variant={sorting === 'score_gain' ? 'contained' : 'outlined'}>Gained score</Button>
+                                </ButtonGroup>
                             </Box>
                             <Box>
                                 <Box sx={{ pb: 2, justifyContent: 'center', display: 'flex' }}>
@@ -133,24 +150,30 @@ function LeadersScore(props) {
                                             <TableBody>
                                                 {
                                                     leaderboard.map((item, index) => {
+                                                        const rank_diff = item.old_rank !== null ? item.rank - item.old_rank : null;
+                                                        const ranked_score_diff = item.old_ranked_score !== null ? item.ranked_score - item.old_ranked_score : 0;
                                                         return (
                                                             <TableRow>
                                                                 <TableCell width='5%'>#{item.rank}</TableCell>
                                                                 <TableCell width='10%'><Typography color={
-                                                                    (item.rank_diff ?? 0) === 0 ? grey[400] : (item.rank_diff ?? 0) < 0 ? green[400] : red[400]
+                                                                    (isPreviousDayRecorded && rank_diff === null) ? green[600] : ((rank_diff ?? 0) === 0 ? grey[400] : (rank_diff ?? 0) < 0 ? green[400] : red[400])
                                                                 }>
                                                                     {
-                                                                        (item.rank_diff ?? 0) === 0 ? (
-                                                                            <HorizontalRuleIcon />
-                                                                        ) : (
-                                                                            (item.rank_diff ?? 0) < 0 ? (
-                                                                                <>
-                                                                                    <KeyboardArrowUpIcon /> {Math.abs(item.rank_diff ?? 0).toLocaleString('en-US')}
-                                                                                </>
+                                                                        (isPreviousDayRecorded && rank_diff === null) ? <>
+                                                                            <FiberNewIcon color={green[600]} />
+                                                                        </> : (
+                                                                            (rank_diff ?? 0) === 0 ? (
+                                                                                <HorizontalRuleIcon />
                                                                             ) : (
-                                                                                <>
-                                                                                    <KeyboardArrowDownIcon /> {Math.abs(item.rank_diff ?? 0).toLocaleString('en-US')}
-                                                                                </>
+                                                                                (rank_diff ?? 0) < 0 ? (
+                                                                                    <>
+                                                                                        <KeyboardArrowUpIcon /> {Math.abs(rank_diff ?? 0).toLocaleString('en-US')}
+                                                                                    </>
+                                                                                ) : (
+                                                                                    <>
+                                                                                        <KeyboardArrowDownIcon /> {Math.abs(rank_diff ?? 0).toLocaleString('en-US')}
+                                                                                    </>
+                                                                                )
                                                                             )
                                                                         )
                                                                     }
@@ -165,9 +188,9 @@ function LeadersScore(props) {
                                                                     <span>
                                                                         {item.ranked_score.toLocaleString('en-US')}
                                                                         <Typography color={
-                                                                            (item.score_diff ?? 0) > 0 ? green[400] : grey[400]
+                                                                            (ranked_score_diff ?? 0) > 0 ? green[400] : grey[400]
                                                                         } variant="caption" display="block">
-                                                                            +{(item.score_diff ?? 0).toLocaleString('en-US')}
+                                                                            +{(ranked_score_diff ?? 0).toLocaleString('en-US')}
                                                                         </Typography>
                                                                     </span>
                                                                 </TableCell>
