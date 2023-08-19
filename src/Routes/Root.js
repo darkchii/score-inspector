@@ -11,6 +11,7 @@ import { green } from '@mui/material/colors';
 import GlowBar from '../Components/UI/GlowBar';
 import Loader from '../Components/UI/Loader';
 import config from "../config.json";
+import { useTheme } from '@emotion/react';
 
 momentDurationFormatSetup(moment);
 
@@ -29,6 +30,7 @@ const GUIDE_NEW_USERS = [
 ];
 
 function Root() {
+    const theme = useTheme();
     const [isModalOpen, setIsModalOpen] = useState(true);
     const [osuAuthCode, setOsuAuthCode] = useState(null);
     const [searchParams] = useSearchParams();
@@ -332,7 +334,7 @@ function Root() {
                                     <img
                                         alt='Buy me a billion score'
                                         width='100%'
-                                        src="https://img.buymeacoffee.com/button-api/?text=Buy me a billion score&emoji=🍕&slug=kirino&button_colour=FF5F5F&font_colour=ffffff&font_family=Lato&outline_colour=000000&coffee_colour=FFDD00" />
+                                        src={`https://img.buymeacoffee.com/button-api/?text=Buy me a billion score&emoji=🍕&slug=kirino&button_colour=${theme.palette.background.paper.substring(1)}&font_colour=ffffff&font_family=Lato&outline_colour=000000&coffee_colour=FFDD00`} />
                                 </a>
                             </Box>
                         </Grid>
