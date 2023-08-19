@@ -37,7 +37,7 @@ const MISC_STATS = [
     { name: '', label: '', format: (value) => '' }, //empty row
     { name: '', label: 'Averages', format: (value) => '' }, //title row
     { name: 'avg_stars', label: 'Stars', format: (value) => `${(Math.round(100 * value) / 100).toLocaleString('en-US')}*` },
-    { name: 'avg_combo', label: 'Combo', format: (value) => `${(Math.round(value)).toLocaleString('en-US')}x`},
+    { name: 'avg_combo', label: 'Combo', format: (value) => `${(Math.round(value)).toLocaleString('en-US')}x` },
     { name: 'avg_length', label: 'Length', format: (value) => (Math.round(value)).toLocaleString('en-US') + ' sec' },
     { name: 'avg_score', label: 'Score', format: (value) => (Math.round(value)).toLocaleString('en-US') },
     { name: 'avg_pp', label: 'PP', format: (value) => `${(Math.round(value)).toLocaleString('en-US')}pp` },
@@ -47,7 +47,7 @@ const MISC_STATS = [
     { name: '', label: 'Users', format: (value) => '' }, //title row
     { name: 'user_most_scores', label: 'Clears', format: (value) => USER_STAT(value) },
     { name: 'user_most_pp', label: 'Total PP', format: (value) => (USER_STAT(value, '', 'pp')) },
-    { name: 'user_top_pp', label: 'Top PP', format: (value) => (USER_STAT(value, '', 'pp'))},
+    { name: 'user_top_pp', label: 'Top PP', format: (value) => (USER_STAT(value, '', 'pp')) },
     { name: 'user_most_score', label: 'Score', format: (value) => (USER_STAT(value)) },
     { name: 'user_top_score', label: 'Top Score', format: (value) => (USER_STAT(value)) },
     { name: '', label: '', format: (value) => '' }, //empty row
@@ -122,75 +122,109 @@ function Stats(props) {
                 </Grid>
                 <Grid item xs={12} md={5.5}>
                     <Card>
+                        <CardHeader title='Performance distribution' />
+                        <CardContent>
+                            <TableContainer>
+                                <Table size='small'>
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell>PP Range</TableCell>
+                                            <TableCell>Scores</TableCell>
+                                           </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {
+                                            scoreStats ? scoreStats.pp_distribution.map((pp_dis) => {
+                                                const pp_low = Number(pp_dis.pp_range);
+                                                const pp_high = pp_low + 100;
+                                                const scores = Number(pp_dis.count);
+                                                return (
+                                                    <TableRow>
+                                                        <TableCell>{pp_low}pp - {pp_high}pp</TableCell>
+                                                        <TableCell>{scores.toLocaleString('en-US')}</TableCell>
+                                                    </TableRow>
+                                                );
+                                            }) : <></>
+                                        }
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </CardContent>
+                    </Card>
+                </Grid>
+                <Grid item xs={12}>
+                    <Card>
                         <CardHeader title='Most cleared maps' />
                         <CardContent>
-                            {
-                                scoreStats && TIME_PERIODS.map((period) => {
-                                    return (
-                                        <Grid>
-                                            <Typography key={period.name} variant='body1'>{period.label}</Typography>
-                                            <TableContainer key={period.name} style={{ marginBottom: 20 }}>
-                                                <Table size='small' sx={{
-                                                    [`& .${tableCellClasses.root} `]: {
-                                                        mb: 1,
-                                                        borderBottom: "none",
-                                                    },
-                                                    [`& .${tableRowClasses.root} `]: {
-                                                        borderRadius: 10,
-                                                    },
-                                                    borderCollapse: 'separate',
-                                                    borderSpacing: '0 0.4em',
-                                                }}>
-                                                    <TableBody>
-                                                        {
-                                                            scoreStats[period.name].most_played_maps.map((map) => {
-                                                                const background = `https://assets.ppy.sh/beatmaps/${map.set_id}/covers/cover.jpg`;
-                                                                const black_overlay = background ? '0.8' : '0';
-                                                                return (
-                                                                    <TableRow component={Card} key={map.beatmap_id} sx={{
-                                                                        "&:hover": {
-                                                                            opacity: 0.5,
-                                                                            cursor: 'pointer'
-                                                                        },
-                                                                        backgroundImage: `url(${background})`,
-                                                                        backgroundSize: 'cover',
-                                                                        backgroundPosition: 'center',
-                                                                        backgroundRepeat: 'no-repeat'
-                                                                    }}
-                                                                        onClick={() => {
-                                                                            window.open(`https://osu.ppy.sh/beatmaps/${map.beatmap_id}`, "_blank");
+                            <Grid container spacing={2}>
+                                {
+                                    scoreStats && TIME_PERIODS.map((period) => {
+                                        return (
+                                            <Grid item xs={12} md={6}>
+                                                <Typography key={period.name} variant='body1'>{period.label}</Typography>
+                                                <TableContainer key={period.name} style={{ marginBottom: 20 }}>
+                                                    <Table size='small' sx={{
+                                                        [`& .${tableCellClasses.root} `]: {
+                                                            mb: 1,
+                                                            borderBottom: "none",
+                                                        },
+                                                        [`& .${tableRowClasses.root} `]: {
+                                                            borderRadius: 10,
+                                                        },
+                                                        borderCollapse: 'separate',
+                                                        borderSpacing: '0 0.4em',
+                                                    }}>
+                                                        <TableBody>
+                                                            {
+                                                                scoreStats[period.name].most_played_maps.map((map) => {
+                                                                    const background = `https://assets.ppy.sh/beatmaps/${map.set_id}/covers/cover.jpg`;
+                                                                    const black_overlay = background ? '0.8' : '0';
+                                                                    return (
+                                                                        <TableRow component={Card} key={map.beatmap_id} sx={{
+                                                                            "&:hover": {
+                                                                                opacity: 0.5,
+                                                                                cursor: 'pointer'
+                                                                            },
+                                                                            backgroundImage: `url(${background})`,
+                                                                            backgroundSize: 'cover',
+                                                                            backgroundPosition: 'center',
+                                                                            backgroundRepeat: 'no-repeat'
                                                                         }}
-                                                                    >
-                                                                        <TableCell width={'3%'} sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})` }}>
-                                                                            <Tooltip title={`${approval_state[map?.approved] ?? ''}`}>
-                                                                                <Box>
-                                                                                    {
-                                                                                        map?.approved === 1 || map?.approved === 2 ?
-                                                                                            <CheckIcon sx={{ color: 'green' }} />
-                                                                                            : map?.approved === 3 ?
-                                                                                                <CheckIcon sx={{ color: 'yellow' }} />
-                                                                                                : map?.approved === 4 ?
-                                                                                                    <FavoriteIcon sx={{ color: 'red' }} />
-                                                                                                    : <></>
-                                                                                    }
-                                                                                </Box>
-                                                                            </Tooltip>
-                                                                        </TableCell>
-                                                                        <TableCell sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})` }}>
-                                                                            {map.title} [{map.diffname}]
-                                                                        </TableCell>
-                                                                        <TableCell width={'5%'} sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})` }} align='right'>{Math.round(map.count).toLocaleString('en-US')}</TableCell>
-                                                                    </TableRow>
-                                                                )
-                                                            })
-                                                        }
-                                                    </TableBody>
-                                                </Table>
-                                            </TableContainer>
-                                        </Grid>
-                                    )
-                                })
-                            }
+                                                                            onClick={() => {
+                                                                                window.open(`https://osu.ppy.sh/beatmaps/${map.beatmap_id}`, "_blank");
+                                                                            }}
+                                                                        >
+                                                                            <TableCell width={'3%'} sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})` }}>
+                                                                                <Tooltip title={`${approval_state[map?.approved] ?? ''}`}>
+                                                                                    <Box>
+                                                                                        {
+                                                                                            map?.approved === 1 || map?.approved === 2 ?
+                                                                                                <CheckIcon sx={{ color: 'green' }} />
+                                                                                                : map?.approved === 3 ?
+                                                                                                    <CheckIcon sx={{ color: 'yellow' }} />
+                                                                                                    : map?.approved === 4 ?
+                                                                                                        <FavoriteIcon sx={{ color: 'red' }} />
+                                                                                                        : <></>
+                                                                                        }
+                                                                                    </Box>
+                                                                                </Tooltip>
+                                                                            </TableCell>
+                                                                            <TableCell sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})` }}>
+                                                                                {map.title} [{map.diffname}]
+                                                                            </TableCell>
+                                                                            <TableCell width={'5%'} sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})` }} align='right'>{Math.round(map.count).toLocaleString('en-US')}</TableCell>
+                                                                        </TableRow>
+                                                                    )
+                                                                })
+                                                            }
+                                                        </TableBody>
+                                                    </Table>
+                                                </TableContainer>
+                                            </Grid>
+                                        )
+                                    })
+                                }
+                            </Grid>
                         </CardContent>
                     </Card>
                 </Grid>
