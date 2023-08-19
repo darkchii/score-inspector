@@ -1,4 +1,4 @@
-import { Alert, Box, Button, Card, CardContent, CircularProgress, Divider, Grid, Link, Modal, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from '@mui/material';
+import { Alert, Box, Button, Card, CardContent, CircularProgress, Divider, Grid, Link, Modal, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from '@mui/material';
 import { Link as RouterLink, useSearchParams } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import { formatBytes, GetAPI, MODAL_STYLE, parseReadableStreamToJson, showNotification } from '../Helpers/Misc';
@@ -325,11 +325,16 @@ function Root() {
                                     frameborder="0"
                                     sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
                             </Box>
-                            {/* <Card elevation={2}>
-                                <CardContent>
-                                    <Typography variant='title'>Discord</Typography>
-                                </CardContent>
-                            </Card> */}
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Box>
+                                <a href="https://www.buymeacoffee.com/kirino" target='_blank' rel='noreferrer'>
+                                    <img
+                                        alt='Buy me a billion score'
+                                        width='100%'
+                                        src="https://img.buymeacoffee.com/button-api/?text=Buy me a billion score&emoji=🍕&slug=kirino&button_colour=FF5F5F&font_colour=ffffff&font_family=Lato&outline_colour=000000&coffee_colour=FFDD00" />
+                                </a>
+                            </Box>
                         </Grid>
                         <Grid item xs={12}>
                             <Card elevation={2}>

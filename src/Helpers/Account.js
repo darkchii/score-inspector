@@ -2,9 +2,6 @@ import { GetAPI, GetOsuApiRedirect, parseReadableStreamToJson } from "./Misc";
 import config from '../config.json';
 import axios from "axios";
 import { Avatar, Box, Chip, Tooltip } from "@mui/material";
-import CodeIcon from '@mui/icons-material/Code';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import { green, pink } from "@mui/material/colors";
 import * as Muicon from "@mui/icons-material";
 
 const ROLE_PADDING = 0.2;

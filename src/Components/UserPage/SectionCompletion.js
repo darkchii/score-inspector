@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Button, Divider, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableRow, Typography, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
 import { capitalize } from "../../Helpers/Misc";

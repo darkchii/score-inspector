@@ -1,21 +1,16 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect } from "react";
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Loader from "../Components/UI/Loader";
 import axios from "axios";
-import { GetAPI, sleep } from "../Helpers/Misc";
-import { Alert, Box, Button, ButtonGroup, Container, Pagination, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
+import { GetAPI } from "../Helpers/Misc";
+import { Alert, Box, Button, ButtonGroup, Pagination, Stack, Typography } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import dayjs from "dayjs";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import moment from "moment";
 import PlayerLeaderboardItem from "../Components/Leaderboards/PlayerLeaderboardItem";
-import { green, grey, red } from "@mui/material/colors";
-import HorizontalRuleIcon from '@mui/icons-material/HorizontalRule';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import { GetFormattedName } from "../Helpers/Account";
-import FiberNewIcon from '@mui/icons-material/FiberNew';
+import { green, grey } from "@mui/material/colors";
 
 const USERS_PER_PAGE = 50;
 const MAX_TOTAL_USERS = 10000;
@@ -34,7 +29,6 @@ function LeadersScore(props) {
     const [allDates, setAllDates] = useState([]);
     const [isLoadingDates, setIsLoadingDates] = useState(false);
     const [isLoadingLeaderboard, setIsLoadingLeaderboard] = useState(false);
-    const [error, setError] = useState(null);
     const [isPreviousDayRecorded, setIsPreviousDayRecorded] = useState(false);
     //also check if sorting is valid
     const [sorting, setSorting] = useState(params.sort && VALID_SORTING.includes(params.sort) ? params.sort : 'rank');
@@ -53,7 +47,7 @@ function LeadersScore(props) {
                     _allDates = data?.data;
                     setAllDates(data?.data);
                 } catch (err) {
-                    setError(err);
+                    console.log(err);
                 } finally {
                     setIsLoadingDates(false);
                 }
@@ -79,7 +73,7 @@ function LeadersScore(props) {
                 setIsPreviousDayRecorded(_isPreviousDayRecorded);
                 setLeaderboard(data?.data);
             } catch (err) {
-                setError(err);
+                console.log(err);
             } finally {
                 setIsLoadingLeaderboard(false);
             }

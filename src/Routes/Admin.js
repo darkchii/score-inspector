@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
-import { AdminGetUsers, AdminValidate, GetRemoteRoles, GetRemoteUsersByRole, GetRoleIcon } from "../Helpers/Account";
-import { Alert, Button, ButtonGroup, Card, CardContent, CardHeader, Chip, Grid, ListItem, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
-import PlayerCard from "../Components/PlayerCard";
+import { AdminGetUsers, AdminValidate, GetRemoteRoles, GetRoleIcon } from "../Helpers/Account";
+import { Alert, Button, ButtonGroup,Grid, ListItem, Paper, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
 import { Link, useParams } from "react-router-dom";
-import { getFullUser } from "../Helpers/Osu";
 import Loader from "../Components/UI/Loader";
 import { List } from "react-virtualized";
 import ImageIcon from '@mui/icons-material/Image';

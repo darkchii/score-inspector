@@ -1,5 +1,5 @@
-import { Box, Card, CardContent, CircularProgress, Container, Modal, Stack, Tooltip, Typography } from "@mui/material";
-import { useEffect, useImperativeHandle } from "react";
+import { Box, Card, CardContent, Container, Modal, Stack, Tooltip, Typography } from "@mui/material";
+import { useImperativeHandle } from "react";
 import { forwardRef } from "react";
 import { useState } from "react";
 import { LeaderboardItem } from "../Leaderboards/LeaderboardItem";

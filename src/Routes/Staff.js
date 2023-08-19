@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { GetRemoteRoles, GetRemoteUsersByRole, GetRoleIcon } from "../Helpers/Account";
-import { Card, CardContent, CardHeader, Chip, Grid, Paper, Stack, Typography } from "@mui/material";
+import { Card, CardContent, CardHeader, Chip, Grid, Stack, Typography } from "@mui/material";
 import PlayerCard from "../Components/PlayerCard";
 import { useNavigate } from "react-router-dom/dist";
 import { getFullUser } from "../Helpers/Osu";

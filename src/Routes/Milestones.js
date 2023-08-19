@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Box, Pagination, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from '@mui/material';
 import { useEffect } from 'react';
 import { useState } from 'react';
