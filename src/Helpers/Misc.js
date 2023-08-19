@@ -63,7 +63,7 @@ export function GetOsuApiRedirect() {
 }
 
 export function GetOsuAuthUrl() {
-    return `https://osu.ppy.sh/oauth/authorize?response_type=code&client_id=${GetOsuClientID()}&scope=identify%20public&redirect_uri=${GetOsuApiRedirect()}`
+    return `https://osu.ppy.sh/oauth/authorize?response_type=code&client_id=${GetOsuClientID()}&scope=identify%20public%20friends.read&redirect_uri=${GetOsuApiRedirect()}`
 }
 
 export async function parseReadableStreamToJson(input) {

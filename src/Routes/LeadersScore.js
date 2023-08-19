@@ -21,6 +21,8 @@ const USERS_PER_PAGE = 50;
 const MAX_TOTAL_USERS = 10000;
 const PAGES = Math.ceil(MAX_TOTAL_USERS / USERS_PER_PAGE);
 
+const VALID_SORTING = ['rank', 'rank_gain', 'score_gain'];
+
 function LeadersScore(props) {
     const params = useParams();
     const navigate = useNavigate();
@@ -34,7 +36,8 @@ function LeadersScore(props) {
     const [isLoadingLeaderboard, setIsLoadingLeaderboard] = useState(false);
     const [error, setError] = useState(null);
     const [isPreviousDayRecorded, setIsPreviousDayRecorded] = useState(false);
-    const [sorting, setSorting] = useState('rank');
+    //also check if sorting is valid
+    const [sorting, setSorting] = useState(params.sort && VALID_SORTING.includes(params.sort) ? params.sort : 'rank');
 
     useEffect(() => {
         if (allDates.length === 0) {
@@ -71,11 +74,8 @@ function LeadersScore(props) {
             setIsLoadingLeaderboard(true);
             try {
                 const data = await axios.get(`${GetAPI()}scores/ranking?date=${date}&limit=${USERS_PER_PAGE}&page=${page}&sort=${sorting}`);
-                //check if previous day is recorded (if old_rank is null on all users, then no)
-                let _isPreviousDayRecorded = data?.data?.every((item) => {
-                    return item.old_rank !== null;
-                });
-                console.log(`[DEBUG] Previous day recorded: ${_isPreviousDayRecorded}`);
+                //check if previous day is recorded (if any old_rank is NOT null, then it is recorded)
+                let _isPreviousDayRecorded = data?.data?.filter((item) => { return item.old_rank !== null; }).length > 0;
                 setIsPreviousDayRecorded(_isPreviousDayRecorded);
                 setLeaderboard(data?.data);
             } catch (err) {
@@ -107,16 +107,16 @@ function LeadersScore(props) {
                                     } onChange={
                                         (newDate) => {
                                             setDate(newDate.format("YYYY-MM-DD"));
-                                            navigate(`/score/page/${page}/date/${newDate.format("YYYY-MM-DD")}`);
+                                            navigate(`/score/page/${page}/date/${newDate.format("YYYY-MM-DD")}/sort/${sorting}`);
                                         }
                                     }></DatePicker>
                                 </LocalizationProvider>
                             </Box>
                             <Box sx={{ pb: 2, justifyContent: 'center', display: 'flex' }}>
                                 <ButtonGroup size='small'>
-                                    <Button onClick={() => { setSorting('rank') }} variant={sorting === 'rank' ? 'contained' : 'outlined'}>Rank</Button>
-                                    <Button onClick={() => { setSorting('rank_gain') }} variant={sorting === 'rank_gain' ? 'contained' : 'outlined'}>Gained ranks</Button>
-                                    <Button onClick={() => { setSorting('score_gain') }} variant={sorting === 'score_gain' ? 'contained' : 'outlined'}>Gained score</Button>
+                                    <Button onClick={() => { setSorting('rank'); navigate(`/score/page/${page}/date/${date}/sort/rank`) }} variant={sorting === 'rank' ? 'contained' : 'outlined'}>Rank</Button>
+                                    <Button onClick={() => { setSorting('rank_gain'); navigate(`/score/page/${page}/date/${date}/sort/rank_gain`) }} variant={sorting === 'rank_gain' ? 'contained' : 'outlined'}>Gained ranks</Button>
+                                    <Button onClick={() => { setSorting('score_gain'); navigate(`/score/page/${page}/date/${date}/sort/score_gain`) }} variant={sorting === 'score_gain' ? 'contained' : 'outlined'}>Gained score</Button>
                                 </ButtonGroup>
                             </Box>
                             <Box>
@@ -129,14 +129,51 @@ function LeadersScore(props) {
                                         disabled={isLoadingDates || isLoadingLeaderboard}
                                         page={page}
                                         onChange={(e, v) => {
-                                            navigate(`/score/page/${v}/date/${date}`);
+                                            navigate(`/score/page/${v}/date/${date}/sort/${sorting}`);
                                             setPage(v);
                                         }
                                         } count={PAGES} />
                                 </Box>
                             </Box>
-                            <Box sx={{ pb: 2, justifyContent: 'center', display: 'flex' }}>
-                                <Container maxWidth="lg">
+                            <Box>
+                                <Stack direction='column' spacing={1}>
+                                    {
+                                        leaderboard.map((item, index) => {
+                                            const rank_diff = item.old_rank === null ? null : (item.rank - item.old_rank);
+                                            const ranked_score_diff = item.old_ranked_score !== null ? (item.ranked_score - item.old_ranked_score) : 0;
+                                            return (
+                                                <PlayerLeaderboardItem
+                                                    rankGain={rank_diff}
+                                                    canBeNewEntry={isPreviousDayRecorded}
+                                                    values={
+                                                        [
+                                                            {
+                                                                value: '',
+                                                                alignment: 'left'
+                                                            },
+                                                            {
+                                                                value: (
+                                                                    <span>
+                                                                        {item.ranked_score.toLocaleString('en-US')}
+                                                                        <span>
+                                                                            <Typography color={
+                                                                                (ranked_score_diff ?? 0) > 0 ? green[400] : grey[400]
+                                                                            } variant="caption" display="block">
+                                                                                +{(ranked_score_diff ?? 0).toLocaleString('en-US')}
+                                                                            </Typography>
+                                                                        </span>
+                                                                    </span>
+                                                                ),
+                                                                alignment: 'left'
+                                                            }
+                                                        ]
+                                                    }
+                                                    user={item} />
+                                            )
+                                        })
+                                    }
+                                </Stack>
+                                {/* <Container maxWidth="lg">
                                     <TableContainer>
                                         <Table size='small'>
                                             <TableHead>
@@ -201,7 +238,7 @@ function LeadersScore(props) {
                                             </TableBody>
                                         </Table>
                                     </TableContainer>
-                                </Container>
+                                </Container> */}
                             </Box>
                         </Box>
                     </>

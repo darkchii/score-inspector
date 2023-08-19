@@ -225,7 +225,7 @@ const GROUPED_STATS = {
             name: 'longest_approval', title: 'Longest Rank Time',
             description: 'List of beatmaps sorted by longest time from submission to ranked',
             customFormat: (value) => `
-                ${value===undefined ? '' : (Object.keys(value).length === 0 ? 'Instant' :
+                ${value === undefined ? '' : (Object.keys(value).length === 0 ? 'Instant' :
                     `
                     ${value.years ? value.years + 'y ' : ''}
                     ${value.months ? value.months + 'm ' : ''}
@@ -366,7 +366,7 @@ function Leaders() {
                                     onChange={e => navigate(`stat/${statistic.name}/page/1/country/${e.target.value}`)}
                                     labelId={`country_dropdown_label`}
                                     label='Country'
-                                    disabled={!(!isLoading && leaderboardType==='users')}
+                                    disabled={!(!isLoading && leaderboardType === 'users')}
                                 >
                                     {
                                         countryList.map((value) => {
@@ -408,7 +408,22 @@ function Leaders() {
                                 leaderboard.map((entry) => {
                                     if (leaderboardType === 'users') {
                                         return (
-                                            <PlayerLeaderboardItem statistic={statistic} user={entry} />
+                                            <PlayerLeaderboardItem
+                                                values={
+                                                    [
+                                                        {
+                                                            value: '',
+                                                            alignment: 'left'
+                                                        },
+                                                        {
+                                                            value: statistic?.customFormat !== undefined && statistic?.customFormat != null ?
+                                                                statistic?.customFormat(entry?.stat) :
+                                                                Math.round(entry?.stat).toLocaleString('en-US'),
+                                                            alignment: 'left'
+                                                        }
+                                                    ]
+                                                }
+                                                user={entry} />
                                         );
                                     }
 

@@ -115,7 +115,10 @@ function App() {
                 <Route path="staff" element={<Staff />} />
                 <Route path="population" element={<Population />} />
                 <Route path="logout" element={<Logout />} />
-                <Route path="milestones" element={<Milestones />} />
+                <Route path="milestones" element={<Milestones />}>
+                  <Route index element={<Milestones />} />
+                  <Route path="page/:page" element={<Milestones />} />
+                </Route>
                 <Route path="admin" element={<Admin />}>
                   <Route index element={<Admin />} />
                   <Route path=":tool" element={<Admin />} />
@@ -128,7 +131,10 @@ function App() {
                   <Route index element={<LeadersScore />} />
                   <Route path="page/:page" element={<LeadersScore />}>
                     <Route index element={<LeadersScore />} />
-                    <Route path="date/:date" element={<LeadersScore />} />
+                    <Route path="date/:date" element={<LeadersScore />}>
+                      <Route index element={<LeadersScore />} />
+                      <Route path="sort/:sort" element={<LeadersScore />} />
+                    </Route>
                   </Route>
                 </Route>
                 <Route path="leaderboard" element={<Leaders />}>

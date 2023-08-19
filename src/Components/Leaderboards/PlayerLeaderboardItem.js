@@ -8,11 +8,17 @@ import ReactCountryFlag from "react-country-flag";
 import { GetRoleIcons } from "../../Helpers/Account";
 import NotInterestedIcon from '@mui/icons-material/NotInterested';
 import { useNavigate } from "react-router-dom";
+import { green, grey, red } from "@mui/material/colors";
+import FiberNewIcon from '@mui/icons-material/FiberNew';
+import HorizontalRuleIcon from '@mui/icons-material/HorizontalRule';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 function PlayerLeaderboardItem(props) {
     const [osu_user, setOsuUser] = useState({});
     const [inspector_user, setInspectorUser] = useState({});
     const [base_user, setBaseUser] = useState({});
+    const [showRankGain, setShowRankGain] = useState(false);
     const theme = useTheme();
     const navigate = useNavigate();
 
@@ -22,6 +28,8 @@ function PlayerLeaderboardItem(props) {
 
         setOsuUser(_osu_user);
         setBaseUser(_base_user);
+
+        setShowRankGain(props.rankGain !== undefined);
 
         let _inspector_user = {
             known_username: _base_user.username,
@@ -40,10 +48,10 @@ function PlayerLeaderboardItem(props) {
             <LeaderboardItem
                 background={osu_user?.cover?.custom_url}
                 onClick={() => {
-                    navigate(`/user/${base_user?.user_id}`);
+                    navigate(`/user/${base_user?.user_id ?? base_user?.osu_id}`);
                 }}>
                 <img
-                    src={`https://a.ppy.sh/${base_user?.user_id}`}
+                    src={`https://a.ppy.sh/${base_user?.user_id ?? base_user?.osu_id}`}
                     alt={base_user?.username}
                     style={{
                         aspectRatio: '1/1', display: 'flex',
@@ -52,14 +60,50 @@ function PlayerLeaderboardItem(props) {
 
                 <Box sx={{
                     display: 'flex',
-                    justifyContent: 'center',
+                    justifyContent: 'left',
                     alignItems: 'center',
+                    pl: 1,
                     width: '80px'
                 }}>
                     <Typography variant='h6' sx={{ fontSize: '1.3em' }} noWrap>
                         #{base_user?.rank ?? 0}
                     </Typography>
                 </Box>
+
+                {
+                    showRankGain ?
+                        <Box sx={{
+                            display: 'flex',
+                            justifyContent: 'left',
+                            alignItems: 'center',
+                            width: '90px'
+                        }}>
+                            <Typography variant='h6' sx={{ fontSize: '1.3em' }} noWrap>
+                                <span style={{
+                                    color: (props.canBeNewEntry && props.rankGain === null) ? green[600] : ((props.rankGain ?? 0) === 0 ? grey[400] : (props.rankGain ?? 0) < 0 ? green[400] : red[400])
+                                }}>
+                                    {
+                                        (props.canBeNewEntry && props.rankGain === null) ? <>
+                                            <FiberNewIcon sx={{ verticalAlign: 'middle' }} color={green[600]} />
+                                        </> : (
+                                            (props.rankGain ?? 0) === 0 ? (
+                                                <HorizontalRuleIcon sx={{ verticalAlign: 'middle' }} />
+                                            ) : (
+                                                (props.rankGain ?? 0) < 0 ? (
+                                                    <>
+                                                        <KeyboardArrowUpIcon sx={{ verticalAlign: 'middle' }} /> {Math.abs(props.rankGain ?? 0).toLocaleString('en-US')}
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <KeyboardArrowDownIcon sx={{ verticalAlign: 'middle' }} /> {Math.abs(props.rankGain ?? 0).toLocaleString('en-US')}
+                                                    </>
+                                                )
+                                            )
+                                        )}
+                                </span>
+                            </Typography>
+                        </Box> : <></>
+                }
 
                 <Box sx={{
                     width: '60px',
@@ -102,7 +146,7 @@ function PlayerLeaderboardItem(props) {
                     display: 'flex',
                     justifyContent: 'left',
                     alignItems: 'center',
-                    width: '60%'
+                    width: '30%'
                 }}>
                     <Stack direction='row' spacing={1} alignItems='center'>
                         <Typography variant='body1' noWrap>
@@ -119,8 +163,32 @@ function PlayerLeaderboardItem(props) {
                         }
                     </Stack>
                 </Box>
-
                 <Box sx={{
+                    display: 'flex',
+                    justifyContent: 'right',
+                    alignItems: 'center',
+                    flexGrow: 1,
+                    pr: 1
+                }}>
+                    {
+                        props.values?.map((value, index) => {
+                            return (
+                                <Box sx={{
+                                    display: 'flex',
+                                    justifyContent: value.alignment,
+                                    alignItems: 'center',
+                                    width: `${100 / props.values.length}%`,
+                                }}>
+                                    <Typography variant='h6' textAlign={value.alignment} noWrap>
+                                        {value.value}
+                                    </Typography>
+                                </Box>
+                            )
+                        })
+                    }
+                </Box>
+
+                {/* <Box sx={{
                     display: 'flex',
                     justifyContent: 'right',
                     alignItems: 'center',
@@ -136,7 +204,7 @@ function PlayerLeaderboardItem(props) {
 
                         }
                     </Typography>
-                </Box>
+                </Box> */}
             </LeaderboardItem>
         </>
     )

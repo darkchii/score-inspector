@@ -15,6 +15,7 @@ const updates = [
         version: '2.7.0',
         date: '2023-06-23',
         changes: [
+            [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Added milestone tracking and page', '12831f8e222d92503e4ddd33bed5176bbfcbcdd1'],
             [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Added score rank history tracking', '101e3581715041165ad1593a9dee33f7e51b6389'],
             [PLATFORMTYPES.WEB, CHANGETYPES.MISC, 'Improved medals user page section', '5d3370f4d21e9c028a76bb722dc2fb95b7ab13b5'],
             [PLATFORMTYPES.WEB, CHANGETYPES.MISC, 'New medals added'],
