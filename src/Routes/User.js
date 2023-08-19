@@ -109,6 +109,9 @@ function User() {
 
     return (
         <>
+            <Helmet>
+                <title>No profile loaded - {config.APP_NAME}</title>
+            </Helmet>
             {
                 isLoading ? <>
                     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
@@ -144,6 +147,7 @@ function User() {
                                             background-attachment: fixed;
                                         }`}
                                     </style>
+                                    <title>{user.osu.username} - {config.APP_NAME}</title>
                                 </Helmet>
                             }
                         </> : <></>

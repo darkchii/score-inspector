@@ -5,6 +5,8 @@ import { Link } from "react-router-dom";
 import ScoreModal from "../Components/ScoreModal";
 import { getBestScores } from "../Helpers/OsuAlt";
 import { prepareScores } from "../Helpers/ScoresProcessor";
+import { Helmet } from "react-helmet";
+import config from "../config.json";
 
 const SCORES_TO_FETCH = 10;
 const PERIODS = [
@@ -67,6 +69,9 @@ function Top(props) {
 
     return (
         <>
+            <Helmet>
+                <title>Top Scores - {config.APP_NAME}</title>
+            </Helmet>
             <ScoreModal data={modalData} />
             <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", width: "100%" }}>
                 <ButtonGroup disabled={isWorking}>
@@ -87,7 +92,7 @@ function Top(props) {
                                             Array.from(Array(SCORES_TO_FETCH).keys()).map((j) => {
                                                 if (scores?.[i]?.scores?.[j] && !isWorking) {
                                                     const score = scores[i].scores[j];
-                                                    if(!score || !score.user) return (<>
+                                                    if (!score || !score.user) return (<>
                                                         <Skeleton animation='wave' variant='rectangular' height={SCORE_CARD_HEIGHT} />
                                                     </>);
                                                     return (
@@ -123,7 +128,7 @@ function Top(props) {
                                                                         </Box>
                                                                         <Box sx={{ float: 'right' }}>
                                                                             <Typography sx={{ textAlign: 'right' }} variant='h6'>
-                                                                                {scores[i].significantStat==='pp' && !score.is_fc ? `(${Math.round(score.pp_fc.total).toLocaleString('en-US')}pp if FC)` : ''} {Math.round(score[scores[i].significantStat]).toLocaleString('en-US')}{scores[i].significantStat === 'pp' ? `pp` : ''}
+                                                                                {scores[i].significantStat === 'pp' && !score.is_fc ? `(${Math.round(score.pp_fc.total).toLocaleString('en-US')}pp if FC)` : ''} {Math.round(score[scores[i].significantStat]).toLocaleString('en-US')}{scores[i].significantStat === 'pp' ? `pp` : ''}
                                                                             </Typography>
                                                                             <Typography sx={{ textAlign: 'right' }} variant='body1'>
                                                                                 {score.modString} {score.is_fc ? 'FC' : ''} {Math.round(score.accuracy * 100) / 100}% {Math.round(score.beatmap.modded_sr.star_rating * 10) / 10}*

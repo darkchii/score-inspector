@@ -8,6 +8,8 @@ import { GetAPI } from '../Helpers/Misc';
 import moment from 'moment';
 import { GetFormattedName } from '../Helpers/Account';
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
+import config from "../config.json";
 
 const MILESTONES_PER_PAGE = 50;
 
@@ -44,6 +46,9 @@ function Milestones() {
 
     return (
         <>
+            <Helmet>
+                <title>Milestones - {config.APP_NAME}</title>
+            </Helmet>
             {
                 isWorking ? (
                     <Loader />

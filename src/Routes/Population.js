@@ -18,6 +18,8 @@ import { useTheme } from "@mui/styles";
 import { Box, Button, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableRow, Tooltip as MUITooltip, Typography, TableHead, Container } from "@mui/material";
 import ReactCountryFlag from "react-country-flag";
 import Loader from "../Components/UI/Loader";
+import { Helmet } from 'react-helmet';
+import config from "../config.json";
 
 ChartJS.register(
     Title,
@@ -292,6 +294,9 @@ function Population() {
             flexDirection: 'column',
             alignItems: 'center'
         }}>
+            <Helmet>
+                <title>Countries - {config.APP_NAME}</title>
+            </Helmet>
             {
                 chartData ?
                 <>

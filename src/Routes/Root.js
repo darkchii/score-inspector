@@ -12,6 +12,7 @@ import GlowBar from '../Components/UI/GlowBar';
 import Loader from '../Components/UI/Loader';
 import config from "../config.json";
 import { useTheme } from '@emotion/react';
+import { Helmet } from 'react-helmet';
 
 momentDurationFormatSetup(moment);
 
@@ -125,6 +126,9 @@ function Root() {
 
     return (
         <>
+            <Helmet>
+                <title>{config.APP_NAME}</title>
+            </Helmet>
             {
                 osuAuthCode !== null ?
                     <>

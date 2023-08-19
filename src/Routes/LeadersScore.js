@@ -11,6 +11,8 @@ import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import moment from "moment";
 import PlayerLeaderboardItem from "../Components/Leaderboards/PlayerLeaderboardItem";
 import { green, grey } from "@mui/material/colors";
+import config from "../config.json";
+import { Helmet } from "react-helmet";
 
 const USERS_PER_PAGE = 50;
 const MAX_TOTAL_USERS = 10000;
@@ -87,6 +89,9 @@ function LeadersScore(props) {
 
     return (
         <>
+            <Helmet>
+                <title>Score Rank History - {config.APP_NAME}</title>
+            </Helmet>
             {
                 isLoadingDates || isLoadingLeaderboard ? (
                     <Loader />

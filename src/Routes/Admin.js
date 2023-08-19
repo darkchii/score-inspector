@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import { AdminGetUsers, AdminValidate, GetRemoteRoles, GetRoleIcon } from "../Helpers/Account";
-import { Alert, Button, ButtonGroup,Grid, ListItem, Paper, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
+import { Alert, Button, ButtonGroup, Grid, ListItem, Paper, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
 import { Link, useParams } from "react-router-dom";
 import Loader from "../Components/UI/Loader";
 import { List } from "react-virtualized";
 import ImageIcon from '@mui/icons-material/Image';
 import HideImageIcon from '@mui/icons-material/HideImage';
 import { green, red } from "@mui/material/colors";
+import { Helmet } from "react-helmet";
+import config from "../config.json";
 
 const NAV_WIDTH = 3;
 function Admin(props) {
@@ -46,6 +48,9 @@ function Admin(props) {
 
     return (
         <>
+            <Helmet>
+                <title>Admin - {config.APP_NAME}</title>
+            </Helmet>
             {
                 isLoading ?
                     <Loader />
@@ -152,9 +157,9 @@ function AdminUsers(props) {
                     <Grid item xs={1} sx={{ display: 'flex', justifyContent: 'left' }}>
                         <Typography variant="subtitle1">{
                             user.background_image ?
-                                <ImageIcon sx={{color: green[400]}} />
+                                <ImageIcon sx={{ color: green[400] }} />
                                 :
-                                <HideImageIcon sx={{color: red[400]}} />
+                                <HideImageIcon sx={{ color: red[400] }} />
                         }</Typography>
                     </Grid>
                     <Grid item xs={2} sx={{ display: 'flex', justifyContent: 'left' }}>

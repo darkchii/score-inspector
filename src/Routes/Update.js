@@ -7,6 +7,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { CHANGETYPES, PLATFORMTYPES, updates } from '../updates';
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
+import { Helmet } from 'react-helmet';
+import config from "../config.json";
 
 function Update() {
     const [update, setUpdate] = useState(null);
@@ -44,6 +46,9 @@ function Update() {
 
     return (
         <>
+            <Helmet>
+                <title>Changelog - {config.APP_NAME}</title>
+            </Helmet>
             {
                 update !== null ? <>
                     <Box>

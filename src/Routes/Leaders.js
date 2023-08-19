@@ -10,6 +10,8 @@ import countries from "countries-list";
 import momentDurationFormatSetup from "moment-duration-format";
 import PlayerLeaderboardItem from '../Components/Leaderboards/PlayerLeaderboardItem';
 import BeatmapLeaderboardItem from '../Components/Leaderboards/BeatmapLeaderboardItem';
+import { Helmet } from 'react-helmet';
+import config from "../config.json";
 momentDurationFormatSetup(moment);
 
 const GROUPED_STATS = {
@@ -336,6 +338,9 @@ function Leaders() {
 
     return (
         <>
+            <Helmet>
+                <title>{statistic.title} Leaderboards - {config.APP_NAME}</title>
+            </Helmet>
             <Box sx={{ pb: 2 }}>
                 {
                     Object.keys(GROUPED_STATS).map((group) => {

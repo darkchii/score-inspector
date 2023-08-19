@@ -5,6 +5,8 @@ import ToolCommandHelper from "../Components/Tools/ToolCommandHelper";
 import ToolLevelCalculator from "../Components/Tools/ToolLevelCalculator";
 import ToolMissingBeatmaps from "../Components/Tools/ToolMissingBeatmaps";
 import ToolScoreRank from "../Components/Tools/ToolScoreRank";
+import { Helmet } from "react-helmet";
+import config from "../config.json";
 
 const NAV_WIDTH = 3;
 function Tools() {
@@ -44,6 +46,9 @@ function Tools() {
 
     return (
         <>
+            <Helmet>
+                <title>{TOOL_OBJECTS[currentTool]?.name || 'Tools'} - {config.APP_NAME}</title>
+            </Helmet>
             <Grid container spacing={2}>
                 <Grid item xs={NAV_WIDTH}>
                     <ButtonGroup orientation="vertical" fullWidth>

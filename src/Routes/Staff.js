@@ -5,6 +5,8 @@ import PlayerCard from "../Components/PlayerCard";
 import { useNavigate } from "react-router-dom/dist";
 import { getFullUser } from "../Helpers/Osu";
 import Loader from "../Components/UI/Loader";
+import { Helmet } from "react-helmet";
+import config from "../config.json";
 
 function Staff(props) {
     const [roles, setRoles] = useState(null);
@@ -52,6 +54,9 @@ function Staff(props) {
 
     return (
         <>
+            <Helmet>
+                <title>Staff - {config.APP_NAME}</title>
+            </Helmet>
             <Stack direction="column" spacing={2} sx={{ mb: 2 }}>
                 {
                     roles ?

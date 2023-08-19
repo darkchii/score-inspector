@@ -6,6 +6,8 @@ import { getScoreStats } from "../Helpers/OsuAlt";
 import { approval_state } from "../Helpers/Osu";
 import CheckIcon from '@mui/icons-material/Check';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import config from "../config.json";
+import { Helmet } from "react-helmet";
 
 const TIME_PERIODS = [
     { name: '30min', label: 'Last 30 minutes' },
@@ -69,6 +71,9 @@ function Stats(props) {
 
     return (
         <>
+            <Helmet>
+                <title>Stats - {config.APP_NAME}</title>
+            </Helmet>
             <Alert severity='info' sx={{ mb: 1 }}>
                 <AlertTitle>Notice</AlertTitle>
                 These stats are based on what osu!alternative has gathered. Most if not all active and top players are in it, but alot is missing as well.
@@ -130,7 +135,7 @@ function Stats(props) {
                                         <TableRow>
                                             <TableCell>PP Range</TableCell>
                                             <TableCell>Scores</TableCell>
-                                           </TableRow>
+                                        </TableRow>
                                     </TableHead>
                                     <TableBody>
                                         {
