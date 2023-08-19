@@ -8,9 +8,9 @@ let DefaultTheme = createTheme({
             main: '#C8598A',
         },
         background: {
-            default: '#171C1A',
+            default: '#18171C',
             dark: '#fff',
-            paper: '#222A27',
+            paper: '#221F2Edd',
         },
     },
     shape: {
