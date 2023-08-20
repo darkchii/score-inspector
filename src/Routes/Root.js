@@ -73,38 +73,25 @@ function Root() {
             })();
         }
 
-        (async () => {
-            const most_visited = await GetTopVisited('count', 5);
-            const last_visited = await GetTopVisited('last_visit', 5);
+        Promise.all([
+            GetTopVisited('count', 5),
+            GetTopVisited('last_visit', 5)
+        ]).then(([most_visited, last_visited]) => {
+            setVisitorStats({
+                most_visited: most_visited,
+                last_visited: last_visited
+            });
+        });
 
-            if (most_visited && last_visited) {
-                setVisitorStats({
-                    most_visited: most_visited,
-                    last_visited: last_visited
-                });
-            }
-        })();
-
-        (async () => {
-            try {
-                const res = await axios.get(`${GetAPI()}system`);
-                res.data !== null && res.data !== undefined ? setServerInfo({ ...res.data }) : setServerInfo(null);
-            } catch (e) { }
-        })();
-
-
-        (async () => {
-            try {
-                const res = await axios.get(`${GetAPI()}system/status`);
-                res.data !== null && res.data !== undefined ? setServerStatus({ ...res.data, inspector: true }) : setServerStatus({
-                    inspector: false
-                });
-            } catch (e) {
-                setServerStatus({
-                    inspector: false
-                });
-            }
-        })();
+        Promise.all([
+            axios.get(`${GetAPI()}system`),
+            axios.get(`${GetAPI()}system/status`)
+        ]).then(([system, status]) => {
+            system.data !== null && system.data !== undefined ? setServerInfo({ ...system.data }) : setServerInfo(null);
+            status.data !== null && status.data !== undefined ? setServerStatus({ ...status.data, inspector: true }) : setServerStatus({
+                inspector: false
+            });
+        });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
