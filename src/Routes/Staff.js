@@ -27,19 +27,17 @@ function Staff(props) {
 
                     const user_ids = users.map(user => user.osu_id);
                     let _users = [];
-                    for await (let user_id of user_ids) {
-                        //if user is already in any of the roles, skip
-                        if (_added_ids.includes(user_id)) {
-                            continue;
-                        }
+                    const full_users = await getFullUser(user_ids, {
+                        skipDailyData: true,
+                        skipAltData: true,
+                    }, true);
 
-                        const user = await getFullUser(user_id, {
-                            skipDailyData: true,
-                            skipAltData: true,
-                        });
+                    console.log(full_users)
+
+                    for (let user of full_users) {
                         if (user) {
                             _users.push(user);
-                            _added_ids.push(user_id);
+                            _added_ids.push(user.osu.id);
                         }
                     }
 

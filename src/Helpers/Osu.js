@@ -53,27 +53,26 @@ function getLevel(score) {
     }
 }
 
-export async function getFullUser(user_id, skipped = {}) {
+export async function getFullUser(user_ids = [], skipped = {}, force_array = false) {
+    let _ids = user_ids;
+
+    if (!Array.isArray(user_ids)) {
+        _ids = [user_ids];
+    }
+
+    if (_ids.length === 0 || _ids === undefined || _ids === null) {
+        return [];
+    }
+    const id_string = _ids.join(',');
     const skipQuery = Object.keys(skipped).map(key => `${key}=${skipped[key]}`).join('&');
     let user = null;
     try {
-        const _user = await axios.get(`${GetAPI()}users/full/${user_id}?${skipQuery}`);
+        const _user = await axios.get(`${GetAPI()}users/full/${id_string}?force_array=${force_array}&${skipQuery}`);
         user = _user.data;
     } catch (e) { }
 
     if (user === null || user === undefined || user.error !== undefined) {
         return null;
-    }
-
-    try {
-        if(!user.inspector_user){
-            const _inspectorUser = await GetInspectorUser(user.osu.id);
-            if (_inspectorUser !== null) {
-                user.inspector_user = _inspectorUser;
-            }
-        }
-    } catch (err) {
-
     }
 
     return user;
@@ -430,7 +429,7 @@ export async function getBeatmapPackDetails() {
     return beatmapPackDetails?.data;
 }
 
-export async function getMedals(){
+export async function getMedals() {
     let medals;
     try {
         medals = await axios.get(`${GetAPI()}medals/get/`, { headers: { "Access-Control-Allow-Origin": "*" } });

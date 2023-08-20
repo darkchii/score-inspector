@@ -24,15 +24,19 @@ function PlayerCard(props) {
         //get height of card element
         setCardHeight(boxRef?.current?.clientHeight);
     });
-    
-    useEffect(()=>{
+
+    useEffect(() => {
         //get ruleset stats
-        if(props.user.osu?.statistics_rulesets){
-            setRulesetStats(props.user.osu.statistics_rulesets.osu);
-        }else{
-            setRulesetStats(props.user.osu.statistics);
+        if (props.user?.osu?.statistics_rulesets) {
+            setRulesetStats(props.user?.osu?.statistics_rulesets?.osu);
+        } else {
+            setRulesetStats(props.user?.osu?.statistics);
         }
     }, []);
+
+    if (!props.user.osu) {
+        return null;
+    }
 
     return (
         <Box
@@ -70,7 +74,7 @@ function PlayerCard(props) {
                         <CardMedia
                             component="img"
                             image={`https://a.ppy.sh/${props.user.osu?.id}`}
-                            alt={props.user.osu.username}
+                            alt={props.user.osu?.username}
                             sx={{ aspectRatio: '1/1', width: sx.rowHeight, borderRadius: BORDER_RADIUS, display: 'flex' }} />
                         <Box sx={{ display: 'flex', flexDirection: 'column', flex: '1 0 auto' }}>
                             <CardContent>
