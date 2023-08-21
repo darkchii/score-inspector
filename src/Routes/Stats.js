@@ -8,6 +8,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import config from "../config.json";
 import { Helmet } from "react-helmet";
+import { GetFormattedName } from "../Helpers/Account";
 
 const TIME_PERIODS = [
     { name: '30min', label: 'Last 30 minutes' },
@@ -80,7 +81,7 @@ function Stats(props) {
             </Alert>
 
             <Grid container spacing={2}>
-                <Grid item xs={12} md={6.5}>
+                <Grid item xs={12} lg={6.5}>
                     <Card>
                         <CardHeader title='Score Stats' />
                         <CardContent>
@@ -125,7 +126,7 @@ function Stats(props) {
                         </CardContent>
                     </Card>
                 </Grid>
-                <Grid item xs={12} md={5.5}>
+                <Grid item xs={12} lg={5.5}>
                     <Card>
                         <CardHeader title='Performance distribution' />
                         <CardContent>
@@ -135,6 +136,9 @@ function Stats(props) {
                                         <TableRow>
                                             <TableCell>PP Range</TableCell>
                                             <TableCell>Scores</TableCell>
+                                            <TableCell></TableCell>
+                                            <TableCell>Most common user</TableCell>
+                                            <TableCell>Count</TableCell>
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
@@ -143,10 +147,15 @@ function Stats(props) {
                                                 const pp_low = Number(pp_dis.pp_range);
                                                 const pp_high = pp_low + 100;
                                                 const scores = Number(pp_dis.count);
+                                                const user = pp_dis.most_common_user;
+                                                const user_count = Number(pp_dis.most_common_user_id_count);
                                                 return (
                                                     <TableRow>
                                                         <TableCell>{pp_low}pp - {pp_high}pp</TableCell>
                                                         <TableCell>{scores.toLocaleString('en-US')}</TableCell>
+                                                        <TableCell></TableCell>
+                                                        <TableCell>{GetFormattedName(user.inspector_user)}</TableCell>
+                                                        <TableCell>{user_count.toLocaleString('en-US')}</TableCell>
                                                     </TableRow>
                                                 );
                                             }) : <></>
