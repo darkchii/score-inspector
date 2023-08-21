@@ -225,7 +225,7 @@ export function prepareScores(user, scores, onScoreProcessUpdate, calculateOther
         onScoreProcessUpdate?.('' + score.id);
         score = prepareScore(score, calculateOtherPP, user);
 
-        if(score.top_score && score.top_score.user_id && !debugged){
+        if (score.top_score && score.top_score.user_id && !debugged) {
             debugged = true;
         }
     });
@@ -253,12 +253,25 @@ export function prepareScore(score, calculateOtherPP = true, user = null) {
     score.pp_original = getCalculator('live', { score: score });
     score.displayed_pp = structuredClone(score.pp_original);
     score.pp_fc = getCalculator('live', { count300: score.count300 + score.countmiss, count100: score.count100, count50: score.count50, countmiss: 0, combo: score.beatmap.maxcombo, score: score });
+    
     if (calculateOtherPP) {
-        score.pp_ss = getCalculator('live', { count300: score.count300 + score.countmiss + score.count100 + score.count50, count100: 0, count50: 0, countmiss: 0, combo: score.beatmap.maxcombo, score: score });
-        score.pp_2016 = getCalculator('2016', { score: score });
-        score.pp_lazer = getCalculator('lazer', { score: score });
-        score.pp_2014 = getCalculator('2014', { score: score });
-        score.pp_v1 = getCalculator('v1', { score: score });
+        Promise.all([
+            getCalculator('live', { count300: score.count300 + score.countmiss + score.count100 + score.count50, count100: 0, count50: 0, countmiss: 0, combo: score.beatmap.maxcombo, score: score }),
+            getCalculator('2016', { score: score }),
+            getCalculator('lazer', { score: score }),
+            getCalculator('2014', { score: score }),
+            getCalculator('v1', { score: score }),
+        ]).then(values => {
+            score.pp_ss = values[0];
+            score.pp_2016 = values[1];
+            score.pp_lazer = values[2];
+            score.pp_2014 = values[3];
+            score.pp_v1 = values[4];
+        }
+        ).catch(error => {
+            console.error(error);
+        }
+        );
     }
 
     score.is_fc = isScoreFullcombo(score);
