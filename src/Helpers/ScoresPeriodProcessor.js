@@ -118,7 +118,7 @@ export function getPeriodicData(scores, data, user, f = 'm') {
 }
 
 function processDailyData(chunks, user, data, f = 'm') {
-    if(user.daily === null || user.daily.error !== undefined) return chunks;
+    if(user.daily === undefined || user.daily === null || user.daily.error !== undefined) return chunks;
     const firstDate = chunks[0].actual_date;
     const firstDaily = user.daily.modes[0].lines[user.daily.modes[0].lines.length - 1];
     const firstDailyDate = moment(firstDaily.date);
