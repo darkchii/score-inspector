@@ -198,28 +198,30 @@ function Root() {
                                     <Grid container spacing={2}>
                                         <Grid item xs={12} md={8}>
                                             <Typography variant='title'>Server Info</Typography>
-                                            {
-                                                serverInfo ? <>
-                                                    <Grid container spacing={2}>
-                                                        <Grid item xs={12} md={6}>
-                                                            <Typography variant='body2'>inspector registrations: {(parseInt(serverInfo?.database?.inspector?.user_count ?? 0)).toLocaleString('en-US')}</Typography>
-                                                            <Typography variant='body2'>inspector profile visits: {(parseInt(serverInfo?.database?.inspector?.total_visits ?? 0)).toLocaleString('en-US')}</Typography>
-                                                            <Typography variant='body2'>osu!alt users: {(parseInt(serverInfo?.database?.alt?.total_users ?? 0)).toLocaleString('en-US')}</Typography>
-                                                            <Typography variant='body2'>osu!alt live users: {(parseInt(serverInfo?.database?.alt?.tracked_users ?? 0)).toLocaleString('en-US')}</Typography>
-                                                            <Typography variant='body2'>osu!alt scores: {(parseInt(serverInfo?.database?.alt?.total_scores ?? 0)).toLocaleString('en-US')}</Typography>
-                                                            <Typography variant='body2'>osu!alt size: {formatBytes(serverInfo?.database?.alt?.size ?? 0)}</Typography>
+                                            <Box sx={{ pl: 1 }}>
+                                                {
+                                                    serverInfo ? <>
+                                                        <Grid container spacing={2}>
+                                                            <Grid item xs={12} md={6}>
+                                                                <Typography variant='body2'>inspector registrations: {(parseInt(serverInfo?.database?.inspector?.user_count ?? 0)).toLocaleString('en-US')}</Typography>
+                                                                <Typography variant='body2'>inspector profile visits: {(parseInt(serverInfo?.database?.inspector?.total_visits ?? 0)).toLocaleString('en-US')}</Typography>
+                                                                <Typography variant='body2'>osu!alt users: {(parseInt(serverInfo?.database?.alt?.total_users ?? 0)).toLocaleString('en-US')}</Typography>
+                                                                <Typography variant='body2'>osu!alt live users: {(parseInt(serverInfo?.database?.alt?.tracked_users ?? 0)).toLocaleString('en-US')}</Typography>
+                                                                <Typography variant='body2'>osu!alt scores: {(parseInt(serverInfo?.database?.alt?.total_scores ?? 0)).toLocaleString('en-US')}</Typography>
+                                                                <Typography variant='body2'>osu!alt size: {formatBytes(serverInfo?.database?.alt?.size ?? 0)}</Typography>
+                                                            </Grid>
+                                                            <Grid item xs={12} md={6}>
+                                                                <Typography variant='body2'>API Uptime: {moment.duration(serverInfo?.system?.uptime ?? 0, 'second').format()}</Typography>
+                                                                <Typography variant='body2'>API Requests: {(serverInfo?.database?.inspector?.api?.requests ?? 0).toLocaleString('en-US')}</Typography>
+                                                                <Typography variant='body2'>API Data Sent: {formatBytes(serverInfo?.database?.inspector?.api?.bytes_sent ?? 0)}</Typography>
+                                                                <Typography variant='body2'>Uptime: {moment.duration(serverInfo?.system?.system_time?.uptime ?? 0, 'second').format()}</Typography>
+                                                                <Typography variant='body2'>OS: {serverInfo?.system?.os?.distro ?? 'n/a'}</Typography>
+                                                                <Typography variant='body2'>CPU: {serverInfo?.system?.cpu?.manufacturer ?? ''} {serverInfo?.system?.cpu?.brand ?? ''}</Typography>
+                                                            </Grid>
                                                         </Grid>
-                                                        <Grid item xs={12} md={6}>
-                                                            <Typography variant='body2'>API Uptime: {moment.duration(serverInfo?.system?.uptime ?? 0, 'second').format()}</Typography>
-                                                            <Typography variant='body2'>API Requests: {(serverInfo?.database?.inspector?.api?.requests ?? 0).toLocaleString('en-US')}</Typography>
-                                                            <Typography variant='body2'>API Data Sent: {formatBytes(serverInfo?.database?.inspector?.api?.bytes_sent ?? 0)}</Typography>
-                                                            <Typography variant='body2'>Uptime: {moment.duration(serverInfo?.system?.system_time?.uptime ?? 0, 'second').format()}</Typography>
-                                                            <Typography variant='body2'>OS: {serverInfo?.system?.os?.distro ?? 'n/a'}</Typography>
-                                                            <Typography variant='body2'>CPU: {serverInfo?.system?.cpu?.manufacturer ?? ''} {serverInfo?.system?.cpu?.brand ?? ''}</Typography>
-                                                        </Grid>
-                                                    </Grid>
-                                                </> : <Loader />
-                                            }
+                                                    </> : <Loader />
+                                                }
+                                            </Box>
                                         </Grid>
                                         <Grid item xs={12} md={4}>
                                             <Typography variant='title'>Server Status</Typography>
