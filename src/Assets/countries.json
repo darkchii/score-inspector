@@ -2574,6 +2574,14 @@
         "intermediate-region-code": ""
     },
     {
+        "name": "Kosovo",
+        "alpha-2": "XK",
+        "alpha-3": "XKX",
+        "iso_3166-2": "ISO 3166-2:XK",
+        "region": "Europe",
+        "sub-region": "Southern Europe"
+    },
+    {
         "name": "Seychelles",
         "alpha-2": "SC",
         "alpha-3": "SYC",
