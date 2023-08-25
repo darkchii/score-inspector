@@ -15,7 +15,7 @@ import WorldAtlas from '../Assets/countries-110m.json';
 import Countries from '../Assets/countries.json';
 import { lerpColor, linearToLogarithmic } from "../Helpers/Misc";
 import { useTheme } from "@mui/styles";
-import { Box, Button, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableRow, Tooltip as MUITooltip, Typography, TableHead, Container } from "@mui/material";
+import { Box, Button, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableRow, Tooltip as MUITooltip, Typography, TableHead, Container, Alert } from "@mui/material";
 import ReactCountryFlag from "react-country-flag";
 import Loader from "../Components/UI/Loader";
 import { Helmet } from 'react-helmet';
@@ -53,7 +53,7 @@ function Population() {
 
     const updateChart = (valueType = "active_users") => {
         if (!population) return;
-        const countries = ChartGeo.topojson.feature(WorldAtlas, WorldAtlas.objects.countries).features.filter((f) => f.properties.name !== 'Antarctica');
+        const countries = ChartGeo.topojson.feature(WorldAtlas, WorldAtlas.objects["map.geo"]).features.filter((f) => f.properties["A3"] !== 'ATA');
 
         //set all features to value 0
         countries.forEach((c) => {
@@ -77,42 +77,55 @@ function Population() {
             setTotalValue(totalSumValue / (population.length - invalidCountries));
         }
 
-        population.forEach((p) => {
-            let cc = p.code;
-            let country = Countries.find((c) => c.alpha2 === cc.toLowerCase());
-            if (country) {
-                let feature = countries.find((c) => Number(c.id) === country.id);
-                if (feature) {
-                    feature.value = p[valueType] ?? undefined;
-                    feature.code = cc;
+        let fixed_countries = [];
 
-                    //percentage of total value
-                    feature.valuePercent = (feature.value ?? 0) / totalSumValue;
-                } else {
-                    console.warn(country.id+' not found');
-                }
+        countries.forEach((c) => {
+            let _c = JSON.parse(JSON.stringify(c));
+            let cc = c.properties["A3"].toLowerCase();
+            let country = Countries.find((c) => c["alpha-3"].toLowerCase() === cc.toLowerCase());
+            if (country) {
+                _c.code = country["alpha-2"].toLowerCase();
+                _c.name = country.name;
+                fixed_countries.push(_c);
             } else {
                 console.warn(cc + ' not found');
             }
         });
 
-        countries.sort((a, b) => {
+        console.log(fixed_countries);
+
+        population.forEach((p) => {
+            let cc = p.code;
+            let feature = fixed_countries.find((c) => c.code.toLowerCase() === cc.toLowerCase());
+            if (feature) {
+                feature.value = p[valueType] ?? undefined;
+
+                //percentage of total value
+                feature.valuePercent = (feature.value ?? 0) / totalSumValue;
+
+                if(isNaN(feature.valuePercent)) feature.valuePercent = 0;
+            } else {
+                // console.warn(country.name+' not found');
+            }
+        });
+
+        fixed_countries.sort((a, b) => {
             if (a.value === undefined) return 1;
             if (b.value === undefined) return -1;
 
             return b.value - a.value;
         });
 
-        setOrderedCountries(countries);
+        setOrderedCountries(fixed_countries);
 
         const chartData = {
             type: 'choropleth',
             data: {
-                labels: countries.map((d) => d.properties.name),
+                labels: fixed_countries.map((d) => d.name),
                 datasets: [{
                     label: 'Countries',
-                    outline: countries,
-                    data: countries.map((d) => ({ feature: d, value: Number(d.value) ?? NaN })),
+                    outline: fixed_countries,
+                    data: fixed_countries.map((d) => ({ feature: d, value: Number(d.value) ?? NaN })),
                 }]
             },
             options: {
@@ -129,7 +142,7 @@ function Population() {
                         callbacks: {
                             label: function (context) {
                                 let value = chartTypes.find((t) => t.value === activeChartType).output ? chartTypes.find((t) => t.value === activeChartType).output(context.raw.feature.value ?? 0) : context.raw.feature.value;
-                                return `${context.raw.feature.properties.name}: ${value}`;
+                                return `${context.raw.feature.name}: ${value}`;
                             }
                         }
                     },
@@ -299,33 +312,36 @@ function Population() {
             </Helmet>
             {
                 chartData ?
-                <>
-                    <Box sx={{ width: '100%', height: '100%', p: 2 }}>
-                        <Container size={'md'}>
-                            <Chart
-                                type={chartData.type}
-                                data={chartData.data}
-                                options={chartData.options}
-                            ></Chart>
-                        </Container>
-                    </Box>
-                    <Grid sx={{ display: 'inline-block' }}>
-                        {
-                            chartTypes.map((t) => (
-                                <Button sx={{
-                                    m: 0.3
-                                }} onClick={() => {
-                                    setActiveChartType(t.value);
-                                }} variant={
-                                    activeChartType === t.value ? 'contained' : 'outlined'
-                                }>{t.name}</Button>
-                            ))
-                        }
-                    </Grid>
-                    <Typography sx={{ mt: 2, mb: 1 }} variant='subtitle1'>
-                        {chartTypes.find((t) => t.value === activeChartType).description}
-                        {totalValue !== null ? ` (${chartTypes.find((t) => t.value === activeChartType).output(totalValue)})` : ''}</Typography>
-                </> : <Loader />
+                    <>
+                        <Alert severity="info">
+                            Don't bother me about incorrect borders. All geo data published online are similar to this one. Crimea is part of Ukraine.
+                            </Alert>
+                        <Box sx={{ width: '100%', height: '100%', p: 2 }}>
+                            <Container size={'md'}>
+                                <Chart
+                                    type={chartData.type}
+                                    data={chartData.data}
+                                    options={chartData.options}
+                                ></Chart>
+                            </Container>
+                        </Box>
+                        <Grid sx={{ display: 'inline-block' }}>
+                            {
+                                chartTypes.map((t) => (
+                                    <Button sx={{
+                                        m: 0.3
+                                    }} onClick={() => {
+                                        setActiveChartType(t.value);
+                                    }} variant={
+                                        activeChartType === t.value ? 'contained' : 'outlined'
+                                    }>{t.name}</Button>
+                                ))
+                            }
+                        </Grid>
+                        <Typography sx={{ mt: 2, mb: 1 }} variant='subtitle1'>
+                            {chartTypes.find((t) => t.value === activeChartType).description}
+                            {totalValue !== null ? ` (${chartTypes.find((t) => t.value === activeChartType).output(totalValue)})` : ''}</Typography>
+                    </> : <Loader />
             }
             {
                 orderedCountries &&
@@ -362,13 +378,13 @@ function Population() {
                                                         countryCode={c.code ?? 'xx'}
                                                     />
                                                 </TableCell>
-                                                <TableCell>{c.properties.name}</TableCell>
+                                                <TableCell>{c.name}</TableCell>
                                                 <TableCell align="right">{value}</TableCell>
                                                 {
                                                     chartTypes.find((t) => t.value === activeChartType).showShare !== false &&
                                                     <TableCell align="right" sx={{ fontStyle: 'italic' }}>
                                                         <MUITooltip title={`Share of total value`} arrow>
-                                                            {Math.round(c.valuePercent * 100 * 100) / 100}%
+                                                            {Math.round((c.valuePercent ?? 0) * 100 * 100) / 100}%
                                                         </MUITooltip>
                                                     </TableCell>
                                                 }
