@@ -1,9 +1,10 @@
-import { Box, Button, Card, CardContent, Container, Grid, Modal, Stack, TextField, Typography } from "@mui/material";
+import { Box, Button, Card, CardContent, Checkbox, Container, FormControlLabel, Grid, Modal, Stack, TextField, Typography } from "@mui/material";
 import { useEffect, useImperativeHandle } from "react";
 import { forwardRef } from "react";
 import { useState } from "react";
 import { GetUser as GetInspectorUser, UpdateProfile } from "../../Helpers/Account";
 import { showNotification, validateImage } from "../../Helpers/Misc";
+import { set } from "lodash";
 
 const style = {
     position: 'absolute',
@@ -15,7 +16,8 @@ const style = {
 function CustomizeModal(props, ref) {
     const [open, setOpen] = useState(false);
     const [isWorking, setIsWorking] = useState(false);
-    const [backgroundUrl, setBackgroundUrl] = useState('');
+    const [optionBackgroundUrl, setOptionBackgroundUrl] = useState('');
+    const [optionPublicFriends, setOptionPublicFriends] = useState(false);
 
     useImperativeHandle(ref, () => ({
         setOpen(value) {
@@ -36,7 +38,8 @@ function CustomizeModal(props, ref) {
                 showNotification('Error', 'Failed to get user data', 'error');
                 setOpen(false);
             }
-            setBackgroundUrl(user.background_image);
+            setOptionBackgroundUrl(user.background_image);
+            setOptionPublicFriends(user.is_friends_public);
         })();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [open]);
@@ -48,14 +51,15 @@ function CustomizeModal(props, ref) {
         }
         setIsWorking(false);
         (async () => {
-            const validBackground = validateImage(backgroundUrl);
+            const validBackground = validateImage(optionBackgroundUrl);
             if (!validBackground) {
                 showNotification('Error', 'Invalid background image', 'error');
                 return;
             }
 
             const res = await UpdateProfile({
-                background_image: backgroundUrl
+                background_image: optionBackgroundUrl,
+                is_friends_public: optionPublicFriends
             });
 
             if (res !== null && res.status === 200) {
@@ -89,9 +93,9 @@ function CustomizeModal(props, ref) {
                                                 borderRadius: '10px'
                                             }}>
                                                 {
-                                                    backgroundUrl !== '' && <>
+                                                    optionBackgroundUrl !== '' && <>
                                                         <img
-                                                            src={backgroundUrl}
+                                                            src={optionBackgroundUrl}
                                                             alt="Background"
                                                             style={{
                                                                 maxWidth: '100%',
@@ -106,16 +110,26 @@ function CustomizeModal(props, ref) {
                                             <Stack spacing={2} direction='column' sx={{ pt: 1 }}>
                                                 <TextField
                                                     disabled={isWorking}
-                                                    onChange={(e) => setBackgroundUrl(e.target.value)}
-                                                    value={backgroundUrl}
+                                                    onChange={(e) => setOptionBackgroundUrl(e.target.value)}
+                                                    value={optionBackgroundUrl}
                                                     label="Background Image (URL)"
                                                     variant="standard" />
-                                                <Button onClick={save}>Save</Button>
                                                 <Typography variant='caption'>Feel free to use suggestive content, just don't go over the top with full on naked anime girls.</Typography>
                                             </Stack>
                                         </Grid>
                                     </Grid>
-
+                                    <Grid>
+                                        <Container>
+                                            <FormControlLabel control={
+                                                <Checkbox
+                                                    disabled={isWorking}
+                                                    checked={optionPublicFriends}
+                                                    onChange={(e) => setOptionPublicFriends(e.target.checked)}
+                                                />
+                                            } label='Show friends on profile' />
+                                        </Container>
+                                    </Grid>
+                                    <Button onClick={save}>Save</Button>
                                 </Stack>
                             </CardContent>
                         </Card>
