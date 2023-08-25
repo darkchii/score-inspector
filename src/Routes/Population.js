@@ -86,19 +86,19 @@ function Population() {
             if (country) {
                 _c.code = country["alpha-2"].toLowerCase();
                 _c.name = country.name;
-                fixed_countries.push(_c);
-            } else {
-                console.warn(cc + ' not found');
+                _c.value = 0;
+                _c.valuePercent = 0;
+            }else{
+                console.warn(c.properties["A3"]+' not found');
             }
+            fixed_countries.push(_c);
         });
-
-        console.log(fixed_countries);
 
         population.forEach((p) => {
             let cc = p.code;
-            let feature = fixed_countries.find((c) => c.code.toLowerCase() === cc.toLowerCase());
+            let feature = fixed_countries.find((c) => c.code?.toLowerCase() === cc.toLowerCase());
             if (feature) {
-                feature.value = p[valueType] ?? undefined;
+                feature.value = p[valueType] ?? 0;
 
                 //percentage of total value
                 feature.valuePercent = (feature.value ?? 0) / totalSumValue;
@@ -115,6 +115,8 @@ function Population() {
 
             return b.value - a.value;
         });
+
+        console.log(fixed_countries);
 
         setOrderedCountries(fixed_countries);
 
@@ -155,7 +157,7 @@ function Population() {
                     color: {
                         axis: 'x',
                         // interpolate: (v) => (v < 0.5 ? 'green' : 'red'),
-                        interpolate: (v) => lerpColor('#ffffff', theme.palette.primary.main, linearToLogarithmic(v), (v === 0 ? 0 : 0.2), 1),
+                        interpolate: (v) => lerpColor('#ffffff', theme.palette.primary.main, linearToLogarithmic(v), 0.2, 1),
                         legend: {
                             position: 'bottom-right',
                             align: 'right',
