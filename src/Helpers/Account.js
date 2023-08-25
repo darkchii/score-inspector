@@ -130,19 +130,24 @@ export async function IsUserLoggedIn() {
     // const username = localStorage.getItem('auth_username');
 
     if (token && user_id) {
-        const res = await fetch(`${GetAPI()}login/validate_token`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                token: token,
-                user_id: user_id
-            })
-        });
-        const body = await parseReadableStreamToJson(res.body);
-
-        return body !== undefined && body !== null && body.valid;
+        try{
+            const res = await fetch(`${GetAPI()}login/validate_token`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    token: token,
+                    user_id: user_id
+                })
+            });
+            const body = await parseReadableStreamToJson(res.body);
+    
+            return body !== undefined && body !== null && body.valid;
+        }catch(e){
+            console.error(e);
+            return false;
+        }
     } else {
         return false;
     }

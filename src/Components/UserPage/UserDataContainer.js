@@ -20,6 +20,7 @@ import SectionCompletion from "./SectionCompletion";
 import SectionPacks from "./SectionPacks";
 import SectionMedals from "./SectionMedals";
 import GroupIcon from '@mui/icons-material/Group';
+import SectionFriends from "./SectionFriends";
 
 const StyledTab = styled(Tab)({
     minHeight: 'auto',
@@ -54,9 +55,7 @@ function UserDataContainer(props) {
                         <StyledTab icon={<InsertCommentIcon />} iconPosition='start' label='Comments' value={_IDs['comments']} />
                         <StyledTab icon={<MilitaryTechIcon />} iconPosition='start' label='Medals' value={_IDs['medals']} />
                         <StyledTab icon={<LayersIcon />} iconPosition='start' label='Packs' value={_IDs['packs']} />
-                        <Tooltip title='Coming soon!'>
-                            <StyledTab disabled={true} icon={<GroupIcon />} iconPosition='start' label='Friends' value={_IDs['friends']} />
-                        </Tooltip>
+                        <StyledTab disabled={!props.user.inspector_user.is_friends_public} icon={<GroupIcon />} iconPosition='start' label='Friends' value={_IDs['friends']} />
                     </TabList>
                 </Box>
                 <TabPanel sx={{ p: 0 }} value={_IDs['profile']}>
@@ -85,6 +84,9 @@ function UserDataContainer(props) {
                 </TabPanel>
                 <TabPanel sx={{ p: 0 }} value={_IDs['packs']}>
                     <SectionPacks user={props.user} />
+                </TabPanel>
+                <TabPanel sx={{ p: 0 }} value={_IDs['friends']}>
+                    <SectionFriends user={props.user} />
                 </TabPanel>
             </TabContext>
         </>

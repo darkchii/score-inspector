@@ -73,25 +73,41 @@ function Root() {
             })();
         }
 
-        Promise.all([
-            GetTopVisited('count', 5),
-            GetTopVisited('last_visit', 5)
-        ]).then(([most_visited, last_visited]) => {
-            setVisitorStats({
-                most_visited: most_visited,
-                last_visited: last_visited
+        try{
+            Promise.all([
+                GetTopVisited('count', 5),
+                GetTopVisited('last_visit', 5)
+            ]).then(([most_visited, last_visited]) => {
+                setVisitorStats({
+                    most_visited: most_visited,
+                    last_visited: last_visited
+                });
+            }).catch((err) => {
+                console.log(err);
             });
-        });
+        }catch(_err){
+            console.log(_err);
+        }
 
-        Promise.all([
-            axios.get(`${GetAPI()}system`),
-            axios.get(`${GetAPI()}system/status`)
-        ]).then(([system, status]) => {
-            system.data !== null && system.data !== undefined ? setServerInfo({ ...system.data }) : setServerInfo(null);
-            status.data !== null && status.data !== undefined ? setServerStatus({ ...status.data, inspector: true }) : setServerStatus({
-                inspector: false
+        try{
+            Promise.all([
+                axios.get(`${GetAPI()}system`),
+                axios.get(`${GetAPI()}system/status`)
+            ]).then(([system, status]) => {
+                system.data !== null && system.data !== undefined ? setServerInfo({ ...system.data }) : setServerInfo(null);
+                status.data !== null && status.data !== undefined ? setServerStatus({ ...status.data, inspector: true }) : setServerStatus({
+                    inspector: false
+                });
+            }).catch((err) => {
+                setServerStatus({
+                    inspector: false
+                });
+                console.log(err);
             });
-        });
+        }catch(_err){
+            console.log(_err);
+        }
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -254,7 +270,7 @@ function Root() {
                                     <Typography variant='title'>Most visited</Typography>
                                     <Stack spacing={1} sx={{ pl: 1 }}>
                                         {
-                                            visitorStats ? visitorStats.most_visited.map((v, i) => {
+                                            visitorStats ? visitorStats.most_visited?.map((v, i) => {
                                                 return (
                                                     <>
                                                         <Grid container>
@@ -282,7 +298,7 @@ function Root() {
                                     <Typography variant='title'>Recent visited</Typography>
                                     <Stack spacing={1} sx={{ pl: 1 }}>
                                         {
-                                            visitorStats ? visitorStats.last_visited.map((v, i) => {
+                                            visitorStats ? visitorStats.last_visited?.map((v, i) => {
                                                 return (
                                                     <>
                                                         <Grid container>
