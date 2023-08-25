@@ -31,26 +31,44 @@ function Top(props) {
         setIsWorking(true);
         (async () => {
             try {
-                let scores_pp = await getBestScores(selected_period.value, "pp", SCORES_TO_FETCH, false);
-                let scores_score = await getBestScores(selected_period.value, "score", SCORES_TO_FETCH, false);
+                // let scores_pp = await getBestScores(selected_period.value, "pp", SCORES_TO_FETCH, false);
+                // let scores_score = await getBestScores(selected_period.value, "score", SCORES_TO_FETCH, false);
 
-                scores_pp = prepareScores(null, scores_pp, null, false);
-                scores_score = prepareScores(null, scores_score, null, false);
+                // scores_pp = prepareScores(null, scores_pp, null, false);
+                // scores_score = prepareScores(null, scores_score, null, false);
 
-                const _scores = {
-                    0: {
-                        name: 'Performance',
-                        scores: scores_pp,
-                        significantStat: 'pp'
-                    },
-                    1: {
-                        name: 'Score',
-                        scores: scores_score,
-                        significantStat: 'score'
-                    },
-                }
+                // const _scores = {
+                //     0: {
+                //         name: 'Performance',
+                //         scores: scores_pp,
+                //         significantStat: 'pp'
+                //     },
+                //     1: {
+                //         name: 'Score',
+                //         scores: scores_score,
+                //         significantStat: 'score'
+                //     },
+                // }
 
-                setScores(_scores);
+                // setScores(_scores);
+                Promise.all([
+                    getBestScores(selected_period.value, "pp", SCORES_TO_FETCH, false),
+                    getBestScores(selected_period.value, "score", SCORES_TO_FETCH, false)
+                ]).then((values) => {
+                    const _scores = {
+                        0: {
+                            name: 'Performance',
+                            scores: prepareScores(null, values[0], null, false),
+                            significantStat: 'pp'
+                        },
+                        1: {
+                            name: 'Score',
+                            scores: prepareScores(null, values[1], null, false),
+                            significantStat: 'score'
+                        },
+                    }
+                    setScores(_scores);
+                });
             } catch (err) {
                 console.error(err);
             }
