@@ -17,6 +17,9 @@ function SectionGraphs(props) {
                 { id: "totalhitsPerSection", title: "Hits" },
                 { id: "totalAverageAcc", title: "Accuracy" },
                 { id: "gainedLevel", title: "Level", isDailyApi: true },
+                { id: "scoreRankGain", title: "Score Rank" },
+                { id: "globalRankGain", title: "Global Rank", isDailyApi: true },
+                { id: "countryRankGain", title: "Country Rank", isDailyApi: true },
             ]
         },
         {
@@ -31,6 +34,9 @@ function SectionGraphs(props) {
                 { id: "cumulativeHits", title: "Hits" },
                 { id: "cumulativeAcc", title: "Accuracy" },
                 { id: "cumulativeLevel", title: "Level", isDailyApi: true },
+                { id: "scoreRank", title: "Score Rank" },
+                { id: "globalRank", title: "World Rank", isDailyApi: true },
+                { id: "countryRank", title: "Country Rank", isDailyApi: true },
             ]
         },
         {
@@ -43,8 +49,6 @@ function SectionGraphs(props) {
                 //{ id: "accPerPlay", title: "Average Accuracy" },
                 { id: "highestPPPlay", title: "Highest PP" },
                 { id: "rawPP", title: "Raw PP", isDailyApi: true },
-                { id: "globalRank", title: "World Rank", isDailyApi: true },
-                { id: "countryRank", title: "Country Rank", isDailyApi: true },
                 { id: "completion", title: "Completion" },
             ]
         }

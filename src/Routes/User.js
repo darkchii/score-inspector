@@ -11,7 +11,8 @@ import { Helmet } from 'react-helmet';
 import UserDataContainer from '../Components/UserPage/UserDataContainer';
 import config from '../config.json';
 import { GetVisitors, UpdateVisitor } from '../Helpers/Account';
-import { formatBytes } from '../Helpers/Misc';
+import { GetAPI, formatBytes } from '../Helpers/Misc';
+import axios from 'axios';
 
 function User() {
     const [user, setUser] = useState(null);
@@ -50,6 +51,12 @@ function User() {
 
                 const registered = await isUserRegistered(user_out.osu.id);
                 setRegistered(registered);
+
+                const score_rank_history = (await axios.get(`
+                    ${GetAPI()}scores/ranking?user_id=${user_out.osu.id}
+                `))?.data;
+
+                user_out.score_rank_history = score_rank_history;
 
                 setLoadingState('Fetching user scores');
                 const _scores = await getUserScores(user_out.alt.user_id, loved === true, onScoreDownloadProgress);

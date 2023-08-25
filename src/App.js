@@ -49,7 +49,12 @@ function App() {
         showNotification('Logged in!', `Welcome, ${localStorage.getItem('auth_username')}!`, 'success');
 
         //also store the general user data (osu, inspector etc)
-        const user = await getFullUser(loginData.user_id);
+        let user;
+        try {
+          user = await getFullUser(loginData.user_id);
+        } catch (e) {
+          console.error(e);
+        }
 
         if (!user) {
           showNotification('Warning', 'Unable to get your osu! account data. This may affect some features of the site.', 'warning');

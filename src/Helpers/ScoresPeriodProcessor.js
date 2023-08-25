@@ -127,10 +127,20 @@ function processDailyData(chunks, user, data, f = 'm') {
     const countryRankPercOfGlobal = 1 / user.osu.statistics.global_rank * user.osu.statistics.country_rank;
     const initial_c_rank = Math.round(countryRankPercOfGlobal * initial_rank);
     for (var i = 0; i < chunks.length; i++) {
-        //get highest rank at this time point
         const previous = chunks[i - 1]?.osudaily;
-        let rank = previous?.rank ?? (i === 0 ? initial_rank : 0);
-        let c_rank = previous?.c_rank ?? (i === 0 ? initial_c_rank : 0);
+        const scoreRankSubset = user.score_rank_history.filter(x => moment(x.date).isSame(chunks[i].actual_date, PERIOD_FORMATS[f].format));
+        let highest_rank = null;
+        for(var j = 0; j < scoreRankSubset.length; j++) {
+            if(highest_rank === null || scoreRankSubset[j].rank < highest_rank) {
+                highest_rank = scoreRankSubset[j].rank;
+            }
+        }
+
+        let previous_highest_rank = chunks[i - 1]?.score_rank ?? 0;
+
+        //get highest rank at this time point
+        let rank = previous?.rank ?? null;
+        let c_rank = previous?.c_rank ?? null;
         let raw_pp = previous?.raw_pp ?? 0;
         let cumulative_total_score = previous?.cumulative_total_score ?? 0;
         let cumulative_level = previous?.cumulative_level ?? 0;
@@ -180,10 +190,14 @@ function processDailyData(chunks, user, data, f = 'm') {
         }
         chunks[i].osudaily = {};
         chunks[i].osudaily.global_rank = rank !== null ? rank : null;
+        chunks[i].osudaily.global_rank_diff = previous?.global_rank ? rank - previous.global_rank : null;
         chunks[i].osudaily.country_rank = c_rank !== null ? c_rank : null;
+        chunks[i].osudaily.country_rank_diff = previous?.country_rank ? c_rank - previous.country_rank : null;
         chunks[i].osudaily.cumulative_total_score = cumulative_total_score;
         chunks[i].osudaily.raw_pp = raw_pp;
         chunks[i].osudaily.cumulative_level = cumulative_level;
+        chunks[i].score_rank = highest_rank;
+        chunks[i].score_rank_diff = previous_highest_rank ? highest_rank - previous_highest_rank : null;
     }
 
     //get the difference between chunks
@@ -362,8 +376,20 @@ function getGraphObjects(chunks, labels, f = 'm') {
         "highestSr": <TimeGraph name="Highest SR pass" labels={labels} data={[{ name: "Highest SR", set: chunks.map(x => x.highest_sr), color: { r: 255, g: 102, b: 158 } }]} />,
         "scorePerPlay": <TimeGraph name="Average score per play" labels={labels} data={[{ name: "Average score", set: chunks.map(x => x.average_score), color: { r: 255, g: 102, b: 158 } }]} />,
         "lengthPerPlay": <TimeGraph name="Average length per play" labels={labels} data={[{ name: "Average score", set: chunks.map(x => x.average_length), color: { r: 255, g: 102, b: 158 } }]} />,
+        "scoreRankGain": <TimeGraph reverse={true} formatter={(value, context) => { return `${value>0?'-':'+'}${Math.abs(value).toLocaleString("en-US")}`; }} name="Score Rank Gain" labels={labels} data={[
+            { name: "Score Rank", set: chunks.map(x => x?.score_rank_diff), color: { r: 255, g: 102, b: 158 } },
+        ]} />,
+        "scoreRank": <TimeGraph reverse={true} formatter={(value, context) => { return `#${Math.abs(value).toLocaleString("en-US")}`; }} name="Score Rank" labels={labels} data={[
+            { name: "Score Rank", set: chunks.map(x => x?.score_rank), color: { r: 255, g: 102, b: 158 } },
+        ]} />,
+        "globalRankGain": <TimeGraph reverse={true} formatter={(value, context) => { return `${value>0?'-':'+'}${Math.abs(value).toLocaleString("en-US")}`; }} name="World Rank" labels={labels} data={[
+            { name: "Global Rank", set: chunks.map(x => x.osudaily?.global_rank_diff), color: { r: 255, g: 102, b: 158 } },
+        ]} />,
         "globalRank": <TimeGraph reverse={true} formatter={(value, context) => { return `#${Math.abs(value).toLocaleString("en-US")}`; }} name="World Rank" labels={labels} data={[
             { name: "Global Rank", set: chunks.map(x => x.osudaily?.global_rank), color: { r: 255, g: 102, b: 158 } },
+        ]} />,
+        "countryRankGain": <TimeGraph reverse={true} formatter={(value, context) => { return `${value>0?'-':'+'}${Math.abs(value).toLocaleString("en-US")}`; }} name="Country Rank" labels={labels} data={[
+            { name: "Country Rank", set: chunks.map(x => x.osudaily?.country_rank_diff), color: { r: 82, g: 158, b: 250 } },
         ]} />,
         "countryRank": <TimeGraph reverse={true} formatter={(value, context) => { return `#${Math.abs(value).toLocaleString("en-US")}`; }} name="Country Rank" labels={labels} data={[
             { name: "Country Rank", set: chunks.map(x => x.osudaily?.country_rank), color: { r: 82, g: 158, b: 250 } },
