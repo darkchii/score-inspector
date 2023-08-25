@@ -21,6 +21,7 @@ const updates = [
             [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Added osu!alt Discord server widget to landing', 'a7345873e987b4f08e742dd5202ea731135743b0'],
             [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Missing beatmaps tool now supports all modes', 'd1dd30f8287d74c451c82229dba325711512e3ce'],
             [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Added country based statistics', '09e40bf12281deb6b679d9566fd3ea9c701cf4fd'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Opt-in public friends page added to user', '391562f695e063bd1a9ef893df800dc391bfd2fd'],
             [PLATFORMTYPES.WEB, CHANGETYPES.MISC, 'All routes have custom titles now', '1b247bbf1952464acaec532df933e8449e8fe027'],
             [PLATFORMTYPES.WEB, CHANGETYPES.MISC, 'Improved medals user page section', '5d3370f4d21e9c028a76bb722dc2fb95b7ab13b5'],
             [PLATFORMTYPES.WEB, CHANGETYPES.MISC, 'New medals added'],
