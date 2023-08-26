@@ -1,4 +1,4 @@
-import { GetAPI, GetOsuApiRedirect, parseReadableStreamToJson } from "./Misc";
+import { GetAPI, GetOsuApiRedirect, parseReadableStreamToJson, showNotification } from "./Misc";
 import config from '../config.json';
 import axios from "axios";
 import { Avatar, Box, Chip, Tooltip } from "@mui/material";
@@ -142,6 +142,10 @@ export async function IsUserLoggedIn() {
                 })
             });
             const body = await parseReadableStreamToJson(res.body);
+
+            if(!body.valid && body.error){
+                showNotification('Error', body.error, 'error');
+            }
     
             return body !== undefined && body !== null && body.valid;
         }catch(e){
