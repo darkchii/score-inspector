@@ -2,7 +2,7 @@ import { Alert, Box, Card, CardContent, Container, CssBaseline, Typography } fro
 import { ThemeProvider } from '@mui/material/styles';
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import Theme from './Theme';
+import Theme from './Data/Theme';
 import Root from './Routes/Root';
 import Header from './Components/Header';
 import Error from './Routes/Error';

@@ -4,7 +4,7 @@ import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { CHANGETYPES, PLATFORMTYPES, updates } from '../updates';
+import { CHANGETYPES, PLATFORMTYPES, updates } from '../Data/Updates';
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import { Helmet } from 'react-helmet';

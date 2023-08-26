@@ -13,6 +13,7 @@ import Loader from '../Components/UI/Loader';
 import config from "../config.json";
 import { useTheme } from '@emotion/react';
 import { Helmet } from 'react-helmet';
+import info from '../Data/Info';
 
 momentDurationFormatSetup(moment);
 
@@ -73,7 +74,7 @@ function Root() {
             })();
         }
 
-        try{
+        try {
             Promise.all([
                 GetTopVisited('count', 5),
                 GetTopVisited('last_visit', 5)
@@ -85,11 +86,11 @@ function Root() {
             }).catch((err) => {
                 console.log(err);
             });
-        }catch(_err){
+        } catch (_err) {
             console.log(_err);
         }
 
-        try{
+        try {
             Promise.all([
                 axios.get(`${GetAPI()}system`),
                 axios.get(`${GetAPI()}system/status`)
@@ -104,7 +105,7 @@ function Root() {
                 });
                 console.log(err);
             });
-        }catch(_err){
+        } catch (_err) {
             console.log(_err);
         }
 
@@ -256,6 +257,25 @@ function Root() {
                                                 }
                                             </Box>
                                         </Grid>
+                                    </Grid>
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Card elevation={2}>
+                                <CardContent>
+                                    <Typography variant='title'>FAQ</Typography>
+                                    <Grid container spacing={2}>
+                                        {
+                                            info.map((v, i) => {
+                                                return (
+                                                    <Grid item xs={12} md={6}>
+                                                        <Typography variant='title' sx={{fontSize: '18px'}}>{v.question}</Typography>
+                                                        <Typography variant='body2'>{v.answer}</Typography>
+                                                    </Grid>
+                                                )
+                                            })
+                                        }
                                     </Grid>
                                 </CardContent>
                             </Card>
