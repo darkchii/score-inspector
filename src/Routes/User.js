@@ -19,6 +19,7 @@ function User() {
     const [isLoading, setIsLoading] = useState(true);
     const [loadingState, setLoadingState] = useState('Test message');
     const [registered, setRegistered] = useState(false);
+    const [errorMessage, setErrorMessage] = useState(null);
     const params = useParams();
     const location = useLocation();
 
@@ -43,9 +44,14 @@ function User() {
                     setLoadingState(`Fetching user scores (${formatBytes(progress.loaded)})`);
                 };
 
-                if (user_out === null || user_out.error !== undefined) {
+                if (user_out === null || user_out.error !== undefined || user_out.inspector_user?.is_banned) {
                     setUser(null);
                     setIsLoading(false);
+                    setErrorMessage("User not found");
+
+                    if(user_out?.inspector_user?.is_banned) {
+                        setErrorMessage("User is banned from scores inspector");
+                    }
                     return;
                 }
 
@@ -63,6 +69,7 @@ function User() {
                 if (_scores === null || _scores.error !== undefined) {
                     setUser(null);
                     setIsLoading(false);
+                    setErrorMessage("Unable to get scores");
                     return;
                 }
                 user_out.scores = _scores;
@@ -83,12 +90,14 @@ function User() {
                     console.error(e);
                     setUser(null);
                     setIsLoading(false);
+                    setErrorMessage("Unable to process scores");
                     return;
                 }
 
                 if (_data === null || _data === undefined) {
                     setUser(null);
                     setIsLoading(false);
+                    setErrorMessage("Invalid result from score processor");
                     return;
                 }
 
@@ -109,6 +118,7 @@ function User() {
                 console.error(e);
                 setUser(null);
                 setIsLoading(false);
+                setErrorMessage("Unable to get user data: " + e.message ?? "Unknown error");
             }
         })();
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -129,13 +139,13 @@ function User() {
                     </Box>
                 </> : user === null || !user ? <>
                     <Stack spacing={2} direction='column'>
-                        <Typography variant='h4'>User not found</Typography>
-                        <Typography variant='subtitle1'>This user is most likely not registered on osu!alt or something went wrong</Typography>
+                        <Typography variant='h4'>Whoops, couldn't show profile</Typography>
+                        <Typography variant='subtitle1'>What went wrong: {errorMessage}</Typography>
                         <Link sx={{ textDecoration: 'none' }} href={`https://osu.ppy.sh/users/${params.id}`} target='_blank'>
                             <Typography variant='title' sx={{ fontSize: '1em' }}>Try osu! profile ....</Typography>
                         </Link>
                         <Alert severity='info'>
-                            If you are this user, join <Link href='https://discord.gg/VZWRZZXcW4' target='_blank'>osu!alt discord</Link> and follow the guide there to get your scores available.
+                            Join <Link href='https://discord.gg/VZWRZZXcW4' target='_blank'>osu!alt discord</Link> and follow the guide there to get your scores available on scores inspector.
                         </Alert>
                     </Stack>
 
