@@ -253,6 +253,23 @@ export async function UpdateProfile(data) {
     return res;
 }
 
+export async function UpdateFriendsList() {
+    if (!await IsUserLoggedIn()) return null;
+
+    const res = await fetch(`${GetAPI()}login/friends/refresh`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            token: localStorage.getItem('auth_token'),
+            user_id: localStorage.getItem('auth_osu_id')
+        })
+    });
+
+    return res;
+}
+
 export async function DeleteComment(comment_id, deleter_id) {
     if (!await IsUserLoggedIn()) return null;
 

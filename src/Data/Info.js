@@ -19,10 +19,6 @@ const info = [
     {
         question: "Something broke?",
         answer: "Report it on the osu!alternative Discord, and it'll likely be fixed in a next update. This will always be a work in progress."
-    },
-    {
-        question: "Can I get a role?",
-        answer: "No."
     }
 ]
 

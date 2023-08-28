@@ -1,11 +1,14 @@
-import { Box, Button, Card, CardContent, Checkbox, Container, FormControlLabel, Grid, Modal, Stack, TextField, Typography } from "@mui/material";
+import { Box, Button, Card, CardContent, Checkbox, Container, Divider, FormControlLabel, Grid, Modal, Stack, TextField, Typography } from "@mui/material";
 import { useEffect, useImperativeHandle } from "react";
 import { forwardRef } from "react";
 import { useState } from "react";
-import { GetUser as GetInspectorUser, UpdateProfile } from "../../Helpers/Account";
-import { showNotification, validateImage } from "../../Helpers/Misc";
+import { GetUser as GetInspectorUser, UpdateFriendsList, UpdateProfile } from "../../Helpers/Account";
+import { GetAPI, showNotification, validateImage } from "../../Helpers/Misc";
 import { set } from "lodash";
-
+import GroupIcon from '@mui/icons-material/Group';
+import SaveIcon from '@mui/icons-material/Save';
+import axios from "axios";
+import { LoadingButton } from "@mui/lab";
 const style = {
     position: 'absolute',
     top: '50%',
@@ -72,6 +75,23 @@ function CustomizeModal(props, ref) {
         })();
     }
 
+    const refreshFriends = () => {
+        setIsWorking(true);
+        (async () => {
+            try{
+                const res = await UpdateFriendsList();
+                if (res !== null && res.status === 200) {
+                    showNotification('Success', 'Friends list updated', 'success');
+                } else {
+                    showNotification('Error', 'Failed to update friends list', 'error');
+                }
+            }catch(err){
+                showNotification('Error', 'Failed to update friends list', 'error');
+            }
+            setIsWorking(false);
+        })();
+    }
+
     return (
         <>
             <Modal open={open} onClose={() => setOpen(false)}>
@@ -129,7 +149,9 @@ function CustomizeModal(props, ref) {
                                             } label='Show friends on profile' />
                                         </Container>
                                     </Grid>
-                                    <Button onClick={save}>Save</Button>
+                                    <LoadingButton disabled={isWorking} loading={isWorking} onClick={save} startIcon={<SaveIcon />}>Save</LoadingButton>
+                                    <Divider />
+                                    <LoadingButton disabled={isWorking} loading={isWorking} onClick={refreshFriends} startIcon={<GroupIcon />}>Refresh friends list</LoadingButton>
                                 </Stack>
                             </CardContent>
                         </Card>
