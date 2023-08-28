@@ -107,7 +107,7 @@ export function getPeriodicData(scores, data, user, f = 'm') {
     sortedChunks = r;
     const cumulativeChunks = getCumulative(sortedChunks, user, data, f); //get cumulative data
     const osuDailyChunks = processDailyData(cumulativeChunks, user, data, f); //process the data from osu!daily
-    const labels = osuDailyChunks.map(x => x.date);
+    const labels = osuDailyChunks.map(x => moment(x.date, PERIOD_FORMATS[f].format_str).toDate());
 
     const graphs = getGraphObjects(osuDailyChunks, labels, f);
 
@@ -196,8 +196,8 @@ function processDailyData(chunks, user, data, f = 'm') {
         chunks[i].osudaily.cumulative_total_score = cumulative_total_score;
         chunks[i].osudaily.raw_pp = raw_pp;
         chunks[i].osudaily.cumulative_level = cumulative_level;
-        chunks[i].score_rank = highest_rank;
-        chunks[i].score_rank_diff = previous_highest_rank ? highest_rank - previous_highest_rank : null;
+        chunks[i].score_rank = highest_rank ?? 0;
+        chunks[i].score_rank_diff = previous_highest_rank ? highest_rank - previous_highest_rank : 0;
     }
 
     //get the difference between chunks
@@ -344,7 +344,7 @@ function getGraphObjects(chunks, labels, f = 'm') {
             { name: "% Score Completion", set: chunks.map(x => x.completion_score), color: { r: 244, g: 67, b: 54 } },
             { name: "% Length Completion", set: chunks.map(x => x.completion_length), color: { r: 63, g: 81, b: 181 } },
         ]}
-            formatter={(value, context) => { return `${value.toFixed(2)}%`; }} />,
+            formatter={(value) => { return `${value.toFixed(2)}%`; }} />,
         "cumulativePP": <TimeGraph name="Total PP" labels={labels} data={[{ name: "Total PP", set: chunks.map(x => Math.floor(x.cumulative_total_pp)), color: { r: 255, g: 102, b: 158 } }]} />,
         "cumulativeScore": <TimeGraph name="Cumulative ranked score" labels={labels} data={[{ name: "Cumulative ranked score", set: chunks.map(x => x.cumulative_score), color: { r: 255, g: 102, b: 158 } }]} />,
         "cumulativeTotalScore": <TimeGraph name="Cumulative total score" labels={labels} data={[{ name: "Cumulative total score", set: chunks.map(x => x.osudaily?.cumulative_total_score), color: { r: 255, g: 102, b: 158 } }]} />,
@@ -376,22 +376,22 @@ function getGraphObjects(chunks, labels, f = 'm') {
         "highestSr": <TimeGraph name="Highest SR pass" labels={labels} data={[{ name: "Highest SR", set: chunks.map(x => x.highest_sr), color: { r: 255, g: 102, b: 158 } }]} />,
         "scorePerPlay": <TimeGraph name="Average score per play" labels={labels} data={[{ name: "Average score", set: chunks.map(x => x.average_score), color: { r: 255, g: 102, b: 158 } }]} />,
         "lengthPerPlay": <TimeGraph name="Average length per play" labels={labels} data={[{ name: "Average score", set: chunks.map(x => x.average_length), color: { r: 255, g: 102, b: 158 } }]} />,
-        "scoreRankGain": <TimeGraph reverse={true} formatter={(value, context) => { return `${value>0?'-':'+'}${Math.abs(value).toLocaleString("en-US")}`; }} name="Score Rank Gain" labels={labels} data={[
+        "scoreRankGain": <TimeGraph reverse={true} formatter={(value) => { return `${value>0?'-':'+'}${Math.abs(value).toLocaleString("en-US")}`; }} name="Score Rank Gain" labels={labels} data={[
             { name: "Score Rank", set: chunks.map(x => x?.score_rank_diff), color: { r: 255, g: 102, b: 158 } },
         ]} />,
-        "scoreRank": <TimeGraph reverse={true} formatter={(value, context) => { return `#${Math.abs(value).toLocaleString("en-US")}`; }} name="Score Rank" labels={labels} data={[
+        "scoreRank": <TimeGraph reverse={true} formatter={(value) => { return `#${Math.abs(value).toLocaleString("en-US")}`; }} name="Score Rank" labels={labels} data={[
             { name: "Score Rank", set: chunks.map(x => x?.score_rank), color: { r: 255, g: 102, b: 158 } },
         ]} />,
-        "globalRankGain": <TimeGraph reverse={true} formatter={(value, context) => { return `${value>0?'-':'+'}${Math.abs(value).toLocaleString("en-US")}`; }} name="World Rank" labels={labels} data={[
+        "globalRankGain": <TimeGraph reverse={true} formatter={(value) => { return `${value>0?'-':'+'}${Math.abs(value).toLocaleString("en-US")}`; }} name="World Rank" labels={labels} data={[
             { name: "Global Rank", set: chunks.map(x => x.osudaily?.global_rank_diff), color: { r: 255, g: 102, b: 158 } },
         ]} />,
-        "globalRank": <TimeGraph reverse={true} formatter={(value, context) => { return `#${Math.abs(value).toLocaleString("en-US")}`; }} name="World Rank" labels={labels} data={[
+        "globalRank": <TimeGraph reverse={true} formatter={(value) => { return `#${Math.abs(value).toLocaleString("en-US")}`; }} name="World Rank" labels={labels} data={[
             { name: "Global Rank", set: chunks.map(x => x.osudaily?.global_rank), color: { r: 255, g: 102, b: 158 } },
         ]} />,
-        "countryRankGain": <TimeGraph reverse={true} formatter={(value, context) => { return `${value>0?'-':'+'}${Math.abs(value).toLocaleString("en-US")}`; }} name="Country Rank" labels={labels} data={[
+        "countryRankGain": <TimeGraph reverse={true} formatter={(value) => { return `${value>0?'-':'+'}${Math.abs(value).toLocaleString("en-US")}`; }} name="Country Rank" labels={labels} data={[
             { name: "Country Rank", set: chunks.map(x => x.osudaily?.country_rank_diff), color: { r: 82, g: 158, b: 250 } },
         ]} />,
-        "countryRank": <TimeGraph reverse={true} formatter={(value, context) => { return `#${Math.abs(value).toLocaleString("en-US")}`; }} name="Country Rank" labels={labels} data={[
+        "countryRank": <TimeGraph reverse={true} formatter={(value) => { return `#${Math.abs(value).toLocaleString("en-US")}`; }} name="Country Rank" labels={labels} data={[
             { name: "Country Rank", set: chunks.map(x => x.osudaily?.country_rank), color: { r: 82, g: 158, b: 250 } },
         ]} />,
         "rawPP": <TimeGraph name="Raw PP" labels={labels} data={[{ name: "Raw PP", set: chunks.map(x => x.osudaily?.raw_pp), color: { r: 255, g: 102, b: 158 } }]} />,
