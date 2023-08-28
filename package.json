@@ -12,6 +12,7 @@
     "@mui/lab": "^5.0.0-alpha.141",
     "@mui/material": "^5.14.5",
     "@mui/styles": "^5.14.6",
+    "@mui/x-charts": "^6.0.0-alpha.8",
     "@mui/x-data-grid": "^6.11.2",
     "@mui/x-date-pickers": "^6.11.2",
     "axios": "^1.4.0",
