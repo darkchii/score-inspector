@@ -5,17 +5,11 @@ import Performance2016 from "./Performance/Performance2016";
 import PerformanceFC from "./Performance/PerformanceFC";
 import PerformanceSS from "./Performance/PerformanceSS";
 import PerformanceXexxar from "./Performance/PerformanceXexxar";
-import momentDurationFormatSetup from "moment-duration-format";
-import { Chart, registerables } from 'chart.js'
-import { Bar } from "react-chartjs-2";
-import ChartDataLabels from 'chartjs-plugin-datalabels';
 import PerformanceLazer from "./Performance/PerformanceLazer";
 import Performance2014 from "./Performance/Performance2014";
 import GlowBar from "../UI/GlowBar";
 import PerformanceV1 from "./Performance/PerformanceV1";
 import { BarChart } from "@mui/x-charts";
-Chart.register(...registerables, ChartDataLabels)
-momentDurationFormatSetup(moment);
 
 function SectionCards(props) {
     const theme = useTheme();
@@ -205,33 +199,6 @@ function SectionCards(props) {
                                     }
                                 ]}
                             />
-                            {/* <Bar height={'220px'} options={{
-                                type: 'bar',
-                                data: {},
-                                maintainAspectRatio: false,
-                                plugins: {
-                                    datalabels: {
-                                        color: 'white',
-                                        backgroundColor: '#00000088',
-                                        borderRadius: 5,
-                                        font: {
-                                            family: "Roboto"
-                                        },
-                                    }
-                                }
-                            }}
-                                data={{
-                                    labels: props.user.data.averageDaySpread.hours,
-                                    datasets: [
-                                        {
-                                            label: 'Scores set at time of day (UTC)',
-                                            data: props.user.data.averageDaySpread.values,
-                                            backgroundColor: `${theme.palette.primary.main}dd`,
-                                            borderRadius: 10,
-                                        }
-                                    ]
-                                }}
-                            /> */}
                         </Paper>
                         : <></>
                 }

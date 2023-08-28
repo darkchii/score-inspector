@@ -1,26 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Box, Button, ButtonGroup, Card, CardContent, Chip, chipClasses, Grid, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography, useTheme, Tooltip as MUITooltip } from "@mui/material";
 import moment from "moment";
-import momentDurationFormatSetup from "moment-duration-format";
 import { useEffect, useState } from "react";
 import { getGradeColor, mods } from "../../Helpers/Osu";
 import { getSessions } from "../../Helpers/Session";
 import CircleIcon from '@mui/icons-material/Circle';
 import SquareIcon from '@mui/icons-material/Square';
-import { Scatter } from "react-chartjs-2";
 import { IMG_SVG_GRADE_A, IMG_SVG_GRADE_B, IMG_SVG_GRADE_C, IMG_SVG_GRADE_D, IMG_SVG_GRADE_S, IMG_SVG_GRADE_SH, IMG_SVG_GRADE_X, IMG_SVG_GRADE_XH } from "../../Helpers/Assets";
-import {
-    Chart as ChartJS,
-    LinearScale,
-    PointElement,
-    LineElement,
-    Tooltip,
-    Legend,
-} from 'chart.js';
-import Annotations from "chartjs-plugin-annotation";
 import { lerpColor, nestedSearch } from "../../Helpers/Misc";
-ChartJS.register(LinearScale, PointElement, LineElement, Tooltip, Legend, Annotations);
-momentDurationFormatSetup(moment);
+import { LineChart, ScatterChart, } from "@mui/x-charts";
+import { ErrorBoundary } from "react-error-boundary";
 
 const heightDefiners = [
     { value: 'pp', nesting: ['pp'], label: 'Performance' },
@@ -43,7 +32,6 @@ function SectionDaily(props) {
     const [selectedDay, setSelectedDay] = useState(MAX_DATE.endOf('day').format("YYYY-MM-DD"));
     const [isWorking, setWorkingState] = useState(false);
     const [scores, setScores] = useState(null);
-    const [graphOptions, setGraphOptions] = useState(null);
     const [graphData, setGraphData] = useState(null);
     const [heightDefiner, setHeightDefiner] = useState(heightDefiners[0]);
     const [yearGraphData, setYearGraphData] = useState(null);
@@ -52,6 +40,7 @@ function SectionDaily(props) {
 
     const [sessionCount, setSessionCount] = useState(0);
     const [totalSessionLength, setTotalSessionLength] = useState(0);
+    const [sessionAnnotations, setSessionAnnotations] = useState([]);
 
     const [stats, setStats] = useState(null);
 
@@ -60,23 +49,22 @@ function SectionDaily(props) {
             return;
         }
         const updateGraph = () => {
-            let annotations = {};
+            let annotations = [];
 
             if (scores !== null) {
-                let activities = getSessions(scores);
-
                 setTotalSessionLength(0);
                 setSessionCount(0);
+                let activities = getSessions(scores);
                 if (activities.length > 0) {
                     let len = 0;
                     activities.forEach((activity, index) => {
-                        annotations[`activity${index}`] = {
+                        annotations.push({
                             type: 'box',
                             xMin: activity.start,
                             xMax: activity.end,
                             backgroundColor: 'rgba(252, 3, 148, 0.25)',
                             z: -1000
-                        }
+                        })
 
                         len += (activity.end - activity.start);
                     });
@@ -84,54 +72,36 @@ function SectionDaily(props) {
                 }
 
                 setSessionCount(activities.length);
-            }
-
-            annotations[`sectionStart`] = {
-                type: 'box',
-                xMin: moment(selectedDay, 'YYYY-MM-DD').startOf('day').unix(),
-                xMax: moment(selectedDay, 'YYYY-MM-DD').startOf('day').unix(),
-                backgroundColor: 'rgba(0, 0, 0, 0.25)',
-                z: -1000
-            }
-            annotations[`sectionEnd`] = {
-                type: 'box',
-                xMin: moment(selectedDay, 'YYYY-MM-DD').endOf('day').unix(),
-                xMax: moment(selectedDay, 'YYYY-MM-DD').endOf('day').unix(),
-                backgroundColor: 'rgba(0, 0, 0, 0.25)',
-                z: -1000
-            }
-
-            const options = {
-                maintainAspectRatio: false,
-                scales: {
-                    x:
-                    {
-                        ticks: {
-                            callback: function (value, index, values) {
-                                return moment.unix(value).format("MMMM Do, YYYY HH:mm");
-                            },
-                        },
-                        min: moment(selectedDay, 'YYYY-MM-DD').startOf('day').format("YYYY-MM-DD HH:mm:ss"),
-                        max: moment(selectedDay, 'YYYY-MM-DD').endOf('day').format("YYYY-MM-DD HH:mm:ss")
-                    }
-                },
-                plugins: {
-                    legend: {
-                        display: false,
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function (context) {
-                                return `${moment.unix(context.parsed.x).format("HH:mm")} • ${context.raw.score.beatmap.artist} - ${context.raw.score.beatmap.title} [${context.raw.score.beatmap.diffname}] • ${context.raw.score.accuracy}% ${context.raw.score.rank} • ${context.raw.score.score} score • ${context.raw.score.pp.toFixed(2)}pp`;
-                            }
+                console.log(activities);
+                //generate a line graph that emulates a box graph
+                //we use 100 data points between the start and end of the day
+                //if a point exists on any of the sessions, we set it to 1, otherwise 0
+                //we then use a line graph to connect the dots
+                let emulatedBoxData = [];
+                for (let i = moment(selectedDay, 'YYYY-MM-DD').startOf('day').unix(); i < moment(selectedDay, 'YYYY-MM-DD').endOf('day').unix(); i += 864) {
+                    let found = false;
+                    activities.forEach((activity, index) => {
+                        if (i >= activity.start && i <= activity.end) {
+                            found = true;
                         }
-                    },
-                    annotation: {
-                        annotations: annotations
+                    });
+                    emulatedBoxData.push(found ? 1 : 0);
+                }
+
+                //check for every 0, if the next is 1, set current to 1,
+                //same if the value before is 1, and current is 0, set to 1
+                
+                for (let i = 0; i < emulatedBoxData.length; i++) {
+                    if (emulatedBoxData[i] === 0) {
+                        //if theres a next and previous entry
+                        if ((i > 0 && i < emulatedBoxData.length) && (emulatedBoxData[i + 1] === 1 || emulatedBoxData[i - 1] === 1)) {
+                            emulatedBoxData[i] = 0.99999;
+                        }
                     }
-                },
-            };
-            setGraphOptions(options);
+                }
+
+                setSessionAnnotations(emulatedBoxData);
+            }
 
             const data = {
                 datasets: [
@@ -359,8 +329,8 @@ function SectionDaily(props) {
                                 </Grid>
                             </Grid>
                         </Box>
-                        <Paper elevation={1} sx={{ pt: 1}}>
-                            <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                        <Paper elevation={1} sx={{ pt: 1 }}>
+                            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                                 <Box
                                     sx={{
                                         borderRadius: '3px',
@@ -381,7 +351,7 @@ function SectionDaily(props) {
                                         margin: '2px',
                                     }}></Box><Typography variant="body2">{Math.min(dynamicRange, 100)}{dynamicRange > 100 ? '+' : ''} clear{dynamicRange > 0 ? 's' : ''}</Typography>
                             </Box>
-                            <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                                 <Typography variant="body2">Currently viewing {selectedDay}</Typography>
                             </Box>
                         </Paper>
@@ -401,7 +371,7 @@ function SectionDaily(props) {
                     </Box>
 
 
-                    {graphOptions && <Grid sx={{ mt: 1 }}>
+                    {(graphData && sessionAnnotations && sessionAnnotations.length > 0) && <Grid sx={{ mt: 1 }}>
                         <Stack sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} direction="row" spacing={2}>
                             <Chip icon={<SquareIcon />} sx={{ [`& .${chipClasses.icon}`]: { color: getGradeColor('X') } }} label="Silver SS" size="small" variant="outlined" />
                             <Chip icon={<CircleIcon />} sx={{ [`& .${chipClasses.icon}`]: { color: getGradeColor('X') } }} label="Gold SS" size="small" variant="outlined" />
@@ -412,10 +382,97 @@ function SectionDaily(props) {
                             <Chip icon={<CircleIcon />} sx={{ [`& .${chipClasses.icon}`]: { color: getGradeColor('C') } }} label="C" size="small" variant="outlined" />
                             <Chip icon={<CircleIcon />} sx={{ [`& .${chipClasses.icon}`]: { color: getGradeColor('D') } }} label="D" size="small" variant="outlined" />
                         </Stack>
-                        <Grid sx={{ maxHeight: '400px' }}>
-                            <Scatter height='400px' options={graphOptions} data={graphData} />
-                        </Grid>
-                        <Typography variant='caption'>The left and right lines indicate the start and end of the selected day (the chart plugin doesn't cap at those points)</Typography>
+                        <ErrorBoundary fallback={<div>Something went wrong</div>}>
+                            <Grid sx={{
+                                position: 'relative',
+                                height: '400px',
+                            }}>
+                                <Grid sx={{
+                                    position: 'absolute',
+                                    height: '400px',
+                                    width: '100%',
+                                    opacity: 0.3
+                                }}>
+                                    <LineChart
+                                        sx={{
+                                            position: 'absolute',
+                                            top: 0,
+                                            '& .MuiMarkElement-root': {
+                                                display: 'none',
+                                            },
+                                        }}
+                                        leftAxis={null}
+                                        bottomAxis={null}
+                                        hideTooltip={true}
+                                        margin={{
+                                            top: 20,
+                                        }}
+                                        height={400}
+                                        series={
+                                            [
+                                                {
+                                                    type: 'line',
+                                                    curve: 'linear',
+                                                    //everything between start and end indicates the top of the graph, otherwise it's 0 (simulate a box)
+                                                    //we can only use 1 data point, so we use the start of the day
+                                                    data: sessionAnnotations,
+                                                    color: 'rgba(252, 3, 148, 0.25)',
+                                                    area: true,
+                                                    backgroundColor: 'rgba(252, 3, 148, 0.25)',
+                                                }
+                                            ]
+                                        }
+                                        xAxis={
+                                            [
+                                                {
+                                                    //just 1 to 100
+                                                    data: Array.from(Array(100).keys()).map((i) => { return i }),
+                                                }
+                                            ]
+                                        }
+                                    ></LineChart>
+                                </Grid>
+                                <Grid sx={{
+                                    position: 'absolute',
+                                    height: '400px',
+                                    width: '100%',
+                                }}>
+                                    <ScatterChart
+                                        margin={{
+                                            top: 20,
+                                        }}
+                                        height={400}
+                                        series={
+                                            [
+                                                ...graphData.datasets[0].data.map((data) => {
+                                                    return {
+                                                        type: 'scatter',
+                                                        data: [data],
+                                                        valueFormatter: (value) => {
+                                                            return `${moment.unix(value.x).format("HH:mm")} • ${value.score.beatmap.artist} - ${value.score.beatmap.title} [${value.score.beatmap.diffname}] • ${value.score.accuracy}% ${value.score.rank} • ${value.score.score} score • ${value.score.pp.toFixed(2)}pp`
+                                                            // return `${moment.unix(value.x).format("HH:mm")}`
+                                                        },
+                                                        color: getGradeColor(data.score.rank),
+                                                    }
+                                                })
+                                            ]
+                                        }
+                                        xAxis={
+                                            [
+                                                {
+                                                    min: moment(selectedDay, 'YYYY-MM-DD').startOf('day').unix(),
+                                                    max: moment(selectedDay, 'YYYY-MM-DD').endOf('day').unix(),
+                                                    valueFormatter: (value) => {
+                                                        return moment.unix(value).format("HH:mm");
+                                                    },
+                                                }
+                                            ]
+                                        }
+                                    ></ScatterChart>
+                                </Grid>
+                            </Grid>
+                        </ErrorBoundary>
+                        <Typography variant='caption'>The pink area designates sessions</Typography>
                         <Grid sx={{ mt: 1, pl: 2 }}>
                             <Stack direction="column" spacing={2}>
                                 <Grid>
