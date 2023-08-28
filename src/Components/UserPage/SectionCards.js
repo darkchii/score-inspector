@@ -13,6 +13,7 @@ import PerformanceLazer from "./Performance/PerformanceLazer";
 import Performance2014 from "./Performance/Performance2014";
 import GlowBar from "../UI/GlowBar";
 import PerformanceV1 from "./Performance/PerformanceV1";
+import { BarChart } from "@mui/x-charts";
 Chart.register(...registerables, ChartDataLabels)
 momentDurationFormatSetup(moment);
 
@@ -181,8 +182,30 @@ function SectionCards(props) {
             <Grid>
                 {
                     props?.user?.data?.averageDaySpread && props?.user?.data?.averageDaySpread?.hours && props?.user?.data?.averageDaySpread?.values ?
-                        <Paper sx={{ p: 0.5, m: 0.5 }} elevation={3}>
-                            <Bar height={'220px'} options={{
+                        <Paper elevation={3}>
+                            <BarChart
+                                margin={{
+                                    top: 20,
+                                    bottom: 40
+                                }}
+                                height={250}
+                                series={
+                                    [
+                                        {
+                                            type: 'bar',
+                                            data: props.user.data.averageDaySpread.values,
+                                            color: theme.palette.primary.main,
+                                        }
+                                    ]
+                                }
+                                xAxis={[
+                                    {
+                                        data: props.user.data.averageDaySpread.hours,
+                                        scaleType: 'band'
+                                    }
+                                ]}
+                            />
+                            {/* <Bar height={'220px'} options={{
                                 type: 'bar',
                                 data: {},
                                 maintainAspectRatio: false,
@@ -208,7 +231,7 @@ function SectionCards(props) {
                                         }
                                     ]
                                 }}
-                            />
+                            /> */}
                         </Paper>
                         : <></>
                 }
