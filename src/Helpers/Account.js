@@ -127,7 +127,6 @@ export async function LogoutUser(token, osu_id) {
 export async function IsUserLoggedIn() {
     const token = localStorage.getItem('auth_token');
     const user_id = localStorage.getItem('auth_osu_id');
-    // const username = localStorage.getItem('auth_username');
 
     if (token && user_id) {
         try{
@@ -143,10 +142,22 @@ export async function IsUserLoggedIn() {
             });
             const body = await parseReadableStreamToJson(res.body);
 
+            
+            if(body.data && body.data.osu_id && body.data.access_token){
+                const old_token = localStorage.getItem('auth_token');
+                localStorage.setItem('auth_token', body.data.access_token);
+                localStorage.setItem('auth_osu_id', body.data.osu_id);
+                
+                if(old_token !== body.data.access_token){
+                    // Token has been refreshed, perform this function again to prevent errors
+                    return await IsUserLoggedIn();
+                }
+            }
+            
             if(!body.valid && body.error){
                 showNotification('Error', body.error, 'error');
             }
-    
+            
             return body !== undefined && body !== null && body.valid;
         }catch(e){
             console.error(e);
