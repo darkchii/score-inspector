@@ -13,6 +13,7 @@ import config from "../config.json";
 function Update() {
     const [update, setUpdate] = useState(null);
     const [canMove, setCanMove] = useState([false, false]);
+    const [reversedUpdates, _] = useState(updates.slice().reverse());
     const params = useParams();
     const navigate = useNavigate();
 
@@ -21,14 +22,14 @@ function Update() {
             return;
         }
         const _id = Number(params.id);
-        if (updates[updates.length - _id] !== undefined) {
-            setUpdate(updates[updates.length - _id]);
+        if (reversedUpdates[_id - 1] !== undefined) {
+            setUpdate(reversedUpdates[_id - 1]);
         }
         let _canMove = [false, false];
         if (_id > 0) {
             _canMove[0] = _id - 1;
         }
-        if (params.id < updates.length) {
+        if (params.id < reversedUpdates.length) {
             _canMove[1] = _id + 1;
         }
         setCanMove(_canMove);
@@ -58,7 +59,7 @@ function Update() {
                     </Box>
                     <Grid sx={{ p: 1 }}>
                         {
-                            updates.reverse().map((update, index) => {
+                            reversedUpdates && reversedUpdates.map((update, index) => {
                                 const id = index + 1;
                                 return (
                                     <Button
