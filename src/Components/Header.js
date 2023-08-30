@@ -2,7 +2,6 @@ import { AppBar, Avatar, Box, Button, Container, Divider, Drawer, IconButton, Li
 import React from 'react';
 import { useRef } from 'react';
 import { Link } from 'react-router-dom';
-import SettingsModal from './Modals/SettingsModal';
 import UserSearchModal from './Modals/UserSearchModal';
 import SearchIcon from '@mui/icons-material/Search';
 import LeaderboardIcon from '@mui/icons-material/Leaderboard';
@@ -66,7 +65,6 @@ const HeaderButtonMenu = styled((props) => (
 function Header(props) {
     const { window } = props;
     const searchElement = useRef(null);
-    const settingsElement = useRef(null);
     const customizeElement = useRef(null);
     const visitorLogElement = useRef(null);
     const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -89,7 +87,6 @@ function Header(props) {
         ] },
         { name: 'Top Scores', icon: <StarIcon />, onClick: () => { }, linkTo: '/top' },
         { name: 'Stats', icon: <DataUsageIcon />, onClick: () => { }, linkTo: '/stats' },
-        { name: 'Settings', icon: <SettingsIcon />, onClick: () => settingsElement.current.setOpen(true) },
         { name: 'Tools', icon: <BuildIcon />, onClick: () => { }, linkTo: '/tools' },
         { name: 'Milestones', icon: <EmojiEventsIcon />, onClick: () => { }, linkTo: '/milestones' },
     ];
@@ -141,7 +138,6 @@ function Header(props) {
                 </> : <></>
             }
             <UserSearchModal ref={searchElement} />
-            <SettingsModal ref={settingsElement} />
 
             <HeaderButtonMenu
                 anchorEl={anchorElDropDown}
