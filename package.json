@@ -17,7 +17,7 @@
     "@mui/x-date-pickers": "^6.12.0",
     "axios": "^1.5.0",
     "buffer": "^6.0.3",
-    "chart.js": "^4.3.0",
+    "chart.js": "^4.4.0",
     "chartjs-chart-geo": "^4.2.4",
     "chartjs-plugin-annotation": "^3.0.1",
     "chartjs-plugin-datalabels": "^2.2.0",
