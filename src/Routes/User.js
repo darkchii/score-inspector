@@ -40,6 +40,8 @@ function User() {
                 setLoadingState('Fetching user data');
                 const user_out = await getFullUser(user_in);
 
+                console.log(user_out);
+
                 const onScoreDownloadProgress = (progress) => {
                     setLoadingState(`Fetching user scores (${formatBytes(progress.loaded)})`);
                 };

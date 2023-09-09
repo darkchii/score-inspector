@@ -1,8 +1,10 @@
-import { Avatar, Box, Chip, Grid, Paper, Stack, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableRow, Tooltip, Typography } from "@mui/material";
+import { Avatar, Box, Chip, Grid, Link, Paper, Stack, SvgIcon, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableRow, Tooltip, Typography } from "@mui/material";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import ReactCountryFlag from "react-country-flag";
 import { GetFormattedName, GetRoleIcon, GetRoles } from "../../Helpers/Account";
+import TwitterIcon from '@mui/icons-material/Twitter';
+import { DiscordIcon } from "../../Helpers/Icons";
 
 const MAX_VISITORS = 5;
 function SectionHeader(props) {
@@ -94,6 +96,20 @@ function SectionHeader(props) {
                                     }
                                 </Stack>
                                 <Typography variant='h6'>{Math.round(props.user.osu.statistics.pp).toLocaleString('en-US')}pp <Tooltip title='Sum of pp from every set score'><span>({Math.round(props.user.data?.total.pp ?? 0).toLocaleString('en-US')}pp total)</span></Tooltip></Typography>
+                                <Stack direction='row' spacing={1} sx={{ m: 0.5 }}>
+                                    {
+                                        props.user.osu.twitter !== null ? <>
+                                            <Link href={`https://twitter.com/${props.user.osu.twitter}`} target='_blank' rel='noopener noreferrer'>
+                                                <Chip size='small' sx={{ m: 0.2, backgroundColor: `#00ACEEAA` }} icon={<TwitterIcon />} label={props.user.osu.twitter} />
+                                            </Link>
+                                        </> : <></>
+                                    }
+                                    {
+                                        props.user.osu.discord !== null ? <>
+                                            <Chip size='small' sx={{ m: 0.2, backgroundColor: `#5865F2AA` }} icon={<DiscordIcon />} label={props.user.osu.discord} />
+                                        </> : <></>
+                                    }
+                                </Stack>
                             </Grid>
                             <Grid item xs={2}>
                                 <TableContainer>
