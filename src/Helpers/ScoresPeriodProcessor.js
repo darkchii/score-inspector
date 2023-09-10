@@ -315,8 +315,9 @@ function getCumulative(chunks, user, data, f = 'm') {
         } else {
             chunks[i].cumulative_total_max_base_score = chunks[i].total_max_base_score;
         }
-        chunks[i].total_average_acc = chunks[i].total_base_score * Math.pow(chunks[i].total_max_base_score, -1) * 100;
-        chunks[i].cumulative_average_acc = chunks[i].cumulative_total_base_score * Math.pow(chunks[i].cumulative_total_max_base_score, -1) * 100;
+        chunks[i].total_average_acc = Math.round(chunks[i].total_base_score * Math.pow(chunks[i].total_max_base_score, -1) * 100 * 100) / 100;
+        if(isNaN(chunks[i].total_average_acc)) chunks[i].total_average_acc = 0;
+        chunks[i].cumulative_average_acc = Math.round(chunks[i].cumulative_total_base_score * Math.pow(chunks[i].cumulative_total_max_base_score, -1) * 100 * 100) / 100;
 
         const beatmaps = data.beatmapInfo.monthlyCumulative[`${chunks[i].actual_date.format("YYYY-M")}-01`];
         chunks[i].completion = 100 / beatmaps.amount * chunks[i].cumulative_plays;
