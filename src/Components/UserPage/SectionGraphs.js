@@ -10,8 +10,35 @@ function SectionGraphs(props) {
 
     const _setGraphData = (data) => {
         setGraphData(data);
-        setGraphVerticalData(data.labels);
-        setGraphHorizontalData(data.data);
+
+        if (data.removeDataPointIfNull && data.data.length === 1) { //incompatible with multiple datasets
+            var _labels = [];
+            var _datasets = JSON.parse(JSON.stringify(data.data));
+            var _indexedData = [];
+
+            for (let i = 0; i < _datasets.length; i++) {
+                let dataset = _datasets[i].data;
+                _indexedData.push([]);
+                for(let j = 0; j < dataset.length; j++){
+                    let dataPoint = dataset[j];
+                    if(dataPoint !== null && dataPoint > 0){
+                        _indexedData[i].push(dataPoint);
+                        _labels.push(data.labels[j]);
+                    }
+                }
+            }
+
+            for(let i = 0; i < _datasets.length; i++){
+                _datasets[i].data = _indexedData[i];
+            }
+
+            setGraphVerticalData(_labels);
+            setGraphHorizontalData(_datasets);
+        } else {
+            setGraphVerticalData(data.labels);
+            setGraphHorizontalData(data.data);
+
+        }
     }
 
     useEffect(() => {

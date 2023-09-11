@@ -556,20 +556,23 @@ function getGraphObjects(chunks, labels, f = 'm') {
                     labels: labels,
                     data: [{ label: "Global rank", data: chunks.map(x => x.osudaily?.global_rank), valueFormatter: (value) => { return `${value}`; } }],
                     title: "Global rank",
-                    isDailyApi: true
+                    isDailyApi: true,
+                    removeDataPointIfNull: true,
                 }, {
                     id: "country_rank",
                     name: `Country rank`,
                     labels: labels,
                     data: [{ label: "Country rank", data: chunks.map(x => x.osudaily?.country_rank), valueFormatter: (value) => { return `${value}`; } }],
                     title: "Country rank",
-                    isDailyApi: true
+                    isDailyApi: true,
+                    removeDataPointIfNull: true,
                 }, {
                     id: "score_rank",
                     name: `Score rank`,
                     labels: labels,
                     data: [{ label: "Score rank", data: chunks.map(x => x.score_rank), valueFormatter: (value) => { return `${value}`; } }],
                     title: "Score rank",
+                    removeDataPointIfNull: true,
                 }, {
                     id: "completion",
                     name: `Completion`,

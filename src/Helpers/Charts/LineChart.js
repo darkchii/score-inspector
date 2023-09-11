@@ -12,7 +12,6 @@ function LineChart(props){
             _clonedProps.series[0].color = theme.palette.primary.main;
             console.log(`No color provided for LineChart, using primary color (${theme.palette.primary.main})`);
         }
-        console.log(_clonedProps);
         setProps(_clonedProps);
     }, []);
 
