@@ -4,7 +4,7 @@ import { Button, ButtonGroup, Grid, useTheme } from "@mui/material";
 import { getScoreActivity } from "../Helpers/OsuAlt";
 import moment from "moment";
 import Loader from "./UI/Loader";
-import { LineChart } from "@mui/x-charts";
+import LineChart from "../Helpers/Charts/LineChart";
 
 function ScoreSubmissions(props) {
     const theme = useTheme();
@@ -64,7 +64,7 @@ function ScoreSubmissions(props) {
                     isWorking || !data || !Array.isArray(data) || data.length <= 0 ?
                         <Loader /> :
                         <LineChart
-                            series={[{ type: 'line', data: data.map((d) => d.data), color: `${theme.palette.primary.main}` }]}
+                            series={[{ type: 'line', data: data.map((d) => d.data) }]}
                             xAxis={[{ scaleType: 'time', data: data.map((d) => d.timestamp)}]}
                         />
                 }

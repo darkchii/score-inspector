@@ -5,7 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import Loader from "../Components/UI/Loader";
 import axios from "axios";
 import { GetAPI } from "../Helpers/Misc";
-import { Alert, Box, Button, ButtonGroup, Pagination, Stack, Typography } from "@mui/material";
+import { Alert, Box, Button, ButtonGroup, Pagination, Stack, Typography, useTheme } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import moment from "moment";
@@ -13,6 +13,7 @@ import PlayerLeaderboardItem from "../Components/Leaderboards/PlayerLeaderboardI
 import { green, grey } from "@mui/material/colors";
 import config from "../config.json";
 import { Helmet } from "react-helmet";
+import LineChart from "../Helpers/Charts/LineChart";
 
 const USERS_PER_PAGE = 50;
 const MAX_TOTAL_USERS = 10000;
@@ -21,6 +22,7 @@ const PAGES = Math.ceil(MAX_TOTAL_USERS / USERS_PER_PAGE);
 const VALID_SORTING = ['rank', 'rank_gain', 'score_gain'];
 
 function LeadersScore(props) {
+    const theme = useTheme();
     const params = useParams();
     const navigate = useNavigate();
 
@@ -34,6 +36,30 @@ function LeadersScore(props) {
     const [isPreviousDayRecorded, setIsPreviousDayRecorded] = useState(false);
     //also check if sorting is valid
     const [sorting, setSorting] = useState(params.sort && VALID_SORTING.includes(params.sort) ? params.sort : 'rank');
+    const [scoreGraphData, setScoreGraphData] = useState(null);
+
+    useEffect(() => {
+        (async () => {
+            try {
+                const data = await axios.get(`${GetAPI()}scores/ranking/stats`);
+
+                const _data = {
+                    labels: [],
+                    values: []
+                };
+                data?.data?.daily_total_ranked_score?.forEach((item) => {
+                    _data.labels.push(moment(item.date, "YYYY-MM-DD"));
+                    _data.values.push(item.total_ranked_score);
+                });
+
+                console.log(_data);
+
+                setScoreGraphData(_data);
+            } catch (err) {
+                console.log(err);
+            }
+        })()
+    }, []);
 
     useEffect(() => {
         if (allDates.length === 0) {
@@ -172,73 +198,22 @@ function LeadersScore(props) {
                                         })
                                     }
                                 </Stack>
-                                {/* <Container maxWidth="lg">
-                                    <TableContainer>
-                                        <Table size='small'>
-                                            <TableHead>
-                                                <TableRow>
-                                                    <TableCell width='5%'>Rank</TableCell>
-                                                    <TableCell width='10%'></TableCell>
-                                                    <TableCell>Username</TableCell>
-                                                    <TableCell>Ranked Score</TableCell>
-                                                </TableRow>
-                                            </TableHead>
-                                            <TableBody>
-                                                {
-                                                    leaderboard.map((item, index) => {
-                                                        const rank_diff = item.old_rank !== null ? item.rank - item.old_rank : null;
-                                                        const ranked_score_diff = item.old_ranked_score !== null ? item.ranked_score - item.old_ranked_score : 0;
-                                                        return (
-                                                            <TableRow>
-                                                                <TableCell width='5%'>#{item.rank}</TableCell>
-                                                                <TableCell width='10%'><Typography color={
-                                                                    (isPreviousDayRecorded && rank_diff === null) ? green[600] : ((rank_diff ?? 0) === 0 ? grey[400] : (rank_diff ?? 0) < 0 ? green[400] : red[400])
-                                                                }>
-                                                                    {
-                                                                        (isPreviousDayRecorded && rank_diff === null) ? <>
-                                                                            <FiberNewIcon color={green[600]} />
-                                                                        </> : (
-                                                                            (rank_diff ?? 0) === 0 ? (
-                                                                                <HorizontalRuleIcon />
-                                                                            ) : (
-                                                                                (rank_diff ?? 0) < 0 ? (
-                                                                                    <>
-                                                                                        <KeyboardArrowUpIcon /> {Math.abs(rank_diff ?? 0).toLocaleString('en-US')}
-                                                                                    </>
-                                                                                ) : (
-                                                                                    <>
-                                                                                        <KeyboardArrowDownIcon /> {Math.abs(rank_diff ?? 0).toLocaleString('en-US')}
-                                                                                    </>
-                                                                                )
-                                                                            )
-                                                                        )
-                                                                    }
-                                                                </Typography></TableCell>
-                                                                <TableCell>{
-                                                                    GetFormattedName(item.inspector_user, {
-                                                                        is_link: true,
-                                                                        size: 'large'
-                                                                    })
-                                                                }</TableCell>
-                                                                <TableCell>
-                                                                    <span>
-                                                                        {item.ranked_score.toLocaleString('en-US')}
-                                                                        <Typography color={
-                                                                            (ranked_score_diff ?? 0) > 0 ? green[400] : grey[400]
-                                                                        } variant="caption" display="block">
-                                                                            +{(ranked_score_diff ?? 0).toLocaleString('en-US')}
-                                                                        </Typography>
-                                                                    </span>
-                                                                </TableCell>
-                                                            </TableRow>
-                                                        )
-                                                    })
-                                                }
-                                            </TableBody>
-                                        </Table>
-                                    </TableContainer>
-                                </Container> */}
                             </Box>
+                            {
+                                scoreGraphData !== null ? (
+                                    <Box sx={{
+                                        height: 300
+                                    }}>
+                                        <LineChart
+                                            margin={{
+                                                left: 150,
+                                            }}
+                                            xAxis={[{ scaleType: 'time', data: scoreGraphData.labels }]}
+                                            series={[{ type: 'line', data: scoreGraphData.values }]}
+                                        />
+                                    </Box>
+                                ) : null
+                            }
                         </Box>
                     </>
                 )

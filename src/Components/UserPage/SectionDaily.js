@@ -8,8 +8,9 @@ import CircleIcon from '@mui/icons-material/Circle';
 import SquareIcon from '@mui/icons-material/Square';
 import { IMG_SVG_GRADE_A, IMG_SVG_GRADE_B, IMG_SVG_GRADE_C, IMG_SVG_GRADE_D, IMG_SVG_GRADE_S, IMG_SVG_GRADE_SH, IMG_SVG_GRADE_X, IMG_SVG_GRADE_XH } from "../../Helpers/Assets";
 import { lerpColor, nestedSearch } from "../../Helpers/Misc";
-import { LineChart, ScatterChart, } from "@mui/x-charts";
+import { ScatterChart, } from "@mui/x-charts";
 import { ErrorBoundary } from "react-error-boundary";
+import LineChart from "../../Helpers/Charts/LineChart";
 
 const heightDefiners = [
     { value: 'pp', nesting: ['pp'], label: 'Performance' },

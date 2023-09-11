@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import RotateLeftIcon from '@mui/icons-material/RotateLeft';
 import { Button, FormControlLabel, FormGroup, Grid, Switch, Typography, rgbToHex } from "@mui/material";
-import { LineChart } from "@mui/x-charts";
 import moment from "moment";
+import LineChart from "../Helpers/Charts/LineChart";
 
 function TimeGraph(props) {
     var labels = props.labels;

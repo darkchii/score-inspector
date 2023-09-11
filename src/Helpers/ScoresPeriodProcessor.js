@@ -330,14 +330,262 @@ function getCumulative(chunks, user, data, f = 'm') {
 }
 
 function getGraphObjects(chunks, labels, f = 'm') {
-    const graphObjects = {
-        "clearsPerSection": <TimeGraph name={`Scores set per ${PERIOD_FORMATS[f].format_str}`} labels={labels} data={[{ name: "Scores set", set: chunks.map(x => x.count_scores), color: { r: 255, g: 102, b: 158 } }]} />,
-        "ppPerSection": <TimeGraph name={`Total PP per ${PERIOD_FORMATS[f].format}`} labels={labels} data={[{ name: "Total PP set", set: chunks.map(x => x.total_pp), color: { r: 255, g: 102, b: 158 } }]} />,
-        "lengthPerSection": <TimeGraph name={`Total length per ${PERIOD_FORMATS[f].format}`} labels={labels} data={[{ name: "Total length played", set: chunks.map(x => x.total_length), color: { r: 255, g: 102, b: 158 } }]} />,
-        "totalscorePerSection": <TimeGraph name={`Ranked score per ${PERIOD_FORMATS[f].format}`} labels={labels} data={[{ name: "Ranked score gained", set: chunks.map(x => x.total_score), color: { r: 255, g: 102, b: 158 } }]} />,
-        "totaltotalScorePerSection": <TimeGraph name={`Total score per ${PERIOD_FORMATS[f].format}`} labels={labels} data={[{ name: "Total score gained", set: chunks.map(x => x.osudaily?.total_score), color: { r: 255, g: 102, b: 158 } }]} />,
-        "totalSSscorePerSection": <TimeGraph name={`Total SS score per ${PERIOD_FORMATS[f].format}`} labels={labels} data={[{ name: "Total SS score gained", set: chunks.map(x => x.total_ss_score), color: { r: 255, g: 102, b: 158 } }]} />,
-        "totalhitsPerSection": <TimeGraph name={`Total hits per ${PERIOD_FORMATS[f].format}`} labels={labels} data={[{ name: "Total hits", set: chunks.map(x => x.total_hits), color: { r: 255, g: 102, b: 158 } }]} />,
+    const graphObjects = [
+        {
+            "title": "Periodic",
+            "graphObjects": [
+                {
+                    id: "clearsPerSection",
+                    name: `Scores set per ${PERIOD_FORMATS[f].format_str}`,
+                    labels: labels,
+                    data: [{ label: "Scores set", data: chunks.map(x => x.count_scores)}],
+                    title: "Clears",
+                },
+                {
+                    id: "totalscorePerSection",
+                    name: `Ranked score per ${PERIOD_FORMATS[f].format_str}`,
+                    labels: labels,
+                    data: [{ label: "Ranked score gained", data: chunks.map(x => x.total_score)}],   
+                    title: "Ranked score"
+                },
+                {
+                    id: "totaltotalScorePerSection",
+                    name: `Total score per ${PERIOD_FORMATS[f].format_str}`,
+                    labels: labels,
+                    data: [{ label: "Total score gained", data: chunks.map(x => x.osudaily?.total_score)}],
+                    title: "Total score",
+                    isDailyApi: true
+                },
+                {
+                    id: "totalSSscorePerSection",
+                    name: `Total SS score per ${PERIOD_FORMATS[f].format_str}`,
+                    labels: labels,
+                    data: [{ label: "Total SS score gained", data: chunks.map(x => x.total_ss_score) }],
+                    title: "SS score"
+                },
+                {
+                    id: "gradesPerSection",
+                    name: `Grades per ${PERIOD_FORMATS[f].format_str}`,
+                    labels: labels,
+                    data: [
+                        { label: "Total SS", data: chunks.map(x => x.total_ss), color: `rgb(197, 197, 197)` },
+                        { label: "Total S", data: chunks.map(x => x.total_s), color: `rgb(255, 186, 14 )`},
+                        { label: "Total A", data: chunks.map(x => x.total_a), color: `rgb(163, 163, 163)` },
+                        { label: "Total B", data: chunks.map(x => x.total_b), color: `rgb(255, 148, 11 )`},
+                        { label: "Total C", data: chunks.map(x => x.total_c), color: `rgb(255, 102, 158)` },
+                        { label: "Total D", data: chunks.map(x => x.total_d), color: `rgb(255, 102, 158)` }
+                    ],
+                    title: "Grades"
+                },
+                {
+                    id: "totalPPPerSection",
+                    name: `Total PP per ${PERIOD_FORMATS[f].format_str}`,
+                    labels: labels,
+                    data: [{ label: "Total PP set", data: chunks.map(x => x.total_pp), valueFormatter: (value) => { return `${Math.floor(value)}pp`; }}],
+                    title: "PP",
+                },
+                {
+                    id: "totalLengthPerSection",
+                    name: `Total length per ${PERIOD_FORMATS[f].format_str}`,
+                    labels: labels,
+                    data: [{ label: "Total length played", data: chunks.map(x => x.total_length) }],
+                    title: "Length"
+                },
+                {
+                    id: "totalhitsPerSection",
+                    name: `Total hits per ${PERIOD_FORMATS[f].format_str}`,
+                    labels: labels,
+                    data: [{ label: "Total hits", data: chunks.map(x => x.total_hits) }],
+                    title: "Hits"
+                },
+                {
+                    id: "totalAverageAcc",
+                    name: `Average accuracy per ${PERIOD_FORMATS[f].format_str}`,
+                    labels: labels,
+                    data: [{ label: "Average accuracy", data: chunks.map(x => x.total_average_acc), valueFormatter: (value) => { return `${value}%`; } }],
+                    title: "Accuracy"
+                },
+                {
+                    id: "gainedLevel",
+                    name: `Gained Level % per ${PERIOD_FORMATS[f].format_str}`,
+                    labels: labels,
+                    data: [{ label: "Gained Level %", data: chunks.map(x => x.osudaily?.gained_level) }],
+                    title: "Level",
+                    isDailyApi: true
+                }
+            ]
+        }, {
+            "title": "Cumulative",
+            "graphObjects": [
+                {
+                    id: "cumulativeClears",
+                    name: `Cumulative clears`,
+                    labels: labels,
+                    data: [{ label: "Cumulative clears", data: chunks.map(x => x.cumulative_plays) }],
+                    title: "Clears"
+                },
+                {
+                    id: "cumulativeScore",
+                    name: `Cumulative ranked score`,
+                    labels: labels,
+                    data: [{ label: "Cumulative ranked score", data: chunks.map(x => x.cumulative_score) }],
+                    title: "Ranked score"
+                },
+                {
+                    id: "cumulativeTotalScore",
+                    name: `Cumulative total score`,
+                    labels: labels,
+                    data: [{ label: "Cumulative total score", data: chunks.map(x => x.osudaily?.cumulative_total_score)}],
+                    title: "Total score",
+                    isDailyApi: true
+                },
+                {
+                    id: "cumulativeSSScore",
+                    name: `Cumulative SS score`,
+                    labels: labels,
+                    data: [{ label: "Cumulative SS score", data: chunks.map(x => x.cumulative_ss_score) }],
+                    title: "SS score"
+                },
+                {
+                    id: "cumulativeGrades",
+                    name: `Cumulative grades`,
+                    labels: labels,
+                    data: [
+                        { label: "Total SS", data: chunks.map(x => x.cumulative_rank_ss), color: `rgb(197, 197, 197)` },
+                        { label: "Total S", data: chunks.map(x => x.cumulative_rank_s), color: `rgb(255, 186, 14 )` },
+                        { label: "Total A", data: chunks.map(x => x.cumulative_rank_a), color: `rgb(163, 163, 163)` },
+                        { label: "Total B", data: chunks.map(x => x.cumulative_rank_b), color: `rgb(255, 148, 11 )` },
+                        { label: "Total C", data: chunks.map(x => x.cumulative_rank_c), color: `rgb(255, 102, 158)` },
+                        { label: "Total D", data: chunks.map(x => x.cumulative_rank_d), color: `rgb(255, 102, 158)` }
+                    ],
+                    title: "Grades"
+                },
+                {
+                    id: "cumulativePP",
+                    name: `Cumulative PP`,
+                    labels: labels,
+                    data: [{ label: "Cumulative PP", data: chunks.map(x => Math.floor(x.cumulative_total_pp)), valueFormatter: (value) => { return `${Math.floor(value)}pp`; } }],
+                    title: "PP"
+                },
+                {
+                    id: "cumulativeLength",
+                    name: `Cumulative length played`,
+                    labels: labels,
+                    data: [{ label: "Cumulative total length played", data: chunks.map(x => x.cumulative_length) }],
+                    title: "Length"
+                },
+                {
+                    id: "cumulativeHits",
+                    name: `Cumulative note hits`,
+                    labels: labels,
+                    data: [{ label: "Cumulative note hits", data: chunks.map(x => x.cumulative_total_hits) }],
+                    title: "Hits"
+                },
+                {
+                    id: "cumulativeAcc",
+                    name: `Overall average accuracy`,
+                    labels: labels,
+                    data: [{ label: "Overall average accuracy", data: chunks.map(x => x.cumulative_average_acc), valueFormatter: (value) => { return `${value}%`; } }],
+                    title: "Accuracy"
+                },
+                {
+                    id: "cumulativeLevel",
+                    name: `Level over time`,
+                    labels: labels,
+                    data: [{ label: "Level over time", data: chunks.map(x => x.osudaily?.cumulative_level) }],
+                    title: "Level",
+                    isDailyApi: true
+                }
+            ]
+        },
+        {
+            "title": "Misc",
+            "graphObjects": [
+                {
+                    id: "average_sr",
+                    name: `Average SR`,
+                    labels: labels,
+                    data: [{ label: "Average SR", data: chunks.map(x => x.average_sr), valueFormatter: (value) => { return `${value.toFixed(2)}*`; } }],
+                    title: "Average SR"
+                },
+                {
+                    id: "highest_sr",
+                    name: `Highest SR`,
+                    labels: labels,
+                    data: [{ label: "Highest SR", data: chunks.map(x => x.highest_sr), valueFormatter: (value) => { return `${value.toFixed(2)}*`; } }],
+                    title: "Highest SR"
+                },
+                {
+                    id: "average_score",
+                    name: `Average score`,
+                    labels: labels,
+                    data: [{ label: "Average score", data: chunks.map(x => x.average_score), valueFormatter: (value) => { return `${value.toFixed(2)}`; } }],
+                    title: "Average score"
+                },
+                {
+                    id: "average_length",
+                    name: `Average length`,
+                    labels: labels,
+                    data: [{ label: "Average length", data: chunks.map(x => x.average_length), valueFormatter: (value) => { return `${value.toFixed(2)}s`; } }],
+                    title: "Average length"
+                }, 
+                {
+                    id: "average_pp",
+                    name: `Average PP`,
+                    labels: labels,
+                    data: [{ label: "Average PP", data: chunks.map(x => x.average_pp), valueFormatter: (value) => { return `${value.toFixed(2)}pp`; } }],
+                    title: "Average PP"
+                },
+                {
+                    id: "highest_pp",
+                    name: `Highest PP`,
+                    labels: labels,
+                    data: [{ label: "Highest PP", data: chunks.map(x => x.highest_pp), valueFormatter: (value) => { return `${value.toFixed(2)}pp`; } }],
+                    title: "Highest PP"
+                },
+                {
+                    id: "raw_pp",
+                    name: `Raw PP`,
+                    labels: labels,
+                    data: [{ label: "Raw PP", data: chunks.map(x => x.osudaily?.raw_pp), valueFormatter: (value) => { return `${value.toFixed(2)}pp`; } }],
+                    title: "Raw PP",
+                    isDailyApi: true
+                }, {
+                    id: "world_rank",
+                    name: `Global rank`,
+                    labels: labels,
+                    data: [{ label: "Global rank", data: chunks.map(x => x.osudaily?.global_rank), valueFormatter: (value) => { return `${value}`; } }],
+                    title: "Global rank",
+                    isDailyApi: true
+                }, {
+                    id: "country_rank",
+                    name: `Country rank`,
+                    labels: labels,
+                    data: [{ label: "Country rank", data: chunks.map(x => x.osudaily?.country_rank), valueFormatter: (value) => { return `${value}`; } }],
+                    title: "Country rank",
+                    isDailyApi: true
+                }, {
+                    id: "score_rank",
+                    name: `Score rank`,
+                    labels: labels,
+                    data: [{ label: "Score rank", data: chunks.map(x => x.score_rank), valueFormatter: (value) => { return `${value}`; } }],
+                    title: "Score rank",
+                }, {
+                    id: "completion",
+                    name: `Completion`,
+                    labels: labels,
+                    data: [
+                        { label: "% Clear Completion", data: chunks.map(x => x.completion), valueFormatter: (value) => { return `${value.toFixed(2)}%`; } },
+                        { label: "% Score Completion", data: chunks.map(x => x.completion_score), valueFormatter: (value) => { return `${value.toFixed(2)}%`; } },
+                        { label: "% Length Completion", data: chunks.map(x => x.completion_length), valueFormatter: (value) => { return `${value.toFixed(2)}%`; } },
+                    ],
+                    title: "Completion"
+                }
+            ]
+        }
+    ];
+
+    const _graphObjects = {
         "totalAverageAcc": <TimeGraph name={`Average accuracy per ${PERIOD_FORMATS[f].format}`} labels={labels} data={[{ name: "Average accuracy", set: chunks.map(x => x.total_average_acc), color: { r: 255, g: 102, b: 158 } }]} />,
         "gainedLevel": <TimeGraph name={`Gained Level %`} labels={labels} data={[{ name: "Gained Level %", set: chunks.map(x => x.osudaily?.gained_level), color: { r: 255, g: 102, b: 158 } }]} />,
         "completion": <TimeGraph name='Completion' labels={labels} data={[
@@ -400,4 +648,5 @@ function getGraphObjects(chunks, labels, f = 'm') {
     };
 
     return graphObjects;
+    // return graphObjects;
 }
