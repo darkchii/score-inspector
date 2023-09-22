@@ -209,7 +209,7 @@ function LeadersScore(props) {
                                                 left: 150,
                                             }}
                                             xAxis={[{ scaleType: 'time', data: scoreGraphData.labels }]}
-                                            series={[{ type: 'line', data: scoreGraphData.values }]}
+                                            series={[{ type: 'line', label: 'Total ranked score in top 10k', data: scoreGraphData.values }]}
                                         />
                                     </Box>
                                 ) : null
