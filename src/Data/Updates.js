@@ -35,6 +35,7 @@ const updates = [
             [PLATFORMTYPES.WEB, CHANGETYPES.FIX, 'Completion data is now only loaded when tab is opened', '0b822a37da27ab1a76db2db1dc9df5654ac592ab'],
             [PLATFORMTYPES.WEB, CHANGETYPES.FIX, 'Added load spinners to slow loading components', '2ea69769903a4c5ba5dec7e4ac4e71a399e224f3'],
             [PLATFORMTYPES.API, CHANGETYPES.FIX, 'Inspector database using correct Amsterdam timezone now'],
+            [PLATFORMTYPES.API, CHANGETYPES.FIX, 'ScoreView PP now fixed on FC and SS lists', 'ea9fb3cba0aa7bdebde4160a407887ff470a764b'],
         ]
     },
     {
