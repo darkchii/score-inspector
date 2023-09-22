@@ -21,6 +21,7 @@ function CustomizeModal(props, ref) {
     const [isWorking, setIsWorking] = useState(false);
     const [optionBackgroundUrl, setOptionBackgroundUrl] = useState('');
     const [optionPublicFriends, setOptionPublicFriends] = useState(false);
+    const [optionPublicVisitations, setOptionPublicVisitations] = useState(false);
 
     useImperativeHandle(ref, () => ({
         setOpen(value) {
@@ -43,6 +44,7 @@ function CustomizeModal(props, ref) {
             }
             setOptionBackgroundUrl(user.background_image);
             setOptionPublicFriends(user.is_friends_public);
+            setOptionPublicVisitations(user.is_visitors_public);
         })();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [open]);
@@ -62,7 +64,8 @@ function CustomizeModal(props, ref) {
 
             const res = await UpdateProfile({
                 background_image: optionBackgroundUrl,
-                is_friends_public: optionPublicFriends
+                is_friends_public: optionPublicFriends,
+                is_visitors_public: optionPublicVisitations
             });
 
             if (res !== null && res.status === 200) {
@@ -140,13 +143,23 @@ function CustomizeModal(props, ref) {
                                     </Grid>
                                     <Grid>
                                         <Container>
-                                            <FormControlLabel control={
-                                                <Checkbox
-                                                    disabled={isWorking}
-                                                    checked={optionPublicFriends}
-                                                    onChange={(e) => setOptionPublicFriends(e.target.checked)}
-                                                />
-                                            } label='Show friends on profile' />
+                                            <Stack direction='column' sx={{ pt: 1 }}>
+                                                <FormControlLabel control={
+                                                    <Checkbox
+                                                        disabled={isWorking}
+                                                        checked={optionPublicFriends}
+                                                        onChange={(e) => setOptionPublicFriends(e.target.checked)}
+                                                    />
+                                                } label='Public friends (people can see your friendslist)' />
+                                                <FormControlLabel control={
+                                                    <Checkbox
+                                                        disabled={isWorking}
+                                                        checked={optionPublicVisitations}
+                                                        onChange={(e) => setOptionPublicVisitations(e.target.checked)}
+                                                    />
+                                                } label='Public visitations (people can see who you visited)' />
+                                                <Typography variant='caption'>These stats might be used in future updates like relation charts. For now it's just displayed on profile.</Typography>
+                                            </Stack>
                                         </Container>
                                     </Grid>
                                     <LoadingButton disabled={isWorking} loading={isWorking} onClick={save} startIcon={<SaveIcon />}>Save</LoadingButton>
