@@ -25,7 +25,7 @@ function PerformanceFC(props) {
             score.count100 = score.pp_fc.count100;
             score.count50 = score.pp_fc.count50;
             score.countmiss = score.pp_fc.countmiss;
-            score.combo = score.maxcombo;
+            score.combo = score.beatmap.maxcombo;
             score.weight = score.pp_fc.weight;
             score.rank = getGrade(score);
             score.score = -1;

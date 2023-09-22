@@ -25,7 +25,7 @@ function PerformanceSS(props) {
             score.count100 = score.pp_ss.count100;
             score.count50 = score.pp_ss.count50;
             score.countmiss = score.pp_ss.countmiss;
-            score.combo = score.maxcombo;
+            score.combo = score.beatmap.maxcombo;
             score.weight = score.pp_ss.weight;
             score.rank = getGrade(score);
             score.score = -1;
