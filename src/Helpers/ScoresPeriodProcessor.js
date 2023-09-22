@@ -2,7 +2,6 @@
 
 import { cloneDeep } from "lodash";
 import moment from "moment";
-import TimeGraph from "../Components/TimeGraph";
 import { dataToList } from "./MonthlyDataConfig";
 
 const PERIOD_FORMATS = {
@@ -587,68 +586,6 @@ function getGraphObjects(chunks, labels, f = 'm') {
             ]
         }
     ];
-
-    const _graphObjects = {
-        "totalAverageAcc": <TimeGraph name={`Average accuracy per ${PERIOD_FORMATS[f].format}`} labels={labels} data={[{ name: "Average accuracy", set: chunks.map(x => x.total_average_acc), color: { r: 255, g: 102, b: 158 } }]} />,
-        "gainedLevel": <TimeGraph name={`Gained Level %`} labels={labels} data={[{ name: "Gained Level %", set: chunks.map(x => x.osudaily?.gained_level), color: { r: 255, g: 102, b: 158 } }]} />,
-        "completion": <TimeGraph name='Completion' labels={labels} data={[
-            { name: "% Clear Completion", set: chunks.map(x => x.completion), color: { r: 255, g: 102, b: 158 } },
-            { name: "% Score Completion", set: chunks.map(x => x.completion_score), color: { r: 244, g: 67, b: 54 } },
-            { name: "% Length Completion", set: chunks.map(x => x.completion_length), color: { r: 63, g: 81, b: 181 } },
-        ]}
-            formatter={(value) => { return `${value.toFixed(2)}%`; }} />,
-        "cumulativePP": <TimeGraph name="Total PP" labels={labels} data={[{ name: "Total PP", set: chunks.map(x => Math.floor(x.cumulative_total_pp)), color: { r: 255, g: 102, b: 158 } }]} />,
-        "cumulativeScore": <TimeGraph name="Cumulative ranked score" labels={labels} data={[{ name: "Cumulative ranked score", set: chunks.map(x => x.cumulative_score), color: { r: 255, g: 102, b: 158 } }]} />,
-        "cumulativeTotalScore": <TimeGraph name="Cumulative total score" labels={labels} data={[{ name: "Cumulative total score", set: chunks.map(x => x.osudaily?.cumulative_total_score), color: { r: 255, g: 102, b: 158 } }]} />,
-        "cumulativeSSScore": <TimeGraph name="Cumulative SS score" labels={labels} data={[{ name: "Cumulative SS score", set: chunks.map(x => x.cumulative_ss_score), color: { r: 255, g: 102, b: 158 } }]} />,
-        "cumulativeClears": <TimeGraph name="Cumulative plays" labels={labels} data={[{ name: "Cumulative plays", set: chunks.map(x => x.cumulative_plays), color: { r: 255, g: 102, b: 158 } }]} />,
-        "cumulativeLength": <TimeGraph name={`Cumulative length played`} labels={labels} data={[{ name: "Cumulative total length played", set: chunks.map(x => x.cumulative_length), color: { r: 255, g: 102, b: 158 } }]} />,
-        "cumulativeHits": <TimeGraph name={`Cumulative note hits`} labels={labels} data={[{ name: "Cumulative note hits", set: chunks.map(x => x.cumulative_total_hits), color: { r: 255, g: 102, b: 158 } }]} />,
-        "cumulativeAcc": <TimeGraph name={`Overall average accuracy`} labels={labels} data={[{ name: "Overall average accuracy", set: chunks.map(x => x.cumulative_average_acc), color: { r: 255, g: 102, b: 158 } }]} />,
-        "cumulativeLevel": <TimeGraph name={`Level over time`} labels={labels} data={[{ name: "Level over time", set: chunks.map(x => x.osudaily?.cumulative_level), color: { r: 255, g: 102, b: 158 } }]} />,
-        "gradesPerSection": <TimeGraph name="Grades" labels={labels} data={[
-            { name: "Total SS", set: chunks.map(x => x.total_ss), color: { r: 197, g: 197, b: 197 } },
-            { name: "Total S", set: chunks.map(x => x.total_s), color: { r: 255, g: 186, b: 14 } },
-            { name: "Total A", set: chunks.map(x => x.total_a), color: { r: 163, g: 163, b: 163 } },
-            { name: "Total B", set: chunks.map(x => x.total_b), color: { r: 255, g: 148, b: 11 } },
-            { name: "Total C", set: chunks.map(x => x.total_c), color: { r: 133, g: 214, b: 28 } },
-            { name: "Total D", set: chunks.map(x => x.total_d), color: { r: 243, g: 87, b: 90 } },
-        ]} />,
-        "cumulativeGrades": <TimeGraph name="Cumulative Grades" labels={labels} data={[
-            { name: "Total SS", set: chunks.map(x => x.cumulative_rank_ss), color: { r: 197, g: 197, b: 197 } },
-            { name: "Total S", set: chunks.map(x => x.cumulative_rank_s), color: { r: 255, g: 186, b: 14 } },
-            { name: "Total A", set: chunks.map(x => x.cumulative_rank_a), color: { r: 163, g: 163, b: 163 } },
-            { name: "Total B", set: chunks.map(x => x.cumulative_rank_b), color: { r: 255, g: 148, b: 11 } },
-            { name: "Total C", set: chunks.map(x => x.cumulative_rank_c), color: { r: 133, g: 214, b: 28 } },
-            { name: "Total D", set: chunks.map(x => x.cumulative_rank_d), color: { r: 243, g: 87, b: 90 } },
-        ]} />,
-        "ppPerPlay": <TimeGraph name="Average PP per play" labels={labels} data={[{ name: "Average PP", set: chunks.map(x => x.average_pp), color: { r: 255, g: 102, b: 158 } }]} />,
-        "highestPPPlay": <TimeGraph name="Highest PP play" labels={labels} data={[{ name: "Highest PP", set: chunks.map(x => x.highest_pp), color: { r: 255, g: 102, b: 158 } }]} />,
-        "srPerPlay": <TimeGraph name="Average SR per play" labels={labels} data={[{ name: "Average SR", set: chunks.map(x => x.average_sr), color: { r: 255, g: 102, b: 158 } }]} />,
-        "highestSr": <TimeGraph name="Highest SR pass" labels={labels} data={[{ name: "Highest SR", set: chunks.map(x => x.highest_sr), color: { r: 255, g: 102, b: 158 } }]} />,
-        "scorePerPlay": <TimeGraph name="Average score per play" labels={labels} data={[{ name: "Average score", set: chunks.map(x => x.average_score), color: { r: 255, g: 102, b: 158 } }]} />,
-        "lengthPerPlay": <TimeGraph name="Average length per play" labels={labels} data={[{ name: "Average score", set: chunks.map(x => x.average_length), color: { r: 255, g: 102, b: 158 } }]} />,
-        "scoreRankGain": <TimeGraph reverse={true} formatter={(value) => { return `${value>0?'-':'+'}${Math.abs(value).toLocaleString("en-US")}`; }} name="Score Rank Gain" labels={labels} data={[
-            { name: "Score Rank", set: chunks.map(x => x?.score_rank_diff), color: { r: 255, g: 102, b: 158 } },
-        ]} />,
-        "scoreRank": <TimeGraph reverse={true} formatter={(value) => { return `#${Math.abs(value).toLocaleString("en-US")}`; }} name="Score Rank" labels={labels} data={[
-            { name: "Score Rank", set: chunks.map(x => x?.score_rank), color: { r: 255, g: 102, b: 158 } },
-        ]} />,
-        "globalRankGain": <TimeGraph reverse={true} formatter={(value) => { return `${value>0?'-':'+'}${Math.abs(value).toLocaleString("en-US")}`; }} name="World Rank" labels={labels} data={[
-            { name: "Global Rank", set: chunks.map(x => x.osudaily?.global_rank_diff), color: { r: 255, g: 102, b: 158 } },
-        ]} />,
-        "globalRank": <TimeGraph reverse={true} formatter={(value) => { return `#${Math.abs(value).toLocaleString("en-US")}`; }} name="World Rank" labels={labels} data={[
-            { name: "Global Rank", set: chunks.map(x => x.osudaily?.global_rank), color: { r: 255, g: 102, b: 158 } },
-        ]} />,
-        "countryRankGain": <TimeGraph reverse={true} formatter={(value) => { return `${value>0?'-':'+'}${Math.abs(value).toLocaleString("en-US")}`; }} name="Country Rank" labels={labels} data={[
-            { name: "Country Rank", set: chunks.map(x => x.osudaily?.country_rank_diff), color: { r: 82, g: 158, b: 250 } },
-        ]} />,
-        "countryRank": <TimeGraph reverse={true} formatter={(value) => { return `#${Math.abs(value).toLocaleString("en-US")}`; }} name="Country Rank" labels={labels} data={[
-            { name: "Country Rank", set: chunks.map(x => x.osudaily?.country_rank), color: { r: 82, g: 158, b: 250 } },
-        ]} />,
-        "rawPP": <TimeGraph name="Raw PP" labels={labels} data={[{ name: "Raw PP", set: chunks.map(x => x.osudaily?.raw_pp), color: { r: 255, g: 102, b: 158 } }]} />,
-        //"accPerPlay": <TimeGraph name="Average accuracy per play" labels={labels[dateFormat]} data={[{ name: "Average accuracy", set: chunks[dateFormat].map(x => x.average_acc), color: { r: 255, g: 102, b: 158 } }]} />,
-    };
 
     return graphObjects;
     // return graphObjects;
