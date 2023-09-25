@@ -1,53 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Button, Divider, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableRow, Typography, useTheme } from "@mui/material";
+import { Button, Chip, Divider, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableRow, Typography, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
 import { capitalize } from "../../Helpers/Misc";
-import { Chart, registerables } from 'chart.js'
-import { Bar } from "react-chartjs-2";
-import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { getCompletionData } from "../../Helpers/OsuAlt";
 import Loader from "../UI/Loader";
-Chart.register(...registerables, ChartDataLabels)
+import BarChart from "../../Helpers/Charts/BarChart";
 
 function SectionCompletion(props) {
     const theme = useTheme();
-    const [graphs, setGraphs] = useState({});
+    const [graphs, setGraphs] = useState([]);
     const [selectedGraph, setSelectedGraph] = useState('stars');
     const [isWorking, setIsWorking] = useState(false);
-    const config = {
-        type: 'bar',
-        data: {},
-        plugins: {
-            datalabels: {
-                color: 'white',
-                backgroundColor: '#00000088',
-                borderRadius: 5,
-                formatter: ((_, context) => {
-                    const { dataset, dataIndex } = context;
-                    const value = dataset.data[dataIndex];
-                    return `${value.item.scores}/${value.item.beatmaps}`;
-                }),
-                font: {
-                    family: "Roboto"
-                },
-            },
-            tooltip: {
-                callbacks: {
-                    label: (context) => {
-                        const { dataset, dataIndex } = context;
-                        const value = dataset.data[dataIndex];
-                        return `${Math.round(value.item.completion * 100) / 100}% (${value.item.scores}/${value.item.beatmaps})`;
-                    }
-                }
-            }
-        },
-        scales: {
-            y: {
-                min: 0,
-                max: 100,
-            }
-        }
-    }
 
     useEffect(() => {
         if (props.user == null) return;
@@ -62,28 +25,26 @@ function SectionCompletion(props) {
             Object.keys(props.user.data.completion).forEach((key, index) => {
                 const data = props.user.data.completion[key];
                 const labels = data.map((item, index) => item.range);
-                const values = data.map((item, index) => {
-                    return {
-                        x: item.range,
-                        val: (Math.round(item.completion * 100) / 100),
-                        item: item
-                    }
-                });
-                const stylizedKey = key.length === 2 ? key.toUpperCase() : capitalize(key);
-                const _data = {
-                    labels: labels,
-                    datasets: [{
-                        label: stylizedKey + ' Completion',
-                        data: values,
-                        backgroundColor: `${theme.palette.primary.main}dd`,
-                        borderRadius: 10,
-                        parsing: {
-                            yAxisKey: 'val'
-                        }
+                const values = data.map((item, index) => (Math.round(item.completion * 100) / 100));
+                // const stylizedKey = key.length === 2 ? key.toUpperCase() : capitalize(key);
+                // const _data = {
+                //     labels: labels,
+                //     datasets: [{
+                //         label: stylizedKey + ' Completion',
+                //         data: values,
+                //         backgroundColor: `${theme.palette.primary.main}dd`,
+                //         borderRadius: 10,
+                //         parsing: {
+                //             yAxisKey: 'val'
+                //         }
 
-                    }],
-                }
-                _graphs[key] = _data;
+                //     }],
+                // }
+                // _graphs[key] = _data;
+                _graphs[key] = {};
+                _graphs[key].labels = labels;
+                _graphs[key].data = values;
+                _graphs[key].stylizedKey = key.length === 2 ? key.toUpperCase() : capitalize(key);
             });
             setGraphs(_graphs);
             setIsWorking(false);
@@ -100,7 +61,15 @@ function SectionCompletion(props) {
         <>
             {
                 graphs && graphs[selectedGraph] ? <>
-                    <Bar height={'80px'} data={graphs[selectedGraph]} options={config} />
+                    <Grid sx={{
+                        height: 280
+                    }}>
+                        <BarChart
+                            key={selectedGraph}
+                            xAxis={[{ scaleType: 'band', data: graphs[selectedGraph].labels }]}
+                            series={[{ data: graphs[selectedGraph].data, valueFormatter: (v) => `${v}%`, label: graphs[selectedGraph].stylizedKey + ' Completion' }]}
+                        />
+                    </Grid>
                     {
                         Object.keys(graphs).map((key, index) => {
                             const stylizedKey = key.length === 2 ? key.toUpperCase() : capitalize(key);
@@ -126,12 +95,18 @@ function SectionCompletion(props) {
                                             <TableBody>
                                                 {
                                                     props.user.data.completion[key].map((item, index) => {
-
+                                                        //we want a chip that colors red to green based on completion, use lerp
+                                                        const _completion = item.completion / 100;
+                                                        const color = `rgb(${Math.round(255 - (_completion * 255))}, ${Math.round(_completion * 255)}, 0)`;
                                                         return (
                                                             <TableRow>
                                                                 <TableCell sx={{ fontWeight: 'bold' }}>{item.range}</TableCell>
-                                                                <TableCell>{Math.round(item.completion * 10) / 10}%</TableCell>
-                                                                <TableCell>{item.scores}/{item.beatmaps}</TableCell>
+                                                                <TableCell>
+                                                                    <Chip sx={{ backgroundColor: color, color: 'white' }} size='small' label={`${Math.round(item.completion * 10) / 10}%`} />
+                                                                </TableCell>
+                                                                <TableCell sx={{ p: 0 }} align="right">{item.scores}</TableCell>
+                                                                <TableCell sx={{ p: 0 }} align="center">/</TableCell>
+                                                                <TableCell sx={{ p: 0 }}>{item.beatmaps}</TableCell>
                                                             </TableRow>
                                                         )
                                                     })
