@@ -13,7 +13,7 @@
     "@mui/material": "^5.14.10",
     "@mui/styles": "^5.14.7",
     "@mui/x-charts": "^6.0.0-alpha.12",
-    "@mui/x-data-grid": "^6.14.0",
+    "@mui/x-data-grid": "^6.15.0",
     "@mui/x-date-pickers": "^6.13.0",
     "axios": "^1.5.0",
     "buffer": "^6.0.3",
