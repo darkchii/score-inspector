@@ -29,7 +29,7 @@ let DefaultTheme = createTheme({
         MuiButton: {
             styleOverrides: {
                 root: {
-                    borderRadius: 20,
+                    borderRadius: '9999px'
                 }
             }
         },

@@ -9,6 +9,7 @@ import HideImageIcon from '@mui/icons-material/HideImage';
 import { green, red } from "@mui/material/colors";
 import { Helmet } from "react-helmet";
 import config from "../config.json";
+import PeopleIcon from '@mui/icons-material/People';
 
 const NAV_WIDTH = 3;
 function Admin(props) {
@@ -155,12 +156,19 @@ function AdminUsers(props) {
                         <Typography variant="subtitle1">({user.osu_id})</Typography>
                     </Grid>
                     <Grid item xs={1} sx={{ display: 'flex', justifyContent: 'left' }}>
-                        <Typography variant="subtitle1">{
-                            user.background_image ?
-                                <ImageIcon sx={{ color: green[400] }} />
-                                :
-                                <HideImageIcon sx={{ color: red[400] }} />
-                        }</Typography>
+                        <Typography variant="subtitle1">
+                            {
+                                user.background_image ?
+                                    <ImageIcon sx={{ color: green[400] }} />
+                                    :
+                                    <HideImageIcon sx={{ color: red[400] }} />
+                            }
+                            {
+                                user.is_friends_public ?
+                                    <PeopleIcon sx={{ color: green[400] }} />
+                                    :
+                                    <PeopleIcon sx={{ color: red[400] }} />
+                            }</Typography>
                     </Grid>
                     <Grid item xs={2} sx={{ display: 'flex', justifyContent: 'left' }}>
                         <Typography variant="subtitle1">{user.roles.length} roles</Typography>
