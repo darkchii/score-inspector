@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 import UserSearchModal from './Modals/UserSearchModal';
 import SearchIcon from '@mui/icons-material/Search';
 import LeaderboardIcon from '@mui/icons-material/Leaderboard';
-import SettingsIcon from '@mui/icons-material/Settings';
 import StarIcon from '@mui/icons-material/Star';
 import BuildIcon from '@mui/icons-material/Build';
 import DataUsageIcon from '@mui/icons-material/DataUsage';

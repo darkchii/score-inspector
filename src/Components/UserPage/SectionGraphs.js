@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import LineChart from "../../Helpers/Charts/LineChart";
 
 function SectionGraphs(props) {
-    const [timeGraphValue, setTimeGraphValue] = useState(null);
     const [graphData, setGraphData] = useState(null);
     const [graphVerticalData, setGraphVerticalData] = useState(null);
     const [graphHorizontalData, setGraphHorizontalData] = useState(null);
@@ -43,16 +42,9 @@ function SectionGraphs(props) {
 
     useEffect(() => {
         if (props.dataset !== undefined && props.dataset.graphs !== null) {
-            // setTimeGraphValue(props.dataset.graphs[0].graphObjects[0].id);
             _setGraphData(props.dataset.graphs[0].graphObjects[0]);
         }
     }, [props.dataset]);
-
-    useEffect(() => {
-        //force a re-render
-        setTimeGraphValue(null);
-        setTimeGraphValue(graphData?.id);
-    }, [graphData])
 
     return (
         (props.dataset !== undefined && graphData !== null && graphVerticalData !== null && graphHorizontalData !== null) ?

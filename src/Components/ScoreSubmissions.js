@@ -1,13 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
-import { Button, ButtonGroup, Grid, useTheme } from "@mui/material";
+import { Button, ButtonGroup, Grid } from "@mui/material";
 import { getScoreActivity } from "../Helpers/OsuAlt";
 import moment from "moment";
 import Loader from "./UI/Loader";
 import LineChart from "../Helpers/Charts/LineChart";
 
 function ScoreSubmissions(props) {
-    const theme = useTheme();
     const [hours, setHours] = useState(72);
     const [isWorking, setIsWorking] = useState(false);
 

@@ -5,7 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import Loader from "../Components/UI/Loader";
 import axios from "axios";
 import { GetAPI } from "../Helpers/Misc";
-import { Alert, Box, Button, ButtonGroup, Pagination, Stack, Typography, useTheme } from "@mui/material";
+import { Alert, Box, Button, ButtonGroup, Pagination, Stack, Typography } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import moment from "moment";
@@ -22,7 +22,6 @@ const PAGES = Math.ceil(MAX_TOTAL_USERS / USERS_PER_PAGE);
 const VALID_SORTING = ['rank', 'rank_gain', 'score_gain'];
 
 function LeadersScore(props) {
-    const theme = useTheme();
     const params = useParams();
     const navigate = useNavigate();
 

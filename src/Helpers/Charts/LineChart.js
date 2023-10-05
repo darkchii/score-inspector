@@ -1,7 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useTheme } from "@mui/material";
 import { LineChart as CoreLineChart } from "@mui/x-charts";
 import { useState } from "react";
 import { useEffect } from "react";
+
 function LineChart(props){
     const theme = useTheme();
     const [_props, setProps] = useState(null);
@@ -16,6 +18,16 @@ function LineChart(props){
     }, []);
 
     if(!_props){
+        return null;
+    }
+
+    if(!_props.series){
+        console.error("No series provided for LineChart");
+        return null;
+    }
+
+    if(!_props.xAxis){
+        console.error("No xAxis provided for LineChart");
         return null;
     }
 

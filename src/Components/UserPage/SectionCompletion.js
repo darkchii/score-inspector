@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Button, Chip, Divider, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableRow, Typography, useTheme } from "@mui/material";
+import { Button, Chip, Divider, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { capitalize } from "../../Helpers/Misc";
 import { getCompletionData } from "../../Helpers/OsuAlt";
@@ -7,7 +7,6 @@ import Loader from "../UI/Loader";
 import BarChart from "../../Helpers/Charts/BarChart";
 
 function SectionCompletion(props) {
-    const theme = useTheme();
     const [graphs, setGraphs] = useState([]);
     const [selectedGraph, setSelectedGraph] = useState('stars');
     const [isWorking, setIsWorking] = useState(false);
@@ -26,21 +25,7 @@ function SectionCompletion(props) {
                 const data = props.user.data.completion[key];
                 const labels = data.map((item, index) => item.range);
                 const values = data.map((item, index) => (Math.round(item.completion * 100) / 100));
-                // const stylizedKey = key.length === 2 ? key.toUpperCase() : capitalize(key);
-                // const _data = {
-                //     labels: labels,
-                //     datasets: [{
-                //         label: stylizedKey + ' Completion',
-                //         data: values,
-                //         backgroundColor: `${theme.palette.primary.main}dd`,
-                //         borderRadius: 10,
-                //         parsing: {
-                //             yAxisKey: 'val'
-                //         }
 
-                //     }],
-                // }
-                // _graphs[key] = _data;
                 _graphs[key] = {};
                 _graphs[key].labels = labels;
                 _graphs[key].data = values;

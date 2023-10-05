@@ -1,13 +1,11 @@
-import { Box, Button, Card, CardContent, Checkbox, Container, Divider, FormControlLabel, Grid, Modal, Stack, TextField, Typography } from "@mui/material";
+import { Box, Card, CardContent, Checkbox, Container, Divider, FormControlLabel, Grid, Modal, Stack, TextField, Typography } from "@mui/material";
 import { useEffect, useImperativeHandle } from "react";
 import { forwardRef } from "react";
 import { useState } from "react";
 import { GetUser as GetInspectorUser, UpdateFriendsList, UpdateProfile } from "../../Helpers/Account";
-import { GetAPI, showNotification, validateImage } from "../../Helpers/Misc";
-import { set } from "lodash";
+import { showNotification, validateImage } from "../../Helpers/Misc";
 import GroupIcon from '@mui/icons-material/Group';
 import SaveIcon from '@mui/icons-material/Save';
-import axios from "axios";
 import { LoadingButton } from "@mui/lab";
 const style = {
     position: 'absolute',

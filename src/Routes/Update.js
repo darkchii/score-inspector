@@ -13,7 +13,7 @@ import config from "../config.json";
 function Update() {
     const [update, setUpdate] = useState(null);
     const [canMove, setCanMove] = useState([false, false]);
-    const [reversedUpdates, _] = useState(updates.slice().reverse());
+    const [reversedUpdates] = useState(updates.slice().reverse());
     const params = useParams();
     const navigate = useNavigate();
 

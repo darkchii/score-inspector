@@ -122,14 +122,11 @@ function processDailyData(chunks, user, data, f = 'm') {
     const firstDaily = user.daily.modes[0].lines[user.daily.modes[0].lines.length - 1];
     const firstDailyDate = moment(firstDaily.date);
     const pointsBetween = firstDailyDate.diff(firstDate, 'months');
-    const initial_rank = user.osu.id;
-    const countryRankPercOfGlobal = 1 / user.osu.statistics.global_rank * user.osu.statistics.country_rank;
-    const initial_c_rank = Math.round(countryRankPercOfGlobal * initial_rank);
-    for (var i = 0; i < chunks.length; i++) {
+    for (let i = 0; i < chunks.length; i++) {
         const previous = chunks[i - 1]?.osudaily;
         const scoreRankSubset = user.score_rank_history.filter(x => moment(x.date).isSame(chunks[i].actual_date, PERIOD_FORMATS[f].format));
         let highest_rank = null;
-        for(var j = 0; j < scoreRankSubset.length; j++) {
+        for(let j = 0; j < scoreRankSubset.length; j++) {
             if(highest_rank === null || scoreRankSubset[j].rank < highest_rank) {
                 highest_rank = scoreRankSubset[j].rank;
             }

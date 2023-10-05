@@ -1,5 +1,4 @@
 import axios from "axios";
-import { GetUser as GetInspectorUser } from "./Account";
 import { GetAPI } from "./Misc";
 
 export const approval_state = {

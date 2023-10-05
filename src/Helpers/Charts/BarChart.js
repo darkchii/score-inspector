@@ -1,4 +1,5 @@
 import { useTheme } from "@mui/material";
+/* eslint-disable react-hooks/exhaustive-deps */
 import { BarChart as CoreBarChart } from "@mui/x-charts";
 import { useEffect, useState } from "react";
 function BarChart(props){
