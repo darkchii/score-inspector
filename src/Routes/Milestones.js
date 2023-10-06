@@ -10,8 +10,74 @@ import { GetFormattedName } from '../Helpers/Account';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import config from "../config.json";
+import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 
 const MILESTONES_PER_PAGE = 50;
+
+const MILESTONES = [
+    {
+        name: 'Global Rank',
+        getValue: (value) => (<span style={{ fontWeight: 'bold' }}>{value.toLocaleString('en-US')}</span>),
+        getText: (value) => (<span>Reached top #{value}</span>),
+        icon: <LeaderboardIcon />
+    }, {
+        name: 'Level',
+        getValue: (value) => (<span style={{ fontWeight: 'bold' }}>{value.toLocaleString('en-US')}</span>),
+        getText: (value) => (<span>Reached level {value}</span>),
+    }, {
+        name: 'Playcount',
+        getValue: (value) => (<span style={{ fontWeight: 'bold' }}>{value.toLocaleString('en-US')}</span>),
+        getText: (value) => (<span>Reached {value} playcount</span>)
+    }, {
+        name: 'Playtime',
+        getValue: (value) => (<span style={{ fontWeight: 'bold' }}>{moment.duration(value, 'seconds').asHours()}</span>),
+        getText: (value) => (<span>Reached {value} hours of playtime</span>),
+    }, {
+        name: 'Clears',
+        getValue: (value) => (<span style={{ fontWeight: 'bold' }}>{value.toLocaleString('en-US')}</span>),
+        getText: (value) => (<span>Reached {value} clears</span>),
+    }, {
+        name: 'Total SS',
+        getValue: (value) => (<span style={{ fontWeight: 'bold' }}>{value.toLocaleString('en-US')}</span>),
+        getText: (value) => (<span>Reached {value} total SS ranks</span>),
+    }, {
+        name: 'Total S',
+        getValue: (value) => (<span style={{ fontWeight: 'bold' }}>{value.toLocaleString('en-US')}</span>),
+        getText: (value) => (<span>Reached {value} total S ranks</span>),
+    }, {
+        name: 'Silver SS',
+        getValue: (value) => (<span style={{ fontWeight: 'bold' }}>{value.toLocaleString('en-US')}</span>),
+        getText: (value) => (<span>Reached {value} silver SS ranks</span>),
+    }, {
+        name: 'Silver S',
+        getValue: (value) => (<span style={{ fontWeight: 'bold' }}>{value.toLocaleString('en-US')}</span>),
+        getText: (value) => (<span>Reached {value} silver S ranks</span>),
+    }, {
+        name: 'Gold SS',
+        getValue: (value) => (<span style={{ fontWeight: 'bold' }}>{value.toLocaleString('en-US')}</span>),
+        getText: (value) => (<span>Reached {value} gold SS ranks</span>),
+    }, {
+        name: 'Gold S',
+        getValue: (value) => (<span style={{ fontWeight: 'bold' }}>{value.toLocaleString('en-US')}</span>),
+        getText: (value) => (<span>Reached {value} gold S ranks</span>),
+    }, {
+        name: 'A',
+        getValue: (value) => (<span style={{ fontWeight: 'bold' }}>{value.toLocaleString('en-US')}</span>),
+        getText: (value) => (<span>Reached {value} A ranks</span>),
+    }, {
+        name: 'Total Score',
+        getValue: (value) => (<span style={{ fontWeight: 'bold' }}>{value.toLocaleString('en-US')}</span>),
+        getText: (value) => (<span>Reached {value} total score</span>),
+    }, {
+        name: 'Ranked Score',
+        getValue: (value) => (<span style={{ fontWeight: 'bold' }}>{value.toLocaleString('en-US')}</span>),
+        getText: (value) => (<span>Reached {value} ranked score</span>),
+    }, {
+        name: 'PP',
+        getValue: (value) => (<span style={{ fontWeight: 'bold' }}>{value.toLocaleString('en-US')}</span>),
+        getText: (value) => (<span>Reached {value}pp</span>),
+    }
+]
 
 function Milestones() {
     const params = useParams();
@@ -81,59 +147,14 @@ function Milestones() {
                                 <TableBody>
                                     {
                                         milestones.map((milestone, index) => {
-                                            let valueText = (<span style={{ fontWeight: 'bold' }}>{milestone.count.toLocaleString('en-US')}</span>);
+                                            //let valueText = (<span style={{ fontWeight: 'bold' }}>{milestone.count.toLocaleString('en-US')}</span>);
                                             let text = '';
 
-                                            switch (milestone.achievement) {
-                                                default:
-                                                    text = `Unknown, contact Amayakase, this should not happen (achievement: ${milestone.achievement})`;
-                                                    break;
-                                                case 'Global Rank':
-                                                    text = (<span>Reached top #{valueText}</span>);
-                                                    break;
-                                                case 'Level':
-                                                    text = (<span>Reached level {valueText}</span>);
-                                                    break;
-                                                case 'Playcount':
-                                                    text = (<span>Reached {valueText} playcount</span>);
-                                                    break;
-                                                case 'Playtime':
-                                                    valueText = (<span style={{ fontWeight: 'bold' }}>{moment.duration(milestone.count, 'seconds').asHours()}</span>);
-                                                    text = (<span>Reached {valueText} hours of playtime</span>);
-                                                    break;
-                                                case 'Clears':
-                                                    text = (<span>Reached {valueText} clears</span>);
-                                                    break;
-                                                case 'Total SS':
-                                                    text = (<span>Reached {valueText} total SS ranks</span>);
-                                                    break;
-                                                case 'Total S':
-                                                    text = (<span>Reached {valueText} total S ranks</span>);
-                                                    break;
-                                                case 'Silver SS':
-                                                    text = (<span>Reached {valueText} silver SS ranks</span>);
-                                                    break;
-                                                case 'Silver S':
-                                                    text = (<span>Reached {valueText} silver S ranks</span>);
-                                                    break;
-                                                case 'Gold SS':
-                                                    text = (<span>Reached {valueText} gold SS ranks</span>);
-                                                    break;
-                                                case 'Gold S':
-                                                    text = (<span>Reached {valueText} gold S ranks</span>);
-                                                    break;
-                                                case 'A':
-                                                    text = (<span>Reached {valueText} A ranks</span>);
-                                                    break;
-                                                case 'Total Score':
-                                                    text = (<span>Reached {valueText} total score</span>);
-                                                    break;
-                                                case 'Ranked Score':
-                                                    text = (<span>Reached {valueText} ranked score</span>);
-                                                    break;
-                                                case 'PP':
-                                                    text = (<span>Reached {valueText}pp</span>);
-                                                    break;
+                                            let formatter = MILESTONES.find(m => m.name === milestone.achievement);
+                                            if (!formatter) {
+                                                text = `Unknown, contact Amayakase, this should not happen (achievement: ${milestone.achievement})`;
+                                            } else {
+                                                text = formatter.getText(formatter.getValue(milestone.count));
                                             }
 
                                             return (
@@ -146,6 +167,7 @@ function Milestones() {
                                                             })}
                                                         </Link>
                                                     </TableCell>
+                                                    <TableCell>{formatter?.icon ?? ''}</TableCell>
                                                     <TableCell>{text}</TableCell>
                                                 </TableRow>
                                             )
