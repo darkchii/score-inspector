@@ -65,32 +65,6 @@ function Stats(props) {
         (async () => {
             const data = await getScoreStats();
             setScoreStats(data);
-
-            //on scoreStats.pp_distribution, if there is an empty spot
-            //if index 4 has pp_range "400",
-            //and index 5 has pp_range "600",
-            //then we need to add one with pp_range "500" between them
-
-            const pp_distribution = [];
-            for (let i = 0; i < data.pp_distribution.length; i++) {
-                pp_distribution.push(JSON.parse(JSON.stringify(data.pp_distribution[i])));
-                const pp_current = Number(data.pp_distribution[i].pp_range);
-                if (i < data.pp_distribution.length - 1) {
-                    const pp_next = Number(data.pp_distribution[i + 1].pp_range);
-                    console.log(`Checking if ${pp_current + 100} exists: ${pp_next - pp_current > 100}`)
-                    if (pp_next - pp_current > 100) {
-                        pp_distribution.push({
-                            count: '0',
-                            pp_range: `${pp_current + 100}`,
-                            most_common_user: null,
-                            most_common_user_id_count: 0
-                        });
-                    }
-                }
-            }
-
-            data.pp_distribution = pp_distribution;
-
             setStatsTime(data.time);
         })();
     }, []);

@@ -315,9 +315,6 @@ function Population() {
             {
                 chartData ?
                     <>
-                        <Alert severity="info">
-                            Don't bother me about incorrect borders. All geo data published online are similar to this one. Crimea is part of Ukraine.
-                            </Alert>
                         <Box sx={{ width: '100%', height: '100%', p: 2 }}>
                             <Container size={'md'}>
                                 <Chart
