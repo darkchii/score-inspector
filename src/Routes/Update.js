@@ -1,4 +1,4 @@
-import { Box, Button, Chip, Grid, Link, List, ListItem, Typography } from '@mui/material';
+import { Box, Button, Chip, Grid, Link, List, ListItem, Stack, Table, TableBody, TableCell, TableRow, Typography } from '@mui/material';
 import moment from 'moment/moment';
 import React from 'react';
 import { useEffect } from 'react';
@@ -71,21 +71,21 @@ function Update() {
                         }
                     </Grid>
                     <Typography component='h6'>{update.date} ({moment(update.date).fromNow()})</Typography>
-                    <List dense>
-                        {
-                            update.changes.map((change, index) => {
+                    <Table size="small">
+                        <TableBody>
+                            {update.changes.map((change, index) => {
                                 let _typeText = '';
-                                let _platformText = '';
+                                let _platformTexts = [];
                                 let _typeColor = 'primary';
-                                switch (change[0]) {
-                                    default:
-                                    case PLATFORMTYPES.WEB:
-                                        _platformText = 'Web';
-                                        break;
-                                    case PLATFORMTYPES.API:
-                                        _platformText = 'API';
-                                        break;
+
+                                if (change[0] & PLATFORMTYPES.WEB) {
+                                    _platformTexts.push('Web');
                                 }
+
+                                if (change[0] & PLATFORMTYPES.API) {
+                                    _platformTexts.push('API');
+                                }
+
                                 switch (change[1]) {
                                     case CHANGETYPES.NEW:
                                         _typeText = 'New';
@@ -105,31 +105,36 @@ function Update() {
                                         _typeColor = 'primary';
                                         break;
                                 }
+
                                 return (
-                                    <ListItem>
-                                        <Grid container>
-                                            <Grid item xs={0.6} md={0.6}>
-                                                <Chip size="small" label={_platformText} />
-                                            </Grid>
-                                            <Grid item xs={0.6} md={0.6}>
-                                                <Chip color={_typeColor} size="small" label={_typeText} />
-                                            </Grid>
-                                            <Grid item xs={1} md={1}>
-                                                {
-                                                    change[3] ?
-                                                        <><Link target='_blank' href={`https://github.com/darkchii/score-inspector/commit/${change[3]}`}><Chip size="small" label={change[3].substr(0, 7)} /></Link> </>
-                                                        : <></>
-                                                }
-                                            </Grid>
-                                            <Grid item xs={9.8} md={9.8}>
-                                                {change[2]}
-                                            </Grid>
-                                        </Grid>
-                                    </ListItem>
+                                    <TableRow key={index}>
+                                        <TableCell>
+                                            <Stack direction="row" spacing={1}>
+                                                {_platformTexts.map((_platformText, i) => (
+                                                    <Chip key={i} size="small" label={_platformText} />
+                                                ))}
+                                            </Stack>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Chip color={_typeColor} size="small" label={_typeText} />
+                                        </TableCell>
+                                        <TableCell>
+                                            {change[3] && (
+                                                <>
+                                                    <Link target="_blank" href={`https://github.com/darkchii/score-inspector/commit/${change[3]}`}>
+                                                        <Chip size="small" label={change[3].substr(0, 7)} />
+                                                    </Link>
+                                                </>
+                                            )}
+                                        </TableCell>
+                                        <TableCell sx={{ width: '100%' }}>
+                                            {change[2]}
+                                        </TableCell>
+                                    </TableRow>
                                 );
-                            })
-                        }
-                    </List>
+                            })}
+                        </TableBody>
+                    </Table>
                 </> : <>
                     <Typography variant='title'>No update found</Typography>
                 </>

@@ -6,8 +6,8 @@ const CHANGETYPES = {
 }
 
 const PLATFORMTYPES = {
-    WEB: 0,
-    API: 1,
+    WEB: 1,
+    API: 2,
 }
 
 const updates = [
@@ -36,6 +36,7 @@ const updates = [
             [PLATFORMTYPES.WEB, CHANGETYPES.FIX, 'Added load spinners to slow loading components', '2ea69769903a4c5ba5dec7e4ac4e71a399e224f3'],
             [PLATFORMTYPES.API, CHANGETYPES.FIX, 'Inspector database using correct Amsterdam timezone now'],
             [PLATFORMTYPES.WEB, CHANGETYPES.FIX, 'ScoreView PP now fixed on FC and SS lists', 'ea9fb3cba0aa7bdebde4160a407887ff470a764b'],
+            [PLATFORMTYPES.WEB | PLATFORMTYPES.API, CHANGETYPES.FIX, 'Moved repositories to own git server', '5442f08020b57b74bd6014e735050b49e8619a95'],
         ]
     },
     {
