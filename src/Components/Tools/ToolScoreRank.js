@@ -20,7 +20,7 @@ function ToolScoreRank() {
             return;
         }
 
-        if (rank < 1 || rank > 9999) {
+        if (rank < 1 || rank > 10000) {
             showNotification('Invalid rank', 'This only works for ranks between 1 and 10.000', 'error');
             return;
         }
