@@ -31,6 +31,7 @@ const updates = [
             [PLATFORMTYPES.WEB, CHANGETYPES.MISC, 'Better mobile support', '9fff5c3259ddf19d778203fc2b2f5b23c1d7818a'],
             [PLATFORMTYPES.WEB, CHANGETYPES.MISC, 'Website moved to score.kirino.sh', 'cc6641698fef53dbb1e2e76e0f296f4f99744acc'],
             [PLATFORMTYPES.WEB, CHANGETYPES.MISC, 'Removed website settings modal', 'a5c9e659e407b1f1b0e202ce7a9822b03be43e95'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.FIX, 'Rank 10000 itself can now be checked in score rank tool', '6aaa6e5254b2b4f3c91dcbcc5ba5d31af3f6b4d7'],
             [PLATFORMTYPES.WEB, CHANGETYPES.FIX, 'Fixed pp calculators incorrectly duplicating score array', 'f7a2311a12a62fd65411c9210459b88dab457eb7'],
             [PLATFORMTYPES.WEB, CHANGETYPES.FIX, 'Completion data is now only loaded when tab is opened', '0b822a37da27ab1a76db2db1dc9df5654ac592ab'],
             [PLATFORMTYPES.WEB, CHANGETYPES.FIX, 'Added load spinners to slow loading components', '2ea69769903a4c5ba5dec7e4ac4e71a399e224f3'],

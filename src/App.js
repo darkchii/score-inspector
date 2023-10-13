@@ -31,6 +31,7 @@ import Staff from './Routes/Staff';
 import Admin from './Routes/Admin';
 import LeadersScore from './Routes/LeadersScore';
 import Milestones from './Routes/Milestones';
+import Docs from './Routes/Docs';
 
 function App() {
   const [loginData, setLoginData] = useState(null);
@@ -119,6 +120,7 @@ function App() {
                 <Route path="beatmaps" element={<Beatmaps />} />
                 <Route path="staff" element={<Staff />} />
                 <Route path="population" element={<Population />} />
+                <Route path="docs" element={<Docs />} />
                 <Route path="logout" element={<Logout />} />
                 <Route path="milestones" element={<Milestones />}>
                   <Route index element={<Milestones />} />
