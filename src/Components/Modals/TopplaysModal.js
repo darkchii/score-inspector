@@ -42,7 +42,7 @@ function TopplaysModal(props) {
 
     const rowHeight = ({ index }) => {
         // const score = scores[index];
-        return 40;
+        return 40+5;
     };
 
     const rowRenderer = ({ index, key, style }) => {

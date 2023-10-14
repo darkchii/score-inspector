@@ -1,12 +1,14 @@
-import { Box, Card, Grid, IconButton, LinearProgress, Tooltip, Typography } from '@mui/material';
+import { Box, Card, Grid, IconButton, LinearProgress, Paper, Tooltip, Typography, useTheme } from '@mui/material';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { getGradeIcon, getModIcon } from '../Helpers/Assets';
 import { toFixedNumber } from '../Helpers/Misc';
 import { getModString, mods, mod_strings_long } from '../Helpers/Osu';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import moment from 'moment';
 
 function ScoreTableRow(props) {
+    const theme = useTheme();
     const [score, setScore] = useState(null);
     const [viewerOpen] = useState(false);
     const [allowScoreViewer, setAllowScoreViewer] = useState(true);
@@ -20,7 +22,7 @@ function ScoreTableRow(props) {
     }, [props.data]);
 
     useEffect(() => {
-        setAllowScoreViewer(props.allowScoreViewer!==undefined ? props.allowScoreViewer : true);
+        setAllowScoreViewer(props.allowScoreViewer !== undefined ? props.allowScoreViewer : true);
     }, [props.allowScoreViewer])
 
     const toggleViewer = () => {
@@ -33,16 +35,26 @@ function ScoreTableRow(props) {
             {
                 score !== null ?
                     <>
-                        <Box component={Card} display="flex" sx={{ margin: 0, width: '100%', height: '2.5rem', bgcolor: 'background.default', borderBottomLeftRadius: viewerOpen ? 0 : null, borderBottomRightRadius: viewerOpen ? 0 : null }} >
-                            <Grid container sx={{ margin: 1 }}>
-                                <Grid item xs={0.5} sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
+                        <Box
+                            display="flex"
+                            sx={{
+                                margin: 0,
+                                width: '100%',
+                                height: '2.5rem',
+                                bgcolor: theme.palette.background.default,
+                            }} >
+                            <Grid container>
+                                <Grid item xs={0.5} sx={{ height: '100%', display: 'flex', alignItems: 'center', pl: 1 }}>
                                     {/* {getGradeIcon(score.rank)} */}
                                     <img src={getGradeIcon(score.rank)} alt={score.rank} />
                                 </Grid>
                                 <Grid item xs={7.5} sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
                                     <Tooltip title={`${score.beatmap.artist} - ${score.beatmap.title} [${score.beatmap.diffname}]`}>
-                                        <Typography variant="subtitle1" sx={{ maxWidth: '100%', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
-                                            {score.beatmap.artist} - {score.beatmap.title} [{score.beatmap.diffname}]
+                                        <Typography sx={{ fontSize: '0.8rem', maxWidth: '100%', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
+                                            {score.beatmap.artist} - {score.beatmap.title}
+                                        </Typography>
+                                        <Typography sx={{ fontSize: '0.7rem', maxWidth: '100%', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
+                                            <span style={{ color: '#ea0' }}>{score.beatmap.diffname}</span> <span style={{opacity: '0.7'}}>{moment(score.date_played_moment).fromNow()}</span>
                                         </Typography>
                                     </Tooltip>
                                 </Grid>
@@ -55,20 +67,55 @@ function ScoreTableRow(props) {
                                         ))
                                     }
                                 </Grid>
-                                <Grid item xs={1} sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
-                                    <Typography variant="subtitle1">{score.accuracy.toFixed(2)}%</Typography>
+                                <Grid item xs={0.8} sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
+                                    <Typography variant="subtitle2">{score.accuracy.toFixed(2)}%</Typography>
                                 </Grid>
-                                <Grid item xs={1} sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
-                                    <Tooltip title={`Weight: ${(score.displayed_pp.weight * 100).toFixed(0)}% ${toFixedNumber(score.displayed_pp.total * score.displayed_pp.weight, 0).toLocaleString('en-US')}pp`}>
-                                        <Typography variant="h5">{toFixedNumber(score.displayed_pp.total, 0).toLocaleString('en-US')}pp</Typography>
-                                    </Tooltip>
+                                <Grid item xs={1.2} sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
+                                    <Box
+                                        sx={{
+                                            width: '100%',
+                                            height: '100%',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            bgcolor: theme.palette.background.paper,
+                                            borderRadius: 0,
+                                            position: 'relative',
+                                            '&:before': {
+                                                bgcolor: theme.palette.background.default,
+                                                clipPath: 'polygon(0 0,100% 50%,0 100%)',
+                                                WebkitClipPath: 'polygon(0 0,100% 50%,0 100%)',
+                                                content: '""',
+                                                height: '100%',
+                                                width: '10px',
+                                                position: 'absolute',
+                                                left: 0,
+                                                top: 0
+                                            }
+                                        }}>
+                                        <Tooltip title={`Weight: ${(score.displayed_pp.weight * 100).toFixed(0)}% ${toFixedNumber(score.displayed_pp.total * score.displayed_pp.weight, 0).toLocaleString('en-US')}pp`}>
+                                            <Typography variant="h6">{toFixedNumber(score.displayed_pp.total, 0).toLocaleString('en-US')}pp</Typography>
+                                        </Tooltip>
+                                    </Box>
                                 </Grid>
                                 {
                                     allowScoreViewer ?
-                                        <Grid item xs={0.5} sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
-                                            <IconButton onClick={toggleViewer} size="small">
-                                                <VisibilityIcon />
-                                            </IconButton>
+                                        <Grid item xs={0.5}>
+                                            <Box sx={{
+                                                width: '100%',
+                                                height: '100%',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                bgcolor: theme.palette.background.paper,
+                                                //fix border radius
+                                                position: 'relative',
+                                            }}>
+                                                <IconButton onClick={toggleViewer} size="small">
+                                                    <VisibilityIcon />
+                                                </IconButton>
+
+                                            </Box>
                                         </Grid> : null
                                 }
                             </Grid>
