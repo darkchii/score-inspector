@@ -49,11 +49,15 @@ function ScoreView(props) {
         let _score = await fixScore(JSON.parse(JSON.stringify(score)));
         const _scoreData = {};
 
-        _scoreData.sr = FilterStarratingArray(beatmap.modded_sr, _score.enabled_mods);
         _score.beatmap = JSON.parse(JSON.stringify(beatmap));
-        _score.beatmap.modded_sr = _scoreData.sr;
+
+        _scoreData.sr = _score.beatmap.modded_sr;
+        if(pp_version !== 'live'){
+            _scoreData.sr = _score.beatmap.modded_sr[pp_version] ?? _score.beatmap.modded_sr;
+        }
         _score = prepareScore(_score, null);
         _scoreData.score = _score;
+
 
         const accHits = [];
         accHits["100%"] = getHitsFromAccuracy(100, beatmap.objects, 0);
@@ -85,7 +89,6 @@ function ScoreView(props) {
             beatmap.modded_sr;
 
         _beatmapData.sr = _sr;
-
         setBeatmapData(_beatmapData);
     }
 
@@ -122,14 +125,14 @@ function ScoreView(props) {
                     </Grid>
                     <Grid item xs={2} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                         <Tooltip title='300s/100s/50s/misses'>
-                            <Box sx={{display: 'flex'}}>
-                                <Typography variant="subtitle2" sx={{color: blue[500]}}>{score.count300}</Typography>
+                            <Box sx={{ display: 'flex' }}>
+                                <Typography variant="subtitle2" sx={{ color: blue[500] }}>{score.count300}</Typography>
                                 <Typography variant="subtitle2">/</Typography>
-                                <Typography variant="subtitle2" sx={{color: green[500]}}>{score.count100}</Typography>
+                                <Typography variant="subtitle2" sx={{ color: green[500] }}>{score.count100}</Typography>
                                 <Typography variant="subtitle2">/</Typography>
-                                <Typography variant="subtitle2" sx={{color: yellow[500]}}>{score.count50}</Typography>
+                                <Typography variant="subtitle2" sx={{ color: yellow[500] }}>{score.count50}</Typography>
                                 <Typography variant="subtitle2">/</Typography>
-                                <Typography variant="subtitle2" sx={{color: red[500]}}>{score.countmiss}</Typography>
+                                <Typography variant="subtitle2" sx={{ color: red[500] }}>{score.countmiss}</Typography>
                             </Box>
                         </Tooltip>
                     </Grid>
@@ -162,8 +165,8 @@ function ScoreView(props) {
         setScoreData(null);
         if (props.data !== undefined) {
             (async () => {
-                let _beatmap = props.data.score?.beatmap ?? props.data.beatmap;
-                _beatmap = await getBeatmap(_beatmap.beatmap_id);
+                let _beatmap = JSON.parse(JSON.stringify(props.data.score?.beatmap || props.data.beatmap));
+                // _beatmap = await getBeatmap(_beatmap.beatmap_id, props.data.score.mods_enum);
                 _beatmap = prepareBeatmap(_beatmap);
                 if (props.data.score !== undefined) {
                     await applyScore(props.data.pp_version, props.data.score, _beatmap);
