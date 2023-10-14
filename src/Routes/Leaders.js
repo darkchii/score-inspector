@@ -302,7 +302,9 @@ function Leaders() {
     }, [params.country]);
 
     useEffect(() => {
-        update(false);
+        if(page > 1){
+            update(false);
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [page]);
 
