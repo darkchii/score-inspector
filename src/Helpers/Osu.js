@@ -373,11 +373,15 @@ export function calculatePPLazer(scores) {
 }
 
 export function isScoreRealistic(score) {
-    const maxMissCount = (score.enabled_mods & mods.NF) ? 15 : 30; //max 15 misses on NF, max 30 on no NF
-    const minCombo = score.beatmap.maxcombo * 0.8; //80% combo
-    const minAcc = (score.enabled_mods & mods.NF) ? 90 : 80; //90% acc required for NF, 80% for no NF
+    if(score.beatmap.approved !== 1 && score.beatmap.approved !== 2){
+        return false;
+    }
+    
+    const maxMissCount = (score.enabled_mods & mods.NF) ? 15 : 30;
+    const minCombo = score.beatmap.maxcombo * 0.8;
+    const minAcc = (score.enabled_mods & mods.NF) ? 96 : 90;
 
-    if (score.countmiss <= maxMissCount || score.combo > minCombo || score.accuracy > minAcc) {
+    if (score.countmiss <= maxMissCount && score.combo > minCombo && score.accuracy > minAcc) {
         return true;
     }
 
