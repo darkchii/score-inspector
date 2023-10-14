@@ -31,27 +31,7 @@ function Top(props) {
         setIsWorking(true);
         (async () => {
             try {
-                // let scores_pp = await getBestScores(selected_period.value, "pp", SCORES_TO_FETCH, false);
-                // let scores_score = await getBestScores(selected_period.value, "score", SCORES_TO_FETCH, false);
-
-                // scores_pp = prepareScores(null, scores_pp, null, false);
-                // scores_score = prepareScores(null, scores_score, null, false);
-
-                // const _scores = {
-                //     0: {
-                //         name: 'Performance',
-                //         scores: scores_pp,
-                //         significantStat: 'pp'
-                //     },
-                //     1: {
-                //         name: 'Score',
-                //         scores: scores_score,
-                //         significantStat: 'score'
-                //     },
-                // }
-
-                // setScores(_scores);
-                Promise.all([
+                await Promise.all([
                     getBestScores(selected_period.value, "pp", SCORES_TO_FETCH, false),
                     getBestScores(selected_period.value, "score", SCORES_TO_FETCH, false)
                 ]).then((values) => {
@@ -110,7 +90,7 @@ function Top(props) {
                                             Array.from(Array(SCORES_TO_FETCH).keys()).map((j) => {
                                                 if (scores?.[i]?.scores?.[j] && !isWorking) {
                                                     const score = scores[i].scores[j];
-                                                    if (!score || !score.user) return (<>
+                                                    if (!score || !score.user || isWorking) return (<>
                                                         <Skeleton animation='wave' variant='rectangular' height={SCORE_CARD_HEIGHT} />
                                                     </>);
                                                     return (
