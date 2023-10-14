@@ -169,6 +169,12 @@ export function getLazerScore(score, classic = true) {
     if (classic) {
         val = Math.pow(((val / MAX_SCORE) * score.beatmap.objects), 2) * 36;
     }
+
+    //theres a bug with beatmap, if val is Infinity, set to 0
+    if (val === Infinity) {
+        val = 0;
+    }
+
     return val;
 }
 
