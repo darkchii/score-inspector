@@ -7,6 +7,7 @@ import PerformanceSS from "./Performance/PerformanceSS";
 import PerformanceXexxar from "./Performance/PerformanceXexxar";
 import PerformanceLazer from "./Performance/PerformanceLazer";
 import Performance2014 from "./Performance/Performance2014";
+import Performance2020 from "./Performance/Performance2020";
 import GlowBar from "../UI/GlowBar";
 import PerformanceV1 from "./Performance/PerformanceV1";
 import { BarChart } from "@mui/x-charts";
@@ -168,8 +169,9 @@ function SectionCards(props) {
                         <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={12 / 7}><PerformanceV1 data={props.user} /></Grid>
                         <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={12 / 7}><Performance2014 data={props.user} /></Grid>
                         <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={12 / 7}><Performance2016 data={props.user} /></Grid>
+                        <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={12 / 7}><Performance2020 data={props.user} /></Grid>
                         <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={12 / 7}><PerformanceLazer data={props.user} /></Grid>
-                        <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={12 / 7}><PerformanceXexxar data={props.user} /></Grid>
+                        {/* <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={12 / 7}><PerformanceXexxar data={props.user} /></Grid> */}
                     </Grid>
                 </Paper>
             </Grid>

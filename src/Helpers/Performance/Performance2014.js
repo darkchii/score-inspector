@@ -36,10 +36,17 @@ export function getPerformance2014(data, debug = false) {
 
     data.count50 = 0;
 
-    data.aim = getAimValue(data);
-    data.speed = getSpeedValue(data);
-    data.acc = getAccuracyValue(data);
-    data.total = getTotalValue(data);
+    if(score.beatmap.modded_sr['2014']){
+        data.aim = getAimValue(data);
+        data.speed = getSpeedValue(data);
+        data.acc = getAccuracyValue(data);
+        data.total = getTotalValue(data);
+    }else{
+        data.aim = 0;
+        data.speed = 0;
+        data.acc = 0;
+        data.total = 0;
+    }
 
     data.score = undefined;
 

@@ -1,5 +1,6 @@
 import { getPerformance2014 } from "./Performance2014";
 import { getPerformance2016 } from "./Performance2016";
+import { getPerformance2020 } from "./Performance2020";
 import { getPerformanceLazer } from "./PerformanceLazer";
 import { getPerformanceLive } from "./PerformanceLive";
 import { getPerformanceV1 } from "./PerformanceV1";
@@ -12,6 +13,9 @@ export function getCalculator(version, data, debug = false) {
             break;
         case '2014':
             pp = new getPerformance2014(data, debug);
+            break;
+        case '2020':
+            pp = new getPerformance2020(data, debug);
             break;
         case 'lazer':
             pp = new getPerformanceLazer(data, debug);

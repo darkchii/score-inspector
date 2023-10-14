@@ -12,10 +12,17 @@ export function getPerformance2016(data, debug = false) {
 
     data.modded_sr = score.beatmap.modded_sr['2017'] ?? score.beatmap.modded_sr;
 
-    data.aim = getAimValue(data);
-    data.speed = getSpeedValue(data);
-    data.acc = getAccuracyValue(data);
-    data.total = getTotalValue(data);
+    if(score.beatmap.modded_sr['2017']){
+        data.aim = getAimValue(data);
+        data.speed = getSpeedValue(data);
+        data.acc = getAccuracyValue(data);
+        data.total = getTotalValue(data);
+    }else{
+        data.aim = 0;
+        data.speed = 0;
+        data.acc = 0;
+        data.total = 0;
+    }
 
     data.score = undefined;
 

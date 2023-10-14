@@ -344,6 +344,17 @@ export function calculatePP2014(scores) {
     return scores;
 }
 
+export function calculatePP2020(scores) {
+    scores.sort((a, b) => {
+        return b.pp_2020.total - a.pp_2020.total;
+    });
+
+    var index = 0;
+    scores.forEach(score => { if (!score.is_loved && !isNaN(score.pp_2020.total)) { score.pp_2020.weight = Math.pow(0.95, index); index++; } else { score.pp_2020.weight = 0 } });
+
+    return scores;
+}
+
 export function calculatePPLazer(scores) {
     scores.sort((a, b) => {
         return b.pp_lazer.total - a.pp_lazer.total;
@@ -395,10 +406,10 @@ export async function getBeatmaps(urlCfg = {}) {
     return beatmaps;
 }
 
-export async function getBeatmap(beatmap_id) {
+export async function getBeatmap(beatmap_id, mods_enum = null) {
     let beatmap;
     try {
-        beatmap = await axios.get(`${GetAPI()}beatmaps/${beatmap_id}`, { headers: { "Access-Control-Allow-Origin": "*" } });
+        beatmap = await axios.get(`${GetAPI()}beatmaps/${beatmap_id}${mods_enum && `?mods=${mods_enum}`}`, { headers: { "Access-Control-Allow-Origin": "*" } });
     } catch (err) {
         return null;
     }

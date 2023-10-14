@@ -1,6 +1,4 @@
-import axios from "axios";
-import { isScoreRealistic } from "./osu";
-import config from "./config.json";
+import { isScoreRealistic } from "./Helpers/Osu";
 
 export const mods = {
     None: 0,
@@ -126,3 +124,15 @@ export function calculatePP2016(scores) {
 
     return scores;
 }
+
+export function calculatePP2020(scores) {
+    scores.sort((a, b) => {
+        return b.pp_2020.total - a.pp_2020.total;
+    });
+
+    var index = 0;
+    scores.forEach(score => { if (!isNaN(score.pp_2020.total)) { score.pp_2020.weight = Math.pow(0.95, index); index++; } else { score.pp_2020.weight = 0 } });
+
+    return scores;
+}
+

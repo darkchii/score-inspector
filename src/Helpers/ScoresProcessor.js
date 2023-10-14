@@ -1,6 +1,6 @@
 import moment from "moment";
 import { sleep } from "./Misc";
-import { calculatePP2014, calculatePP2016, calculatePPifFC, calculatePPifSS, calculatePPLazer, getBeatmapCount, getBonusPerformance, getLazerScore, getModString, mods } from "./Osu";
+import { calculatePP2014, calculatePP2016, calculatePP2020, calculatePPifFC, calculatePPifSS, calculatePPLazer, getBeatmapCount, getBonusPerformance, getLazerScore, getModString, mods } from "./Osu";
 import { getCalculator } from "./Performance/Performance";
 import { getPeriodicData } from "./ScoresPeriodProcessor";
 import { getSessions } from "./Session";
@@ -150,6 +150,7 @@ async function weighPerformance(scores, onScoreProcessUpdate) {
     scores = calculatePPifSS(scores);
     scores = calculatePP2014(scores);
     scores = calculatePP2016(scores);
+    scores = calculatePP2020(scores);
     scores = calculatePPLazer(scores);
 
     scores.sort((a, b) => {
@@ -168,6 +169,7 @@ async function weighPerformance(scores, onScoreProcessUpdate) {
     data.weighted.xexxar = 0;
     data.weighted._2014 = 0;
     data.weighted._2016 = 0;
+    data.weighted._2020 = 0;
     data.weighted.lazer = 0;
 
     let xexxar_score_pp = 0;
@@ -191,6 +193,9 @@ async function weighPerformance(scores, onScoreProcessUpdate) {
         if (!isNaN(score.pp_2016.total)) {
             data.weighted._2016 += score.pp_2016.total * score.pp_2016.weight;
         }
+        if (!isNaN(score.pp_2020.total)) {
+            data.weighted._2020 += score.pp_2020.total * score.pp_2020.weight;
+        }
         if (!isNaN(score.pp_lazer.total)) {
             data.weighted.lazer += score.pp_lazer.total * score.pp_lazer.weight;
         }
@@ -200,6 +205,7 @@ async function weighPerformance(scores, onScoreProcessUpdate) {
     data.weighted.ss += bonus;
     data.weighted._2014 += bonus;
     data.weighted._2016 += bonus;
+    data.weighted._2020 += bonus;
     // data.weighted.lazer += bonus;
 
     scores.sort((a, b) => {
@@ -261,12 +267,14 @@ export function prepareScore(score, calculateOtherPP = true, user = null) {
             getCalculator('lazer', { score: score }),
             getCalculator('2014', { score: score }),
             getCalculator('v1', { score: score }),
+            getCalculator('2020', { score: score }),
         ]).then(values => {
             score.pp_ss = values[0];
             score.pp_2016 = values[1];
             score.pp_lazer = values[2];
             score.pp_2014 = values[3];
             score.pp_v1 = values[4];
+            score.pp_2020 = values[5];
         }
         ).catch(error => {
             console.error(error);
