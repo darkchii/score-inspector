@@ -1,5 +1,6 @@
 import axios from "axios";
 import { GetAPI } from "./Misc";
+import { getCalculator } from "./Performance/Performance.js";
 
 export const approval_state = {
     '-2': 'Graveyard',
@@ -9,6 +10,21 @@ export const approval_state = {
     '2': 'Approved',
     '3': 'Qualified',
     '4': 'Loved'
+}
+
+export const PP_SYSTEM_NAMES = {
+    'ss': {title: 'PP if SS', description: 'PP if player SS\'d every realistic map (basically that are chokes now)'},
+    'fc': {title: 'PP if FC', description: 'PP if player FC\'d every realistic map (basically that are chokes now)'},
+    'v1': {title: 'ppv1', description: 'Precursor to current pp system. Depends on map age, playcount, passcount, relative playcount, ss ratio, accuracy and mods'},
+    '2014may': {title: 'ppv2 (May 2014)', description: 'First release of ppv2'},
+    '2014july': {title: 'ppv2 (July 2014)', description: '1.5x star difficulty, aim nerfed, acc and length buffed'},
+    '2015february': {title: 'ppv2 (Feb 2015)', description: 'High CS buff, FL depends on length, high ar is now 10.33'},
+    '2015april': {title: 'ppv2 (April 2015)', description: 'Slight high cs nerf'},
+    '2018': {title: 'ppv2 (2018)', description: 'HD adjustment'},
+    '2019': {title: 'ppv2 (2019)', description: 'Angles, speed, spaced streams'},
+    '2021january': {title: 'ppv2 (Jan 2021)', description: 'High AR nerf, NF & SO buff, speed and acc adjustment'},
+    '2021july': {title: 'ppv2 (July 2021)', description: 'Diff spike nerf, AR buff, FL-AR adjust'},
+    '2021november': {title: 'ppv2 (Nov 2021)', description: 'Rhythm buff, slider buff, FL skill'},
 }
 
 export function getScoreForLevel(level) {
@@ -373,10 +389,10 @@ export function calculatePPLazer(scores) {
 }
 
 export function isScoreRealistic(score) {
-    if(score.beatmap.approved !== 1 && score.beatmap.approved !== 2){
+    if (score.beatmap.approved !== 1 && score.beatmap.approved !== 2) {
         return false;
     }
-    
+
     const maxMissCount = (score.enabled_mods & mods.NF) ? 15 : 30;
     const minCombo = score.beatmap.maxcombo * 0.8;
     const minAcc = (score.enabled_mods & mods.NF) ? 96 : 90;
@@ -499,4 +515,155 @@ export function FilterStarratingArray(sr_arr, mods_enum) {
     mods_enum = parseInt(mods_enum);
     mods_enum &= ~excluded_mods.reduce((a, b) => a | b, 0);
     return sr_arr.filter(sr => sr.mods_enum === mods_enum)?.[0];
+}
+
+export async function MassCalculatePerformance(scores) {
+    // scores.forEach(score => {
+    let uniqueSystems = [];
+    for await (const score of scores) {
+        const recalcs = await Promise.all([
+            {
+                name: 'ss',
+                checkRealism: true,
+                calc: getCalculator('live', { count300: score.count300 + score.countmiss + score.count100 + score.count50, count100: 0, count50: 0, countmiss: 0, combo: score.beatmap.maxcombo, score: score })
+            },
+            {
+                name: 'fc',
+                checkRealism: true,
+                calc: getCalculator('live', { count300: score.count300 + score.countmiss, count100: score.count100, count50: score.count50, countmiss: 0, combo: score.beatmap.maxcombo, score: score })
+            },
+            {
+                name: 'v1',
+                calc: getCalculator('v1', { score: score })
+            },
+            {
+                name: '2014may',
+                calc: getCalculator('2014may', { score: score })
+            },
+            {
+                name: '2014july',
+                calc: getCalculator('2014july', { score: score })
+            },
+            {
+                name: '2015february',
+                calc: getCalculator('2015february', { score: score })
+            },
+            {
+                name: '2015april',
+                calc: getCalculator('2015april', { score: score })
+            },
+            {
+                name: '2018',
+                calc: getCalculator('2018', { score: score })
+            },
+            {
+                name: '2019',
+                calc: getCalculator('2019', { score: score })
+            },
+            {
+                name: '2021january',
+                calc: getCalculator('2021january', { score: score })
+            },
+            {
+                name: '2021july',
+                calc: getCalculator('2021july', { score: score })
+            },
+            {
+                name: '2021november',
+                calc: getCalculator('2021november', { score: score })
+            }
+        ]);
+
+        score.recalc = {};
+        recalcs.forEach(recalc => {
+            score.recalc[recalc.name] = recalc.calc;
+            if (!uniqueSystems.includes(recalc.name)) {
+                uniqueSystems.push(recalc.name);
+            }
+        });
+    }
+
+    console.log(scores[200]);
+
+    //calculate pp weights
+    uniqueSystems.forEach(system => {
+        scores.sort((a, b) => {
+            return b.recalc[system]?.total - a.recalc[system]?.total;
+        });
+
+        let index = 0;
+        scores.forEach(score => {
+            let valid = true;
+
+            if (system === 'ss' || system === 'fc') { valid = isScoreRealistic(score); }
+            valid = valid && (isNaN(score.recalc[system]?.total) ? false : valid);
+            valid = valid && (score.beatmap.approved === 1 || score.beatmap.approved === 2);
+
+            if (valid) {
+                score.recalc[system].weight = Math.pow(0.95, index);
+                index++;
+            } else {
+                score.recalc[system].weight = 0;
+            }
+        });
+    });
+
+    console.log(scores[0]);
+
+    scores.sort((a, b) => {
+        return b.pp - a.pp;
+    });
+    scores.forEach((score, index) => { score.weight = Math.pow(0.95, index); });
+
+    let data = {};
+    data.weighted = {};
+
+    const bonus_pp = getBonusPerformance(scores.length);
+    uniqueSystems.forEach(system => {
+        data.weighted[system] = 0;
+        if (system === 'v1') return;
+
+        scores.forEach(score => {
+            if (score.recalc[system].weight && score.recalc[system].total) {
+                data.weighted[system] += score.recalc[system].weight * (score.recalc[system].total ?? 0);
+            }
+        });
+        console.log(`Weighted ${system}: ${data.weighted[system]}`);
+
+        if (system !== 'lazer') {
+            data.weighted[system] += bonus_pp;
+        }
+    });
+
+    //special cases
+    data.weighted['v1'] = getV1Weight(scores);
+    data.weighted['xexxar'] = getXexxarWeight(scores);
+    return [scores, data];
+}
+
+function getV1Weight(scores) {
+    scores.sort((a, b) => {
+        return b.recalc['v1']?.total - a.recalc['v1']?.total;
+    });
+
+    let j = 1;
+    let rank_score = 0;
+    scores.forEach(score => {
+        rank_score += score.recalc['v1']?.total * j;
+        j *= 0.994;
+    });
+
+    rank_score = Math.max(0, Math.log(rank_score + 1) * 400);
+    return rank_score;
+}
+
+function getXexxarWeight(scores) {
+    let xexxar_score_pp = 0;
+    let xexxar_total_pp = 0;
+    scores.forEach((score, index) => {
+        xexxar_score_pp += score.pp * Math.pow(0.95, index);
+        xexxar_total_pp += score.pp;
+    });
+    let xexxar = ((2 - 1) * xexxar_score_pp + 0.75 * xexxar_score_pp * (Math.log(xexxar_total_pp) / Math.log(xexxar_score_pp))) / 2;
+    return xexxar;
 }

@@ -1,7 +1,6 @@
 import moment from "moment";
 import { sleep } from "./Misc";
-import { calculatePP2014, calculatePP2016, calculatePP2020, calculatePPifFC, calculatePPifSS, calculatePPLazer, getBeatmapCount, getBonusPerformance, getLazerScore, getModString, mods } from "./Osu";
-import { getCalculator } from "./Performance/Performance";
+import { calculatePP2014, calculatePP2016, calculatePP2020, calculatePPifFC, calculatePPifSS, calculatePPLazer, getBeatmapCount, getBonusPerformance, getLazerScore, getModString, MassCalculatePerformance, mods } from "./Osu";
 import { getPeriodicData } from "./ScoresPeriodProcessor";
 import { getSessions } from "./Session";
 
@@ -24,7 +23,7 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
     await sleep(FEEDBACK_SLEEP_TIME);
     onScoreProcessUpdate('Preparing scores');
     scores = prepareScores(user, scores, onScoreProcessUpdate);
-
+    
     const data = {
         grades: {
             XH: 0,
@@ -58,6 +57,13 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
         allow_loved: allow_loved,
     };
 
+    await sleep(FEEDBACK_SLEEP_TIME);
+    onScoreProcessUpdate('Calculating performance');
+    let [_scores, _performance] = await MassCalculatePerformance(scores);
+    scores = _scores;
+    data.performance = _performance;
+
+
     bmCount.data.forEach(monthData => {
         data.total_beatmaps += monthData.amount;
     });
@@ -80,7 +86,7 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
         data.total.score += score.score ?? 0;
         data.total.acc += score.accuracy ?? 0;
         data.total.length += score.beatmap.modded_length ?? 0;
-        data.total.star_rating += score.beatmap.modded_sr.star_rating ?? 0;
+        data.total.star_rating += score.beatmap.modded_sr['live'].star_rating ?? 0;
         data.total.scoreLazer += score.scoreLazer ?? 0;
         data.total.is_fc += score.is_fc ?? 0;
     }
@@ -127,8 +133,8 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
     onScoreProcessUpdate('Best scores');
     data.bestScores = getBestScores(scores);
 
-    onScoreProcessUpdate('Weigh performance');
-    data.performance = await weighPerformance(scores, onScoreProcessUpdate);
+    // onScoreProcessUpdate('Weigh performance');
+    // data.performance = await weighPerformance(scores, onScoreProcessUpdate);
 
     await sleep(FEEDBACK_SLEEP_TIME);
     onScoreProcessUpdate('Monthly data');
@@ -229,7 +235,7 @@ export function prepareScores(user, scores, onScoreProcessUpdate, calculateOther
     let debugged = false;
     scores.forEach((score, index) => {
         onScoreProcessUpdate?.('' + score.id);
-        score = prepareScore(score, calculateOtherPP, user);
+        score = prepareScore(score, user);
 
         if (score.top_score && score.top_score.user_id && !debugged) {
             debugged = true;
@@ -239,7 +245,7 @@ export function prepareScores(user, scores, onScoreProcessUpdate, calculateOther
     return scores;
 }
 
-export function prepareScore(score, calculateOtherPP = true, user = null) {
+export function prepareScore(score, user = null) {
     score.is_loved = score.beatmap.approved === 4;
     if (user !== null) {
         score.is_unique_ss = user.alt.unique_ss.includes(score.beatmap_id);
@@ -255,32 +261,6 @@ export function prepareScore(score, calculateOtherPP = true, user = null) {
 
     score.modString = getModString(score.enabled_mods).toString();
     score.totalhits = score.count300 + score.count100 + score.count50 + score.countmiss;
-
-    score.pp_original = getCalculator('live', { score: score });
-    score.displayed_pp = structuredClone(score.pp_original);
-    score.pp_fc = getCalculator('live', { count300: score.count300 + score.countmiss, count100: score.count100, count50: score.count50, countmiss: 0, combo: score.beatmap.maxcombo, score: score });
-    
-    if (calculateOtherPP) {
-        Promise.all([
-            getCalculator('live', { count300: score.count300 + score.countmiss + score.count100 + score.count50, count100: 0, count50: 0, countmiss: 0, combo: score.beatmap.maxcombo, score: score }),
-            getCalculator('2016', { score: score }),
-            getCalculator('lazer', { score: score }),
-            getCalculator('2014', { score: score }),
-            getCalculator('v1', { score: score }),
-            getCalculator('2020', { score: score }),
-        ]).then(values => {
-            score.pp_ss = values[0];
-            score.pp_2016 = values[1];
-            score.pp_lazer = values[2];
-            score.pp_2014 = values[3];
-            score.pp_v1 = values[4];
-            score.pp_2020 = values[5];
-        }
-        ).catch(error => {
-            console.error(error);
-        }
-        );
-    }
 
     score.is_fc = isScoreFullcombo(score);
     score.scoreLazer = Math.floor(getLazerScore(score));
@@ -324,7 +304,7 @@ function getBestScores(scores) {
                 _scores.best_pp = score;
             }
             if ((score.enabled_mods & mods.NF) === 0) {
-                if ((_scores.best_sr === null || score.beatmap.modded_sr.star_rating > _scores.best_sr.beatmap.modded_sr.star_rating)) {
+                if ((_scores.best_sr === null || score.beatmap.modded_sr['live'].star_rating > _scores.best_sr.beatmap.modded_sr['live'].star_rating)) {
                     _scores.best_sr = score;
                 }
             }

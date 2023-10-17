@@ -187,7 +187,7 @@ function SectionDaily(props) {
                     _stats.clears++;
                     _stats.pp += score.pp ?? 0;
                     acc += score.accuracy;
-                    sr += score.beatmap.modded_sr.star_rating;
+                    sr += score.beatmap.modded_sr['live'].star_rating;
                     _stats.playtime += score.beatmap.modded_length;
                 });
                 _stats.average_acc = acc / sorted.length;

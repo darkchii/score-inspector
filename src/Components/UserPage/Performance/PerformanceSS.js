@@ -14,22 +14,23 @@ function PerformanceSS(props) {
     const openModal = async () => {
         var _scores = JSON.parse(JSON.stringify(props.data.scores));
         _scores.sort((a, b) => {
-            if (a.pp_ss.weight > b.pp_ss.weight) { return -1; }
-            if (a.pp_ss.weight < b.pp_ss.weight) { return 1; }
+            if (a.recalc['ss'].weight > b.recalc['ss'].weight) { return -1; }
+            if (a.recalc['ss'].weight < b.recalc['ss'].weight) { return 1; }
             return 0;
         });
         _scores.forEach(score => {
-            score.pp = score.pp_ss.total;
-            score.accuracy = score.pp_ss.accuracy * 100;
-            score.count300 = score.pp_ss.count300;
-            score.count100 = score.pp_ss.count100;
-            score.count50 = score.pp_ss.count50;
-            score.countmiss = score.pp_ss.countmiss;
+            let pp = score.recalc['ss'];
+            score.pp = pp.total;
+            score.accuracy = pp.accuracy * 100;
+            score.count300 = pp.count300;
+            score.count100 = pp.count100;
+            score.count50 = pp.count50;
+            score.countmiss = pp.countmiss;
             score.combo = score.beatmap.maxcombo;
-            score.weight = score.pp_ss.weight;
+            score.weight = pp.weight;
             score.rank = getGrade(score);
             score.score = -1;
-            score.displayed_pp = structuredClone(score.pp_ss);
+            score.displayed_pp = structuredClone(pp);
         })
         setModalData({
             scores: _scores,

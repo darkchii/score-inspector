@@ -1,6 +1,7 @@
 import { mods } from "../Osu";
 
-export function getPerformance2020(data, debug = false) {
+export function getPerformance2021January(data, debug = false) {
+    const sr_model = '2019';
     const score = data.score;
     data.count300 = data.count300 ?? score.count300;
     data.count100 = data.count100 ?? score.count100;
@@ -10,10 +11,10 @@ export function getPerformance2020(data, debug = false) {
     data.totalhits = data.count300 + data.count100 + data.count50 + data.countmiss;
     data.accuracy = getAccuracy(data);
 
-    data.modded_sr = score.beatmap.modded_sr['2020'] ?? score.beatmap.modded_sr;
+    data.modded_sr = score.beatmap.modded_sr[sr_model] ?? score.beatmap.modded_sr;
     data.effectiveMissCount = getEffectiveMissCount(data);
 
-    if(score.beatmap.modded_sr['2020']){
+    if(score.beatmap.modded_sr[sr_model]){
         data.aim = getAimValue(data);
         data.speed = getSpeedValue(data);
         data.acc = getAccuracyValue(data);
@@ -32,7 +33,8 @@ export function getPerformance2020(data, debug = false) {
         speed: data.speed,
         acc: data.acc,
         total: data.total,
-        version: '2020',
+        version: '2021january',
+        model: sr_model,
         accuracy: data.accuracy,
         count300: data.count300,
         count100: data.count100,
@@ -95,9 +97,9 @@ function getAimValue(data) {
     let ar = data.modded_sr.modded_ar;
     let approachRateFactor = 0.0;
     if (ar > 10.33) {
-        approachRateFactor = 0.3 * (ar - 10.33);
+        approachRateFactor = 0.4 * (ar - 10.33);
     } else if (ar < 8) {
-        approachRateFactor = 0.05 * (8.0 - ar);
+        approachRateFactor = 0.1 * (8.0 - ar);
     }
 
     aim *= 1.0 + Math.min(approachRateFactor, approachRateFactor * (amountTotalHits / 1000.0));
@@ -141,7 +143,7 @@ function getSpeedValue(data) {
     let ar = data.modded_sr.modded_ar;
     let approachRateFactor = 0.0;
     if (ar > 10.33) {
-        approachRateFactor = 0.3 * (ar - 10.33);
+        approachRateFactor = 0.4 * (ar - 10.33);
     }
 
     speed *= 1.0 + Math.min(approachRateFactor, approachRateFactor * (amountTotalHits / 1000.0));

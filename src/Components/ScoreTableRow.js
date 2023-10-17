@@ -10,25 +10,10 @@ import moment from 'moment';
 function ScoreTableRow(props) {
     const theme = useTheme();
     const [score, setScore] = useState(null);
-    const [viewerOpen] = useState(false);
-    const [allowScoreViewer, setAllowScoreViewer] = useState(true);
-
-    const openScoreView = (index) => {
-        props?.openScoreView(index);
-    }
 
     useEffect(() => {
         setScore(props.data.score);
     }, [props.data]);
-
-    useEffect(() => {
-        setAllowScoreViewer(props.allowScoreViewer !== undefined ? props.allowScoreViewer : true);
-    }, [props.allowScoreViewer])
-
-    const toggleViewer = () => {
-        //setViewerOpen(!viewerOpen);
-        openScoreView(props.index);
-    };
 
     return (
         <>
@@ -48,17 +33,30 @@ function ScoreTableRow(props) {
                                     {/* {getGradeIcon(score.rank)} */}
                                     <img src={getGradeIcon(score.rank)} alt={score.rank} />
                                 </Grid>
-                                <Grid item xs={7.5} sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
+                                <Grid item xs={6.2} sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
                                     <Tooltip title={`${score.beatmap.artist} - ${score.beatmap.title} [${score.beatmap.diffname}]`}>
                                         <Typography sx={{ fontSize: '0.8rem', maxWidth: '100%', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
                                             {score.beatmap.artist} - {score.beatmap.title}
                                         </Typography>
                                         <Typography sx={{ fontSize: '0.7rem', maxWidth: '100%', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
-                                            <span style={{ color: '#ea0' }}>{score.beatmap.diffname}</span> <span style={{opacity: '0.7'}}>{moment(score.date_played_moment).fromNow()}</span>
+                                            <span style={{ color: '#ea0' }}>{score.beatmap.diffname}</span> <span style={{ opacity: '0.7' }}>{moment(score.date_played_moment).fromNow()}</span>
                                         </Typography>
                                     </Tooltip>
                                 </Grid>
-                                <Grid item xs={1.5} sx={{ height: '100%', alignContent: 'right', display: 'flex', alignItems: 'center' }}>
+                                <Grid item xs={0.6} sx={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'right'  }}>
+                                    {
+                                        score.beatmap.modded_sr[score.recalc[props.data.pp_version]?.model]?.base?.star_rating && score.beatmap.modded_sr[score.recalc[props.data.pp_version].model].base.star_rating !== score.beatmap.modded_sr[score.recalc[props.data.pp_version].model].star_rating ?
+                                            <>
+                                                <Typography variant="subtitle2" sx={{ opacity: 0.4 }}>
+                                                    {score.beatmap.modded_sr[score.recalc[props.data.pp_version].model].base.star_rating.toFixed(2)}* {"-> "} 
+                                                </Typography>
+                                            </> : <></>
+                                    }
+                                </Grid>
+                                <Grid item xs={0.6} sx={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'left' }}>
+                                    <Typography sx={{ml:0.4}} variant="subtitle2"> {(score.beatmap.modded_sr[score.recalc[props.data.pp_version]?.model]?.star_rating ?? 0).toFixed(2)}*</Typography>
+                                </Grid>
+                                <Grid item xs={1.4} sx={{ height: '100%', alignContent: 'right', display: 'flex', alignItems: 'center' }}>
                                     {
                                         getModString(score.enabled_mods).map(mod => (
                                             <Tooltip title={mod_strings_long[mods[mod]]}>
@@ -67,17 +65,17 @@ function ScoreTableRow(props) {
                                         ))
                                     }
                                 </Grid>
-                                <Grid item xs={0.8} sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
+                                <Grid item xs={0.6} sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
                                     <Typography variant="subtitle2">{score.accuracy.toFixed(2)}%</Typography>
                                 </Grid>
-                                <Grid item xs={1.2} sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
+                                <Grid item xs={1.35} sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
                                     <Box
                                         sx={{
                                             width: '100%',
                                             height: '100%',
                                             display: 'flex',
                                             alignItems: 'center',
-                                            justifyContent: 'center',
+                                            justifyContent: 'right',
                                             bgcolor: theme.palette.background.paper,
                                             borderRadius: 0,
                                             position: 'relative',
@@ -93,31 +91,17 @@ function ScoreTableRow(props) {
                                                 top: 0
                                             }
                                         }}>
-                                        <Tooltip title={`Weight: ${(score.displayed_pp.weight * 100).toFixed(0)}% ${toFixedNumber(score.displayed_pp.total * score.displayed_pp.weight, 0).toLocaleString('en-US')}pp`}>
-                                            <Typography variant="h6">{toFixedNumber(score.displayed_pp.total, 0).toLocaleString('en-US')}pp</Typography>
+                                        <Tooltip title={`Weight: ${(score.recalc[props.data.pp_version].weight * 100).toFixed(0)}% ${toFixedNumber(score.recalc[props.data.pp_version].total * score.recalc[props.data.pp_version].weight, 0).toLocaleString('en-US')}pp`}>
+                                            <Typography variant="h6">
+                                                {toFixedNumber(score.recalc[props.data.pp_version].total, 0).toLocaleString('en-US')}pp
+                                            </Typography>
+                                            {/* <Typography variant="h6">{toFixedNumber(score.pp_orig, 0).toLocaleString('en-US')}pp</Typography> */}
                                         </Tooltip>
                                     </Box>
                                 </Grid>
-                                {
-                                    allowScoreViewer ?
-                                        <Grid item xs={0.5}>
-                                            <Box sx={{
-                                                width: '100%',
-                                                height: '100%',
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                justifyContent: 'center',
-                                                bgcolor: theme.palette.background.paper,
-                                                //fix border radius
-                                                position: 'relative',
-                                            }}>
-                                                <IconButton onClick={toggleViewer} size="small">
-                                                    <VisibilityIcon />
-                                                </IconButton>
-
-                                            </Box>
-                                        </Grid> : null
-                                }
+                                <Grid item xs={0.75} sx={{ height: '100%', display: 'flex', alignItems: 'left', bgcolor: theme.palette.background.paper }}>
+                                    <Typography sx={{ fontSize: '0.7rem' }} color={'' + (score.recalc[props.data.pp_version].total - score.pp >= 0 ? '#11cb5f' : 'error')} variant='subtitle2' display="inline">{(score.recalc[props.data.pp_version].total - score.pp >= 0 ? '+' : '-')}{toFixedNumber(Math.abs(score.recalc[props.data.pp_version].total - score.pp), 0)}pp</Typography>
+                                </Grid>
                             </Grid>
                         </Box>
                     </>

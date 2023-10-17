@@ -11,6 +11,7 @@ import Performance2020 from "./Performance/Performance2020";
 import GlowBar from "../UI/GlowBar";
 import PerformanceV1 from "./Performance/PerformanceV1";
 import { BarChart } from "@mui/x-charts";
+import PerformanceAny from "./Performance/PerformanceAny.js";
 
 function SectionCards(props) {
     const theme = useTheme();
@@ -158,7 +159,7 @@ function SectionCards(props) {
             <Grid container>
                 <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={3}><BestScoreCard valueTitle={'Top performance'} valueLabel={`${props.user.data.bestScores.best_pp.pp.toFixed(1)}pp`} score={props.user.data.bestScores.best_pp} /></Grid>
                 <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={3}><BestScoreCard valueTitle={'Top score'} valueLabel={`${props.user.data.bestScores.best_score.score.toLocaleString('en-US')} score`} score={props.user.data.bestScores.best_score} /></Grid>
-                <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={3}><BestScoreCard valueTitle={'Top stars'} valueLabel={`${props.user.data.bestScores.best_sr.beatmap.modded_sr.star_rating.toFixed(1)}*`} score={props.user.data.bestScores.best_sr} /></Grid>
+                <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={3}><BestScoreCard valueTitle={'Top stars'} valueLabel={`${props.user.data.bestScores.best_sr.beatmap.modded_sr['live'].star_rating.toFixed(1)}*`} score={props.user.data.bestScores.best_sr} /></Grid>
                 <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={3}><BestScoreCard valueTitle={'Oldest'} valueLabel={`${moment(props.user.data.bestScores.oldest.date_played).format('MMMM Mo YYYY')}`} score={props.user.data.bestScores.oldest} /></Grid>
             </Grid>
             <Grid sx={{ p: 0.5 }}>
@@ -166,12 +167,17 @@ function SectionCards(props) {
                     <Grid container spacing={2}>
                         <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={12 / 7}><PerformanceFC data={props.user} /></Grid>
                         <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={12 / 7}><PerformanceSS data={props.user} /></Grid>
-                        <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={12 / 7}><PerformanceV1 data={props.user} /></Grid>
-                        <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={12 / 7}><Performance2014 data={props.user} /></Grid>
-                        <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={12 / 7}><Performance2016 data={props.user} /></Grid>
-                        <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={12 / 7}><Performance2020 data={props.user} /></Grid>
-                        <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={12 / 7}><PerformanceLazer data={props.user} /></Grid>
-                        {/* <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={12 / 7}><PerformanceXexxar data={props.user} /></Grid> */}
+                        <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={12 / 7}><PerformanceAny data={props.user} pp_version='v1' /></Grid>
+                        <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={12 / 7}><PerformanceAny data={props.user} pp_version='2014may'/></Grid>
+                        <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={12 / 7}><PerformanceAny data={props.user} pp_version='2014july'/></Grid>
+                        {/* <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={12 / 7}><PerformanceAny data={props.user} pp_version='2015february'/></Grid>
+                        <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={12 / 7}><PerformanceAny data={props.user} pp_version='2015april'/></Grid> */}
+                        <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={12 / 7}><PerformanceAny data={props.user} pp_version='2018'/></Grid>
+                        <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={12 / 7}><PerformanceAny data={props.user} pp_version='2019'/></Grid>
+                        <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={12 / 7}><PerformanceAny data={props.user} pp_version='2021january'/></Grid>
+                        <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={12 / 7}><PerformanceAny data={props.user} pp_version='2021july'/></Grid>
+                        <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={12 / 7}><PerformanceAny data={props.user} pp_version='2021november'/></Grid>
+                        <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={12 / 7}><PerformanceXexxar data={props.user} /></Grid>
                     </Grid>
                 </Paper>
             </Grid>

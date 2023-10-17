@@ -1,6 +1,7 @@
 import { mods } from "../Osu";
 
 export function getPerformance2016(data, debug = false) {
+    const sr_model = '2015february';
     const score = data.score;
     data.count300 = data.count300 ?? score.count300;
     data.count100 = data.count100 ?? score.count100;
@@ -10,9 +11,9 @@ export function getPerformance2016(data, debug = false) {
     data.totalhits = data.count300 + data.count100 + data.count50 + data.countmiss;
     data.accuracy = getAccuracy(data);
 
-    data.modded_sr = score.beatmap.modded_sr['2017'] ?? score.beatmap.modded_sr;
+    data.modded_sr = score.beatmap.modded_sr[sr_model] ?? score.beatmap.modded_sr;
 
-    if(score.beatmap.modded_sr['2017']){
+    if(score.beatmap.modded_sr[sr_model]){
         data.aim = getAimValue(data);
         data.speed = getSpeedValue(data);
         data.acc = getAccuracyValue(data);
@@ -32,6 +33,7 @@ export function getPerformance2016(data, debug = false) {
         acc: data.acc,
         total: data.total,
         version: '2016',
+        model: sr_model,
         accuracy: data.accuracy,
         count300: data.count300,
         count100: data.count100,

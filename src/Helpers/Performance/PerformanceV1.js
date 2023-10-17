@@ -2,6 +2,7 @@ import moment from "moment";
 import { mods } from "../Osu";
 
 export function getPerformanceV1(data, debug = false) {
+    const sr_model = 'live';
     const score = data.score;
     data.count300 = data.count300 ?? score.count300;
     data.count100 = data.count100 ?? score.count100;
@@ -19,7 +20,7 @@ export function getPerformanceV1(data, debug = false) {
     data.relative_playcount = data.playcount / data.max_playcount;
     data.passcount = data.beatmap?.passcount;
 
-    data.modded_sr = score.beatmap.modded_sr['2017'] ?? score.beatmap.modded_sr;
+    data.modded_sr = score.beatmap.modded_sr[sr_model] ?? score.beatmap.modded_sr;
 
 
     const cutoff_score = 0.001;
@@ -121,6 +122,7 @@ export function getPerformanceV1(data, debug = false) {
         acc: 0,
         total: v1,
         version: 'v1',
+        model: sr_model,
         accuracy: data.accuracy,
         count300: data.count300,
         count100: data.count100,
