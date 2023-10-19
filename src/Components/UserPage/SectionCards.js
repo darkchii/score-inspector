@@ -165,19 +165,19 @@ function SectionCards(props) {
             <Grid sx={{ p: 0.5 }}>
                 <Paper elevation={2} sx={{ p: 2 }}>
                     <Grid container spacing={2}>
-                        <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={12 / 7}><PerformanceFC data={props.user} /></Grid>
-                        <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={12 / 7}><PerformanceSS data={props.user} /></Grid>
-                        <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={12 / 7}><PerformanceAny data={props.user} pp_version='v1' /></Grid>
-                        <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={12 / 7}><PerformanceAny data={props.user} pp_version='2014may'/></Grid>
-                        <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={12 / 7}><PerformanceAny data={props.user} pp_version='2014july'/></Grid>
-                        {/* <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={12 / 7}><PerformanceAny data={props.user} pp_version='2015february'/></Grid>
-                        <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={12 / 7}><PerformanceAny data={props.user} pp_version='2015april'/></Grid> */}
-                        <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={12 / 7}><PerformanceAny data={props.user} pp_version='2018'/></Grid>
-                        <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={12 / 7}><PerformanceAny data={props.user} pp_version='2019'/></Grid>
-                        <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={12 / 7}><PerformanceAny data={props.user} pp_version='2021january'/></Grid>
-                        <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={12 / 7}><PerformanceAny data={props.user} pp_version='2021july'/></Grid>
-                        <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={12 / 7}><PerformanceAny data={props.user} pp_version='2021november'/></Grid>
-                        <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={12 / 7}><PerformanceXexxar data={props.user} /></Grid>
+                        <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={12 / 8}><PerformanceFC data={props.user} /></Grid>
+                        <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={12 / 8}><PerformanceSS data={props.user} /></Grid>
+                        <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={12 / 8}><PerformanceAny data={props.user} pp_version='v1' /></Grid>
+                        <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={12 / 8}><PerformanceAny data={props.user} pp_version='2014may'/></Grid>
+                        <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={12 / 8}><PerformanceAny data={props.user} pp_version='2014july'/></Grid>
+                        {/* <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={18 / 7}><PerformanceAny data={props.user} pp_version='2015february'/></Grid>
+                        <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={12 / 8}><PerformanceAny data={props.user} pp_version='2015april'/></Grid> */}
+                        <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={12 / 8}><PerformanceAny data={props.user} pp_version='2018'/></Grid>
+                        <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={12 / 8}><PerformanceAny data={props.user} pp_version='2019'/></Grid>
+                        <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={12 / 8}><PerformanceAny data={props.user} pp_version='2021january'/></Grid>
+                        <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={12 / 8}><PerformanceAny data={props.user} pp_version='2021july'/></Grid>
+                        <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={12 / 8}><PerformanceAny data={props.user} pp_version='2021november'/></Grid>
+                        <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={12 / 8}><PerformanceXexxar data={props.user} /></Grid>
                     </Grid>
                 </Paper>
             </Grid>
