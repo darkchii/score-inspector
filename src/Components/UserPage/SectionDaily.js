@@ -42,6 +42,7 @@ function SectionDaily(props) {
     const [sessionCount, setSessionCount] = useState(0);
     const [totalSessionLength, setTotalSessionLength] = useState(0);
     const [sessionAnnotations, setSessionAnnotations] = useState([]);
+    const [annotationMapper, setAnnotationMapper] = useState(Array.from(Array(100).keys()).map((i) => { return i }));
 
     const [stats, setStats] = useState(null);
 
@@ -53,55 +54,61 @@ function SectionDaily(props) {
             let annotations = [];
 
             if (scores !== null) {
+                setAnnotationMapper(null);
                 setTotalSessionLength(0);
                 setSessionCount(0);
-                let activities = getSessions(scores);
-                if (activities.length > 0) {
-                    let len = 0;
-                    activities.forEach((activity, index) => {
-                        annotations.push({
-                            type: 'box',
-                            xMin: activity.start,
-                            xMax: activity.end,
-                            backgroundColor: 'rgba(252, 3, 148, 0.25)',
-                            z: -1000
-                        })
+                (async () => {
+                    //wait until annotationMapper is null
+                    await new Promise(r => setTimeout(r, 100));
+                    let activities = getSessions(scores);
+                    if (activities.length > 0) {
+                        let len = 0;
+                        activities.forEach((activity, index) => {
+                            annotations.push({
+                                type: 'box',
+                                xMin: activity.start,
+                                xMax: activity.end,
+                                backgroundColor: 'rgba(252, 3, 148, 0.25)',
+                                z: -1000
+                            })
 
-                        len += (activity.end - activity.start);
-                    });
-                    setTotalSessionLength(len);
-                }
+                            len += (activity.end - activity.start);
+                        });
+                        setTotalSessionLength(len);
+                    }
 
-                setSessionCount(activities.length);
-                console.log(activities);
-                //generate a line graph that emulates a box graph
-                //we use 100 data points between the start and end of the day
-                //if a point exists on any of the sessions, we set it to 1, otherwise 0
-                //we then use a line graph to connect the dots
-                let emulatedBoxData = [];
-                for (let i = moment(selectedDay, 'YYYY-MM-DD').startOf('day').unix(); i < moment(selectedDay, 'YYYY-MM-DD').endOf('day').unix(); i += 864) {
-                    let found = false;
-                    activities.forEach((activity, index) => {
-                        if (i >= activity.start && i <= activity.end) {
-                            found = true;
-                        }
-                    });
-                    emulatedBoxData.push(found ? 1 : 0);
-                }
+                    setSessionCount(activities.length);
+                    console.log(activities);
+                    //generate a line graph that emulates a box graph
+                    //we use 100 data points between the start and end of the day
+                    //if a point exists on any of the sessions, we set it to 1, otherwise 0
+                    //we then use a line graph to connect the dots
+                    let emulatedBoxData = [];
+                    for (let i = moment(selectedDay, 'YYYY-MM-DD').startOf('day').unix(); i < moment(selectedDay, 'YYYY-MM-DD').endOf('day').unix(); i += 864) {
+                        let found = false;
+                        activities.forEach((activity, index) => {
+                            if (i >= activity.start && i <= activity.end) {
+                                found = true;
+                            }
+                        });
+                        emulatedBoxData.push(found ? 1 : 0);
+                    }
 
-                //check for every 0, if the next is 1, set current to 1,
-                //same if the value before is 1, and current is 0, set to 1
-                
-                for (let i = 0; i < emulatedBoxData.length; i++) {
-                    if (emulatedBoxData[i] === 0) {
-                        //if theres a next and previous entry
-                        if ((i > 0 && i < emulatedBoxData.length) && (emulatedBoxData[i + 1] === 1 || emulatedBoxData[i - 1] === 1)) {
-                            emulatedBoxData[i] = 0.99999;
+                    //check for every 0, if the next is 1, set current to 1,
+                    //same if the value before is 1, and current is 0, set to 1
+
+                    for (let i = 0; i < emulatedBoxData.length; i++) {
+                        if (emulatedBoxData[i] === 0) {
+                            //if theres a next and previous entry
+                            if ((i > 0 && i < emulatedBoxData.length) && (emulatedBoxData[i + 1] === 1 || emulatedBoxData[i - 1] === 1)) {
+                                emulatedBoxData[i] = 0.99999;
+                            }
                         }
                     }
-                }
 
-                setSessionAnnotations(emulatedBoxData);
+                    setSessionAnnotations(emulatedBoxData);
+                    setAnnotationMapper(Array.from(Array(100).keys()).map((i) => { return i }));
+                })();
             }
 
             const data = {
@@ -372,225 +379,229 @@ function SectionDaily(props) {
                     </Box>
 
 
-                    {(graphData && sessionAnnotations && sessionAnnotations.length > 0) && <Grid sx={{ mt: 1 }}>
-                        <Stack sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} direction="row" spacing={2}>
-                            <Chip icon={<SquareIcon />} sx={{ [`& .${chipClasses.icon}`]: { color: getGradeColor('X') } }} label="Silver SS" size="small" variant="outlined" />
-                            <Chip icon={<CircleIcon />} sx={{ [`& .${chipClasses.icon}`]: { color: getGradeColor('X') } }} label="Gold SS" size="small" variant="outlined" />
-                            <Chip icon={<SquareIcon />} sx={{ [`& .${chipClasses.icon}`]: { color: getGradeColor('S') } }} label="Silver S" size="small" variant="outlined" />
-                            <Chip icon={<CircleIcon />} sx={{ [`& .${chipClasses.icon}`]: { color: getGradeColor('S') } }} label="Gold S" size="small" variant="outlined" />
-                            <Chip icon={<CircleIcon />} sx={{ [`& .${chipClasses.icon}`]: { color: getGradeColor('A') } }} label="A" size="small" variant="outlined" />
-                            <Chip icon={<CircleIcon />} sx={{ [`& .${chipClasses.icon}`]: { color: getGradeColor('B') } }} label="B" size="small" variant="outlined" />
-                            <Chip icon={<CircleIcon />} sx={{ [`& .${chipClasses.icon}`]: { color: getGradeColor('C') } }} label="C" size="small" variant="outlined" />
-                            <Chip icon={<CircleIcon />} sx={{ [`& .${chipClasses.icon}`]: { color: getGradeColor('D') } }} label="D" size="small" variant="outlined" />
-                        </Stack>
-                        <ErrorBoundary fallback={<div>Something went wrong</div>}>
-                            <Grid sx={{
-                                position: 'relative',
-                                height: '400px',
-                            }}>
-                                <Grid sx={{
-                                    position: 'absolute',
-                                    height: '400px',
-                                    width: '100%',
-                                    opacity: 0.3
-                                }}>
-                                    <LineChart
-                                        sx={{
-                                            position: 'absolute',
-                                            top: 0,
-                                            '& .MuiMarkElement-root': {
-                                                display: 'none',
-                                            },
-                                        }}
-                                        leftAxis={null}
-                                        bottomAxis={null}
-                                        hideTooltip={true}
-                                        margin={{
-                                            top: 20,
-                                        }}
-                                        height={400}
-                                        series={
-                                            [
-                                                {
-                                                    type: 'line',
-                                                    curve: 'linear',
-                                                    //everything between start and end indicates the top of the graph, otherwise it's 0 (simulate a box)
-                                                    //we can only use 1 data point, so we use the start of the day
-                                                    data: sessionAnnotations,
-                                                    color: 'rgba(252, 3, 148, 0.25)',
-                                                    area: true,
-                                                    backgroundColor: 'rgba(252, 3, 148, 0.25)',
-                                                }
-                                            ]
-                                        }
-                                        xAxis={
-                                            [
-                                                {
-                                                    //just 1 to 100
-                                                    data: Array.from(Array(100).keys()).map((i) => { return i }),
-                                                }
-                                            ]
-                                        }
-                                    ></LineChart>
-                                </Grid>
-                                <Grid sx={{
-                                    position: 'absolute',
-                                    height: '400px',
-                                    width: '100%',
-                                }}>
-                                    <ScatterChart
-                                        margin={{
-                                            top: 20,
-                                        }}
-                                        height={400}
-                                        series={
-                                            [
-                                                ...graphData.datasets[0].data.map((data) => {
-                                                    return {
-                                                        type: 'scatter',
-                                                        data: [data],
-                                                        valueFormatter: (value) => {
-                                                            return `${moment.unix(value.x).format("HH:mm")} • ${value.score.beatmap.artist} - ${value.score.beatmap.title} [${value.score.beatmap.diffname}] • ${value.score.accuracy}% ${value.score.rank} • ${value.score.score} score • ${value.score.pp.toFixed(2)}pp`
-                                                            // return `${moment.unix(value.x).format("HH:mm")}`
-                                                        },
-                                                        color: getGradeColor(data.score.rank),
-                                                    }
-                                                })
-                                            ]
-                                        }
-                                        xAxis={
-                                            [
-                                                {
-                                                    min: moment(selectedDay, 'YYYY-MM-DD').startOf('day').unix(),
-                                                    max: moment(selectedDay, 'YYYY-MM-DD').endOf('day').unix(),
-                                                    valueFormatter: (value) => {
-                                                        return moment.unix(value).format("HH:mm");
-                                                    },
-                                                }
-                                            ]
-                                        }
-                                    ></ScatterChart>
-                                </Grid>
-                            </Grid>
-                        </ErrorBoundary>
-                        <Typography variant='caption'>The pink area designates sessions</Typography>
-                        <Grid sx={{ mt: 1, pl: 2 }}>
-                            <Stack direction="column" spacing={2}>
-                                <Grid>
-                                    {
-                                        stats && <>
-                                            <Stack direction="row" sx={{ justifyContent: 'center', alignItems: 'center' }}>
-                                                <Grid sx={{ mr: 3, ml: 3 }}>
-                                                    <img src={IMG_SVG_GRADE_XH} alt='XH' /> {stats.grade_ssh.toLocaleString('en-US')}
-                                                </Grid>
-                                                <Grid sx={{ mr: 3, ml: 3 }}>
-                                                    <img src={IMG_SVG_GRADE_X} alt='X' /> {stats.grade_ss.toLocaleString('en-US')}
-                                                </Grid>
-                                                <Grid sx={{ mr: 3, ml: 3 }}>
-                                                    <img src={IMG_SVG_GRADE_SH} alt='SH' /> {stats.grade_sh.toLocaleString('en-US')}
-                                                </Grid>
-                                                <Grid sx={{ mr: 3, ml: 3 }}>
-                                                    <img src={IMG_SVG_GRADE_S} alt='S' /> {stats.grade_s.toLocaleString('en-US')}
-                                                </Grid>
-                                                <Grid sx={{ mr: 3, ml: 3 }}>
-                                                    <img src={IMG_SVG_GRADE_A} alt='A' /> {stats.grade_a.toLocaleString('en-US')}
-                                                </Grid>
-                                                <Grid sx={{ mr: 3, ml: 3 }}>
-                                                    <img src={IMG_SVG_GRADE_B} alt='B' /> {stats.grade_b.toLocaleString('en-US')}
-                                                </Grid>
-                                                <Grid sx={{ mr: 3, ml: 3 }}>
-                                                    <img src={IMG_SVG_GRADE_C} alt='C' /> {stats.grade_c.toLocaleString('en-US')}
-                                                </Grid>
-                                                <Grid sx={{ mr: 3, ml: 3 }}>
-                                                    <img src={IMG_SVG_GRADE_D} alt='D' /> {stats.grade_d.toLocaleString('en-US')}
-                                                </Grid>
-                                            </Stack>
-                                        </>
-                                    }
-                                </Grid>
-                                <Grid container>
-                                    <Grid item xs={0} md={2}></Grid>
-                                    <Grid item xs={12} md={4}>
-                                        <Paper sx={{ p: 1, m: 1 }} elevation={3}>
-                                            {
-                                                stats && <>
-                                                    <TableContainer>
-                                                        <Table size="small">
-                                                            <TableBody>
-                                                                <TableRow>
-                                                                    <TableCell sx={{ width: '50%' }}>Score gained</TableCell>
-                                                                    <TableCell sx={{ width: '50%' }}>{stats.gained_score.toLocaleString('en-US')}</TableCell>
-                                                                </TableRow>
-                                                                <TableRow>
-                                                                    <TableCell sx={{ width: '50%' }}>Clears gained</TableCell>
-                                                                    <TableCell sx={{ width: '50%' }}>{stats.clears.toLocaleString('en-US')}</TableCell>
-                                                                </TableRow>
-                                                                <TableRow>
-                                                                    <TableCell sx={{ width: '50%' }}>Total PP gained</TableCell>
-                                                                    <TableCell sx={{ width: '50%' }}>{Math.round(stats.pp).toLocaleString('en-US')}pp</TableCell>
-                                                                </TableRow>
-                                                                <TableRow>
-                                                                    <TableCell sx={{ width: '50%' }}>Playtime</TableCell>
-                                                                    <TableCell sx={{ width: '50%' }}>{`${moment.duration(stats.playtime, 'seconds').format()}`}</TableCell>
-                                                                </TableRow>
-                                                                <TableRow>
-                                                                    <TableCell sx={{ width: '50%' }}>Sessions</TableCell>
-                                                                    <TableCell sx={{ width: '50%' }}>{`${sessionCount.toLocaleString('en-US')}`}</TableCell>
-                                                                </TableRow>
-                                                                <TableRow>
-                                                                    <TableCell sx={{ width: '50%' }}>Total session</TableCell>
-                                                                    <TableCell sx={{ width: '50%' }}>{`${moment.duration(totalSessionLength, 'seconds').format()}`}</TableCell>
-                                                                </TableRow>
-                                                            </TableBody>
-                                                        </Table>
-                                                    </TableContainer>
-                                                </>
-                                            }
-                                        </Paper>
-                                    </Grid>
-                                    <Grid item xs={12} md={4}>
-                                        <Paper sx={{ p: 1, m: 1 }} elevation={3}>
-                                            {
-                                                stats && <>
-                                                    <TableContainer>
-                                                        <Table size="small">
-                                                            <TableBody>
-                                                                <TableRow>
-                                                                    <TableCell sx={{ width: '50%' }}>Average score</TableCell>
-                                                                    <TableCell sx={{ width: '50%' }}>{Math.round(stats.clears > 0 ? (stats.gained_score / stats.clears) : 0).toLocaleString('en-US')}</TableCell>
-                                                                </TableRow>
-                                                                <TableRow>
-                                                                    <TableCell sx={{ width: '50%' }}>Average stars</TableCell>
-                                                                    <TableCell sx={{ width: '50%' }}>{stats.average_sr.toLocaleString('en-US')}*</TableCell>
-                                                                </TableRow>
-                                                                <TableRow>
-                                                                    <TableCell sx={{ width: '50%' }}>Average PP</TableCell>
-                                                                    <TableCell sx={{ width: '50%' }}>{stats.average_pp.toLocaleString('en-US')}pp</TableCell>
-                                                                </TableRow>
-                                                                <TableRow>
-                                                                    <TableCell sx={{ width: '50%' }}>Average accuracy</TableCell>
-                                                                    <TableCell sx={{ width: '50%' }}>{stats.average_acc.toLocaleString('en-US')}%</TableCell>
-                                                                </TableRow>
-                                                                <TableRow>
-                                                                    <TableCell sx={{ width: '50%' }}>Average length</TableCell>
-                                                                    <TableCell sx={{ width: '50%' }}>{`${moment.duration(stats.average_length, 'seconds').format()}`}</TableCell>
-                                                                </TableRow>
-                                                                <TableRow>
-                                                                    <TableCell sx={{ width: '50%' }}>Average session</TableCell>
-                                                                    <TableCell sx={{ width: '50%' }}>{`${moment.duration(totalSessionLength / sessionCount, 'seconds').format()}`}</TableCell>
-                                                                </TableRow>
-                                                            </TableBody>
-                                                        </Table>
-                                                    </TableContainer>
-                                                </>
-                                            }
-                                        </Paper>
-                                    </Grid>
-                                    <Grid item xs={0} md={2}></Grid>
-                                </Grid>
+                    <Grid sx={{
+                        minHeight: '700px',
+                    }}>
+                        {(selectedDay && graphData && graphData?.datasets[0]?.data && graphData?.datasets[0]?.data?.length > 0 && sessionAnnotations && sessionAnnotations.length > 0 && annotationMapper !== null) && <Grid sx={{ mt: 1 }}>
+                            <Stack sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} direction="row" spacing={2}>
+                                <Chip icon={<SquareIcon />} sx={{ [`& .${chipClasses.icon}`]: { color: getGradeColor('X') } }} label="Silver SS" size="small" variant="outlined" />
+                                <Chip icon={<CircleIcon />} sx={{ [`& .${chipClasses.icon}`]: { color: getGradeColor('X') } }} label="Gold SS" size="small" variant="outlined" />
+                                <Chip icon={<SquareIcon />} sx={{ [`& .${chipClasses.icon}`]: { color: getGradeColor('S') } }} label="Silver S" size="small" variant="outlined" />
+                                <Chip icon={<CircleIcon />} sx={{ [`& .${chipClasses.icon}`]: { color: getGradeColor('S') } }} label="Gold S" size="small" variant="outlined" />
+                                <Chip icon={<CircleIcon />} sx={{ [`& .${chipClasses.icon}`]: { color: getGradeColor('A') } }} label="A" size="small" variant="outlined" />
+                                <Chip icon={<CircleIcon />} sx={{ [`& .${chipClasses.icon}`]: { color: getGradeColor('B') } }} label="B" size="small" variant="outlined" />
+                                <Chip icon={<CircleIcon />} sx={{ [`& .${chipClasses.icon}`]: { color: getGradeColor('C') } }} label="C" size="small" variant="outlined" />
+                                <Chip icon={<CircleIcon />} sx={{ [`& .${chipClasses.icon}`]: { color: getGradeColor('D') } }} label="D" size="small" variant="outlined" />
                             </Stack>
-                        </Grid>
-                    </Grid>}
+                            <ErrorBoundary fallback={<div>Something went wrong</div>}>
+                                <Grid sx={{
+                                    position: 'relative',
+                                    height: '400px',
+                                }}>
+                                    <Grid sx={{
+                                        position: 'absolute',
+                                        height: '400px',
+                                        width: '100%',
+                                        opacity: 0.3
+                                    }}>
+                                        <LineChart
+                                            sx={{
+                                                position: 'absolute',
+                                                top: 0,
+                                                '& .MuiMarkElement-root': {
+                                                    display: 'none',
+                                                },
+                                            }}
+                                            leftAxis={null}
+                                            bottomAxis={null}
+                                            hideTooltip={true}
+                                            margin={{
+                                                top: 20,
+                                            }}
+                                            height={400}
+                                            series={
+                                                [
+                                                    {
+                                                        type: 'line',
+                                                        curve: 'linear',
+                                                        //everything between start and end indicates the top of the graph, otherwise it's 0 (simulate a box)
+                                                        //we can only use 1 data point, so we use the start of the day
+                                                        data: sessionAnnotations,
+                                                        color: 'rgba(252, 3, 148, 0.25)',
+                                                        area: true,
+                                                        backgroundColor: 'rgba(252, 3, 148, 0.25)',
+                                                    }
+                                                ]
+                                            }
+                                            xAxis={
+                                                [
+                                                    {
+                                                        //just 1 to 100
+                                                        data: annotationMapper,
+                                                    }
+                                                ]
+                                            }
+                                        ></LineChart>
+                                    </Grid>
+                                    <Grid sx={{
+                                        position: 'absolute',
+                                        height: '400px',
+                                        width: '100%',
+                                    }}>
+                                        <ScatterChart
+                                            margin={{
+                                                top: 20,
+                                            }}
+                                            height={400}
+                                            series={
+                                                [
+                                                    ...graphData.datasets[0].data.map((data) => {
+                                                        return {
+                                                            type: 'scatter',
+                                                            data: [data],
+                                                            valueFormatter: (value) => {
+                                                                return `${moment.unix(value.x).format("HH:mm")} • ${value.score.beatmap.artist} - ${value.score.beatmap.title} [${value.score.beatmap.diffname}] • ${value.score.accuracy}% ${value.score.rank} • ${value.score.score} score • ${value.score.pp.toFixed(2)}pp`
+                                                                // return `${moment.unix(value.x).format("HH:mm")}`
+                                                            },
+                                                            color: getGradeColor(data.score.rank),
+                                                        }
+                                                    })
+                                                ]
+                                            }
+                                            xAxis={
+                                                [
+                                                    {
+                                                        min: moment(selectedDay, 'YYYY-MM-DD').startOf('day').unix(),
+                                                        max: moment(selectedDay, 'YYYY-MM-DD').endOf('day').unix(),
+                                                        valueFormatter: (value) => {
+                                                            return moment.unix(value).format("HH:mm");
+                                                        },
+                                                    }
+                                                ]
+                                            }
+                                        ></ScatterChart>
+                                    </Grid>
+                                </Grid>
+                            </ErrorBoundary>
+                            <Typography variant='caption'>The pink area designates sessions</Typography>
+                            <Grid sx={{ mt: 1, pl: 2 }}>
+                                <Stack direction="column" spacing={2}>
+                                    <Grid>
+                                        {
+                                            stats && <>
+                                                <Stack direction="row" sx={{ justifyContent: 'center', alignItems: 'center' }}>
+                                                    <Grid sx={{ mr: 3, ml: 3 }}>
+                                                        <img src={IMG_SVG_GRADE_XH} alt='XH' /> {stats.grade_ssh.toLocaleString('en-US')}
+                                                    </Grid>
+                                                    <Grid sx={{ mr: 3, ml: 3 }}>
+                                                        <img src={IMG_SVG_GRADE_X} alt='X' /> {stats.grade_ss.toLocaleString('en-US')}
+                                                    </Grid>
+                                                    <Grid sx={{ mr: 3, ml: 3 }}>
+                                                        <img src={IMG_SVG_GRADE_SH} alt='SH' /> {stats.grade_sh.toLocaleString('en-US')}
+                                                    </Grid>
+                                                    <Grid sx={{ mr: 3, ml: 3 }}>
+                                                        <img src={IMG_SVG_GRADE_S} alt='S' /> {stats.grade_s.toLocaleString('en-US')}
+                                                    </Grid>
+                                                    <Grid sx={{ mr: 3, ml: 3 }}>
+                                                        <img src={IMG_SVG_GRADE_A} alt='A' /> {stats.grade_a.toLocaleString('en-US')}
+                                                    </Grid>
+                                                    <Grid sx={{ mr: 3, ml: 3 }}>
+                                                        <img src={IMG_SVG_GRADE_B} alt='B' /> {stats.grade_b.toLocaleString('en-US')}
+                                                    </Grid>
+                                                    <Grid sx={{ mr: 3, ml: 3 }}>
+                                                        <img src={IMG_SVG_GRADE_C} alt='C' /> {stats.grade_c.toLocaleString('en-US')}
+                                                    </Grid>
+                                                    <Grid sx={{ mr: 3, ml: 3 }}>
+                                                        <img src={IMG_SVG_GRADE_D} alt='D' /> {stats.grade_d.toLocaleString('en-US')}
+                                                    </Grid>
+                                                </Stack>
+                                            </>
+                                        }
+                                    </Grid>
+                                    <Grid container>
+                                        <Grid item xs={0} md={2}></Grid>
+                                        <Grid item xs={12} md={4}>
+                                            <Paper sx={{ p: 1, m: 1 }} elevation={3}>
+                                                {
+                                                    stats && <>
+                                                        <TableContainer>
+                                                            <Table size="small">
+                                                                <TableBody>
+                                                                    <TableRow>
+                                                                        <TableCell sx={{ width: '50%' }}>Score gained</TableCell>
+                                                                        <TableCell sx={{ width: '50%' }}>{stats.gained_score.toLocaleString('en-US')}</TableCell>
+                                                                    </TableRow>
+                                                                    <TableRow>
+                                                                        <TableCell sx={{ width: '50%' }}>Clears gained</TableCell>
+                                                                        <TableCell sx={{ width: '50%' }}>{stats.clears.toLocaleString('en-US')}</TableCell>
+                                                                    </TableRow>
+                                                                    <TableRow>
+                                                                        <TableCell sx={{ width: '50%' }}>Total PP gained</TableCell>
+                                                                        <TableCell sx={{ width: '50%' }}>{Math.round(stats.pp).toLocaleString('en-US')}pp</TableCell>
+                                                                    </TableRow>
+                                                                    <TableRow>
+                                                                        <TableCell sx={{ width: '50%' }}>Playtime</TableCell>
+                                                                        <TableCell sx={{ width: '50%' }}>{`${moment.duration(stats.playtime, 'seconds').format()}`}</TableCell>
+                                                                    </TableRow>
+                                                                    <TableRow>
+                                                                        <TableCell sx={{ width: '50%' }}>Sessions</TableCell>
+                                                                        <TableCell sx={{ width: '50%' }}>{`${sessionCount.toLocaleString('en-US')}`}</TableCell>
+                                                                    </TableRow>
+                                                                    <TableRow>
+                                                                        <TableCell sx={{ width: '50%' }}>Total session</TableCell>
+                                                                        <TableCell sx={{ width: '50%' }}>{`${moment.duration(totalSessionLength, 'seconds').format()}`}</TableCell>
+                                                                    </TableRow>
+                                                                </TableBody>
+                                                            </Table>
+                                                        </TableContainer>
+                                                    </>
+                                                }
+                                            </Paper>
+                                        </Grid>
+                                        <Grid item xs={12} md={4}>
+                                            <Paper sx={{ p: 1, m: 1 }} elevation={3}>
+                                                {
+                                                    stats && <>
+                                                        <TableContainer>
+                                                            <Table size="small">
+                                                                <TableBody>
+                                                                    <TableRow>
+                                                                        <TableCell sx={{ width: '50%' }}>Average score</TableCell>
+                                                                        <TableCell sx={{ width: '50%' }}>{Math.round(stats.clears > 0 ? (stats.gained_score / stats.clears) : 0).toLocaleString('en-US')}</TableCell>
+                                                                    </TableRow>
+                                                                    <TableRow>
+                                                                        <TableCell sx={{ width: '50%' }}>Average stars</TableCell>
+                                                                        <TableCell sx={{ width: '50%' }}>{stats.average_sr.toLocaleString('en-US')}*</TableCell>
+                                                                    </TableRow>
+                                                                    <TableRow>
+                                                                        <TableCell sx={{ width: '50%' }}>Average PP</TableCell>
+                                                                        <TableCell sx={{ width: '50%' }}>{stats.average_pp.toLocaleString('en-US')}pp</TableCell>
+                                                                    </TableRow>
+                                                                    <TableRow>
+                                                                        <TableCell sx={{ width: '50%' }}>Average accuracy</TableCell>
+                                                                        <TableCell sx={{ width: '50%' }}>{stats.average_acc.toLocaleString('en-US')}%</TableCell>
+                                                                    </TableRow>
+                                                                    <TableRow>
+                                                                        <TableCell sx={{ width: '50%' }}>Average length</TableCell>
+                                                                        <TableCell sx={{ width: '50%' }}>{`${moment.duration(stats.average_length, 'seconds').format()}`}</TableCell>
+                                                                    </TableRow>
+                                                                    <TableRow>
+                                                                        <TableCell sx={{ width: '50%' }}>Average session</TableCell>
+                                                                        <TableCell sx={{ width: '50%' }}>{`${moment.duration(totalSessionLength / sessionCount, 'seconds').format()}`}</TableCell>
+                                                                    </TableRow>
+                                                                </TableBody>
+                                                            </Table>
+                                                        </TableContainer>
+                                                    </>
+                                                }
+                                            </Paper>
+                                        </Grid>
+                                        <Grid item xs={0} md={2}></Grid>
+                                    </Grid>
+                                </Stack>
+                            </Grid>
+                        </Grid>}
+                    </Grid>
                 </CardContent>
             </Card>
         </>
