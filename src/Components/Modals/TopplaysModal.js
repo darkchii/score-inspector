@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Card, CardContent, Modal, Typography, Grid, ListItem, Box, FormGroup, FormControlLabel, Switch } from "@mui/material";
 import React, { useEffect } from "react";
 import { List } from "react-virtualized";

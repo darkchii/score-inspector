@@ -1,10 +1,9 @@
-import { Box, Card, Grid, IconButton, LinearProgress, Paper, Tooltip, Typography, useTheme } from '@mui/material';
+import { Box, Grid, LinearProgress, Tooltip, Typography, useTheme } from '@mui/material';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { getGradeIcon, getModIcon } from '../Helpers/Assets';
 import { toFixedNumber } from '../Helpers/Misc';
 import { getModString, mods, mod_strings_long } from '../Helpers/Osu';
-import VisibilityIcon from '@mui/icons-material/Visibility';
 import moment from 'moment';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { red } from '@mui/material/colors';
