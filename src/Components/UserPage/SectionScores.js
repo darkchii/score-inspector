@@ -117,11 +117,11 @@ function SectionScores(props) {
                 score: score.score,
                 mods: score.enabled_mods,
                 sr: score.beatmap.modded_sr['live'].star_rating,
-                pp: score.pp,
-                aimpp: score.pp_original.aim,
-                speedpp: score.pp_original.speed,
-                accpp: score.pp_original.acc,
-                flpp: score.pp_original.flashlight,
+                pp: score.recalc['live'].total,
+                aimpp: score.recalc['live'].aim,
+                speedpp: score.recalc['live'].speed,
+                accpp: score.recalc['live'].acc,
+                flpp: score.recalc['live'].flashlight,
                 date: `${score.date_played}`,
                 grade: `${score.rank}`,
                 combo: `${score.combo}`,
@@ -130,8 +130,8 @@ function SectionScores(props) {
                 length: score.beatmap.modded_length,
                 bpm: score.beatmap.modded_bpm,
                 approved: score.beatmap.approved,
-                ppfc: score.pp_fc.total,
-                ppss: score.pp_ss.total,
+                ppfc: score.recalc['fc'].total,
+                ppss: score.recalc['ss'].total,
                 score_object: score
             });
             index++;
