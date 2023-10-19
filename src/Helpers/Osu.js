@@ -594,11 +594,8 @@ export async function MassCalculatePerformance(scores) {
         scores.forEach(score => {
             let valid = true;
 
-            // if (system === 'ss' || system === 'fc') { valid = isScoreRealistic(score); }
+            if (system === 'ss' || system === 'fc') { valid = isScoreRealistic(score); }
             valid = valid && (isNaN(score.recalc[system]?.total) ? false : valid);
-            if (!valid) {
-                console.log(`system: ${system}, ${score.beatmap_id}`, score.beatmap);
-            }
             valid = valid && (score.beatmap.approved === 1 || score.beatmap.approved === 2);
 
             if (valid) {
