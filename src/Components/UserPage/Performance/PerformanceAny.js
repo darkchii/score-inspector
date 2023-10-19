@@ -31,7 +31,8 @@ function PerformanceAny(props) {
         setModalData({
             scores: _scores,
             active: true,
-            pp_version: props.pp_version
+            pp_version: props.pp_version,
+            hide_diff: props.hide_diff,
         });
     }
 
@@ -55,7 +56,7 @@ function PerformanceAny(props) {
                                     </Tooltip>
                                     : null
                             }
-                            {toFixedNumber(props.data.data.performance.weighted[props.pp_version], 0).toLocaleString('en-US')}pp <Typography sx={{ fontSize: '0.7rem' }} color={'' + (ppDiff >= 0 ? '#11cb5f' : 'error')} variant='subtitle2' display="inline">{(ppDiff >= 0 ? '+' : '')}{ppDiff.toFixed(1)}pp</Typography>
+                            {toFixedNumber(props.data.data.performance.weighted[props.pp_version], 0).toLocaleString('en-US')}pp {props.hide_diff ? <></> : <Typography sx={{ fontSize: '0.7rem' }} color={'' + (ppDiff >= 0 ? '#11cb5f' : 'error')} variant='subtitle2' display="inline">{(ppDiff >= 0 ? '+' : '')}{ppDiff.toFixed(1)}pp</Typography>}
                         </Typography>
                     </Grid>
                     <Tooltip title={`${PP_SYSTEM_NAMES[props.pp_version].description ?? ' '}`}>

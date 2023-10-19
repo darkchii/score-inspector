@@ -79,14 +79,14 @@ function ScoreTableRow(props) {
                                 <Grid item xs={0.6} sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
                                     <Typography variant="subtitle2">{score.accuracy.toFixed(2)}%</Typography>
                                 </Grid>
-                                <Grid item xs={1.35} sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
+                                <Grid item xs={props.data.hide_diff ? 1.35+0.75 : 1.35} sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
                                     <Box
                                         sx={{
                                             width: '100%',
                                             height: '100%',
                                             display: 'flex',
                                             alignItems: 'center',
-                                            justifyContent: 'right',
+                                            justifyContent: props.data.hide_diff ? 'center' : 'right',
                                             bgcolor: theme.palette.background.paper,
                                             borderRadius: 0,
                                             position: 'relative',
@@ -110,9 +110,12 @@ function ScoreTableRow(props) {
                                         </Tooltip>
                                     </Box>
                                 </Grid>
-                                <Grid item xs={0.75} sx={{ height: '100%', display: 'flex', alignItems: 'left', bgcolor: theme.palette.background.paper }}>
-                                    <Typography sx={{ fontSize: '0.7rem' }} color={'' + (score.recalc[props.data.pp_version].total - score.pp >= 0 ? '#11cb5f' : 'error')} variant='subtitle2' display="inline">{(score.recalc[props.data.pp_version].total - score.pp >= 0 ? '+' : '-')}{toFixedNumber(Math.abs(score.recalc[props.data.pp_version].total - score.pp), 0)}pp</Typography>
-                                </Grid>
+                                {
+                                    props.data.hide_diff ? <></> :
+                                        <Grid item xs={0.75} sx={{ height: '100%', display: 'flex', alignItems: 'left', bgcolor: theme.palette.background.paper }}>
+                                            <Typography sx={{ fontSize: '0.7rem' }} color={'' + (score.recalc[props.data.pp_version].total - score.pp >= 0 ? '#11cb5f' : 'error')} variant='subtitle2' display="inline">{(score.recalc[props.data.pp_version].total - score.pp >= 0 ? '+' : '-')}{toFixedNumber(Math.abs(score.recalc[props.data.pp_version].total - score.pp), 0)}pp</Typography>
+                                        </Grid>
+                                }
                             </Grid>
                         </Box>
                     </>

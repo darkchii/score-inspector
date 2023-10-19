@@ -79,7 +79,7 @@ function TopplaysModal(props) {
                         <Typography variant="subtitle1">{index + 1}</Typography>
                     </Grid>
                     <Grid item xs={11.4}>
-                        <ScoreTableRow allowScoreViewer={allowScoreViewer} openScoreView={openScoreView} index={index} data={{ score: score, pp_version: props.data.pp_version }} />
+                        <ScoreTableRow allowScoreViewer={allowScoreViewer} openScoreView={openScoreView} index={index} data={{ score: score, pp_version: props.data.pp_version, hide_diff: props.data.hide_diff }} />
                     </Grid>
                 </Grid>
             </ListItem>
