@@ -524,6 +524,10 @@ export async function MassCalculatePerformance(scores) {
     for await (const score of scores) {
         const recalcs = await Promise.all([
             {
+                name: 'live',
+                calc: getCalculator('live', { score: score })
+            },
+            {
                 name: 'ss',
                 checkRealism: true,
                 calc: getCalculator('live', { count300: score.count300 + score.countmiss + score.count100 + score.count50, count100: 0, count50: 0, countmiss: 0, combo: score.beatmap.maxcombo, score: score })
