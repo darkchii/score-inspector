@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Box, Button, Card, CardContent, CardMedia, Chip, Grid, Link, ListItem, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableHead, TableRow, Tooltip, Typography } from '@mui/material';
+import { Box, Card, CardContent, CardMedia, Chip, Grid, Link, ListItem, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableHead, TableRow, Tooltip, Typography } from '@mui/material';
 import { Chart as ChartJS, ArcElement, Tooltip as ChartTooltip, Legend } from 'chart.js';
 import moment from 'moment';
 import { useEffect } from 'react';
@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { Doughnut } from 'react-chartjs-2';
 import { getGradeIcon } from '../Helpers/Assets';
 import { toFixedNumber } from '../Helpers/Misc';
-import { FilterStarratingArray, getBeatmap, getBeatmapMaxscore, getHitsFromAccuracy, getModString, mods } from '../Helpers/Osu';
+import { getBeatmapMaxscore, getHitsFromAccuracy, getModString, mods } from '../Helpers/Osu';
 import { getCalculator } from '../Helpers/Performance/Performance';
 import { getBeatmapScores } from '../Helpers/OsuAlt';
 import { prepareBeatmap, prepareScore } from '../Helpers/ScoresProcessor';

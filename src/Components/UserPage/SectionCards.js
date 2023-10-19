@@ -1,15 +1,10 @@
 import { Grid, Paper, Typography, useTheme } from "@mui/material";
 import moment from "moment";
 import BestScoreCard from "./BestScoreCard";
-import Performance2016 from "./Performance/Performance2016";
 import PerformanceFC from "./Performance/PerformanceFC";
 import PerformanceSS from "./Performance/PerformanceSS";
 import PerformanceXexxar from "./Performance/PerformanceXexxar";
-import PerformanceLazer from "./Performance/PerformanceLazer";
-import Performance2014 from "./Performance/Performance2014";
-import Performance2020 from "./Performance/Performance2020";
 import GlowBar from "../UI/GlowBar";
-import PerformanceV1 from "./Performance/PerformanceV1";
 import { BarChart } from "@mui/x-charts";
 import PerformanceAny from "./Performance/PerformanceAny.js";
 
