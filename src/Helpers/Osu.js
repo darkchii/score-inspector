@@ -13,6 +13,7 @@ export const approval_state = {
 }
 
 export const PP_SYSTEM_NAMES = {
+    'live': { title: 'Live', description: 'The current PP system' },
     'ss': { title: 'PP if SS', description: 'PP if player SS\'d every realistic map (basically that are chokes now)' },
     'fc': { title: 'PP if FC', description: 'PP if player FC\'d every realistic map (basically that are chokes now)' },
     'v1': { title: 'ppv1', description: 'Precursor to current pp system. Depends on map age, playcount, passcount, relative playcount, ss ratio, accuracy and mods' },

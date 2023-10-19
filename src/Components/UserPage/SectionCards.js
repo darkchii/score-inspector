@@ -165,6 +165,7 @@ function SectionCards(props) {
             <Grid sx={{ p: 0.5 }}>
                 <Paper elevation={2} sx={{ p: 2 }}>
                     <Grid container spacing={2}>
+                        <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={12 / 8}><PerformanceAny data={props.user} pp_version='live' /></Grid>
                         <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={12 / 8}><PerformanceFC data={props.user} /></Grid>
                         <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={12 / 8}><PerformanceSS data={props.user} /></Grid>
                         <Grid sx={{ minHeight: '100%', p: 0.5 }} item xs={6} md={12 / 8}><PerformanceAny data={props.user} pp_version='v1' /></Grid>
