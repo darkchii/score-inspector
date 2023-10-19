@@ -6,18 +6,21 @@ import { getGrade } from "../../../Helpers/Osu";
 import AutoGraphIcon from '@mui/icons-material/AutoGraph';
 import TopplaysModal from "../../Modals/TopplaysModal";
 import GlowBar from "../../UI/GlowBar";
+var _ = require('lodash');
 
 function PerformanceFC(props) {
     const [modalData, setModalData] = useState({ active: false });
     const [ppDiff, setPPDiff] = useState(0);
 
     const openModal = async () => {
-        var _scores = JSON.parse(JSON.stringify(props.data.scores));
-        _scores.sort((a, b) => {
-            if (a.recalc['fc'].weight > b.recalc['fc'].weight) { return -1; }
-            if (a.recalc['fc'].weight < b.recalc['fc'].weight) { return 1; }
+        let scores = props.data.scores;
+        scores.sort((a, b) => {
+            if (a.recalc['fc'].total > b.recalc['fc'].total) { return -1; }
+            if (a.recalc['fc'].total < b.recalc['fc'].total) { return 1; }
             return 0;
         });
+        
+        var _scores = _.cloneDeep(props.data.scores.slice(0, 2000));
         _scores.forEach(score => {
             score.pp = score.recalc['fc'].total;
             score.accuracy = score.recalc['fc'].accuracy * 100;
@@ -33,7 +36,8 @@ function PerformanceFC(props) {
         })
         setModalData({
             scores: _scores,
-            active: true
+            active: true,
+            pp_version: 'fc'
         })
     }
 

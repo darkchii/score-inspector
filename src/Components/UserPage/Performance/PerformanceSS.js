@@ -6,18 +6,22 @@ import { toFixedNumber } from '../../../Helpers/Misc';
 import { getGrade } from '../../../Helpers/Osu';
 import TopplaysModal from '../../Modals/TopplaysModal';
 import GlowBar from '../../UI/GlowBar';
+var _ = require('lodash');
 
 function PerformanceSS(props) {
     const [modalData, setModalData] = useState({ active: false });
     const [ppDiff, setPPDiff] = useState(0);
 
     const openModal = async () => {
-        var _scores = JSON.parse(JSON.stringify(props.data.scores));
-        _scores.sort((a, b) => {
-            if (a.recalc['ss'].weight > b.recalc['ss'].weight) { return -1; }
-            if (a.recalc['ss'].weight < b.recalc['ss'].weight) { return 1; }
+        let scores = props.data.scores;
+        scores.sort((a, b) => {
+            if (a.recalc['ss'].total > b.recalc['ss'].total) { return -1; }
+            if (a.recalc['ss'].total < b.recalc['ss'].total) { return 1; }
             return 0;
         });
+        
+        var _scores = _.cloneDeep(props.data.scores.slice(0, 2000));
+
         _scores.forEach(score => {
             let pp = score.recalc['ss'];
             score.pp = pp.total;
@@ -34,7 +38,8 @@ function PerformanceSS(props) {
         })
         setModalData({
             scores: _scores,
-            active: true
+            active: true,
+            pp_version: 'ss'
         })
         console.timeEnd('Top plays modal');
     }
