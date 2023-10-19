@@ -51,7 +51,7 @@ function ScoreView(props) {
 
         _score.beatmap = JSON.parse(JSON.stringify(beatmap));
 
-        _scoreData.sr = _score.beatmap.modded_sr;
+        _scoreData.sr = _score.beatmap.modded_sr['live'];
         if(pp_version !== 'live'){
             _scoreData.sr = _score.beatmap.modded_sr[pp_version] ?? _score.beatmap.modded_sr;
         }
@@ -143,19 +143,13 @@ function ScoreView(props) {
                             </Typography>
                         </Box>
                     </Grid>
-                    <Grid item xs={2} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                    <Grid item xs={3} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                         <Tooltip title={moment(score.date_played).toString()}>
                             <Typography variant="subtitle1">
                                 {moment(score.date_played).fromNow()}
                             </Typography>
                         </Tooltip>
                     </Grid>
-                    <Grid item xs={1} sx={{ display: 'flex', justifyContent: 'right' }}>
-                        <Button onClick={() => {
-                            applyScore(props.data.pp_version, score, beatmapData.beatmap);
-                        }} size='small'>View</Button>
-                    </Grid>
-
                 </Grid>
             </ListItem>
         );
