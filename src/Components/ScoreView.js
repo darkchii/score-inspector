@@ -251,7 +251,7 @@ function ScoreView(props) {
                                                             <Grid>
                                                                 <Typography variant="h3" sx={{ mt: 0 }}>{toFixedNumber(scoreData.score.score, 0).toLocaleString('en-US')}</Typography>
                                                                 <Typography variant="subtitle1" display="flex" alignItems="center" sx={{ mt: 0 }} spacing="5">
-                                                                    <img alt={scoreData.score.rank} src={getGradeIcon(scoreData.score.rank)} />&nbsp;<b>{scoreData.score.accuracy.toFixed(2)}%</b>&nbsp;★&nbsp;<b>{scoreData.score.displayed_pp.total.toFixed(2)}pp</b>&nbsp;★&nbsp;<b>{scoreData.score.combo}x/{beatmapData.beatmap.maxcombo}x</b>
+                                                                    <img alt={scoreData.score.rank} src={getGradeIcon(scoreData.score.rank)} />&nbsp;<b>{scoreData.score.accuracy.toFixed(2)}%</b>&nbsp;★&nbsp;<b>{scoreData.score.recalc[props.data.pp_version].total.toFixed(2)}pp</b>&nbsp;★&nbsp;<b>{scoreData.score.combo}x/{beatmapData.beatmap.maxcombo}x</b>
                                                                 </Typography>
                                                                 <Typography variant="subtitle1" display="flex" alignItems="center" sx={{ mt: 0 }} spacing="5">
                                                                     Played&nbsp;<b><Tooltip title={'' + scoreData.score.date_played}><Grid>{moment(scoreData.score.date_played).fromNow()}</Grid></Tooltip></b>&nbsp;★ Ranked&nbsp;<b><Tooltip title={'' + beatmapData.beatmap.approved_date}><Grid>{moment(beatmapData.beatmap.approved_date).fromNow()}</Grid></Tooltip></b>
@@ -288,10 +288,10 @@ function ScoreView(props) {
                                                             </TableHead>
                                                             <TableBody>
                                                                 <TableRow>
-                                                                    <TableCell>{(scoreData.score.displayed_pp?.aim ?? 0).toFixed(1)}pp</TableCell>
-                                                                    <TableCell>{(scoreData.score.displayed_pp?.speed ?? 0).toFixed(1)}pp</TableCell>
-                                                                    <TableCell>{(scoreData.score.displayed_pp?.acc ?? 0).toFixed(1)}pp</TableCell>
-                                                                    <TableCell>{(scoreData.score.displayed_pp?.flashlight ?? 0).toFixed(1)}pp</TableCell>
+                                                                    <TableCell>{(scoreData.score.recalc[props.data.pp_version]?.aim ?? 0).toFixed(1)}pp</TableCell>
+                                                                    <TableCell>{(scoreData.score.recalc[props.data.pp_version]?.speed ?? 0).toFixed(1)}pp</TableCell>
+                                                                    <TableCell>{(scoreData.score.recalc[props.data.pp_version]?.acc ?? 0).toFixed(1)}pp</TableCell>
+                                                                    <TableCell>{(scoreData.score.recalc[props.data.pp_version]?.flashlight ?? 0).toFixed(1)}pp</TableCell>
                                                                 </TableRow>
                                                             </TableBody>
                                                         </Table>

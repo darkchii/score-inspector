@@ -26,7 +26,7 @@ function ScoreModal(props) {
                     aria-describedby="modal-modal-description"
                 >
                     <ScoreView data={{
-                        score: props.data.score, style: MODAL_STYLE
+                        score: props.data.score, style: MODAL_STYLE, pp_version: 'live'
                     }} />
                 </Modal>
                 : <></>
