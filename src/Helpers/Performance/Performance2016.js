@@ -69,7 +69,7 @@ function getTotalValue(data) {
 }
 
 function getAimValue(data) {
-    const raw_aim = data.modded_sr.aim_diff;
+    const raw_aim = data.modded_sr.aim;
 
     let aim = Math.pow(5.0 * Math.max(1.0, raw_aim / 0.0675) - 4.0, 3.0) / 100000.0;
 
@@ -115,7 +115,7 @@ function getAimValue(data) {
 }
 
 function getSpeedValue(data) {
-    let speed = Math.pow(5.0 * Math.max(1.0, data.modded_sr.speed_diff / 0.0675) - 4.0, 3.0) / 100000.0;
+    let speed = Math.pow(5.0 * Math.max(1.0, data.modded_sr.speed / 0.0675) - 4.0, 3.0) / 100000.0;
 
     const amountTotalHits = data.totalhits;
 

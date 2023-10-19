@@ -101,7 +101,7 @@ function getTotalValue(data) {
 }
 
 function getAimValue(data) {
-    const raw_aim = data.modded_sr.aim_diff;
+    const raw_aim = data.modded_sr.aim;
     let aim = Math.pow(5.0 * Math.max(1.0, raw_aim / 0.0445) - 4.0, 3.0) / 100000.0;
 
     aim *= 1.0 + 0.1 * Math.min(data.totalhits / 1500, 1.0);
@@ -141,7 +141,7 @@ function getAimValue(data) {
 }
 
 function getSpeedValue(data) {
-    let speed = Math.pow(5.0 * Math.max(1.0, data.modded_sr.speed_diff / 0.045) - 4.0, 3.0) / 100000.0;
+    let speed = Math.pow(5.0 * Math.max(1.0, data.modded_sr.speed / 0.045) - 4.0, 3.0) / 100000.0;
 
     // speed *= 0.95 + 0.4 * Math.min(1.0, data.totalhits / 2000.0) + (data.totalhits > 2000 ? Math.log10(data.totalhits / 2000.0) * 0.5 : 0.0); //length bonus
     speed *= 1.0 + 0.1 * Math.min((data.totalhits / 1500.0), 1.0); //length bonus

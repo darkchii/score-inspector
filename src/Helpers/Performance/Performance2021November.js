@@ -75,7 +75,7 @@ function getTotalValue(data) {
 }
 
 function getAimValue(data) {
-    let raw_aim = data.modded_sr.aim_diff;
+    let raw_aim = data.modded_sr.aim;
 
     if (data.score.enabled_mods & mods.TD) {
         raw_aim = Math.pow(raw_aim, 0.8);
@@ -130,7 +130,7 @@ function getAimValue(data) {
 }
 
 function getSpeedValue(data) {
-    let speed = Math.pow(5.0 * Math.max(1.0, data.modded_sr.speed_diff / 0.0675) - 4.0, 3.0) / 100000.0;
+    let speed = Math.pow(5.0 * Math.max(1.0, data.modded_sr.speed / 0.0675) - 4.0, 3.0) / 100000.0;
 
     const amountTotalHits = data.totalhits;
 
@@ -173,7 +173,7 @@ function getFlashlightValue(data) {
         return 0;
     }
 
-    let flash = data.modded_sr.fl_diff;
+    let flash = data.modded_sr.fl;
 
     if (data.score.enabled_mods & mods.TD) {
         flash = Math.pow(flash, 0.8);

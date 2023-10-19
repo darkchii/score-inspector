@@ -1,9 +1,10 @@
-import { Card, CardContent, Modal, Typography, Grid, ListItem } from "@mui/material";
+import { Card, CardContent, Modal, Typography, Grid, ListItem, Box, FormGroup, FormControlLabel, Switch } from "@mui/material";
 import React, { useEffect } from "react";
 import { List } from "react-virtualized";
 import ScoreTableRow from "../ScoreTableRow";
 import ScoreView from "../ScoreView";
 import { MODAL_STYLE } from "../../Helpers/Misc";
+import { PP_SYSTEM_NAMES } from "../../Helpers/Osu.js";
 
 const style = {
     position: 'absolute',
@@ -22,31 +23,54 @@ const style = {
 function TopplaysModal(props) {
     const [open, setOpen] = React.useState(false);
     const [scores, setScores] = React.useState(null);
+    const [sortedScores, setSortedScores] = React.useState(null);
     const handleClose = () => setOpen(false);
     const [viewingScore, setViewingScore] = React.useState(null);
     const [allowScoreViewer, setAllowScoreViewer] = React.useState(true);
+    const [showLovedScores, setShowLovedScores] = React.useState(false);
 
     const openScoreView = (index) => {
         setViewingScore(scores[index]);
     }
 
+    const updateFilteredScores = (_scores) => {
+        if (_scores) {
+            setSortedScores(_scores.filter((score) => {
+                if (showLovedScores) {
+                    return true;
+                }
+                return score.beatmap.approved !== 4;
+            }).sort((a, b) => {
+                if (a.recalc[props.data.pp_version].total > b.recalc[props.data.pp_version].total) { return -1; }
+                if (a.recalc[props.data.pp_version].total < b.recalc[props.data.pp_version].total) { return 1; }
+                return 0;
+            }));
+        }
+    }
+
     useEffect(() => {
         setOpen(props.data.active);
-
         setScores(props.data.scores);
+        updateFilteredScores(props.data.scores);
     }, [props.data]);
 
     useEffect(() => {
-        setAllowScoreViewer(props.allowScoreViewer!==undefined ? props.allowScoreViewer : true);
+        if (scores) {
+            updateFilteredScores(scores);
+        }
+    }, [showLovedScores])
+
+    useEffect(() => {
+        setAllowScoreViewer(props.allowScoreViewer !== undefined ? props.allowScoreViewer : true);
     }, [props.allowScoreViewer])
 
     const rowHeight = ({ index }) => {
         // const score = scores[index];
-        return 40+5;
+        return 40 + 5;
     };
 
     const rowRenderer = ({ index, key, style }) => {
-        const score = scores[index];
+        const score = sortedScores[index];
         return (
             <ListItem key={key} style={style}>
                 <Grid container>
@@ -63,7 +87,7 @@ function TopplaysModal(props) {
 
     return (
         <>
-            {open && scores !== null ?
+            {open && scores !== null && sortedScores !== null ?
                 <Modal
                     open={open}
                     onClose={handleClose}
@@ -72,12 +96,21 @@ function TopplaysModal(props) {
                 >
                     <Card sx={style}>
                         <CardContent sx={{ px: 1, py: 1 }}>
+                            <Box sx={{ m: 1 }}>
+                                <Typography variant="h6" component="h2">
+                                    Top plays ({PP_SYSTEM_NAMES[props.data.pp_version]?.title ?? props.data.pp_version})
+                                </Typography>
+                                {/* loved maps toggle */}
+                                <FormGroup>
+                                    <FormControlLabel control={<Switch checked={showLovedScores} onChange={(e) => setShowLovedScores(!showLovedScores)} />} label={'Loved maps'} />
+                                </FormGroup>
+                            </Box>
                             <List
-
                                 width={1200}
                                 height={700}
                                 rowRenderer={rowRenderer}
-                                rowCount={scores.length}
+                                // rowCount={scores.length}
+                                rowCount={sortedScores.length}
                                 rowHeight={rowHeight}
                             />
                             {

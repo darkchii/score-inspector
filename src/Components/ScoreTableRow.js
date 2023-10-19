@@ -6,6 +6,8 @@ import { toFixedNumber } from '../Helpers/Misc';
 import { getModString, mods, mod_strings_long } from '../Helpers/Osu';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import moment from 'moment';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import { red } from '@mui/material/colors';
 
 function ScoreTableRow(props) {
     const theme = useTheme();
@@ -33,7 +35,7 @@ function ScoreTableRow(props) {
                                     {/* {getGradeIcon(score.rank)} */}
                                     <img src={getGradeIcon(score.rank)} alt={score.rank} />
                                 </Grid>
-                                <Grid item xs={6.2} sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
+                                <Grid item xs={6} sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
                                     <Tooltip title={`${score.beatmap.artist} - ${score.beatmap.title} [${score.beatmap.diffname}]`}>
                                         <Typography sx={{ fontSize: '0.8rem', maxWidth: '100%', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
                                             {score.beatmap.artist} - {score.beatmap.title}
@@ -43,18 +45,28 @@ function ScoreTableRow(props) {
                                         </Typography>
                                     </Tooltip>
                                 </Grid>
-                                <Grid item xs={0.6} sx={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'right'  }}>
+                                <Grid item xs={0.2} sx={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'right' }}>
+                                    {
+                                        score.beatmap.approved === 4 ?
+                                            <>
+                                                <Tooltip title="Loved">
+                                                    <FavoriteIcon sx={{ color: red[500] }} />
+                                                </Tooltip>
+                                            </> : <></>
+                                    }
+                                </Grid>
+                                <Grid item xs={0.6} sx={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'right' }}>
                                     {
                                         score.beatmap.modded_sr[score.recalc[props.data.pp_version]?.model]?.base?.star_rating && score.beatmap.modded_sr[score.recalc[props.data.pp_version].model].base.star_rating !== score.beatmap.modded_sr[score.recalc[props.data.pp_version].model].star_rating ?
                                             <>
                                                 <Typography variant="subtitle2" sx={{ opacity: 0.4 }}>
-                                                    {score.beatmap.modded_sr[score.recalc[props.data.pp_version].model].base.star_rating.toFixed(2)}* {"-> "} 
+                                                    {score.beatmap.modded_sr[score.recalc[props.data.pp_version].model].base.star_rating.toFixed(2)}* {"-> "}
                                                 </Typography>
                                             </> : <></>
                                     }
                                 </Grid>
                                 <Grid item xs={0.6} sx={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'left' }}>
-                                    <Typography sx={{ml:0.4}} variant="subtitle2"> {(score.beatmap.modded_sr[score.recalc[props.data.pp_version]?.model]?.star_rating ?? 0).toFixed(2)}*</Typography>
+                                    <Typography sx={{ ml: 0.4 }} variant="subtitle2"> {(score.beatmap.modded_sr[score.recalc[props.data.pp_version]?.model]?.star_rating ?? 0).toFixed(2)}*</Typography>
                                 </Grid>
                                 <Grid item xs={1.4} sx={{ height: '100%', alignContent: 'right', display: 'flex', alignItems: 'center' }}>
                                     {

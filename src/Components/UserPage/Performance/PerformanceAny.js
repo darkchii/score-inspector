@@ -15,8 +15,8 @@ function PerformanceAny(props) {
     const openModal = async () => {
         var _scores = JSON.parse(JSON.stringify(props.data.scores));
         _scores.sort((a, b) => {
-            if (a.recalc[props.pp_version].weight > b.recalc[props.pp_version].weight) { return -1; }
-            if (a.recalc[props.pp_version].weight < b.recalc[props.pp_version].weight) { return 1; }
+            if (a.recalc[props.pp_version].total > b.recalc[props.pp_version].total) { return -1; }
+            if (a.recalc[props.pp_version].total < b.recalc[props.pp_version].total) { return 1; }
             return 0;
         });
         setModalData({

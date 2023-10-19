@@ -13,18 +13,18 @@ export const approval_state = {
 }
 
 export const PP_SYSTEM_NAMES = {
-    'ss': {title: 'PP if SS', description: 'PP if player SS\'d every realistic map (basically that are chokes now)'},
-    'fc': {title: 'PP if FC', description: 'PP if player FC\'d every realistic map (basically that are chokes now)'},
-    'v1': {title: 'ppv1', description: 'Precursor to current pp system. Depends on map age, playcount, passcount, relative playcount, ss ratio, accuracy and mods'},
-    '2014may': {title: 'ppv2 (May 2014)', description: 'First release of ppv2'},
-    '2014july': {title: 'ppv2 (July 2014)', description: '1.5x star difficulty, aim nerfed, acc and length buffed'},
-    '2015february': {title: 'ppv2 (Feb 2015)', description: 'High CS buff, FL depends on length, high ar is now 10.33'},
-    '2015april': {title: 'ppv2 (April 2015)', description: 'Slight high cs nerf'},
-    '2018': {title: 'ppv2 (2018)', description: 'HD adjustment'},
-    '2019': {title: 'ppv2 (2019)', description: 'Angles, speed, spaced streams'},
-    '2021january': {title: 'ppv2 (Jan 2021)', description: 'High AR nerf, NF & SO buff, speed and acc adjustment'},
-    '2021july': {title: 'ppv2 (July 2021)', description: 'Diff spike nerf, AR buff, FL-AR adjust'},
-    '2021november': {title: 'ppv2 (Nov 2021)', description: 'Rhythm buff, slider buff, FL skill'},
+    'ss': { title: 'PP if SS', description: 'PP if player SS\'d every realistic map (basically that are chokes now)' },
+    'fc': { title: 'PP if FC', description: 'PP if player FC\'d every realistic map (basically that are chokes now)' },
+    'v1': { title: 'ppv1', description: 'Precursor to current pp system. Depends on map age, playcount, passcount, relative playcount, ss ratio, accuracy and mods' },
+    '2014may': { title: 'ppv2 (May 2014)', description: 'First release of ppv2' },
+    '2014july': { title: 'ppv2 (July 2014)', description: '1.5x star difficulty, aim nerfed, acc and length buffed' },
+    '2015february': { title: 'ppv2 (Feb 2015)', description: 'High CS buff, FL depends on length, high ar is now 10.33' },
+    '2015april': { title: 'ppv2 (April 2015)', description: 'Slight high cs nerf' },
+    '2018': { title: 'ppv2 (2018)', description: 'HD adjustment' },
+    '2019': { title: 'ppv2 (2019)', description: 'Angles, speed, spaced streams' },
+    '2021january': { title: 'ppv2 (Jan 2021)', description: 'High AR nerf, NF & SO buff, speed and acc adjustment' },
+    '2021july': { title: 'ppv2 (July 2021)', description: 'Diff spike nerf, AR buff, FL-AR adjust' },
+    '2021november': { title: 'ppv2 (Nov 2021)', description: 'Rhythm buff, slider buff, FL skill' },
 }
 
 export function getScoreForLevel(level) {
@@ -520,6 +520,7 @@ export function FilterStarratingArray(sr_arr, mods_enum) {
 export async function MassCalculatePerformance(scores) {
     // scores.forEach(score => {
     let uniqueSystems = [];
+    console.log(scores[0]);
     for await (const score of scores) {
         const recalcs = await Promise.all([
             {
@@ -583,8 +584,6 @@ export async function MassCalculatePerformance(scores) {
         });
     }
 
-    console.log(scores[200]);
-
     //calculate pp weights
     uniqueSystems.forEach(system => {
         scores.sort((a, b) => {
@@ -595,8 +594,11 @@ export async function MassCalculatePerformance(scores) {
         scores.forEach(score => {
             let valid = true;
 
-            if (system === 'ss' || system === 'fc') { valid = isScoreRealistic(score); }
+            // if (system === 'ss' || system === 'fc') { valid = isScoreRealistic(score); }
             valid = valid && (isNaN(score.recalc[system]?.total) ? false : valid);
+            if (!valid) {
+                console.log(`system: ${system}, ${score.beatmap_id}`, score.beatmap);
+            }
             valid = valid && (score.beatmap.approved === 1 || score.beatmap.approved === 2);
 
             if (valid) {
@@ -607,8 +609,6 @@ export async function MassCalculatePerformance(scores) {
             }
         });
     });
-
-    console.log(scores[0]);
 
     scores.sort((a, b) => {
         return b.pp - a.pp;

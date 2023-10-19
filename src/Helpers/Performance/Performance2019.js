@@ -102,7 +102,7 @@ function getTotalValue(data) {
 }
 
 function getAimValue(data) {
-    let raw_aim = data.modded_sr.aim_diff;
+    let raw_aim = data.modded_sr.aim;
 
     if (data.score.enabled_mods & mods.TD) {
         raw_aim = Math.pow(raw_aim, 0.8); // TD nerf
@@ -156,7 +156,7 @@ function getAimValue(data) {
 }
 
 function getSpeedValue(data) {
-    let speed = Math.pow(5.0 * Math.max(1.0, data.modded_sr.speed_diff / 0.0675) - 4.0, 3.0) / 100000.0;
+    let speed = Math.pow(5.0 * Math.max(1.0, data.modded_sr.speed / 0.0675) - 4.0, 3.0) / 100000.0;
 
     // speed *= 0.95 + 0.4 * Math.min(1.0, data.totalhits / 2000.0) + (data.totalhits > 2000 ? Math.log10(data.totalhits / 2000.0) * 0.5 : 0.0); //length bonus
     let length_bonus = 0.95 + 0.4 * Math.min(data.totalhits / 2000, 1) +
