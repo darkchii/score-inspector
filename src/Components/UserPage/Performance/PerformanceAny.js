@@ -6,6 +6,7 @@ import { toFixedNumber } from '../../../Helpers/Misc';
 import TopplaysModal from '../../Modals/TopplaysModal';
 import GlowBar from '../../UI/GlowBar';
 import { PP_SYSTEM_NAMES } from '../../../Helpers/Osu.js';
+var _ = require('lodash');
 
 //should be able to process any normal performance data (2014may, 2014july, 2018 etc)
 function PerformanceAny(props) {
@@ -13,10 +14,17 @@ function PerformanceAny(props) {
     const [ppDiff, setPPDiff] = useState(0);
 
     const openModal = async () => {
-        var _scores = JSON.parse(JSON.stringify(props.data.scores));
-        _scores.sort((a, b) => {
+        let scores = props.data.scores;
+        scores.sort((a, b) => {
             if (a.recalc[props.pp_version].total > b.recalc[props.pp_version].total) { return -1; }
             if (a.recalc[props.pp_version].total < b.recalc[props.pp_version].total) { return 1; }
+            return 0;
+        });
+        
+        var _scores = _.cloneDeep(props.data.scores.slice(0, 2000));
+        scores.sort((a, b) => {
+            if (a.pp > b.pp) { return -1; }
+            if (a.pp < b.pp) { return 1; }
             return 0;
         });
         setModalData({
