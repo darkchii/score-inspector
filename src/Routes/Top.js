@@ -7,6 +7,7 @@ import { getBestScores } from "../Helpers/OsuAlt";
 import { prepareScores } from "../Helpers/ScoresProcessor";
 import { Helmet } from "react-helmet";
 import config from "../config.json";
+import { MassCalculatePerformance } from "../Helpers/Osu.js";
 
 const SCORES_TO_FETCH = 10;
 const PERIODS = [
@@ -34,19 +35,24 @@ function Top(props) {
                 await Promise.all([
                     getBestScores(selected_period.value, "pp", SCORES_TO_FETCH, false),
                     getBestScores(selected_period.value, "score", SCORES_TO_FETCH, false)
-                ]).then((values) => {
+                ]).then(async (values) => {
+                    const [pp_scores] = await MassCalculatePerformance(values[0]);
+                    const [sc_scores] = await MassCalculatePerformance(values[1]);
+                    const pp_scores_prep = prepareScores(null, pp_scores, null, false);
+                    const sc_scores_prep = prepareScores(null, sc_scores, null, false);
                     const _scores = {
                         0: {
                             name: 'Performance',
-                            scores: prepareScores(null, values[0], null, false),
+                            scores: pp_scores_prep,
                             significantStat: 'pp'
                         },
                         1: {
                             name: 'Score',
-                            scores: prepareScores(null, values[1], null, false),
+                            scores: sc_scores_prep,
                             significantStat: 'score'
                         },
                     }
+                    console.log(_scores);
                     setScores(_scores);
                 });
             } catch (err) {
@@ -126,7 +132,7 @@ function Top(props) {
                                                                         </Box>
                                                                         <Box sx={{ float: 'right' }}>
                                                                             <Typography sx={{ textAlign: 'right' }} variant='h6'>
-                                                                                {scores[i].significantStat === 'pp' && !score.is_fc ? `(${Math.round(score.pp_fc.total).toLocaleString('en-US')}pp if FC)` : ''} {Math.round(score[scores[i].significantStat]).toLocaleString('en-US')}{scores[i].significantStat === 'pp' ? `pp` : ''}
+                                                                                {(scores[i].significantStat === 'pp' && !score.is_fc && score.recalc['fc']) ? `(${Math.round(score.recalc['fc']?.total).toLocaleString('en-US')}pp if FC)` : ''} {Math.round(score[scores[i].significantStat]).toLocaleString('en-US')}{scores[i].significantStat === 'pp' ? `pp` : ''}
                                                                             </Typography>
                                                                             <Typography sx={{ textAlign: 'right' }} variant='body1'>
                                                                                 {score.modString} {score.is_fc ? 'FC' : ''} {Math.round(score.accuracy * 100) / 100}% {Math.round(score.beatmap.modded_sr.star_rating * 10) / 10}*
