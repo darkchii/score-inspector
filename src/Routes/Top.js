@@ -40,6 +40,19 @@ function Top(props) {
                     const [sc_scores] = await MassCalculatePerformance(values[1]);
                     const pp_scores_prep = prepareScores(null, pp_scores, null, false);
                     const sc_scores_prep = prepareScores(null, sc_scores, null, false);
+
+                    pp_scores_prep.sort((a, b) => {
+                        if (a.pp > b.pp) { return -1; }
+                        if (a.pp < b.pp) { return 1; }
+                        return 0;
+                    });
+
+                    sc_scores_prep.sort((a, b) => {
+                        if (a.score > b.score) { return -1; }
+                        if (a.score < b.score) { return 1; }
+                        return 0;
+                    });
+
                     const _scores = {
                         0: {
                             name: 'Performance',
