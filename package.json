@@ -15,7 +15,7 @@
     "@mui/x-charts": "^6.0.0-alpha.13",
     "@mui/x-data-grid": "^6.15.0",
     "@mui/x-date-pickers": "^6.16.0",
-    "axios": "^1.5.0",
+    "axios": "^1.6.0",
     "buffer": "^6.0.3",
     "chart.js": "^4.4.0",
     "chartjs-chart-geo": "^4.2.5",
