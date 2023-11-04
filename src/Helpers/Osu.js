@@ -26,6 +26,7 @@ export const PP_SYSTEM_NAMES = {
     '2021january': { title: 'ppv2 (Jan 2021)', description: 'High AR nerf, NF & SO buff, speed and acc adjustment' },
     '2021july': { title: 'ppv2 (July 2021)', description: 'Diff spike nerf, AR buff, FL-AR adjust' },
     '2021november': { title: 'ppv2 (Nov 2021)', description: 'Rhythm buff, slider buff, FL skill' },
+    '2023xexxarProposal': { title: 'length bonus removal', description: 'A PP change proposal to nerf length bonus' },
 }
 
 export function getScoreForLevel(level) {
@@ -527,56 +528,6 @@ export async function MassCalculatePerformance(scores) {
             {
                 name: 'live',
                 calc: getCalculator('live', { score: score })
-            },
-            {
-                name: 'ss',
-                checkRealism: true,
-                calc: getCalculator('live', { count300: score.count300 + score.countmiss + score.count100 + score.count50, count100: 0, count50: 0, countmiss: 0, combo: score.beatmap.maxcombo, score: score })
-            },
-            {
-                name: 'fc',
-                checkRealism: true,
-                calc: getCalculator('live', { count300: score.count300 + score.countmiss, count100: score.count100, count50: score.count50, countmiss: 0, combo: score.beatmap.maxcombo, score: score })
-            },
-            {
-                name: 'v1',
-                calc: getCalculator('v1', { score: score })
-            },
-            {
-                name: '2014may',
-                calc: getCalculator('2014may', { score: score })
-            },
-            {
-                name: '2014july',
-                calc: getCalculator('2014july', { score: score })
-            },
-            {
-                name: '2015february',
-                calc: getCalculator('2015february', { score: score })
-            },
-            {
-                name: '2015april',
-                calc: getCalculator('2015april', { score: score })
-            },
-            {
-                name: '2018',
-                calc: getCalculator('2018', { score: score })
-            },
-            {
-                name: '2019',
-                calc: getCalculator('2019', { score: score })
-            },
-            {
-                name: '2021january',
-                calc: getCalculator('2021january', { score: score })
-            },
-            {
-                name: '2021july',
-                calc: getCalculator('2021july', { score: score })
-            },
-            {
-                name: '2021november',
-                calc: getCalculator('2021november', { score: score })
             }
         ]);
 

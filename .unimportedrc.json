@@ -1,0 +1,17 @@
+{
+  "ignoreUnresolved": [
+    [
+      "./config",
+      [
+        "src\\App.js"
+      ]
+    ]
+  ],
+  "ignoreUnused": [
+    "chartjs-plugin-annotation",
+    "chartjs-plugin-datalabels",
+    "chartjs-plugin-zoom",
+    "react-scripts"
+  ],
+  "ignoreUnimported": []
+}
