@@ -1,5 +1,6 @@
 import { toast } from "react-toastify";
 import config from "../config.json";
+import moment from "moment";
 
 export const sleep = ms => new Promise(r => setTimeout(r, ms));
 
@@ -142,3 +143,17 @@ export function linearToLogarithmic(x) {
 export function pxToRem(number, baseNumber = 16) {
     return `${number / baseNumber}rem`;
 }
+
+export function formatDuration(seconds) {
+    const duration = moment.duration(seconds, 'seconds');
+  
+    if (duration.asDays() >= 1) {
+      return duration.asDays() + 'd';
+    } else if (duration.asHours() >= 1) {
+      return duration.asHours() + 'h';
+    } else if (duration.asMinutes() >= 1) {
+      return duration.asMinutes() + 'm';
+    } else {
+      return duration.asSeconds() + 's';
+    }
+  }

@@ -6,6 +6,7 @@ import { findUsers } from "../../Helpers/OsuAlt";
 import { useNavigate } from "react-router-dom/dist";
 import PlayerCard from "../PlayerCard";
 import SearchIcon from '@mui/icons-material/Search';
+import { sleep } from "../../Helpers/Misc.js";
 
 const style = {
     position: 'absolute',
@@ -27,6 +28,9 @@ function UserSearchModal(props, ref) {
             const delayDebounceFn = setTimeout(() => {
                 setIsSearching(true);
                 (async () => {
+                    setResultList([]);
+                    //wait 500ms before searching
+                    await sleep(500);
                     const res = await findUsers(searchVal);
                     setResultList(res ?? []);
                     setIsSearching(false);

@@ -20,66 +20,117 @@ const beatmapParams = [
         example: '1,2,4'
     },
     {
-        name: "approved_start",
+        name: "approved",
+        min_attr: "start",
+        max_attr: "end",
         required: false,
-        description: "Filter maps approved after this date",
-        example: '2023-10-01'
-    },
-    {
-        name: "approved_end",
-        required: false,
-        description: "Filter maps approved before this date",
+        type: "range",
+        description: "Filter maps on approval/rank date",
         example: '2023-10-31'
     },
     {
-        name: "length_min",
+        name: "length",
         required: false,
-        description: "Maps with length greater than this value (in seconds)",
-        example: '180'
-    },
-    {
-        name: "length_max",
-        required: false,
-        description: "Maps with length less than this value (in seconds)",
+        type: "range",
+        description: "Filter on beatmap length (in seconds)",
         example: '600'
     },
     {
-        name: "ar_min",
+        name: "stars",
         required: false,
-        description: "Maps with AR greater than this value",
+        type: "range",
+        description: "Filter on beatmap star rating (unmodded)",
+        example: '6.5'
+    },
+    {
+        name: "ar",
+        required: false,
+        type: "range",
+        description: "Filter on beatmap approach rate",
         example: '3'
     },
     {
-        name: "ar_max",
+        name: "cs",
         required: false,
-        description: "Maps with AR less than this value",
-        example: '7'
-    }
+        type: "range",
+        description: "Filter on beatmap circle size",
+        example: '3'
+    },
+    {
+        name: "od",
+        required: false,
+        type: "range",
+        description: "Filter on beatmap overall difficulty",
+        example: '3'
+    },
+    {
+        name: "hp",
+        required: false,
+        type: "range",
+        description: "Filter on beatmap health drain",
+        example: '3'
+    },
+    {
+        name: "maxcombo",
+        required: false,
+        type: "range",
+        description: "Filter on beatmap max combo",
+        example: '2000'
+    },
 ]
 
 const scoreParams = [
     {
-        name: "played_start",
+        name: "enabled_mods",
         required: false,
-        description: "Filter maps played after this date",
+        description: "Filter maps on mods used (use mod enum values, comma separated)",
+        example: '8,16,24 (HD, HR, HDHR)'
+    },
+    {
+        name: "played",
+        min_attr: "start",
+        max_attr: "end",
+        required: false,
+        type: "range",
+        description: "Filter maps on date played",
         example: '2023-10-01'
     },
     {
-        name: "played_end",
+        name: "pp",
         required: false,
-        description: "Filter maps played before this date",
-        example: '2023-10-31'
-    }
+        type: "range",
+        description: "Filter maps on PP achieved",
+        example: '727'
+    },
+    {
+        name: "accuracy",
+        required: false,
+        type: "range",
+        description: "Filter maps on accuracy",
+        example: '96'
+    },
+    {
+        name: "combo",
+        required: false,
+        type: "range",
+        description: "Filter on score combo",
+        example: '1100'
+    },
 ]
+
+beatmapParams.forEach(param => param.table = 'beatmap');
+scoreParams.forEach(param => param.table = 'score');
 
 const doc = {
     title: "osu!inspector API Documentation",
+    description: "Documentation for the public api. Get an API key settings modal accessed by profile picture in the top right. Requires login.",
     base_url: `${GetAPI()}public`,
     paths: [
         {
             type: "GET",
             path: "/user/:id",
             description: "Get user statistics by user id",
+            cacheTime: 5 * 60,
             params: [
                 apiKeyParam,
                 userIdParam,
@@ -91,6 +142,7 @@ const doc = {
             type: "GET",
             path: "/user/:id/scores",
             description: "Get user scores",
+            cacheTime: 5 * 60,
             params: [
                 apiKeyParam,
                 userIdParam,

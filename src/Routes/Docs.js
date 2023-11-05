@@ -1,7 +1,8 @@
-import { Box, Chip, Divider, Grid, List, ListItem, ListItemText, Paper, Stack, Typography } from "@mui/material";
+import { Box, Chip, Divider, Grid, List, ListItem, ListItemText, Paper, Stack, Tooltip, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import doc from "../Data/Documentation";
-import { green } from "@mui/material/colors";
+import { green, grey } from "@mui/material/colors";
+import { formatDuration } from "../Helpers/Misc.js";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -19,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
             left: 0,
             width: '2px', // Width of the vertical line
             height: '100%',
-            backgroundColor: '#0074d9', // Change the color as needed
+            backgroundColor: theme.palette.primary.main, // Change the color as needed
         },
         '&::after': {
             content: '""',
@@ -28,7 +29,8 @@ const useStyles = makeStyles((theme) => ({
             left: '0',
             width: '10px', // Width of the horizontal line
             height: '2px', // Height of the horizontal line
-            backgroundColor: '#0074d9', // Change the color as needed
+            // backgroundColor: '#0074d9', // Change the color as needed
+            backgroundColor: theme.palette.primary.main, // Change the color as needed
             transform: 'translateY(-50%)',
         },
         '&:first-child::before': {
@@ -55,6 +57,7 @@ function Docs() {
         <>
             <Grid>
                 <Typography variant="h4">{doc.title}</Typography>
+                <Typography variant="body1">{doc.description}</Typography>
                 <Typography variant="body1">Base API url: {doc.base_url}</Typography>
             </Grid>
             <Grid container spacing={2}>
@@ -65,20 +68,15 @@ function Docs() {
                 }}>
                     <Paper elevation={3} sx={{ height: '100%' }}>
                         <List>
-                            {/* <ListItem button onClick={() => scrollToSection('section1')}>
-                                <ListItemText primary="Section 1" />
-                            </ListItem>
-                            <ListItem button onClick={() => scrollToSection('section2')}>
-                                <ListItemText primary="Section 2" />
-                            </ListItem>
-                            <ListItem button onClick={() => scrollToSection('section3')}>
-                                <ListItemText primary="Section 3" />
-                            </ListItem> */}
                             {
                                 doc.paths.map((path, index) => {
                                     return (
                                         <ListItem key={index} button onClick={() => scrollToSection(`section${index}`)}>
-                                            <ListItemText primary={path.path} />
+                                            <ListItemText primary={path.path} secondary={<>
+                                                <Tooltip title="Cache time" placement="top">
+                                                    <Chip label={formatDuration(path.cacheTime)} size='small' />
+                                                </Tooltip>
+                                            </>} />
                                         </ListItem>
                                     )
                                 })
@@ -100,17 +98,23 @@ function Docs() {
                                     <Grid id={`section${index}`}>
                                         <Typography variant="h6"><Chip label={path.type} size='small' /> {path.path}</Typography>
                                         <Typography variant="body1">{path.description}</Typography>
-                                        <Typography variant="body1">Params:</Typography>
+                                        <Typography variant="body1">Params ({
+                                            //count path.params, but count 2 where param.type === 'range'
+                                            path.params.filter(param => param.type !== 'range').length + path.params.filter(param => param.type === 'range').length * 2
+                                        } total):</Typography>
                                         <List className={classes.root}>
                                             {
                                                 path.params.map((param, index) => {
                                                     return (
                                                         <ListItem className={classes.listItem}>
-                                                            <Stack direction="column" sx={{width: '100%'}}>
+                                                            <Stack direction="column" sx={{ width: '100%' }}>
                                                                 <Stack direction="row" spacing={1}>
-                                                                    <Typography variant="body1">{param.name}</Typography>
+                                                                    <Typography variant="body1">{!param.type || param.type === 'regular' ? param.name : `${param.name}_${param.min_attr ?? 'min'} / ${param.name}_${param.max_attr ?? 'max'}`}</Typography>
                                                                     {
-                                                                        param.required && <Typography sx={{ fontSize: '0.7rem', color: green[500] }}>required</Typography>
+                                                                        param.required && <Typography sx={{ fontSize: '0.7rem', color: green[500] }}> required</Typography>
+                                                                    }
+                                                                    {
+                                                                        param.table !== undefined && <Tooltip title={`This is a ${param.table} field`}><Typography sx={{ fontSize: '0.7rem', color: grey[500] }}> {param.table}</Typography></Tooltip>
                                                                     }
                                                                 </Stack>
                                                                 <Typography sx={{ fontSize: '0.7rem' }}>{param.description}</Typography>
@@ -118,7 +122,7 @@ function Docs() {
                                                                     param.example && <Typography sx={{ fontSize: '0.7rem' }}>Example: {param.example}</Typography>
                                                                 }
                                                                 {
-                                                                    index < path.params.length - 1 && <Divider sx={{mt: 2}}/>
+                                                                    index < path.params.length - 1 && <Divider sx={{ mt: 2 }} />
                                                                 }
                                                             </Stack>
                                                         </ListItem>

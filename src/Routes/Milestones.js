@@ -19,7 +19,6 @@ const MILESTONES = [
         name: 'Global Rank',
         getValue: (value) => (<span style={{ fontWeight: 'bold' }}>{value.toLocaleString('en-US')}</span>),
         getText: (value) => (<span>Reached top #{value}</span>),
-        icon: <LeaderboardIcon />
     }, {
         name: 'Level',
         getValue: (value) => (<span style={{ fontWeight: 'bold' }}>{value.toLocaleString('en-US')}</span>),
@@ -167,7 +166,6 @@ function Milestones() {
                                                             })}
                                                         </Link>
                                                     </TableCell>
-                                                    <TableCell>{formatter?.icon ?? ''}</TableCell>
                                                     <TableCell>{text}</TableCell>
                                                 </TableRow>
                                             )
