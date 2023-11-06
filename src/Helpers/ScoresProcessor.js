@@ -86,7 +86,7 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
         data.total.score += score.score ?? 0;
         data.total.acc += score.accuracy ?? 0;
         data.total.length += score.beatmap.modded_length ?? 0;
-        data.total.star_rating += score.beatmap.modded_sr['live'].star_rating ?? 0;
+        data.total.star_rating += score.beatmap.modded_sr.star_rating ?? 0;
         data.total.scoreLazer += score.scoreLazer ?? 0;
         data.total.is_fc += score.is_fc ?? 0;
     }
@@ -304,7 +304,7 @@ function getBestScores(scores) {
                 _scores.best_pp = score;
             }
             if ((score.enabled_mods & mods.NF) === 0) {
-                if ((_scores.best_sr === null || score.beatmap.modded_sr['live'].star_rating > _scores.best_sr.beatmap.modded_sr['live'].star_rating)) {
+                if ((_scores.best_sr === null || score.beatmap.modded_sr.star_rating > _scores.best_sr.beatmap.modded_sr.star_rating)) {
                     _scores.best_sr = score;
                 }
             }

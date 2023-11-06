@@ -51,7 +51,7 @@ function ScoreView(props) {
 
         _score.beatmap = JSON.parse(JSON.stringify(beatmap));
 
-        _scoreData.sr = _score.beatmap.modded_sr['live'];
+        _scoreData.sr = _score.beatmap.modded_sr;
         if(pp_version !== 'live'){
             _scoreData.sr = _score.beatmap.modded_sr[pp_version] ?? _score.beatmap.modded_sr;
         }

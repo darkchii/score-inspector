@@ -128,7 +128,7 @@ function PerformanceRecordsChart(props) {
             });
 
             const _pointData = props.data.map((item) => {
-                const img = new Image(32, 32);
+                const img = new Image(26, 26);
                 img.src = `https://a.ppy.sh/${item.user_id}`;
                 img.style.borderRadius = '50%';
                 return img;

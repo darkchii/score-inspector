@@ -116,7 +116,7 @@ function SectionScores(props) {
                 title: `${score.beatmap.title} [${score.beatmap.diffname}]`,
                 score: score.score,
                 mods: score.enabled_mods,
-                sr: score.beatmap.modded_sr['live'].star_rating,
+                sr: score.beatmap.modded_sr.star_rating,
                 pp: score.recalc['live'].total,
                 aimpp: score.recalc['live'].aim,
                 speedpp: score.recalc['live'].speed,
@@ -169,8 +169,8 @@ function SectionScores(props) {
             if (filter.scoreRange[0] !== null && filter.scoreRange[0] >= 0) { scores = scores.filter(score => score.score >= filter.scoreRange[0]); }
             if (filter.scoreRange[1] !== null && filter.scoreRange[1] >= 0) { scores = scores.filter(score => score.score <= filter.scoreRange[1]); }
 
-            if (filter.starsRange[0] !== null && filter.starsRange[0] >= 0) { scores = scores.filter(score => score.beatmap.modded_sr['live'].star_rating >= filter.starsRange[0]); }
-            if (filter.starsRange[1] !== null && filter.starsRange[1] >= 0) { scores = scores.filter(score => score.beatmap.modded_sr['live'].star_rating <= filter.starsRange[1]); }
+            if (filter.starsRange[0] !== null && filter.starsRange[0] >= 0) { scores = scores.filter(score => score.beatmap.modded_sr.star_rating >= filter.starsRange[0]); }
+            if (filter.starsRange[1] !== null && filter.starsRange[1] >= 0) { scores = scores.filter(score => score.beatmap.modded_sr.star_rating <= filter.starsRange[1]); }
 
             if (filter.ppRange[0] !== null && filter.ppRange[0] >= 0) { scores = scores.filter(score => score.pp >= filter.ppRange[0]); }
             if (filter.ppRange[1] !== null && filter.ppRange[1] >= 0) { scores = scores.filter(score => score.pp <= filter.ppRange[1]); }

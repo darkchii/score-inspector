@@ -6,6 +6,12 @@ import { getCompletionData } from "../../Helpers/OsuAlt";
 import Loader from "../UI/Loader";
 import BarChart from "../../Helpers/Charts/BarChart";
 
+const KEY_NAMES = {
+    'stars': 'Stars',
+    'length': 'Length',
+    'max_combo': 'Combo',
+}
+
 function SectionCompletion(props) {
     const [graphs, setGraphs] = useState([]);
     const [selectedGraph, setSelectedGraph] = useState('stars');
@@ -22,6 +28,7 @@ function SectionCompletion(props) {
 
             const _graphs = {};
             Object.keys(props.user.data.completion).forEach((key, index) => {
+                const _key = KEY_NAMES[key] ? KEY_NAMES[key] : key;
                 const data = props.user.data.completion[key];
                 const labels = data.map((item, index) => item.range);
                 const values = data.map((item, index) => (Math.round(item.completion * 100) / 100));
@@ -29,7 +36,7 @@ function SectionCompletion(props) {
                 _graphs[key] = {};
                 _graphs[key].labels = labels;
                 _graphs[key].data = values;
-                _graphs[key].stylizedKey = key.length === 2 ? key.toUpperCase() : capitalize(key);
+                _graphs[key].stylizedKey = _key.length === 2 ? _key.toUpperCase() : capitalize(_key);
             });
             setGraphs(_graphs);
             setIsWorking(false);
@@ -57,7 +64,8 @@ function SectionCompletion(props) {
                     </Grid>
                     {
                         Object.keys(graphs).map((key, index) => {
-                            const stylizedKey = key.length === 2 ? key.toUpperCase() : capitalize(key);
+                            let _key = KEY_NAMES[key] ? KEY_NAMES[key] : key;
+                            const stylizedKey = _key.length === 2 ? _key.toUpperCase() : capitalize(_key);
                             return (
                                 <Button variant={selectedGraph === key ? 'contained' : 'outlined'} sx={{ cursor: 'pointer', display: 'inline-block', mr: 1 }} onClick={() => setSelectedGraph(key)}>{stylizedKey}</Button>
                                 //<Typography variant='subtitle1' sx={{ cursor: 'pointer', display: 'inline-block', mr: 1 }} onClick={() => setSelectedGraph(key)}>{stylizedKey}</Typography>
@@ -70,7 +78,8 @@ function SectionCompletion(props) {
             <Grid container spacing={0.5}>
                 {
                     Object.keys(props.user.data.completion).map((key, index) => {
-                        const stylizedKey = key.length === 2 ? key.toUpperCase() : capitalize(key);
+                        let _key = KEY_NAMES[key] ? KEY_NAMES[key] : key;
+                        const stylizedKey = _key.length === 2 ? _key.toUpperCase() : capitalize(_key);
                         return (
                             <Grid item xs={3}>
                                 <Paper sx={{ p: 0.5 }}>
