@@ -91,7 +91,7 @@ function SectionCompletion(props) {
                                                     props.user.data.completion[key].map((item, index) => {
                                                         //we want a chip that colors red to green based on completion, use lerp
                                                         const _completion = item.completion / 100;
-                                                        const color = `rgb(${Math.round(255 - (_completion * 255))}, ${Math.round(_completion * 255)}, 0)`;
+                                                        const color = `rgb(${Math.round(175 - (_completion * 175))}, ${Math.round(_completion * 175)}, 0)`;
                                                         return (
                                                             <TableRow>
                                                                 <TableCell sx={{ fontWeight: 'bold' }}>{item.range}</TableCell>
