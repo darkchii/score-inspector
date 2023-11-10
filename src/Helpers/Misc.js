@@ -146,14 +146,28 @@ export function pxToRem(number, baseNumber = 16) {
 
 export function formatDuration(seconds) {
     const duration = moment.duration(seconds, 'seconds');
-  
+
     if (duration.asDays() >= 1) {
-      return duration.asDays() + 'd';
+        return duration.asDays() + 'd';
     } else if (duration.asHours() >= 1) {
-      return duration.asHours() + 'h';
+        return duration.asHours() + 'h';
     } else if (duration.asMinutes() >= 1) {
-      return duration.asMinutes() + 'm';
+        return duration.asMinutes() + 'm';
     } else {
-      return duration.asSeconds() + 's';
+        return duration.asSeconds() + 's';
     }
-  }
+}
+
+export function formatNumberAsSize(number) {
+    if (number >= 1e12) {
+        return (number / 1e12).toFixed(1) + 'T';
+    } else if (number >= 1e9) {
+        return (number / 1e9).toFixed(1) + 'B';
+    } else if (number >= 1e6) {
+        return (number / 1e6).toFixed(1) + 'M';
+    } else if (number >= 1e3) {
+        return (number / 1e3).toFixed(1) + 'K';
+    } else {
+        return number.toString();
+    }
+}

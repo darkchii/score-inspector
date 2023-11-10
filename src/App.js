@@ -102,7 +102,7 @@ function App() {
         <Box sx={{ pb: 2 }}>
           <Header account={loginData} />
         </Box>
-        <Container maxWidth='xl'>
+        <Box sx={{ pl: 2, pr: 2 }}>
           <ToastContainer hideProgressBar />
           <Card sx={{
             backgroundColor: `${Theme.palette.background.paper}dd`,
@@ -160,7 +160,7 @@ function App() {
           <Box sx={{ pt: 2, pb: 2 }}>
             <Footer />
           </Box>
-        </Container>
+        </Box>
       </ThemeProvider>
       {
         getSettings().snowFall ?

@@ -1,19 +1,22 @@
-import { Alert, Box, Button, Card, CardContent, CircularProgress, Divider, Grid, Link, Modal, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from '@mui/material';
+import { Alert, Avatar, Box, Button, Card, CardContent, CircularProgress, Divider, Grid, Link, Modal, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from '@mui/material';
 import { Link as RouterLink, useSearchParams } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
-import { formatBytes, GetAPI, MODAL_STYLE, parseReadableStreamToJson, showNotification } from '../Helpers/Misc';
+import { formatBytes, formatNumberAsSize, GetAPI, MODAL_STYLE, parseReadableStreamToJson, showNotification } from '../Helpers/Misc';
 import { GetFormattedName, GetTopVisited, LoginUser } from '../Helpers/Account';
 import axios from 'axios';
 import moment from 'moment';
 import momentDurationFormatSetup from "moment-duration-format";
 import ScoreSubmissions from '../Components/ScoreSubmissions';
-import { green } from '@mui/material/colors';
+import { blue, green, red } from '@mui/material/colors';
 import GlowBar from '../Components/UI/GlowBar';
 import Loader from '../Components/UI/Loader';
 import config from "../config.json";
 import { useTheme } from '@emotion/react';
 import { Helmet } from 'react-helmet';
 import info from '../Data/Info';
+import PersonIcon from '@mui/icons-material/Person';
+import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
+import BadgeIcon from '@mui/icons-material/Badge';
 
 momentDurationFormatSetup(moment);
 
@@ -154,6 +157,11 @@ function Root() {
                     <Button size='small' variant='contained' component='a' href='https://discord.gg/VZWRZZXcW4' target='_blank'>Join</Button>
                 </Alert>
             </Box>
+            <Grid container spacing={2} sx={{ pt: 1, pb: 1 }}>
+                <Grid item xs={12} md={4}><StatCard stats={(parseInt(serverInfo?.database?.alt?.total_users ?? 0)).toLocaleString('en-US')} title={`Players (${(parseInt(serverInfo?.database?.alt?.tracked_users ?? 0)).toLocaleString('en-US')} live)`} color={blue} icon={<PersonIcon />} /></Grid>
+                <Grid item xs={12} md={4}><StatCard stats={formatNumberAsSize(parseInt(serverInfo?.database?.alt?.total_scores ?? 0))} title={'Scores'} color={red} icon={<WorkspacePremiumIcon />} /></Grid>
+                <Grid item xs={12} md={4}><StatCard stats={(parseInt(serverInfo?.database?.inspector?.total_visits ?? 0)).toLocaleString('en-US')} title={'Profile visits'} color={green} icon={<BadgeIcon />} /></Grid>
+            </Grid>
             <Grid container spacing={2}>
                 <Grid item xs={12} md={8.5}>
                     <Grid container spacing={2}>
@@ -225,12 +233,9 @@ function Root() {
                                                                 <Typography variant='body2'>osu!alt users: {(parseInt(serverInfo?.database?.alt?.total_users ?? 0)).toLocaleString('en-US')}</Typography>
                                                                 <Typography variant='body2'>osu!alt live users: {(parseInt(serverInfo?.database?.alt?.tracked_users ?? 0)).toLocaleString('en-US')}</Typography>
                                                                 <Typography variant='body2'>osu!alt scores: {(parseInt(serverInfo?.database?.alt?.total_scores ?? 0)).toLocaleString('en-US')}</Typography>
-                                                                <Typography variant='body2'>osu!alt size: {formatBytes(serverInfo?.database?.alt?.size ?? 0)}</Typography>
                                                             </Grid>
                                                             <Grid item xs={12} md={6}>
                                                                 <Typography variant='body2'>API Uptime: {moment.duration(serverInfo?.system?.uptime ?? 0, 'second').format()}</Typography>
-                                                                <Typography variant='body2'>API Requests: {(serverInfo?.database?.inspector?.api?.requests ?? 0).toLocaleString('en-US')}</Typography>
-                                                                <Typography variant='body2'>API Data Sent: {formatBytes(serverInfo?.database?.inspector?.api?.bytes_sent ?? 0)}</Typography>
                                                                 <Typography variant='body2'>Uptime: {moment.duration(serverInfo?.system?.system_time?.uptime ?? 0, 'second').format()}</Typography>
                                                                 <Typography variant='body2'>OS: {serverInfo?.system?.os?.distro ?? 'n/a'}</Typography>
                                                                 <Typography variant='body2'>CPU: {serverInfo?.system?.cpu?.manufacturer ?? ''} {serverInfo?.system?.cpu?.brand ?? ''}</Typography>
@@ -270,7 +275,7 @@ function Root() {
                                             info.map((v, i) => {
                                                 return (
                                                     <Grid item xs={12} md={6}>
-                                                        <Typography variant='title' sx={{fontSize: '18px'}}>{v.question}</Typography>
+                                                        <Typography variant='title' sx={{ fontSize: '18px' }}>{v.question}</Typography>
                                                         <Typography variant='body2'>{v.answer}</Typography>
                                                     </Grid>
                                                 )
@@ -397,6 +402,80 @@ function Root() {
             </Grid>
         </>
     );
+}
+
+function StatCard(props) {
+    const theme = useTheme();
+
+    return <>
+        <Paper sx={{
+            backgroundColor: props.color[600],
+            overflow: 'hidden',
+            position: 'relative'
+        }}>
+            <Box sx={{ p: 1.5, zIndex: 300 }}>
+                <Box sx={{
+                    position: 'absolute',
+                    width: '100%',
+                    height: '100%',
+                    zIndex: 200,
+                    '&:after': {
+                        content: '""',
+                        position: 'absolute',
+                        width: 0,
+                        height: 0,
+                        borderLeft: '100px solid transparent',
+                        borderRight: '100px solid transparent',
+                        borderBottom: '173.2px solid white', // You can adjust the color and size here
+                        top: -85,
+                        right: -95,
+                        opacity: 0.1
+                    },
+                    '&:before': {
+                        content: '""',
+                        position: 'absolute',
+                        width: 0,
+                        height: 0,
+                        borderLeft: '100px solid transparent',
+                        borderRight: '100px solid transparent',
+                        borderBottom: '173.2px solid white', // You can adjust the color and size here
+                        top: -125,
+                        right: -15,
+                        opacity: 0.1,
+                    }
+                }} />
+                <Grid container direction="column" sx={{ position: 'relative', zIndex: 500 }}>
+                    <Grid item>
+                    </Grid>
+                    <Grid item>
+                        <Grid container direction="row" alignItems="center" spacing={1}>
+                            <Grid item>
+                                <Avatar variant="rounded" sx={{ color: props.color[300], backgroundColor: 'white' }}>
+                                    {props.icon}
+                                </Avatar>
+                            </Grid>
+                            <Grid item>
+                                <Typography sx={{ fontSize: '2.125rem', fontWeight: 500, mt: 1.75, mb: 0.75 }}>
+                                    {props?.stats}
+                                </Typography>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                    <Grid item sx={{ mb: 1.25 }}>
+                        <Typography
+                            sx={{
+                                fontSize: '1rem',
+                                fontWeight: 500,
+                                color: theme.palette.secondary[200]
+                            }}
+                        >
+                            {props.title}
+                        </Typography>
+                    </Grid>
+                </Grid>
+            </Box>
+        </Paper>
+    </>
 }
 
 export default Root;

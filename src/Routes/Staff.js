@@ -70,7 +70,7 @@ function Staff(props) {
                                                 {
                                                     role.users && role.users.length > 0 ?
                                                         role.users?.map((user, index) => (
-                                                            <Grid item xs={12} md={6} lg={4} sx={{ height: '160px', mt: 1 }}>
+                                                            <Grid item xs={12} md={4} lg={3} sx={{ height: '160px', mt: 1 }}>
                                                                 <PlayerCard onClick={() => { navigate(`/user/${user.osu.id}`); }} user={user} />
                                                             </Grid>
                                                         )) : <>

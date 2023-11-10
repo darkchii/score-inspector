@@ -160,7 +160,7 @@ function Header(props) {
 
             <Box>
                 <AppBar position="static">
-                    <Container maxWidth='xl'>
+                    <Box sx={{ pl: 2, pr: 2 }}>
                         <Toolbar disableGutters>
                             <IconButton
                                 color="inherit"
@@ -237,7 +237,7 @@ function Header(props) {
                                 </Menu>
                             </Box>
                         </Toolbar>
-                    </Container>
+                    </Box>
                 </AppBar>
                 <Box component="nav">
                     <Drawer
