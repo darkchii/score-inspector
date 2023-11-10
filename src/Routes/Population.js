@@ -14,8 +14,7 @@ import {
 import WorldAtlas from '../Assets/countries-110m.json';
 import Countries from '../Assets/countries.json';
 import { lerpColor, linearToLogarithmic } from "../Helpers/Misc";
-import { useTheme } from "@mui/styles";
-import { Box, Button, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableRow, Tooltip as MUITooltip, Typography, TableHead, Container, Alert } from "@mui/material";
+import { Box, Button, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableRow, Tooltip as MUITooltip, Typography, TableHead, Container, Alert, useTheme } from "@mui/material";
 import ReactCountryFlag from "react-country-flag";
 import Loader from "../Components/UI/Loader";
 import { Helmet } from 'react-helmet';

@@ -14,7 +14,7 @@ import SectionGrades from "./SectionGrades";
 import SectionGraphs from "./SectionGraphs";
 import SectionScores from "./SectionScores";
 import SectionDaily from "./SectionDaily";
-import SectionComments from "./SectionComments";
+// import SectionComments from "./SectionComments";
 import styled from "@emotion/styled";
 import SectionCompletion from "./SectionCompletion";
 import SectionPacks from "./SectionPacks";
@@ -36,7 +36,7 @@ function UserDataContainer(props) {
         'graphs': '2',
         'scores': '3',
         'completion': '4',
-        'comments': '5',
+        // 'comments': '5',
         'medals': '6',
         'packs': '7',
         'friends': '8'
@@ -52,7 +52,7 @@ function UserDataContainer(props) {
                         <StyledTab icon={<AutoGraphIcon />} iconPosition='start' label='Graphs' value={_IDs['graphs']} />
                         <StyledTab icon={<FormatListBulletedIcon />} iconPosition='start' label='Scores' value={_IDs['scores']} />
                         <StyledTab icon={<GradingIcon />} iconPosition='start' label='Completion' value={_IDs['completion']} />
-                        <StyledTab icon={<InsertCommentIcon />} iconPosition='start' label='Comments' value={_IDs['comments']} />
+                        {/* <StyledTab icon={<InsertCommentIcon />} iconPosition='start' label='Comments' value={_IDs['comments']} /> */}
                         <StyledTab icon={<MilitaryTechIcon />} iconPosition='start' label='Medals' value={_IDs['medals']} />
                         <StyledTab icon={<LayersIcon />} iconPosition='start' label='Packs' value={_IDs['packs']} />
                         <StyledTab disabled={!props.user.inspector_user.is_friends_public} icon={<GroupIcon />} iconPosition='start' label='Friends' value={_IDs['friends']} />
@@ -74,7 +74,7 @@ function UserDataContainer(props) {
                     <SectionScores user={props.user} />
                 </TabPanel>
                 <TabPanel sx={{ p: 0 }} value={_IDs['comments']}>
-                    <SectionComments user={props.user} />
+                    {/* <SectionComments user={props.user} /> */}
                 </TabPanel>
                 <TabPanel sx={{ p: 0 }} value={_IDs['completion']}>
                     <SectionCompletion user={props.user} />

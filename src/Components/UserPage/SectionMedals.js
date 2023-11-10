@@ -1,19 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Alert, AlertTitle, Box, Grid, Paper, Tooltip, Typography } from "@mui/material";
+import { Alert, AlertTitle, Box, Grid, Paper, Tooltip, Typography, styled } from "@mui/material";
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { getMedals } from "../../Helpers/Osu";
-import { makeStyles } from "@mui/styles";
 import { Masonry } from "@mui/lab";
 
-const useStyles = makeStyles({
-    tooltip: {
-        background: 'transparent',
-    },
-});
+const TransparentTooltip = styled(({ className, ...props }) => (
+    <Tooltip {...props} componentsProps={{ tooltip: { className: className } }} />
+))(`
+    background-color: transparent;
+`);
 
 function SectionMedals(props) {
-    const classes = useStyles();
     const [medals, setMedals] = useState([]);
 
     useEffect(() => {
@@ -50,7 +48,7 @@ function SectionMedals(props) {
                                         medals[category].map(medal => {
                                             return (
                                                 <Grid item xs={12 / 8}>
-                                                    <Tooltip
+                                                    <TransparentTooltip
                                                         title={
                                                             <React.Fragment>
                                                                 <Alert severity={medal.achieved ? 'success' : 'error'}>
@@ -61,7 +59,6 @@ function SectionMedals(props) {
                                                         }
                                                         placement="top"
                                                         disableInteractive={true}
-                                                        classes={classes}
                                                     >
                                                         <Box sx={{
                                                             filter: medal.achieved ? 'none' : 'grayscale(100%)',
@@ -82,7 +79,7 @@ function SectionMedals(props) {
                                                                 alt={medal.name}
                                                                 title={medal.name} />
                                                         </Box>
-                                                    </Tooltip>
+                                                    </TransparentTooltip>
                                                 </Grid>
                                             )
                                         })

@@ -1,6 +1,6 @@
 import { Box, Button, Divider, Grid, Paper, Stack, Typography } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
-import MUIRichTextEditor from 'mui-rte';
+// import MUIRichTextEditor from 'mui-rte';
 import { EditorState, convertFromRaw, convertToRaw } from 'draft-js';
 import { DeleteComment, GetComments, GetFormattedName, IsUserLoggedInUnsafe, SendComment } from "../../Helpers/Account";
 import { showNotification } from "../../Helpers/Misc";
@@ -97,14 +97,14 @@ function SectionComments(props) {
                         {
                             IsUserLoggedInUnsafe() ? <>
                                 <Box sx={{ minHeight: '120px' }}>
-                                    <MUIRichTextEditor
+                                    {/* <MUIRichTextEditor
                                         controls={['bold', 'italic', 'underline', 'strikethrough', 'undo', 'redo', 'link', 'media']}
                                         label="Start typing..."
                                         maxLength={300}
                                         ref={ref}
                                         defaultValue={content}
                                         onSave={onSave}
-                                    />
+                                    /> */}
                                 </Box>
                                 <Button disabled={isWorking} sx={{ float: 'right', mb: 2 }} variant='contained' onClick={onComment}>Comment</Button>
                             </> : <>

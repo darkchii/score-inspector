@@ -5,13 +5,20 @@
       [
         "src\\App.js"
       ]
+    ],
+    [
+      "./config",
+      [
+        "src\\App.js"
+      ]
     ]
   ],
   "ignoreUnused": [
     "chartjs-plugin-annotation",
     "chartjs-plugin-datalabels",
     "chartjs-plugin-zoom",
-    "react-scripts"
+    "react-scripts",
+    "react-sticky-box"
   ],
   "ignoreUnimported": []
 }

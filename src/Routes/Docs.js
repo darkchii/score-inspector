@@ -1,51 +1,41 @@
-import { Box, Chip, Divider, Grid, List, ListItem, ListItemText, Paper, Stack, Tooltip, Typography } from "@mui/material";
-import { makeStyles } from "@mui/styles";
+import { Box, Chip, Divider, Grid, List, ListItem, ListItemText, Paper, Stack, Tooltip, Typography, styled } from "@mui/material";
 import doc from "../Data/Documentation";
 import { green, grey } from "@mui/material/colors";
 import { formatDuration } from "../Helpers/Misc.js";
 
-const useStyles = makeStyles((theme) => ({
-    root: {
-        position: 'relative',
-        listStyle: 'none',
-        padding: 0,
+const DocListItem = styled(ListItem)(({ theme }) => ({
+    position: 'relative',
+    paddingLeft: '20px', // Adjust the distance of the vertical line from the left edge
+    '&::before': {
+        content: '""',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        width: '2px', // Width of the vertical line
+        height: '100%',
+        backgroundColor: theme.palette.primary.main, // Change the color as needed
     },
-    listItem: {
-        position: 'relative',
-        paddingLeft: '20px', // Adjust the distance of the vertical line from the left edge
-        '&::before': {
-            content: '""',
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '2px', // Width of the vertical line
-            height: '100%',
-            backgroundColor: theme.palette.primary.main, // Change the color as needed
-        },
-        '&::after': {
-            content: '""',
-            position: 'absolute',
-            top: '50%',
-            left: '0',
-            width: '10px', // Width of the horizontal line
-            height: '2px', // Height of the horizontal line
-            // backgroundColor: '#0074d9', // Change the color as needed
-            backgroundColor: theme.palette.primary.main, // Change the color as needed
-            transform: 'translateY(-50%)',
-        },
-        '&:first-child::before': {
-            height: '50%', // Adjust the height for the first item
-            transform: 'translateY(100%)', // Move the vertical line to the bottom of the first item
-        },
-        '&:last-child::before': {
-            height: '50%', // Adjust the height for the last item
-        },
+    '&::after': {
+        content: '""',
+        position: 'absolute',
+        top: '50%',
+        left: '0',
+        width: '10px', // Width of the horizontal line
+        height: '2px', // Height of the horizontal line
+        // backgroundColor: '#0074d9', // Change the color as needed
+        backgroundColor: theme.palette.primary.main, // Change the color as needed
+        transform: 'translateY(-50%)',
+    },
+    '&:first-child::before': {
+        height: '50%', // Adjust the height for the first item
+        transform: 'translateY(100%)', // Move the vertical line to the bottom of the first item
+    },
+    '&:last-child::before': {
+        height: '50%', // Adjust the height for the last item
     },
 }));
 
 function Docs() {
-    const classes = useStyles();
-
     const scrollToSection = (sectionId) => {
         const section = document.getElementById(sectionId);
         if (section) {
@@ -102,11 +92,15 @@ function Docs() {
                                             //count path.params, but count 2 where param.type === 'range'
                                             path.params.filter(param => param.type !== 'range').length + path.params.filter(param => param.type === 'range').length * 2
                                         } total):</Typography>
-                                        <List className={classes.root}>
+                                        <List sx={{
+                                            position: 'relative',
+                                            listStyle: 'none',
+                                            padding: 0,
+                                        }}>
                                             {
                                                 path.params.map((param, index) => {
                                                     return (
-                                                        <ListItem className={classes.listItem}>
+                                                        <DocListItem>
                                                             <Stack direction="column" sx={{ width: '100%' }}>
                                                                 <Stack direction="row" spacing={1}>
                                                                     <Typography variant="body1">{!param.type || param.type === 'regular' ? param.name : `${param.name}_${param.min_attr ?? 'min'} / ${param.name}_${param.max_attr ?? 'max'}`}</Typography>
@@ -125,7 +119,7 @@ function Docs() {
                                                                     index < path.params.length - 1 && <Divider sx={{ mt: 2 }} />
                                                                 }
                                                             </Stack>
-                                                        </ListItem>
+                                                        </DocListItem>
                                                     )
                                                 })
                                             }
