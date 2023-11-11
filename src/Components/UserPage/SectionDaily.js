@@ -1,16 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Box, Button, ButtonGroup, Card, CardContent, Chip, chipClasses, Grid, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography, useTheme, Tooltip as MUITooltip } from "@mui/material";
+import { Box, Button, ButtonGroup, Card, CardContent, Grid, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography, useTheme, Tooltip as MUITooltip } from "@mui/material";
 import moment from "moment";
 import { useEffect, useState } from "react";
-import { getGradeColor, mods } from "../../Helpers/Osu";
+import { getGradeColor } from "../../Helpers/Osu";
 import { getSessions } from "../../Helpers/Session";
-import CircleIcon from '@mui/icons-material/Circle';
-import SquareIcon from '@mui/icons-material/Square';
 import { IMG_SVG_GRADE_A, IMG_SVG_GRADE_B, IMG_SVG_GRADE_C, IMG_SVG_GRADE_D, IMG_SVG_GRADE_S, IMG_SVG_GRADE_SH, IMG_SVG_GRADE_X, IMG_SVG_GRADE_XH } from "../../Helpers/Assets";
 import { lerpColor, nestedSearch } from "../../Helpers/Misc";
-import { ScatterChart, } from "@mui/x-charts";
 import { ErrorBoundary } from "react-error-boundary";
-import LineChart from "../../Helpers/Charts/LineChart";
+import ChartWrapper from "../../Helpers/ChartWrapper.js";
 
 const heightDefiners = [
     { value: 'pp', nesting: ['pp'], label: 'Performance' },
@@ -24,6 +21,17 @@ const heightDefiners = [
     { value: 'od', nesting: ['beatmap', 'modded_sr', 'modded_od'], label: 'OD' },
     { value: 'hp', nesting: ['beatmap', 'modded_sr', 'modded_hp'], label: 'HP' },
 ]
+
+const GRADE_INFO = {
+    'XH': { name: 'Silver SS', color: '#fff' },
+    'X': { name: 'Gold SS', color: '#fff' },
+    'SH': { name: 'Silver S', color: '#fff' },
+    'S': { name: 'Gold S', color: '#fff' },
+    'A': { name: 'A', color: '#fff' },
+    'B': { name: 'B', color: '#fff' },
+    'C': { name: 'C', color: '#fff' },
+    'D': { name: 'D', color: '#fff' },
+}
 
 function SectionDaily(props) {
     const theme = useTheme();
@@ -42,7 +50,6 @@ function SectionDaily(props) {
     const [sessionCount, setSessionCount] = useState(0);
     const [totalSessionLength, setTotalSessionLength] = useState(0);
     const [sessionAnnotations, setSessionAnnotations] = useState([]);
-    const [annotationMapper, setAnnotationMapper] = useState(Array.from(Array(100).keys()).map((i) => { return i }));
 
     const [stats, setStats] = useState(null);
 
@@ -54,86 +61,56 @@ function SectionDaily(props) {
             let annotations = [];
 
             if (scores !== null) {
-                setAnnotationMapper(null);
+                setSessionAnnotations([]);
                 setTotalSessionLength(0);
                 setSessionCount(0);
-                (async () => {
-                    //wait until annotationMapper is null
-                    await new Promise(r => setTimeout(r, 100));
-                    let activities = getSessions(scores);
-                    if (activities.length > 0) {
-                        let len = 0;
-                        activities.forEach((activity, index) => {
-                            annotations.push({
-                                type: 'box',
-                                xMin: activity.start,
-                                xMax: activity.end,
-                                backgroundColor: 'rgba(252, 3, 148, 0.25)',
-                                z: -1000
-                            })
+                let activities = getSessions(scores);
+                if (activities.length > 0) {
+                    let len = 0;
+                    activities.forEach((activity, index) => {
+                        annotations.push({
+                            type: 'box',
+                            x: activity.start * 1000,
+                            x2: activity.end * 1000,
+                            fillColor: 'rgba(252, 3, 148, 0.25)',
+                        })
 
-                            len += (activity.end - activity.start);
-                        });
-                        setTotalSessionLength(len);
-                    }
+                        len += (activity.end - activity.start);
+                    });
+                    setTotalSessionLength(len);
+                }
 
-                    setSessionCount(activities.length);
-                    console.log(activities);
-                    //generate a line graph that emulates a box graph
-                    //we use 100 data points between the start and end of the day
-                    //if a point exists on any of the sessions, we set it to 1, otherwise 0
-                    //we then use a line graph to connect the dots
-                    let emulatedBoxData = [];
-                    for (let i = moment(selectedDay, 'YYYY-MM-DD').startOf('day').unix(); i < moment(selectedDay, 'YYYY-MM-DD').endOf('day').unix(); i += 864) {
-                        let found = false;
-                        activities.forEach((activity, index) => {
-                            if (i >= activity.start && i <= activity.end) {
-                                found = true;
-                            }
-                        });
-                        emulatedBoxData.push(found ? 1 : 0);
-                    }
-
-                    //check for every 0, if the next is 1, set current to 1,
-                    //same if the value before is 1, and current is 0, set to 1
-
-                    for (let i = 0; i < emulatedBoxData.length; i++) {
-                        if (emulatedBoxData[i] === 0) {
-                            //if theres a next and previous entry
-                            if ((i > 0 && i < emulatedBoxData.length) && (emulatedBoxData[i + 1] === 1 || emulatedBoxData[i - 1] === 1)) {
-                                emulatedBoxData[i] = 0.99999;
-                            }
-                        }
-                    }
-
-                    setSessionAnnotations(emulatedBoxData);
-                    setAnnotationMapper(Array.from(Array(100).keys()).map((i) => { return i }));
-                })();
+                console.log(annotations);
+                setSessionAnnotations(annotations);
+                setSessionCount(activities.length);
             }
 
-            const data = {
-                datasets: [
-                    {
-                        label: "Scores",
-                        data: scores !== null ? scores.map((score) => { return { x: moment(score.date_played).unix(), y: nestedSearch(score, heightDefiner.nesting), score: score } }) : [],
-                        backgroundColor: scores !== null ? scores.map((score) => getGradeColor(score.rank)) : [],
-                        pointRadius: 5,
-                        pointStyle: scores !== null ? scores.map((score) => (((score.enabled_mods & mods.HD !== 0) || (score.enabled_mods & mods.FL) !== 0) ? 'rect' : 'circle')) : [],
-                        datalabels: {
-                            display: false
-                        }
-                    },
-                    {
-                        label: "hidden",
-                        data: [{ x: moment(selectedDay, 'YYYY-MM-DD').startOf('day').unix(), y: 0 }, { x: moment(selectedDay, 'YYYY-MM-DD').endOf('day').unix(), y: 0 }],
-                        backgroundColor: 'rgba(255, 99, 132, 1)',
-                        pointRadius: 0,
-                        datalabels: {
-                            display: false
-                        }
+            const data_by_grade = {};
+
+            if (scores !== null) {
+                scores.forEach((score) => {
+                    const grade = score.rank;
+
+                    if (!data_by_grade[grade]) {
+                        data_by_grade[grade] = {
+                            name: GRADE_INFO[grade].name,
+                            data: [],
+                            color: getGradeColor(grade),
+                            shape: (grade === "XH" || grade === "X") ? 'square' : 'circle',
+                            size: 6,
+                        };
                     }
-                ]
-            };
+
+                    data_by_grade[grade].data.push({
+                        x: moment(score.date_played).unix() * 1000,
+                        y: nestedSearch(score, heightDefiner.nesting),
+                        score: score,
+                    });
+                });
+            }
+
+            //convert data_by_grade to array
+            const data = data_by_grade ? Object.keys(data_by_grade).map((key) => { return data_by_grade[key] }) : [];
             setGraphData(data);
         };
         updateGraph();
@@ -382,17 +359,7 @@ function SectionDaily(props) {
                     <Grid sx={{
                         minHeight: '700px',
                     }}>
-                        {(selectedDay && graphData && graphData?.datasets[0]?.data && graphData?.datasets[0]?.data?.length > 0 && sessionAnnotations && sessionAnnotations.length > 0 && annotationMapper !== null) && <Grid sx={{ mt: 1 }}>
-                            <Stack sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }} direction="row" spacing={2}>
-                                <Chip icon={<SquareIcon />} sx={{ [`& .${chipClasses.icon}`]: { color: getGradeColor('X') } }} label="Silver SS" size="small" variant="outlined" />
-                                <Chip icon={<CircleIcon />} sx={{ [`& .${chipClasses.icon}`]: { color: getGradeColor('X') } }} label="Gold SS" size="small" variant="outlined" />
-                                <Chip icon={<SquareIcon />} sx={{ [`& .${chipClasses.icon}`]: { color: getGradeColor('S') } }} label="Silver S" size="small" variant="outlined" />
-                                <Chip icon={<CircleIcon />} sx={{ [`& .${chipClasses.icon}`]: { color: getGradeColor('S') } }} label="Gold S" size="small" variant="outlined" />
-                                <Chip icon={<CircleIcon />} sx={{ [`& .${chipClasses.icon}`]: { color: getGradeColor('A') } }} label="A" size="small" variant="outlined" />
-                                <Chip icon={<CircleIcon />} sx={{ [`& .${chipClasses.icon}`]: { color: getGradeColor('B') } }} label="B" size="small" variant="outlined" />
-                                <Chip icon={<CircleIcon />} sx={{ [`& .${chipClasses.icon}`]: { color: getGradeColor('C') } }} label="C" size="small" variant="outlined" />
-                                <Chip icon={<CircleIcon />} sx={{ [`& .${chipClasses.icon}`]: { color: getGradeColor('D') } }} label="D" size="small" variant="outlined" />
-                            </Stack>
+                        {(selectedDay && graphData && sessionAnnotations && sessionAnnotations.length > 0) && <Grid sx={{ mt: 1 }}>
                             <ErrorBoundary fallback={<div>Something went wrong</div>}>
                                 <Grid sx={{
                                     position: 'relative',
@@ -402,84 +369,69 @@ function SectionDaily(props) {
                                         position: 'absolute',
                                         height: '400px',
                                         width: '100%',
-                                        opacity: 0.3
                                     }}>
-                                        {/* <LineChart
-                                            sx={{
-                                                position: 'absolute',
-                                                top: 0,
-                                                '& .MuiMarkElement-root': {
-                                                    display: 'none',
+                                        <ChartWrapper
+                                            options={{
+                                                xaxis: {
+                                                    type: 'datetime',
+                                                    labels: {
+                                                        datetimeUTC: false,
+                                                        format: 'HH:mm',
+                                                    },
+                                                    min: moment(selectedDay, 'YYYY-MM-DD').startOf('day').unix() * 1000,
+                                                    max: moment(selectedDay, 'YYYY-MM-DD').endOf('day').unix() * 1000,
                                                 },
-                                            }}
-                                            leftAxis={null}
-                                            bottomAxis={null}
-                                            hideTooltip={true}
-                                            margin={{
-                                                top: 20,
-                                            }}
-                                            height={400}
-                                            series={
-                                                [
-                                                    {
-                                                        type: 'line',
-                                                        curve: 'linear',
-                                                        //everything between start and end indicates the top of the graph, otherwise it's 0 (simulate a box)
-                                                        //we can only use 1 data point, so we use the start of the day
-                                                        data: sessionAnnotations,
-                                                        color: 'rgba(252, 3, 148, 0.25)',
-                                                        area: true,
-                                                        backgroundColor: 'rgba(252, 3, 148, 0.25)',
+                                                tooltip: {
+                                                    custom: function ({ series, seriesIndex, dataPointIndex, w }) {
+                                                        var data = w.globals.initialSeries[seriesIndex].data[dataPointIndex];
+
+                                                        return `<ul>
+                                                                <li>${heightDefiner.label}: ${data.y.toLocaleString('en-US')}</li>
+                                                                <li>${moment.unix(data.x).format("HH:mm")} • ${data.score.beatmap.artist} - ${data.score.beatmap.title} [${data.score.beatmap.diffname}] • ${data.score.accuracy}% ${data.score.rank} • ${data.score.score} score • ${data.score.pp.toFixed(2)}pp</li>
+                                                            </ul>
+                                                            `
                                                     }
-                                                ]
-                                            }
-                                            xAxis={
-                                                [
-                                                    {
-                                                        //just 1 to 100
-                                                        data: annotationMapper,
-                                                    }
-                                                ]
-                                            }
-                                        ></LineChart> */}
-                                    </Grid>
-                                    <Grid sx={{
-                                        position: 'absolute',
-                                        height: '400px',
-                                        width: '100%',
-                                    }}>
-                                        <ScatterChart
-                                            margin={{
-                                                top: 20,
-                                            }}
-                                            height={400}
-                                            series={
-                                                [
-                                                    ...graphData.datasets[0].data.map((data) => {
-                                                        return {
-                                                            type: 'scatter',
-                                                            data: [data],
-                                                            valueFormatter: (value) => {
-                                                                return `${moment.unix(value.x).format("HH:mm")} • ${value.score.beatmap.artist} - ${value.score.beatmap.title} [${value.score.beatmap.diffname}] • ${value.score.accuracy}% ${value.score.rank} • ${value.score.score} score • ${value.score.pp.toFixed(2)}pp`
-                                                                // return `${moment.unix(value.x).format("HH:mm")}`
-                                                            },
-                                                            color: getGradeColor(data.score.rank),
-                                                        }
-                                                    })
-                                                ]
-                                            }
-                                            xAxis={
-                                                [
-                                                    {
-                                                        min: moment(selectedDay, 'YYYY-MM-DD').startOf('day').unix(),
-                                                        max: moment(selectedDay, 'YYYY-MM-DD').endOf('day').unix(),
-                                                        valueFormatter: (value) => {
-                                                            return moment.unix(value).format("HH:mm");
+                                                },
+                                                dataLabels: {
+                                                    enabled: false
+                                                },
+                                                markers: {
+                                                    size: graphData.map((data) => { return data.size }),
+                                                    shape: graphData.map((data) => { return data.shape }),
+                                                },
+                                                annotations: {
+                                                    xaxis: [
+                                                        {
+                                                            x: moment(selectedDay, 'YYYY-MM-DD').startOf('day').unix() * 1000,
+                                                            strokeDashArray: 0,
+                                                            borderColor: '#775DD0',
+                                                            label: {
+                                                                style: {
+                                                                    color: '#fff',
+                                                                    background: '#775DD0',
+                                                                },
+                                                                text: 'Start of day',
+                                                            }
                                                         },
-                                                    }
-                                                ]
-                                            }
-                                        ></ScatterChart>
+                                                        {
+                                                            x: moment(selectedDay, 'YYYY-MM-DD').endOf('day').unix() * 1000,
+                                                            strokeDashArray: 0,
+                                                            borderColor: '#775DD0',
+                                                            label: {
+                                                                style: {
+                                                                    color: '#fff',
+                                                                    background: '#775DD0',
+                                                                },
+                                                                text: 'End of day',
+                                                            }
+                                                        },
+                                                        ...(sessionAnnotations ?? [])
+                                                    ]
+                                                }
+                                            }}
+                                            series={graphData}
+                                            type={'scatter'}
+                                        />
                                     </Grid>
                                 </Grid>
                             </ErrorBoundary>

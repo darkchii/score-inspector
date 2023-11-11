@@ -5,7 +5,7 @@ import { getScoreActivity } from "../Helpers/OsuAlt";
 import moment from "moment";
 import Loader from "./UI/Loader";
 import Chart from "react-apexcharts";
-import ChartWrapper from "../Helpers/Charts/ChartWrapper.js";
+import ChartWrapper from "../Helpers/ChartWrapper.js";
 
 function ScoreSubmissions(props) {
     const theme = useTheme();

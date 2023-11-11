@@ -486,9 +486,9 @@ export function getGradeColor(grade) {
         case 'XH':
             return '#C0C0C0';
         case 'X':
-            return '#C0C0C0';
-        case 'SH':
             return '#E8BF3F';
+        case 'SH':
+            return '#C0C0C0';
         case 'S':
             return '#E8BF3F';
         case 'A':

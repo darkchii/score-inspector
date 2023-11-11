@@ -4,8 +4,8 @@ import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Loader from "../Components/UI/Loader";
 import axios from "axios";
-import { GetAPI } from "../Helpers/Misc";
-import { Alert, Box, Button, ButtonGroup, Pagination, Stack, Typography } from "@mui/material";
+import { GetAPI, formatNumberAsSize } from "../Helpers/Misc";
+import { Alert, Box, Button, ButtonGroup, Pagination, Stack, Typography, useTheme } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import moment from "moment";
@@ -13,7 +13,7 @@ import PlayerLeaderboardItem from "../Components/Leaderboards/PlayerLeaderboardI
 import { green, grey } from "@mui/material/colors";
 import config from "../config.json";
 import { Helmet } from "react-helmet";
-// import LineChart from "../Helpers/Charts/LineChart";
+import ChartWrapper from "../Helpers/ChartWrapper.js";
 
 const USERS_PER_PAGE = 50;
 const MAX_TOTAL_USERS = 10000;
@@ -22,6 +22,7 @@ const PAGES = Math.ceil(MAX_TOTAL_USERS / USERS_PER_PAGE);
 const VALID_SORTING = ['rank', 'rank_gain', 'score_gain'];
 
 function LeadersScore(props) {
+    const theme = useTheme();
     const params = useParams();
     const navigate = useNavigate();
 
@@ -42,13 +43,15 @@ function LeadersScore(props) {
             try {
                 const data = await axios.get(`${GetAPI()}scores/ranking/stats`);
 
-                const _data = {
-                    labels: [],
-                    values: []
-                };
+                // const _data = {
+                //     labels: [],
+                //     values: []
+                // };
+                const _data = [];
                 data?.data?.daily_total_ranked_score?.forEach((item) => {
-                    _data.labels.push(moment(item.date, "YYYY-MM-DD"));
-                    _data.values.push(item.total_ranked_score);
+                    // _data.labels.push(moment(item.date, "YYYY-MM-DD"));
+                    // _data.values.push(item.total_ranked_score);
+                    _data.push([moment(item.date, "YYYY-MM-DD").toDate().getTime(), item.total_ranked_score]);
                 });
 
                 console.log(_data);
@@ -203,13 +206,39 @@ function LeadersScore(props) {
                                     <Box sx={{
                                         height: 300
                                     }}>
-                                        {/* <LineChart
-                                            margin={{
-                                                left: 150,
+                                        <ChartWrapper
+                                            options={{
+                                                chart: {
+                                                    id: "score-lb-rankedscore",
+                                                },
+                                                yaxis: {
+                                                    labels: {
+                                                        formatter: (value) => {
+                                                            return formatNumberAsSize(value);
+                                                        }
+                                                    }
+                                                },
+                                                xaxis: {
+                                                    type: 'datetime',
+                                                    labels: {
+                                                        datetimeUTC: false,
+                                                        format: 'MMM dd yyyy',
+                                                    },
+                                                },
+                                                tooltip: {
+                                                    x: {
+                                                        format: 'MMM dd yyyy',
+                                                    },
+                                                    y: {
+                                                        formatter: (value) => {
+                                                            return value.toLocaleString('en-US');
+                                                        }
+                                                    }
+                                                },
                                             }}
-                                            xAxis={[{ scaleType: 'time', data: scoreGraphData.labels }]}
-                                            series={[{ type: 'line', label: 'Total ranked score in top 10k', data: scoreGraphData.values }]}
-                                        /> */}
+                                            series={[{ name: 'Total ranked score in top 10k', data: scoreGraphData, color: theme.palette.primary.main }]}
+                                            type={'line'}
+                                        />
                                     </Box>
                                 ) : null
                             }

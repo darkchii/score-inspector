@@ -1,43 +1,28 @@
-import { Box, Button, Grid, Paper, Skeleton, Table, TableBody, TableCell, TableRow, Tooltip, Typography } from "@mui/material";
+import { Box, Button, Grid, Paper, Skeleton, Table, TableBody, TableCell, TableRow, Tooltip, Typography, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
-import LineChart from "../../Helpers/Charts/LineChart";
+import ChartWrapper from "../../Helpers/ChartWrapper.js";
 
 function SectionGraphs(props) {
+    const theme = useTheme();
     const [graphData, setGraphData] = useState(null);
-    const [graphVerticalData, setGraphVerticalData] = useState(null);
-    const [graphHorizontalData, setGraphHorizontalData] = useState(null);
+    const [graphContent, setGraphContent] = useState(null);
 
     const _setGraphData = (data) => {
         setGraphData(data);
+        setGraphContent(null);
 
-        if (data.removeDataPointIfNull && data.data.length === 1) { //incompatible with multiple datasets
-            var _labels = [];
-            var _datasets = JSON.parse(JSON.stringify(data.data));
-            var _indexedData = [];
+        const xy = [];
+        data.data.forEach((dataset, i) => {
+            xy[i] = {};
+            xy[i].name = dataset.label;
+            xy[i].data = [];
+            dataset.data.forEach((dataPoint, j) => {
+                xy[i].data.push([data.labels[j].getTime(), dataPoint]);
+            });
+            xy[i].color = dataset.color ?? theme.palette.primary.main;
+        });
 
-            for (let i = 0; i < _datasets.length; i++) {
-                let dataset = _datasets[i].data;
-                _indexedData.push([]);
-                for(let j = 0; j < dataset.length; j++){
-                    let dataPoint = dataset[j];
-                    if(dataPoint !== null && dataPoint > 0){
-                        _indexedData[i].push(dataPoint);
-                        _labels.push(data.labels[j]);
-                    }
-                }
-            }
-
-            for(let i = 0; i < _datasets.length; i++){
-                _datasets[i].data = _indexedData[i];
-            }
-
-            setGraphVerticalData(_labels);
-            setGraphHorizontalData(_datasets);
-        } else {
-            setGraphVerticalData(data.labels);
-            setGraphHorizontalData(data.data);
-
-        }
+        setGraphContent(xy);
     }
 
     useEffect(() => {
@@ -47,7 +32,7 @@ function SectionGraphs(props) {
     }, [props.dataset]);
 
     return (
-        (props.dataset !== undefined && graphData !== null && graphVerticalData !== null && graphHorizontalData !== null) ?
+        (props.dataset !== undefined && graphData !== null && graphContent !== null) ?
             <>
                 <Grid container spacing={3}>
                     <Grid item xs={12} md={12} lg={12}>
@@ -55,11 +40,48 @@ function SectionGraphs(props) {
                             <Grid sx={{
                                 height: 300
                             }}>
-                                {/* <LineChart
-                                    key={graphData.id}
-                                    xAxis={[{ scaleType: 'time', data: graphVerticalData }]}
-                                    series={graphHorizontalData}
-                                /> */}
+                                <ChartWrapper
+                                    options={{
+                                        chart: {
+                                            id: "user-time-graph",
+                                        },
+                                        xaxis: {
+                                            type: 'datetime',
+                                            labels: {
+                                                datetimeUTC: false,
+                                                format: 'MMM yyyy',
+                                            },
+                                        },
+                                        yaxis: {
+                                            labels: {
+                                                formatter: (value) => {
+                                                    if (!value) return value;
+                                                    return value.toLocaleString('en-US');
+                                                }
+                                            },
+                                            showForNullSeries: false,
+                                        },
+                                        tooltip: {
+                                            x: {
+                                                format: 'MMM yyyy'
+                                            },
+                                            y: {
+                                                formatter: (value) => {
+                                                    if (!value) return value;
+                                                    return value.toLocaleString('en-US');
+                                                }
+                                            }
+                                        },
+                                        markers: {
+                                            showNullDataPoints: false,
+                                        }
+                                    }}
+                                    series={graphContent}
+                                    type={'line'}
+                                    style={{
+                                        marginRight: '2rem',
+                                    }}
+                                />
                             </Grid>
 
                             <Table size='small'>

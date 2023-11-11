@@ -29,9 +29,6 @@ const defaultProps = {
         tooltip: {
             theme: 'dark',
         },
-        markers: {
-            size: 4,
-        },
         chart: {
             toolbar: {
                 show: false,
@@ -39,6 +36,11 @@ const defaultProps = {
             zoom: {
                 enabled: false,
             },
+        },
+        plotOptions: {
+            bar: {
+                borderRadius: 10,
+            }
         },
     },
     fill: {
@@ -57,6 +59,9 @@ const defaultProps = {
     },
     width: '100%',
     height: '100%',
+    style: {
+        margin: '1rem'
+    }
 }
 
 function ChartWrapper(props) {
@@ -66,6 +71,8 @@ function ChartWrapper(props) {
         const defaults = _.cloneDeep(defaultProps);
         const temp_props = _.merge(defaults, props);
         setProps(temp_props);
+
+        console.log(temp_props);
     }, [props]);
 
     return (

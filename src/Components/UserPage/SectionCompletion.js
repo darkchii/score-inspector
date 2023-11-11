@@ -1,10 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Button, Chip, Divider, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
+import { Button, Chip, Divider, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableRow, Typography, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
 import { capitalize } from "../../Helpers/Misc";
 import { getCompletionData } from "../../Helpers/OsuAlt";
 import Loader from "../UI/Loader";
-import BarChart from "../../Helpers/Charts/BarChart";
+import ChartWrapper from "../../Helpers/ChartWrapper.js";
 
 const KEY_NAMES = {
     'stars': 'Stars',
@@ -13,6 +13,7 @@ const KEY_NAMES = {
 }
 
 function SectionCompletion(props) {
+    const theme = useTheme();
     const [graphs, setGraphs] = useState([]);
     const [selectedGraph, setSelectedGraph] = useState('stars');
     const [isWorking, setIsWorking] = useState(false);
@@ -56,10 +57,34 @@ function SectionCompletion(props) {
                     <Grid sx={{
                         height: 280
                     }}>
-                        <BarChart
-                            key={selectedGraph}
-                            xAxis={[{ scaleType: 'band', data: graphs[selectedGraph].labels }]}
-                            series={[{ data: graphs[selectedGraph].data, valueFormatter: (v) => `${v}%`, label: graphs[selectedGraph].stylizedKey + ' Completion' }]}
+                        <ChartWrapper
+                            options={{
+                                chart: {
+                                    id: "completion-chart"
+                                },
+                                yaxis: {
+                                    min: 0,
+                                    max: 100,
+                                    labels: {
+                                        formatter: (value) => {
+                                            if (!value) return value;
+                                            return `${value.toLocaleString('en-US')}%`;
+                                        }
+                                    },
+                                },
+                                xaxis: {
+                                    categories: graphs[selectedGraph].labels,
+                                    tickAmount: 'dataPoints'
+                                }
+                            }}
+                            series={[
+                                {
+                                    name: 'Completion',
+                                    data: graphs[selectedGraph].data,
+                                    color: theme.palette.primary.main,
+                                }
+                            ]}
+                            type={'bar'}
                         />
                     </Grid>
                     {

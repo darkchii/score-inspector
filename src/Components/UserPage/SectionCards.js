@@ -2,7 +2,7 @@ import { Grid, Paper, Typography, useTheme } from "@mui/material";
 import moment from "moment";
 import BestScoreCard from "./BestScoreCard";
 import GlowBar from "../UI/GlowBar";
-import { BarChart } from "@mui/x-charts";
+import ChartWrapper from "../../Helpers/ChartWrapper.js";
 
 function SectionCards(props) {
     const theme = useTheme();
@@ -156,28 +156,28 @@ function SectionCards(props) {
             <Grid>
                 {
                     props?.user?.data?.averageDaySpread && props?.user?.data?.averageDaySpread?.hours && props?.user?.data?.averageDaySpread?.values ?
-                        <Paper elevation={3}>
-                            <BarChart
-                                margin={{
-                                    top: 20,
-                                    bottom: 40
+                        <Paper elevation={3} sx={{ height: 250 }}>
+                            <ChartWrapper
+                                options={{
+                                    chart: {
+                                        id: "user-hours-spread",
+                                    },
                                 }}
-                                height={250}
-                                series={
-                                    [
-                                        {
-                                            type: 'bar',
-                                            data: props.user.data.averageDaySpread.values,
-                                            color: theme.palette.primary.main,
-                                        }
-                                    ]
-                                }
-                                xAxis={[
+                                series={[
                                     {
-                                        data: props.user.data.averageDaySpread.hours,
-                                        scaleType: 'band'
+                                        name: 'Scores set at this hour of the day',
+                                        data: props.user.data.averageDaySpread.values.map((value, i) => {
+                                            const start = props.user.data.averageDaySpread.hours[i];
+                                            const end = i<props.user.data.averageDaySpread.hours.length-1 ? props.user.data.averageDaySpread.hours[i + 1] : props.user.data.averageDaySpread.hours[0];
+                                            return {
+                                                x: `${start} - ${end}`,
+                                                y: value
+                                            }
+                                        }),
+                                        color: theme.palette.primary.main,
                                     }
                                 ]}
+                                type={'bar'}
                             />
                         </Paper>
                         : <></>

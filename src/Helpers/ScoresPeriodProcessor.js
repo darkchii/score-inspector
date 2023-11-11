@@ -566,7 +566,7 @@ function getGraphObjects(chunks, labels, f = 'm') {
                     id: "score_rank",
                     name: `Score rank`,
                     labels: labels,
-                    data: [{ label: "Score rank", data: chunks.map(x => x.score_rank), valueFormatter: (value) => { return `${value}`; } }],
+                    data: [{ label: "Score rank", data: chunks.map(x => x.score_rank > 0 ? x.score_rank : null), valueFormatter: (value) => { return `${value}`; } }],
                     title: "Score rank",
                     removeDataPointIfNull: true,
                 }, {
