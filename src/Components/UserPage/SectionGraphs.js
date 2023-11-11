@@ -55,11 +55,11 @@ function SectionGraphs(props) {
                             <Grid sx={{
                                 height: 300
                             }}>
-                                <LineChart
+                                {/* <LineChart
                                     key={graphData.id}
                                     xAxis={[{ scaleType: 'time', data: graphVerticalData }]}
                                     series={graphHorizontalData}
-                                />
+                                /> */}
                             </Grid>
 
                             <Table size='small'>

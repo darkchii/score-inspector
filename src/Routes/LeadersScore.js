@@ -13,7 +13,7 @@ import PlayerLeaderboardItem from "../Components/Leaderboards/PlayerLeaderboardI
 import { green, grey } from "@mui/material/colors";
 import config from "../config.json";
 import { Helmet } from "react-helmet";
-import LineChart from "../Helpers/Charts/LineChart";
+// import LineChart from "../Helpers/Charts/LineChart";
 
 const USERS_PER_PAGE = 50;
 const MAX_TOTAL_USERS = 10000;
@@ -203,13 +203,13 @@ function LeadersScore(props) {
                                     <Box sx={{
                                         height: 300
                                     }}>
-                                        <LineChart
+                                        {/* <LineChart
                                             margin={{
                                                 left: 150,
                                             }}
                                             xAxis={[{ scaleType: 'time', data: scoreGraphData.labels }]}
                                             series={[{ type: 'line', label: 'Total ranked score in top 10k', data: scoreGraphData.values }]}
-                                        />
+                                        /> */}
                                     </Box>
                                 ) : null
                             }

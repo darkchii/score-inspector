@@ -404,7 +404,7 @@ function SectionDaily(props) {
                                         width: '100%',
                                         opacity: 0.3
                                     }}>
-                                        <LineChart
+                                        {/* <LineChart
                                             sx={{
                                                 position: 'absolute',
                                                 top: 0,
@@ -441,7 +441,7 @@ function SectionDaily(props) {
                                                     }
                                                 ]
                                             }
-                                        ></LineChart>
+                                        ></LineChart> */}
                                     </Grid>
                                     <Grid sx={{
                                         position: 'absolute',

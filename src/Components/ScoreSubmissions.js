@@ -5,6 +5,7 @@ import { getScoreActivity } from "../Helpers/OsuAlt";
 import moment from "moment";
 import Loader from "./UI/Loader";
 import Chart from "react-apexcharts";
+import ChartWrapper from "../Helpers/Charts/ChartWrapper.js";
 
 function ScoreSubmissions(props) {
     const theme = useTheme();
@@ -56,45 +57,26 @@ function ScoreSubmissions(props) {
                 {
                     isWorking || !data || !Array.isArray(data) || data.length <= 0 ?
                         <Loader /> : <>
-                            <Chart
+                            <ChartWrapper
                                 options={{
                                     chart: {
                                         id: "score-submissions",
-                                    },
-                                    grid: {
-                                        show: false
-                                    },
-                                    yaxis: {
-                                        labels: {
-                                            style: {
-                                                colors: theme.palette.text.secondary,
-                                            },
-                                        },
                                     },
                                     xaxis: {
                                         type: 'datetime',
                                         labels: {
                                             datetimeUTC: false,
                                             format: 'MMM dd, HH:mm',
-                                            style: {
-                                                colors: theme.palette.text.secondary,
-                                            },
                                         },
                                     },
                                     tooltip: {
-                                        theme: 'dark',
                                         x: {
                                             format: 'MMM dd, HH:mm'
                                         },
                                     },
-                                    markers: {
-                                        size: 4,
-                                    },
                                 }}
-                                series={[{ name: 'Score Submissions', data: data, color: theme.palette.primary.main}]}
+                                series={[{ name: 'Score Submissions', data: data, color: theme.palette.primary.main }]}
                                 type={'line'}
-                                width={'100%'}
-                                height={'100%'}
                             />
                         </>
                 }
