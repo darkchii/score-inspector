@@ -3,6 +3,7 @@ import config from '../config.json';
 import axios from "axios";
 import { Avatar, Box, Chip, Tooltip } from "@mui/material";
 import * as Muicon from "@mui/icons-material";
+import PlayerChip from "../Components/UI/PlayerChip.js";
 
 const ROLE_PADDING = 0.2;
 
@@ -31,10 +32,11 @@ export function GetFormattedName(inspector_user, settings = null) {
     return (
         <>
             <Tooltip title={_settings.custom_tooltip ?? ''} placement='top'>
-                <Chip sx={{
+                <PlayerChip sx={{
                     pr: inspector_user.roles?.length > 0 ? 1 : 0, '&:hover': {
                         cursor: _settings.is_link ? 'pointer' : 'default'
-                    }
+                    },
+                    borderRadius: '5px',
                 }}
                     onDelete={() => { }}
                     deleteIcon={<>{Array.isArray(inspector_user.roles) && GetRoleIcons(inspector_user.roles)}</>}
@@ -129,7 +131,7 @@ export async function IsUserLoggedIn() {
     const user_id = localStorage.getItem('auth_osu_id');
 
     if (token && user_id) {
-        try{
+        try {
             const res = await fetch(`${GetAPI()}login/validate_token`, {
                 method: 'POST',
                 headers: {
@@ -142,24 +144,24 @@ export async function IsUserLoggedIn() {
             });
             const body = await parseReadableStreamToJson(res.body);
 
-            
-            if(body.data && body.data.osu_id && body.data.access_token){
+
+            if (body.data && body.data.osu_id && body.data.access_token) {
                 const old_token = localStorage.getItem('auth_token');
                 localStorage.setItem('auth_token', body.data.access_token);
                 localStorage.setItem('auth_osu_id', body.data.osu_id);
-                
-                if(old_token !== body.data.access_token){
+
+                if (old_token !== body.data.access_token) {
                     // Token has been refreshed, perform this function again to prevent errors
                     return await IsUserLoggedIn();
                 }
             }
-            
-            if(!body.valid && body.error){
+
+            if (!body.valid && body.error) {
                 showNotification('Error', body.error, 'error');
             }
-            
+
             return body !== undefined && body !== null && body.valid;
-        }catch(e){
+        } catch (e) {
             console.error(e);
             return false;
         }

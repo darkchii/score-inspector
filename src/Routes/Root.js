@@ -1,4 +1,4 @@
-import { Alert, Avatar, Box, Button, Card, CardContent, CircularProgress, Divider, Grid, Link, Modal, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from '@mui/material';
+import { Alert, Avatar, Box, Button, Card, CardContent, CircularProgress, Divider, Grid, Link, Modal, Paper, Skeleton, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from '@mui/material';
 import { Link as RouterLink, useSearchParams } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import { formatBytes, formatNumberAsSize, GetAPI, MODAL_STYLE, parseReadableStreamToJson, showNotification } from '../Helpers/Misc';
@@ -7,7 +7,7 @@ import axios from 'axios';
 import moment from 'moment';
 import momentDurationFormatSetup from "moment-duration-format";
 import ScoreSubmissions from '../Components/ScoreSubmissions';
-import { blue, green, red } from '@mui/material/colors';
+import { blue, green, grey, red } from '@mui/material/colors';
 import GlowBar from '../Components/UI/GlowBar';
 import Loader from '../Components/UI/Loader';
 import config from "../config.json";
@@ -157,25 +157,31 @@ function Root() {
                     <Button size='small' variant='contained' component='a' href='https://discord.gg/VZWRZZXcW4' target='_blank'>Join</Button>
                 </Alert>
             </Box>
-            <Grid container spacing={2} sx={{ pt: 1, pb: 1 }}>
-                <Grid item xs={12} md={4}><StatCard stats={(parseInt(serverInfo?.database?.alt?.total_users ?? 0)).toLocaleString('en-US')} title={`Players (${(parseInt(serverInfo?.database?.alt?.tracked_users ?? 0)).toLocaleString('en-US')} live)`} color={blue} icon={<PersonIcon />} /></Grid>
-                <Grid item xs={12} md={4}><StatCard stats={formatNumberAsSize(parseInt(serverInfo?.database?.alt?.total_scores ?? 0))} title={'Scores'} color={red} icon={<WorkspacePremiumIcon />} /></Grid>
-                <Grid item xs={12} md={4}><StatCard stats={(parseInt(serverInfo?.database?.inspector?.total_visits ?? 0)).toLocaleString('en-US')} title={'Profile visits'} color={green} icon={<BadgeIcon />} /></Grid>
+            <Grid container spacing={2} sx={{ pb: 1 }}>
+                <Grid item xs={12} md={4}>
+                    <StatCard stats={serverInfo?.database?.alt?.total_users ? (parseInt(serverInfo?.database?.alt?.total_users ?? 0)).toLocaleString('en-US') : null} title={`Players (${(parseInt(serverInfo?.database?.alt?.tracked_users ?? 0)).toLocaleString('en-US')} live)`} color={blue} icon={<PersonIcon />} />
+                </Grid>
+                <Grid item xs={12} md={4}>
+                    <StatCard stats={serverInfo?.database?.alt?.total_scores ? formatNumberAsSize(parseInt(serverInfo?.database?.alt?.total_scores ?? 0)) : null} title={'Scores'} color={red} icon={<WorkspacePremiumIcon />} />
+                </Grid>
+                <Grid item xs={12} md={4}>
+                    <StatCard stats={serverInfo?.database?.inspector?.total_visits ? (parseInt(serverInfo?.database?.inspector?.total_visits ?? 0)).toLocaleString('en-US') : null} title={'Profile visits'} color={green} icon={<BadgeIcon />} />
+                </Grid>
             </Grid>
             <Grid container spacing={2}>
-                <Grid item xs={12} md={8.5}>
+                <Grid item xs={12} md={9}>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
                             <Card elevation={2}>
                                 <CardContent>
                                     <Grid container spacing={2}>
-                                        <Grid item xs={12} md={8.5}>
+                                        <Grid item xs={12} md={6}>
                                             <Typography variant='title'>Info</Typography>
-                                            <Stack spacing={1}>
+                                            <Stack spacing={0.5}>
                                                 {
                                                     IMPORTANT_NOTES.map((note, index) => {
                                                         return (
-                                                            <Alert icon={false} variant='outlined' severity='info'>
+                                                            <Alert icon={false} severity='info'>
                                                                 <Typography>{note}</Typography>
                                                             </Alert>
                                                         );
@@ -183,23 +189,19 @@ function Root() {
                                                 }
                                             </Stack>
                                         </Grid>
-                                        <Grid item xs={12} md={3.5}>
+                                        <Grid item xs={12} md={6}>
                                             <Typography variant='title'>For new users</Typography>
-                                            <TableContainer>
-                                                <Table size='small'>
-                                                    <TableBody>
-                                                        {
-                                                            GUIDE_NEW_USERS.map((note, index) => {
-                                                                return (
-                                                                    <TableRow><TableCell>
-                                                                        {note}
-                                                                    </TableCell></TableRow>
-                                                                );
-                                                            })
-                                                        }
-                                                    </TableBody>
-                                                </Table>
-                                            </TableContainer>
+                                            <Stack spacing={0.5}>
+                                                {
+                                                    GUIDE_NEW_USERS.map((note, index) => {
+                                                        return (
+                                                            <Alert icon={false} severity='info'>
+                                                                <Typography>{note}</Typography>
+                                                            </Alert>
+                                                        );
+                                                    })
+                                                }
+                                            </Stack>
                                         </Grid>
                                     </Grid>
                                 </CardContent>
@@ -216,55 +218,6 @@ function Root() {
                                     </Card>
                                 </Grid>
                             </Grid>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Card elevation={2}>
-                                <CardContent>
-                                    <Grid container spacing={2}>
-                                        <Grid item xs={12} md={8}>
-                                            <Typography variant='title'>Server Info</Typography>
-                                            <Box sx={{ pl: 1 }}>
-                                                {
-                                                    serverInfo ? <>
-                                                        <Grid container spacing={2}>
-                                                            <Grid item xs={12} md={6}>
-                                                                <Typography variant='body2'>inspector registrations: {(parseInt(serverInfo?.database?.inspector?.user_count ?? 0)).toLocaleString('en-US')}</Typography>
-                                                                <Typography variant='body2'>inspector profile visits: {(parseInt(serverInfo?.database?.inspector?.total_visits ?? 0)).toLocaleString('en-US')}</Typography>
-                                                                <Typography variant='body2'>osu!alt users: {(parseInt(serverInfo?.database?.alt?.total_users ?? 0)).toLocaleString('en-US')}</Typography>
-                                                                <Typography variant='body2'>osu!alt live users: {(parseInt(serverInfo?.database?.alt?.tracked_users ?? 0)).toLocaleString('en-US')}</Typography>
-                                                                <Typography variant='body2'>osu!alt scores: {(parseInt(serverInfo?.database?.alt?.total_scores ?? 0)).toLocaleString('en-US')}</Typography>
-                                                            </Grid>
-                                                            <Grid item xs={12} md={6}>
-                                                                <Typography variant='body2'>API Uptime: {moment.duration(serverInfo?.system?.uptime ?? 0, 'second').format()}</Typography>
-                                                                <Typography variant='body2'>Uptime: {moment.duration(serverInfo?.system?.system_time?.uptime ?? 0, 'second').format()}</Typography>
-                                                                <Typography variant='body2'>OS: {serverInfo?.system?.os?.distro ?? 'n/a'}</Typography>
-                                                                <Typography variant='body2'>CPU: {serverInfo?.system?.cpu?.manufacturer ?? ''} {serverInfo?.system?.cpu?.brand ?? ''}</Typography>
-                                                            </Grid>
-                                                        </Grid>
-                                                    </> : <Loader />
-                                                }
-                                            </Box>
-                                        </Grid>
-                                        <Grid item xs={12} md={4}>
-                                            <Typography variant='title'>Server Status</Typography>
-                                            <Box sx={{ pl: 1 }}>
-                                                {
-                                                    serverStatus ? Object.keys(serverStatus).map((k, i) => {
-                                                        return (
-                                                            <Grid item xs={6}>
-                                                                <Box sx={{ position: 'relative' }}>
-                                                                    <GlowBar color={serverStatus[k] === undefined ? 'grey' : (serverStatus[k] ? green[500] : 'red')} />
-                                                                    <Typography variant='body2'>{k}</Typography>
-                                                                </Box>
-                                                            </Grid>
-                                                        )
-                                                    }) : <Loader />
-                                                }
-                                            </Box>
-                                        </Grid>
-                                    </Grid>
-                                </CardContent>
-                            </Card>
                         </Grid>
                         <Grid item xs={12}>
                             <Card elevation={2}>
@@ -287,7 +240,7 @@ function Root() {
                         </Grid>
                     </Grid>
                 </Grid>
-                <Grid item xs={12} md={3.5}>
+                <Grid item xs={12} md={3}>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
                             <Card elevation={2}>
@@ -411,8 +364,23 @@ function StatCard(props) {
         <Paper sx={{
             backgroundColor: props.color[600],
             overflow: 'hidden',
-            position: 'relative'
+            position: 'relative',
+            height: props.height ?? 130
         }}>
+            {
+                props?.stats === null || props?.stats === undefined ?
+                    <Skeleton
+                        variant="rectangular"
+                        animation="wave"
+                        sx={{
+                            position: 'absolute',
+                            width: '100%',
+                            height: '100%',
+                            zIndex: 300,
+                            backgroundColor: grey[800],
+                            opacity: 0.5
+                        }} /> : <></>
+            }
             <Box sx={{ p: 1.5, zIndex: 300 }}>
                 <Box sx={{
                     position: 'absolute',
@@ -446,8 +414,6 @@ function StatCard(props) {
                 }} />
                 <Grid container direction="column" sx={{ position: 'relative', zIndex: 500 }}>
                     <Grid item>
-                    </Grid>
-                    <Grid item>
                         <Grid container direction="row" alignItems="center" spacing={1}>
                             <Grid item>
                                 <Avatar variant="rounded" sx={{ color: props.color[300], backgroundColor: 'white' }}>
@@ -455,8 +421,8 @@ function StatCard(props) {
                                 </Avatar>
                             </Grid>
                             <Grid item>
-                                <Typography sx={{ fontSize: '2.125rem', fontWeight: 500, mt: 1.75, mb: 0.75 }}>
-                                    {props?.stats}
+                                <Typography sx={{ fontSize: props.statSize ?? '2.125rem', fontWeight: 500, mt: 1.75, mb: 0.75 }}>
+                                    {props?.stats ?? '-'}
                                 </Typography>
                             </Grid>
                         </Grid>
@@ -464,7 +430,7 @@ function StatCard(props) {
                     <Grid item sx={{ mb: 1.25 }}>
                         <Typography
                             sx={{
-                                fontSize: '1rem',
+                                fontSize: props.titleSize ?? '1rem',
                                 fontWeight: 500,
                                 color: theme.palette.secondary[200]
                             }}

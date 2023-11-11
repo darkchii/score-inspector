@@ -1,12 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
-import { Button, ButtonGroup, Grid } from "@mui/material";
+import { Button, ButtonGroup, Grid, useTheme } from "@mui/material";
 import { getScoreActivity } from "../Helpers/OsuAlt";
 import moment from "moment";
 import Loader from "./UI/Loader";
-import LineChart from "../Helpers/Charts/LineChart";
+import Chart from "react-apexcharts";
 
 function ScoreSubmissions(props) {
+    const theme = useTheme();
     const [hours, setHours] = useState(72);
     const [isWorking, setIsWorking] = useState(false);
 
@@ -30,14 +31,7 @@ function ScoreSubmissions(props) {
             for (let i = 0; i < data.hour_entries.length; i++) {
                 let timestamp = moment.utc(data.hour_entries[i].timestamp).local();
                 let count = data.hour_entries[i].entry_count;
-
-                let _data = {
-                    data: count,
-                    timestamp: timestamp.toDate(),
-                    label: timestamp.format("MMM Do, hA")
-                };
-
-                newData.push(_data);
+                newData.push([timestamp.toDate().getTime(), count]);
             }
 
             setData(newData);
@@ -58,14 +52,51 @@ function ScoreSubmissions(props) {
                     <Button variant={hours === 720 ? 'contained' : 'outlined'} onClick={() => setHours(720)}>1 month</Button>
                 </ButtonGroup>
             </Grid>
-            <Grid sx={{ height: 280, position: "relative"}}>
+            <Grid sx={{ height: 280, position: "relative" }}>
                 {
                     isWorking || !data || !Array.isArray(data) || data.length <= 0 ?
-                        <Loader /> :
-                        <LineChart
-                            series={[{ type: 'line', data: data.map((d) => d.data) }]}
-                            xAxis={[{ scaleType: 'time', data: data.map((d) => d.timestamp)}]}
-                        />
+                        <Loader /> : <>
+                            <Chart
+                                options={{
+                                    chart: {
+                                        id: "score-submissions",
+                                    },
+                                    grid: {
+                                        show: false
+                                    },
+                                    yaxis: {
+                                        labels: {
+                                            style: {
+                                                colors: theme.palette.text.secondary,
+                                            },
+                                        },
+                                    },
+                                    xaxis: {
+                                        type: 'datetime',
+                                        labels: {
+                                            datetimeUTC: false,
+                                            format: 'MMM dd, HH:mm',
+                                            style: {
+                                                colors: theme.palette.text.secondary,
+                                            },
+                                        },
+                                    },
+                                    tooltip: {
+                                        theme: 'dark',
+                                        x: {
+                                            format: 'MMM dd, HH:mm'
+                                        },
+                                    },
+                                    markers: {
+                                        size: 4,
+                                    },
+                                }}
+                                series={[{ name: 'Score Submissions', data: data, color: theme.palette.primary.main}]}
+                                type={'line'}
+                                width={'100%'}
+                                height={'100%'}
+                            />
+                        </>
                 }
             </Grid>
         </>
