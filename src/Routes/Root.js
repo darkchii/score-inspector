@@ -1,4 +1,4 @@
-import { Alert, Avatar, Box, Button, Card, CardContent, CircularProgress, Divider, Grid, Link, Modal, Paper, Skeleton, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from '@mui/material';
+import { Alert, Avatar, Box, Button, Card, CardContent, CircularProgress, Divider, Grid, Link, Modal, Paper, Skeleton, Stack, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import { Link as RouterLink, useSearchParams } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import { formatBytes, formatNumberAsSize, GetAPI, MODAL_STYLE, parseReadableStreamToJson, showNotification } from '../Helpers/Misc';
@@ -17,6 +17,7 @@ import info from '../Data/Info';
 import PersonIcon from '@mui/icons-material/Person';
 import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
 import BadgeIcon from '@mui/icons-material/Badge';
+import TodayTopPlayers from '../Components/TodayTopPlayers.js';
 
 momentDurationFormatSetup(moment);
 
@@ -41,6 +42,7 @@ function Root() {
     const [searchParams] = useSearchParams();
     const [serverStatus, setServerStatus] = useState(null);
     const [serverInfo, setServerInfo] = useState(null);
+    const [todayData, setTodayData] = useState(null);
     const [visitorStats, setVisitorStats] = useState(null);
 
     useEffect(() => {
@@ -96,12 +98,14 @@ function Root() {
         try {
             Promise.all([
                 axios.get(`${GetAPI()}system`),
-                axios.get(`${GetAPI()}system/status`)
-            ]).then(([system, status]) => {
+                axios.get(`${GetAPI()}system/status`),
+                axios.get(`${GetAPI()}scores/today`)
+            ]).then(([system, status, today_data]) => {
                 system.data !== null && system.data !== undefined ? setServerInfo({ ...system.data }) : setServerInfo(null);
                 status.data !== null && status.data !== undefined ? setServerStatus({ ...status.data, inspector: true }) : setServerStatus({
                     inspector: false
                 });
+                today_data.data !== null && today_data.data !== undefined ? setTodayData({ ...today_data.data }) : setTodayData(null);
             }).catch((err) => {
                 setServerStatus({
                     inspector: false
@@ -174,7 +178,7 @@ function Root() {
                         <Grid item xs={12}>
                             <Card elevation={2}>
                                 <CardContent>
-                                    <Grid container spacing={2}>
+                                    <Grid container spacing={1}>
                                         <Grid item xs={12} md={6}>
                                             <Typography variant='title'>Info</Typography>
                                             <Stack spacing={0.5}>
@@ -204,6 +208,14 @@ function Root() {
                                             </Stack>
                                         </Grid>
                                     </Grid>
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Card elevation={2}>
+                                <CardContent>
+                                    <Typography variant='title'>Top players today</Typography>
+                                    <TodayTopPlayers data={todayData} />
                                 </CardContent>
                             </Card>
                         </Grid>
@@ -246,7 +258,7 @@ function Root() {
                             <Card elevation={2}>
                                 <CardContent>
                                     <Typography variant='title'>Most visited</Typography>
-                                    <Stack spacing={1} sx={{ pl: 1 }}>
+                                    <Stack spacing={0.5} sx={{ pl: 1 }}>
                                         {
                                             visitorStats ? visitorStats.most_visited?.map((v, i) => {
                                                 return (
@@ -274,7 +286,7 @@ function Root() {
                                     </Stack>
                                     <Divider style={{ margin: '10px 0' }} />
                                     <Typography variant='title'>Recent visited</Typography>
-                                    <Stack spacing={1} sx={{ pl: 1 }}>
+                                    <Stack spacing={0.5} sx={{ pl: 1 }}>
                                         {
                                             visitorStats ? visitorStats.last_visited?.map((v, i) => {
                                                 return (

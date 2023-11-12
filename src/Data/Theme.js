@@ -21,7 +21,7 @@ let DefaultTheme = createTheme({
         fontWeight: 700,
         title: {
             color: '#66FFCC',
-            fontSize: 26,
+            fontSize: 22,
             fontWeight: 500,
         },
     },

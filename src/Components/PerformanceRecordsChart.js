@@ -15,6 +15,9 @@ import {
 import zoomPlugin from 'chartjs-plugin-zoom';
 import { Line } from 'react-chartjs-2';
 import 'chartjs-adapter-moment';
+import ChartWrapper from "../Helpers/ChartWrapper.js";
+import moment from "moment";
+import { formatNumberAsSize } from "../Helpers/Misc.js";
 ChartJS.register(
     CategoryScale,
     LinearScale,
@@ -31,99 +34,20 @@ function PerformanceRecordsChart(props) {
     const theme = useTheme();
     const [data, setData] = useState([]);
 
-    const chartOptions = {
-        responsive: true,
-        maintainAspectRatio: false,
-        transitions: {
-            zoom: {
-                animation: {
-                    duration: 1000,
-                    easing: 'easeOutCubic'
-                }
-            }
-        },
-        plugins: {
-            legend: {
-                display: false
-            },
-            tooltip: {
-                callbacks: {
-                    label: function (context) {
-                        // return `
-                        //     ${context.raw.data.user.username}\n
-                        //     ${context.raw.data.beatmap.artist} - ${context.raw.data.beatmap.title} [${context.raw.data.beatmap.version}]\n
-                        //     ${context.raw.y}pp
-                        //     `
-                        return [
-                            `${context.raw.data.user.osu.username}`,
-                            `${context.raw.data.score.beatmap.artist} - ${context.raw.data.score.beatmap.title} [${context.raw.data.score.beatmap.diffname}]`,
-                            `${context.raw.y}pp`
-                        ]
-                    }
-                }
-            },
-            zoom: {
-                limits: {
-                    x: {
-                        min: 'original',
-                        max: 'original',
-                        minRange: 1000 * 60 * 60 * 24 * 7,
-                        maxRange: 1000 * 60 * 60 * 24 * 7
-                    },
-                    y: {
-                        min: 'original',
-                        max: 'original',
-                        minRange: 100,
-                        maxRange: 100
-                    }
-                },
-                zoom: {
-                    wheel: {
-                        enabled: true,
-                    },
-                    pinch: {
-                        enabled: true,
-                    },
-                    mode: 'xy',
-                },
-                pan: {
-                    enabled: true,
-                    mode: 'xy',
-                }
-            }
-        },
-        scales: {
-            x: {
-                type: 'time',
-                time: {
-                    unit: 'day',
-                    tooltipFormat: 'MMM DD YYYY',
-                    displayFormats: {
-                        day: 'MMM DD YYYY'
-                    }
-                },
-                gridLines: {
-                    display: false
-                },
-                grace: '10%'
-            },
-            y: {
-                grace: '10%'
-            }
-        },
-        layout: {
-            padding: 16
-        }
-    }
-
     useEffect(() => {
         setData([]);
         if (props.data) {
             const _data = props.data.map((item) => {
                 return {
-                    x: item.date_played,
+                    x: moment(item.date_played).unix() * 1000,
                     y: item.pp,
-                    data: item
+                    data: item,
+                    image: {
+                        path: `https://a.ppy.sh/${item.user_id}`,
+                        offsetY: -24,
+                        width: 26,
+                        height: 26,
+                    }
                 }
             });
 
@@ -144,19 +68,61 @@ function PerformanceRecordsChart(props) {
             width: '100%'
         }}>
             <Box sx={{ width: '100%', height: '100%', p: 2 }}>
-                <Line
-                    options={chartOptions}
-                    data={{
-                        datasets: [{
-                            data: data.data,
-                            fill: false,
-                            borderColor: theme.palette.primary.main,
-                            tension: 0.1,
-                            borderWidth: 2,
-                            pointRadius: 16,
-                            pointStyle: data.pointData
-                        }]
-                    }} />
+                <ChartWrapper
+                    options={{
+                        chart: {
+                            id: 'pp-records-chart',
+                            toolbar: {
+                                show: true,
+                            },
+                            zoom: {
+                                enabled: true,
+                            },
+                        },
+                        xaxis: {
+                            type: 'datetime',
+                            labels: {
+                                datetimeUTC: false,
+                                format: 'MMM dd yyyy',
+                            },
+                        },
+                        yaxis: {
+                            labels: {
+                                formatter: (value) => {
+                                    return `${formatNumberAsSize(value)} pp`;
+                                }
+                            }
+                        },
+                        stroke: {
+                            curve: 'stepline',
+                        },
+                        annotations: {
+                            points: (data.data ?? []).map((item) => {
+                                return {
+                                    x: item.x,
+                                    y: item.y,
+                                    image: item.image,
+                                }
+                            }),
+                        },
+                        tooltip: {
+                            y: {
+                                formatter: (value) => {
+                                    return `${value.toFixed(2)}pp`;
+                                }
+                            }
+                        },
+                        markers: {
+                            size: 4
+                        },
+                    }}
+                    series={[{
+                        name: 'PP',
+                        data: data.data,
+                        color: theme.palette.primary.main,
+                    }]}
+                    type={'line'}
+                />
             </Box>
         </Box>
     </>
