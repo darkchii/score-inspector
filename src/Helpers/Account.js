@@ -37,9 +37,9 @@ export function GetFormattedName(inspector_user, settings = null) {
                         cursor: _settings.is_link ? 'pointer' : 'default'
                     },
                     borderRadius: '5px',
+                    textDecoration: 'none',
                 }}
-                    onDelete={() => { }}
-                    deleteIcon={<>{Array.isArray(inspector_user.roles) && GetRoleIcons(inspector_user.roles)}</>}
+                    roleIcons={Array.isArray(inspector_user.roles) && GetRoleIcons(inspector_user.roles)}
                     avatar={_settings.show_avatar ? <Avatar alt={name} src={`https://a.ppy.sh/${inspector_user.osu_id}`} /> : null}
                     label={name}
                     size={_settings.size} />
@@ -66,15 +66,14 @@ export function GetRoleIcons(roles, chips = false) {
         </Box>
     );
 
-    return (roles?.map(role => {
-        if (!role.is_visible) return <></>;
+    return roles?.filter(role => role.is_visible).map(role => {
         return (
             <>
                 <Tooltip title={role.name}>
                     {chips ? wrapIcon(GetRoleIcon(role)) : GetRoleIcon(role)}
                 </Tooltip>
             </>)
-    }));
+    });
 }
 
 export function GetRoles(inspector_user) {
