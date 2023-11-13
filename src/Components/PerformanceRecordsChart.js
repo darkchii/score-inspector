@@ -44,7 +44,7 @@ function PerformanceRecordsChart(props) {
                     data: item,
                     image: {
                         path: `https://a.ppy.sh/${item.user_id}`,
-                        offsetY: -24,
+                        offsetY: -44,
                         width: 26,
                         height: 26,
                     }
@@ -115,6 +115,9 @@ function PerformanceRecordsChart(props) {
                         markers: {
                             size: 4
                         },
+                        dataLabels: {
+                            offsetY: -8
+                        }
                     }}
                     series={[{
                         name: 'PP',

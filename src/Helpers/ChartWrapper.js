@@ -42,6 +42,9 @@ const defaultProps = {
                 borderRadius: 10,
             }
         },
+        dataLabels: {
+            enabled: true,
+        },
     },
     fill: {
         type: "gradient",
@@ -71,8 +74,6 @@ function ChartWrapper(props) {
         const defaults = _.cloneDeep(defaultProps);
         const temp_props = _.merge(defaults, props);
         setProps(temp_props);
-
-        console.log(temp_props);
     }, [props]);
 
     return (

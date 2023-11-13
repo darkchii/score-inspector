@@ -1,6 +1,7 @@
 import { Box, Button, Grid, Paper, Skeleton, Table, TableBody, TableCell, TableRow, Tooltip, Typography, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
 import ChartWrapper from "../../Helpers/ChartWrapper.js";
+import ApexCharts from 'apexcharts';
 
 function SectionGraphs(props) {
     const theme = useTheme();
@@ -8,6 +9,13 @@ function SectionGraphs(props) {
     const [graphContent, setGraphContent] = useState(null);
 
     const _setGraphData = (data) => {
+        if (graphData !== null && graphData.id === data.id) return;
+        if(graphData !== null){
+            const _chart = ApexCharts.getChartByID('user-graphs');
+            if(_chart){
+                _chart.resetSeries();
+            }
+        }
         setGraphData(data);
         setGraphContent(null);
 
@@ -43,7 +51,7 @@ function SectionGraphs(props) {
                                 <ChartWrapper
                                     options={{
                                         chart: {
-                                            id: "user-time-graph",
+                                            id: 'user-graphs'
                                         },
                                         xaxis: {
                                             type: 'datetime',
@@ -74,6 +82,9 @@ function SectionGraphs(props) {
                                         },
                                         markers: {
                                             showNullDataPoints: false,
+                                        },
+                                        dataLabels: {
+                                            enabled: false,
                                         }
                                     }}
                                     series={graphContent}

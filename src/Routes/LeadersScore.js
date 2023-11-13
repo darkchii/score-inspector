@@ -235,6 +235,9 @@ function LeadersScore(props) {
                                                         }
                                                     }
                                                 },
+                                                dataLabels:{
+                                                    enabled: false
+                                                }
                                             }}
                                             series={[{ name: 'Total ranked score in top 10k', data: scoreGraphData, color: theme.palette.primary.main }]}
                                             type={'line'}

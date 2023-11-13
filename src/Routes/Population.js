@@ -51,7 +51,7 @@ function Population() {
     }, [population, activeChartType])
 
     const updateChart = (valueType = "active_users") => {
-        if (!population) return;
+        if (!population || !Array.isArray(population)) return;
         const countries = ChartGeo.topojson.feature(WorldAtlas, WorldAtlas.objects["map.geo"]).features.filter((f) => f.properties["A3"] !== 'ATA');
 
         //set all features to value 0
@@ -87,8 +87,8 @@ function Population() {
                 _c.name = country.name;
                 _c.value = 0;
                 _c.valuePercent = 0;
-            }else{
-                console.warn(c.properties["A3"]+' not found');
+            } else {
+                console.warn(c.properties["A3"] + ' not found');
             }
             fixed_countries.push(_c);
         });
@@ -102,7 +102,7 @@ function Population() {
                 //percentage of total value
                 feature.valuePercent = (feature.value ?? 0) / totalSumValue;
 
-                if(isNaN(feature.valuePercent)) feature.valuePercent = 0;
+                if (isNaN(feature.valuePercent)) feature.valuePercent = 0;
             } else {
                 // console.warn(country.name+' not found');
             }
@@ -300,6 +300,8 @@ function Population() {
             showShare: false
         }
     ]
+
+    if (!population || !Array.isArray(population)) return <Loader />;
 
     return (
         <Box sx={{
