@@ -23,13 +23,15 @@ function TodayTopPlayers(props) {
                                             return (
                                                 <>
                                                     <Grid container>
-                                                        <Grid item xs={8}>
+                                                        <Grid item xs={9}>
                                                             <RouterLink to={`user/${v.user.inspector_user.osu_id}`}>
                                                                 {GetFormattedName(v.user.inspector_user, { is_link: true })}
                                                             </RouterLink>
                                                         </Grid>
-                                                        <Grid item xs={4}>
-                                                            <Typography variant='body2' align='right'>{parseInt(v.value).toLocaleString('en-US')}</Typography>
+                                                        <Grid item xs={3}>
+                                                            <Typography variant='body2' align='right'>
+                                                                {v.value_formatter.replace('{value}', parseInt(v.value).toLocaleString('en-US'))}
+                                                            </Typography>
                                                         </Grid>
                                                     </Grid>
                                                 </>

@@ -8,6 +8,10 @@ body {
     --week-width: calc(var(--square-size) + var(--square-gap));
 }
 
+a {
+    text-decoration: none;
+}
+
 .months {
     grid-area: months;
 }
