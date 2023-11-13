@@ -21,8 +21,11 @@ function SectionHeader(props) {
         <>
             <Stack direction='column' spacing={1}>
                 <Box component={Paper} elevation={2} sx={{ p: 0.25 }}>
-                    <Typography variant='body1' sx={{ m: 1 }}>
-                        Recent visitors ({visitorCount.toLocaleString('en-US')} total): {props.user.visitors === null || props.user.visitors.length === 0 ? 'Noone yet :(' : ''} {props.user.visitors != null && props.user.visitors.slice(0, MAX_VISITORS).map((visitor, index) => {
+                    <Stack direction='row' spacing={1} sx={{ m: 1 }}>
+                        <Typography variant='body1'>
+                            Recent visitors ({visitorCount.toLocaleString('en-US')} total):
+                        </Typography>
+                        {props.user.visitors === null || props.user.visitors.length === 0 ? 'Noone yet :(' : ''} {props.user.visitors != null && props.user.visitors.slice(0, MAX_VISITORS).map((visitor, index) => {
                             return (
                                 <>
                                     {GetFormattedName(visitor.visitor_user, {
@@ -33,7 +36,7 @@ function SectionHeader(props) {
                                 </>
                             )
                         })}
-                    </Typography>
+                    </Stack>
                 </Box>
                 <Grid container sx={{
                     backgroundImage: `url(${props.user.osu.cover_url})`,
