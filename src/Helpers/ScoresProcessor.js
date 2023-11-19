@@ -6,8 +6,8 @@ import { getSessions } from "./Session";
 
 const FEEDBACK_SLEEP_TIME = 100; // give the browser bit of breathing room to update the UI before each intensive task
 export async function processScores(user, scores, onCallbackError, onScoreProcessUpdate, allow_loved) {
-    await sleep(FEEDBACK_SLEEP_TIME);
     onScoreProcessUpdate('Fetching beatmap count');
+    await sleep(FEEDBACK_SLEEP_TIME);
     let bmCount;
     try {
         bmCount = await getBeatmapCount(allow_loved);
@@ -20,9 +20,9 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
         return null;
     }
 
-    await sleep(FEEDBACK_SLEEP_TIME);
     onScoreProcessUpdate('Preparing scores');
-    scores = prepareScores(user, scores, onScoreProcessUpdate);
+    await sleep(FEEDBACK_SLEEP_TIME);
+    scores = prepareScores(user, scores);
     
     const data = {
         grades: {
@@ -57,12 +57,11 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
         allow_loved: allow_loved,
     };
 
-    await sleep(FEEDBACK_SLEEP_TIME);
     onScoreProcessUpdate('Calculating performance');
+    await sleep(FEEDBACK_SLEEP_TIME);
     let [_scores, _performance] = await MassCalculatePerformance(scores);
     scores = _scores;
     data.performance = _performance;
-
 
     bmCount.data.forEach(monthData => {
         data.total_beatmaps += monthData.amount;
@@ -72,12 +71,12 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
     // onScoreProcessUpdate('Completion data');
     // data.completion = await getCompletionData(user.alt.user_id, allow_loved);
 
-    await sleep(FEEDBACK_SLEEP_TIME);
     onScoreProcessUpdate('Generate monthly beatmap data');
+    await sleep(FEEDBACK_SLEEP_TIME);
     data.beatmapInfo = getMonthlyBeatmapData(bmCount);
 
-    await sleep(FEEDBACK_SLEEP_TIME);
     onScoreProcessUpdate('Misc data');
+    await sleep(FEEDBACK_SLEEP_TIME);
     for (const score of scores) {
         const grade = score.rank;
         data.grades[grade]++;
@@ -102,8 +101,8 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
     }
 
     //session data
-    await sleep(FEEDBACK_SLEEP_TIME);
     onScoreProcessUpdate('Sessions');
+    await sleep(FEEDBACK_SLEEP_TIME);
     data.sessions = getSessions(scores);
     data.totalSessionLength = 0;
     data.totalSessionLengthMoment = null;
@@ -124,28 +123,28 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
     //end session data
 
     //fc rate
-    await sleep(FEEDBACK_SLEEP_TIME);
     onScoreProcessUpdate('Fullcombo rate');
+    await sleep(FEEDBACK_SLEEP_TIME);
     data.fcRate = data.total.is_fc / data.clears;
 
     //best scores
-    await sleep(FEEDBACK_SLEEP_TIME);
     onScoreProcessUpdate('Best scores');
+    await sleep(FEEDBACK_SLEEP_TIME);
     data.bestScores = getBestScores(scores);
 
     // onScoreProcessUpdate('Weigh performance');
     // data.performance = await weighPerformance(scores, onScoreProcessUpdate);
 
-    await sleep(FEEDBACK_SLEEP_TIME);
     onScoreProcessUpdate('Monthly data');
+    await sleep(FEEDBACK_SLEEP_TIME);
     data.monthly = getPeriodicData(scores, data, user);
 
-    await sleep(FEEDBACK_SLEEP_TIME);
     onScoreProcessUpdate('Active days');
-    data.activeDays = getActiveDays(scores);
-
     await sleep(FEEDBACK_SLEEP_TIME);
+    data.activeDays = getActiveDays(scores);
+    
     onScoreProcessUpdate('Average day spread');
+    await sleep(FEEDBACK_SLEEP_TIME);
     data.averageDaySpread = getDayPlaycountSpread(scores);
 
     return data;
@@ -231,10 +230,9 @@ async function weighPerformance(scores, onScoreProcessUpdate) {
     return data;
 }
 
-export function prepareScores(user, scores, onScoreProcessUpdate, calculateOtherPP = true) {
+export function prepareScores(user, scores, calculateOtherPP = true) {
     let debugged = false;
     scores.forEach((score, index) => {
-        onScoreProcessUpdate?.('' + score.id);
         score = prepareScore(score, user);
 
         if (score.top_score && score.top_score.user_id && !debugged) {

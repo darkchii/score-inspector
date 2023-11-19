@@ -38,8 +38,8 @@ function Top(props) {
                 ]).then(async (values) => {
                     const [pp_scores] = await MassCalculatePerformance(values[0]);
                     const [sc_scores] = await MassCalculatePerformance(values[1]);
-                    const pp_scores_prep = prepareScores(null, pp_scores, null, false);
-                    const sc_scores_prep = prepareScores(null, sc_scores, null, false);
+                    const pp_scores_prep = prepareScores(null, pp_scores, false);
+                    const sc_scores_prep = prepareScores(null, sc_scores, false);
 
                     pp_scores_prep.sort((a, b) => {
                         if (a.pp > b.pp) { return -1; }

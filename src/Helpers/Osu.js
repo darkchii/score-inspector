@@ -599,34 +599,5 @@ export async function MassCalculatePerformance(scores) {
     });
 
     //special cases
-    data.weighted['v1'] = getV1Weight(scores);
-    data.weighted['xexxar'] = getXexxarWeight(scores);
     return [scores, data];
-}
-
-function getV1Weight(scores) {
-    scores.sort((a, b) => {
-        return b.recalc['v1']?.total - a.recalc['v1']?.total;
-    });
-
-    let j = 1;
-    let rank_score = 0;
-    scores.forEach(score => {
-        rank_score += score.recalc['v1']?.total * j;
-        j *= 0.994;
-    });
-
-    rank_score = Math.max(0, Math.log(rank_score + 1) * 400);
-    return rank_score;
-}
-
-function getXexxarWeight(scores) {
-    let xexxar_score_pp = 0;
-    let xexxar_total_pp = 0;
-    scores.forEach((score, index) => {
-        xexxar_score_pp += score.pp * Math.pow(0.95, index);
-        xexxar_total_pp += score.pp;
-    });
-    let xexxar = ((2 - 1) * xexxar_score_pp + 0.75 * xexxar_score_pp * (Math.log(xexxar_total_pp) / Math.log(xexxar_score_pp))) / 2;
-    return xexxar;
 }

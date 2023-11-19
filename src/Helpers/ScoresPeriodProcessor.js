@@ -1,21 +1,24 @@
 // created array based on months or weeks or whatever with scores and interesting stats with it
 
 import { cloneDeep } from "lodash";
-import moment from "moment";
+import moment, { isMoment } from "moment";
 import { dataToList } from "./MonthlyDataConfig";
 
 const PERIOD_FORMATS = {
     'm': {
         format: 'month',
-        format_str: 'MMMM YYYY'
+        format_str: 'MMMM YYYY',
+        format_str_num_only: 'YYYY-MM'
     },
     'w': {
         format: 'week',
-        format_str: 'w YYYY'
+        format_str: 'w YYYY',
+        format_str_num_only: 'YYYY-ww'
     },
     'd': {
         format: 'day',
-        format_str: 'DD MMMM YYYY'
+        format_str: 'DD MMMM YYYY',
+        format_str_num_only: 'YYYY-MM-DD'
     }
 }
 
@@ -27,7 +30,7 @@ export function getPeriodicData(scores, data, user, f = 'm') {
     let chunks = [];
 
     for (const score of scores) {
-        const _m = moment(score.date_played);
+        const _m = (score.date_played_moment && isMoment(score.date_played_moment)) ? score.date_played_moment : moment(score.date_played);
         const _v = _m.format(PERIOD_FORMATS[f].format_str);
 
         if (chunks[_v] === undefined) {
@@ -117,7 +120,7 @@ export function getPeriodicData(scores, data, user, f = 'm') {
 }
 
 function processDailyData(chunks, user, data, f = 'm') {
-    if(user.daily === undefined || user.daily === null || user.daily.error !== undefined) return chunks;
+    if (user.daily === undefined || user.daily === null || user.daily.error !== undefined) return chunks;
     const firstDate = chunks[0].actual_date;
     const firstDaily = user.daily.modes[0].lines[user.daily.modes[0].lines.length - 1];
     const firstDailyDate = moment(firstDaily.date);
@@ -126,8 +129,8 @@ function processDailyData(chunks, user, data, f = 'm') {
         const previous = chunks[i - 1]?.osudaily;
         const scoreRankSubset = user.score_rank_history.filter(x => moment(x.date).isSame(chunks[i].actual_date, PERIOD_FORMATS[f].format));
         let highest_rank = null;
-        for(let j = 0; j < scoreRankSubset.length; j++) {
-            if(highest_rank === null || scoreRankSubset[j].rank < highest_rank) {
+        for (let j = 0; j < scoreRankSubset.length; j++) {
+            if (highest_rank === null || scoreRankSubset[j].rank < highest_rank) {
                 highest_rank = scoreRankSubset[j].rank;
             }
         }
@@ -144,9 +147,18 @@ function processDailyData(chunks, user, data, f = 'm') {
             const dailyPoints = user.daily.modes[0].lines;
             for (var j = 0; j < dailyPoints.length; j++) {
                 const point = dailyPoints[j];
-                const date = moment(point.date);
-                if (date.isSame(chunks[i].actual_date, PERIOD_FORMATS[f].format)) {
-                    //perDatePoints.push(dailyPoints[j]);
+                let date = '';
+                const chunk_date_string = chunks[i].actual_date.format(PERIOD_FORMATS[f].format_str_num_only);
+                if (f === 'm') {
+                    date = point.date.substring(0, 7);
+                } else if (f === 'd') {
+                    date = point.date;
+                } else if (f === 'w') {
+                    const year = point.date.substring(0, 4);
+                    const week = Math.ceil(point.date.substring(8, 10) / 7);
+                    date = `${year}-${week}`;
+                }
+                if (date === chunk_date_string) {
                     if (rank === null || point.rankworld > rank) {
                         rank = point.rankworld;
                     }
@@ -312,7 +324,7 @@ function getCumulative(chunks, user, data, f = 'm') {
             chunks[i].cumulative_total_max_base_score = chunks[i].total_max_base_score;
         }
         chunks[i].total_average_acc = Math.round(chunks[i].total_base_score * Math.pow(chunks[i].total_max_base_score, -1) * 100 * 100) / 100;
-        if(isNaN(chunks[i].total_average_acc)) chunks[i].total_average_acc = 0;
+        if (isNaN(chunks[i].total_average_acc)) chunks[i].total_average_acc = 0;
         chunks[i].cumulative_average_acc = Math.round(chunks[i].cumulative_total_base_score * Math.pow(chunks[i].cumulative_total_max_base_score, -1) * 100 * 100) / 100;
 
         const beatmaps = data.beatmapInfo.monthlyCumulative[`${chunks[i].actual_date.format("YYYY-M")}-01`];
@@ -334,21 +346,21 @@ function getGraphObjects(chunks, labels, f = 'm') {
                     id: "clearsPerSection",
                     name: `Scores set per ${PERIOD_FORMATS[f].format_str}`,
                     labels: labels,
-                    data: [{ label: "Scores set", data: chunks.map(x => x.count_scores)}],
+                    data: [{ label: "Scores set", data: chunks.map(x => x.count_scores) }],
                     title: "Clears",
                 },
                 {
                     id: "totalscorePerSection",
                     name: `Ranked score per ${PERIOD_FORMATS[f].format_str}`,
                     labels: labels,
-                    data: [{ label: "Ranked score gained", data: chunks.map(x => x.total_score)}],   
+                    data: [{ label: "Ranked score gained", data: chunks.map(x => x.total_score) }],
                     title: "Ranked score"
                 },
                 {
                     id: "totaltotalScorePerSection",
                     name: `Total score per ${PERIOD_FORMATS[f].format_str}`,
                     labels: labels,
-                    data: [{ label: "Total score gained", data: chunks.map(x => x.osudaily?.total_score)}],
+                    data: [{ label: "Total score gained", data: chunks.map(x => x.osudaily?.total_score) }],
                     title: "Total score",
                     isDailyApi: true
                 },
@@ -365,9 +377,9 @@ function getGraphObjects(chunks, labels, f = 'm') {
                     labels: labels,
                     data: [
                         { label: "Total SS", data: chunks.map(x => x.total_ss), color: `rgb(197, 197, 197)` },
-                        { label: "Total S", data: chunks.map(x => x.total_s), color: `rgb(255, 186, 14 )`},
+                        { label: "Total S", data: chunks.map(x => x.total_s), color: `rgb(255, 186, 14 )` },
                         { label: "Total A", data: chunks.map(x => x.total_a), color: `rgb(163, 163, 163)` },
-                        { label: "Total B", data: chunks.map(x => x.total_b), color: `rgb(255, 148, 11 )`},
+                        { label: "Total B", data: chunks.map(x => x.total_b), color: `rgb(255, 148, 11 )` },
                         { label: "Total C", data: chunks.map(x => x.total_c), color: `rgb(255, 102, 158)` },
                         { label: "Total D", data: chunks.map(x => x.total_d), color: `rgb(255, 102, 158)` }
                     ],
@@ -377,7 +389,7 @@ function getGraphObjects(chunks, labels, f = 'm') {
                     id: "totalPPPerSection",
                     name: `Total PP per ${PERIOD_FORMATS[f].format_str}`,
                     labels: labels,
-                    data: [{ label: "Total PP set", data: chunks.map(x => x.total_pp), valueFormatter: (value) => { return `${Math.floor(value)}pp`; }}],
+                    data: [{ label: "Total PP set", data: chunks.map(x => x.total_pp), valueFormatter: (value) => { return `${Math.floor(value)}pp`; } }],
                     title: "PP",
                 },
                 {
@@ -431,7 +443,7 @@ function getGraphObjects(chunks, labels, f = 'm') {
                     id: "cumulativeTotalScore",
                     name: `Cumulative total score`,
                     labels: labels,
-                    data: [{ label: "Cumulative total score", data: chunks.map(x => x.osudaily?.cumulative_total_score)}],
+                    data: [{ label: "Cumulative total score", data: chunks.map(x => x.osudaily?.cumulative_total_score) }],
                     title: "Total score",
                     isDailyApi: true
                 },
@@ -524,7 +536,7 @@ function getGraphObjects(chunks, labels, f = 'm') {
                     labels: labels,
                     data: [{ label: "Average length", data: chunks.map(x => x.average_length), valueFormatter: (value) => { return `${value.toFixed(2)}s`; } }],
                     title: "Average length"
-                }, 
+                },
                 {
                     id: "average_pp",
                     name: `Average PP`,
