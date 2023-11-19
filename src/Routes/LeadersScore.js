@@ -204,7 +204,8 @@ function LeadersScore(props) {
                             {
                                 scoreGraphData !== null ? (
                                     <Box sx={{
-                                        height: 300
+                                        height: 300,
+                                        mr: 2
                                     }}>
                                         <ChartWrapper
                                             options={{
@@ -237,6 +238,9 @@ function LeadersScore(props) {
                                                 },
                                                 dataLabels:{
                                                     enabled: false
+                                                },
+                                                markers: {
+                                                    size: 2
                                                 }
                                             }}
                                             series={[{ name: 'Total ranked score in top 10k', data: scoreGraphData, color: theme.palette.primary.main }]}

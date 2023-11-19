@@ -82,6 +82,7 @@ function SectionGraphs(props) {
                                         },
                                         markers: {
                                             showNullDataPoints: false,
+                                            size: 4
                                         },
                                         dataLabels: {
                                             enabled: false,
