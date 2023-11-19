@@ -2,7 +2,7 @@ import { Alert, Avatar, Box, Button, Card, CardContent, CircularProgress, Divide
 import { Link as RouterLink, useSearchParams } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import { formatBytes, formatNumberAsSize, GetAPI, MODAL_STYLE, parseReadableStreamToJson, showNotification } from '../Helpers/Misc';
-import { GetFormattedName, GetTopVisited, LoginUser } from '../Helpers/Account';
+import { GetFormattedName, GetLoginIDUnsafe, GetTopVisited, LoginUser } from '../Helpers/Account';
 import axios from 'axios';
 import moment from 'moment';
 import momentDurationFormatSetup from "moment-duration-format";
@@ -99,7 +99,7 @@ function Root() {
             Promise.all([
                 axios.get(`${GetAPI()}system`),
                 axios.get(`${GetAPI()}system/status`),
-                axios.get(`${GetAPI()}scores/today`)
+                axios.get(`${GetAPI()}scores/today?user_id=${GetLoginIDUnsafe()}`)
             ]).then(([system, status, today_data]) => {
                 system.data !== null && system.data !== undefined ? setServerInfo({ ...system.data }) : setServerInfo(null);
                 status.data !== null && status.data !== undefined ? setServerStatus({ ...status.data, inspector: true }) : setServerStatus({

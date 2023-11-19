@@ -39,6 +39,7 @@ export function GetFormattedName(inspector_user, settings = null) {
                     borderRadius: '5px',
                     textDecoration: 'none',
                 }}
+                    user_id={inspector_user.osu_id}
                     roleIcons={Array.isArray(inspector_user.roles) && GetRoleIcons(inspector_user.roles)}
                     avatar={_settings.show_avatar ? <Avatar alt={name} src={`https://a.ppy.sh/${inspector_user.osu_id}`} /> : null}
                     label={name}
@@ -184,6 +185,14 @@ export async function GetUser(osu_id) {
 
 export async function GetLoginID() {
     if (await IsUserLoggedIn()) {
+        return localStorage.getItem('auth_osu_id');
+    }
+
+    return null;
+}
+
+export function GetLoginIDUnsafe() {
+    if(IsUserLoggedInUnsafe()){
         return localStorage.getItem('auth_osu_id');
     }
 
