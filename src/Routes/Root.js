@@ -7,7 +7,7 @@ import axios from 'axios';
 import moment from 'moment';
 import momentDurationFormatSetup from "moment-duration-format";
 import ScoreSubmissions from '../Components/ScoreSubmissions';
-import { blue, green, grey, red } from '@mui/material/colors';
+import { blue, green, grey, indigo, red } from '@mui/material/colors';
 import GlowBar from '../Components/UI/GlowBar';
 import Loader from '../Components/UI/Loader';
 import config from "../config.json";
@@ -18,6 +18,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
 import BadgeIcon from '@mui/icons-material/Badge';
 import TodayTopPlayers from '../Components/TodayTopPlayers.js';
+import BetterAlert from '../Components/UI/BetterAlert.js';
 
 momentDurationFormatSetup(moment);
 
@@ -155,20 +156,19 @@ function Root() {
                         </Modal>
                     </> : <></>
             }
-            <Box sx={{ mb: 1 }}>
-                <Alert severity='info'>
-                    <Typography>Join the osu!alternative Discord!</Typography>
-                    <Button size='small' variant='contained' component='a' href='https://discord.gg/VZWRZZXcW4' target='_blank'>Join</Button>
-                </Alert>
-            </Box>
             <Grid container spacing={2} sx={{ pb: 1 }}>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={3}>
+                    <StatCard stats={<>
+                        <Button variant='contained' component='a' href='https://discord.gg/VZWRZZXcW4' target='_blank'>Join</Button>
+                    </>} title={`Join the osu!alt discord`} color={indigo} icon={<PersonIcon />} />
+                </Grid>
+                <Grid item xs={12} md={3}>
                     <StatCard stats={serverInfo?.database?.alt?.total_users ? (parseInt(serverInfo?.database?.alt?.total_users ?? 0)).toLocaleString('en-US') : null} title={`Players (${(parseInt(serverInfo?.database?.alt?.tracked_users ?? 0)).toLocaleString('en-US')} live)`} color={blue} icon={<PersonIcon />} />
                 </Grid>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={3}>
                     <StatCard stats={serverInfo?.database?.alt?.total_scores ? formatNumberAsSize(parseInt(serverInfo?.database?.alt?.total_scores ?? 0)) : null} title={'Scores'} color={red} icon={<WorkspacePremiumIcon />} />
                 </Grid>
-                <Grid item xs={12} md={4}>
+                <Grid item xs={12} md={3}>
                     <StatCard stats={serverInfo?.database?.inspector?.total_visits ? (parseInt(serverInfo?.database?.inspector?.total_visits ?? 0)).toLocaleString('en-US') : null} title={'Profile visits'} color={green} icon={<BadgeIcon />} />
                 </Grid>
             </Grid>
@@ -185,9 +185,9 @@ function Root() {
                                                 {
                                                     IMPORTANT_NOTES.map((note, index) => {
                                                         return (
-                                                            <Alert icon={false} severity='info'>
+                                                            <BetterAlert severity='primary'>
                                                                 <Typography>{note}</Typography>
-                                                            </Alert>
+                                                            </BetterAlert>
                                                         );
                                                     })
                                                 }
@@ -199,9 +199,9 @@ function Root() {
                                                 {
                                                     GUIDE_NEW_USERS.map((note, index) => {
                                                         return (
-                                                            <Alert icon={false} severity='info'>
+                                                            <BetterAlert severity='primary'>
                                                                 <Typography>{note}</Typography>
-                                                            </Alert>
+                                                            </BetterAlert>
                                                         );
                                                     })
                                                 }
@@ -374,7 +374,7 @@ function StatCard(props) {
 
     return <>
         <Paper sx={{
-            backgroundColor: props.color[600],
+            backgroundColor: props.color[props.brightness ?? 600],
             overflow: 'hidden',
             position: 'relative',
             height: props.height ?? 130
@@ -428,7 +428,7 @@ function StatCard(props) {
                     <Grid item>
                         <Grid container direction="row" alignItems="center" spacing={1}>
                             <Grid item>
-                                <Avatar variant="rounded" sx={{ color: props.color[300], backgroundColor: 'white' }}>
+                                <Avatar variant="rounded" sx={{ color: props.color[props.brightness ?? 300], backgroundColor: 'white' }}>
                                     {props.icon}
                                 </Avatar>
                             </Grid>
