@@ -1,4 +1,4 @@
-import { Box, useTheme } from "@mui/material";
+import { Alert, Box, useTheme } from "@mui/material";
 import { useEffect } from "react";
 import { useState } from "react";
 import {
@@ -18,6 +18,7 @@ import 'chartjs-adapter-moment';
 import ChartWrapper from "../Helpers/ChartWrapper.js";
 import moment from "moment";
 import { formatNumberAsSize } from "../Helpers/Misc.js";
+import { getModString } from "../Helpers/Osu.js";
 ChartJS.register(
     CategoryScale,
     LinearScale,
@@ -44,7 +45,7 @@ function PerformanceRecordsChart(props) {
                     data: item,
                     image: {
                         path: `https://a.ppy.sh/${item.user_id}`,
-                        offsetY: -44,
+                        offsetY: -30,
                         width: 26,
                         height: 26,
                     }
@@ -106,11 +107,24 @@ function PerformanceRecordsChart(props) {
                             }),
                         },
                         tooltip: {
-                            y: {
-                                formatter: (value) => {
-                                    return `${value.toFixed(2)}pp`;
-                                }
+                            custom: function ({ series, seriesIndex, dataPointIndex, w }) {
+                                var data = w.globals.initialSeries[seriesIndex].data[dataPointIndex];
+                                const score = data.data.score;
+                                const beatmap = score.beatmap;
+                                const user = data.data.user.osu;
+                                const pp = data.y;
+                                return `
+                                <ul>
+                                    <li>${Math.round(pp)}pp &bull; ${user.username}</li>
+                                    <li>${beatmap.artist} - ${beatmap.title} [${beatmap.diffname}]</li>
+                                    <li>${Math.round(beatmap.modded_sr.star_rating * 10) / 10}* +${getModString(parseInt(score.enabled_mods))}</li>
+                                </ul>`
                             }
+                            // y: {
+                            //     formatter: (value) => {
+                            //         return `${value.toFixed(2)}pp`;
+                            //     }
+                            // }
                         },
                         markers: {
                             size: 4
