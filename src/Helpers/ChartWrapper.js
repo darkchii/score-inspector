@@ -42,9 +42,6 @@ const defaultProps = {
                 borderRadius: 10,
             }
         },
-        dataLabels: {
-            enabled: true,
-        },
     },
     fill: {
         type: "gradient",
