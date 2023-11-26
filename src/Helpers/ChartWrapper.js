@@ -10,7 +10,7 @@ const defaultProps = {
             mode: 'dark'
         },
         grid: {
-            show: false
+            borderColor: '#ffffff25',
         },
         xaxis: {
             labels: {
@@ -41,6 +41,9 @@ const defaultProps = {
             bar: {
                 borderRadius: 10,
             }
+        },
+        stroke: {
+            curve: 'smooth',
         },
     },
     fill: {
