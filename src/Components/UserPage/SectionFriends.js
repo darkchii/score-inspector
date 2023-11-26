@@ -5,9 +5,9 @@ import { useState } from "react";
 import Loader from "../UI/Loader";
 import axios from "axios";
 import { GetAPI } from "../../Helpers/Misc";
-import { Grid } from "@mui/material";
-import PlayerCard from "../PlayerCard";
+import { Box, Grid } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { GetFormattedName } from "../../Helpers/Account";
 
 function SectionFriends(props) {
     const [friends, setFriends] = useState([]);
@@ -27,12 +27,15 @@ function SectionFriends(props) {
                 isLoading ? <>
                     <Loader />
                 </> : <>
-                    <Grid container spacing={1}>
+                    <Grid container spacing={1} sx={{ padding: 1 }}>
                         {friends.map((friend, index) => {
                             return (
-                                <Grid item xs={12} md={6} lg={3} sx={{ height: '80px' }}>
-                                    <PlayerCard onClick={() => { navigate(`/user/${friend.osu.id}`); }} user={friend} />
-                                </Grid>
+                                <Box sx={{
+                                    display: 'flex',
+                                    p: 0.2
+                                }}>
+                                    {GetFormattedName(friend.inspector_user)}
+                                </Box>
                             )
                         })}
                     </Grid>
