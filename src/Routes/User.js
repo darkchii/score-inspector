@@ -77,7 +77,7 @@ function User() {
                 user_out.scores = _scores;
 
                 const onScoreProcessUpdate = (progress) => {
-                    console.log(progress);
+                    // console.log(progress);
                     setLoadingState(`Processing user scores (${progress})`);
                 };
 

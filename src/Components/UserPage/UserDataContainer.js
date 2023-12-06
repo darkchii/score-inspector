@@ -68,7 +68,7 @@ function UserDataContainer(props) {
                     <SectionDaily user={props.user} />
                 </TabPanel>
                 <TabPanel sx={{ p: 0 }} value={_IDs['graphs']}>
-                    <SectionGraphs user={props.user} dataset={props.user.data.monthly} />
+                    <SectionGraphs user={props.user} dataset={props.user.data.periodic} />
                 </TabPanel>
                 <TabPanel sx={{ p: 0 }} value={_IDs['scores']}>
                     <SectionScores user={props.user} />

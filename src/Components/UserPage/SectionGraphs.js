@@ -1,145 +1,130 @@
-import { Box, Button, Grid, Paper, Skeleton, Table, TableBody, TableCell, TableRow, Tooltip, Typography, useTheme } from "@mui/material";
+import { Box, Button, ButtonGroup, Divider, Grid, Paper, Skeleton, Table, TableBody, TableCell, TableRow, Tooltip, Typography, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
 import ChartWrapper from "../../Helpers/ChartWrapper.js";
 import ApexCharts from 'apexcharts';
+import { capitalizeFirstLetter } from "../../Helpers/Misc.js";
 
 function SectionGraphs(props) {
     const theme = useTheme();
-    const [graphData, setGraphData] = useState(null);
-    const [graphContent, setGraphContent] = useState(null);
-
-    const _setGraphData = (data) => {
-        if (graphData !== null && graphData.id === data.id) return;
-        if(graphData !== null){
-            const _chart = ApexCharts.getChartByID('user-graphs');
-            if(_chart){
-                _chart.resetSeries();
-            }
-        }
-        setGraphData(data);
-        setGraphContent(null);
-
-        const xy = [];
-        data.data.forEach((dataset, i) => {
-            xy[i] = {};
-            xy[i].name = dataset.label;
-            xy[i].data = [];
-            dataset.data.forEach((dataPoint, j) => {
-                xy[i].data.push([data.labels[j].getTime(), dataPoint]);
-            });
-            xy[i].color = dataset.color ?? theme.palette.primary.main;
-        });
-
-        setGraphContent(xy);
-    }
+    const [selectedGraphIndex, setSelectedGraphIndex] = useState(0);
+    const [categorizedButtonIds, setCategorizedButtonIds] = useState(null);
+    const [period, setPeriod] = useState('m');
 
     useEffect(() => {
-        if (props.dataset !== undefined && props.dataset.graphs !== null) {
-            _setGraphData(props.dataset.graphs[0].graphObjects[0]);
-        }
+        console.log(props.dataset);
+        const _categorizedButtonIds = [];
+        props.dataset[period].forEach((dataset, i) => {
+            const category = dataset.category;
+            if (_categorizedButtonIds[category] === undefined) {
+                _categorizedButtonIds[category] = [];
+            }
+
+            _categorizedButtonIds[category].push(i);
+        });
+        setCategorizedButtonIds(_categorizedButtonIds);
     }, [props.dataset]);
 
-    return (
-        (props.dataset !== undefined && graphData !== null && graphContent !== null) ?
-            <>
-                <Grid container spacing={3}>
-                    <Grid item xs={12} md={12} lg={12}>
-                        <Paper elevation={5}>
-                            <Grid sx={{
-                                height: 300
-                            }}>
-                                <ChartWrapper
-                                    options={{
-                                        chart: {
-                                            id: 'user-graphs'
-                                        },
-                                        xaxis: {
-                                            type: 'datetime',
-                                            labels: {
-                                                datetimeUTC: false,
-                                                format: 'MMM yyyy',
-                                            },
-                                        },
-                                        yaxis: {
-                                            labels: {
-                                                formatter: (value) => {
-                                                    if (!value) return value;
-                                                    return value.toLocaleString('en-US');
-                                                }
-                                            },
-                                            showForNullSeries: false,
-                                        },
-                                        tooltip: {
-                                            x: {
-                                                format: 'MMM yyyy'
-                                            },
-                                            y: {
-                                                formatter: (value) => {
-                                                    if (!value) return value;
-                                                    return value.toLocaleString('en-US');
-                                                }
-                                            }
-                                        },
-                                        markers: {
-                                            showNullDataPoints: false,
-                                            size: 4
-                                        },
-                                        dataLabels: {
-                                            enabled: false,
-                                        }
-                                    }}
-                                    series={graphContent}
-                                    type={'line'}
-                                    style={{
-                                        marginRight: '2rem',
-                                    }}
-                                />
-                            </Grid>
+    if (categorizedButtonIds === null) {
+        return <Skeleton variant='rectangular' sx={{ height: 400 }} />
+    }
 
-                            <Table size='small'>
-                                <TableBody>
+    return <>
+        <Box sx={{
+            height: 400
+        }}>
+            <ChartWrapper
+                options={{
+                    chart: {
+                        id: `chart-${selectedGraphIndex}-${props.dataset[period][selectedGraphIndex].id}`,
+                    },
+                    xaxis: {
+                        type: 'datetime',
+                        labels: {
+                            datetimeUTC: false,
+                            format: props.dataset[period][selectedGraphIndex].period_format,
+                        },
+                    },
+                    yaxis: {
+                        labels: {
+                            formatter: (value) => {
+                                return props.dataset[period][selectedGraphIndex].formatter ? props.dataset[period][selectedGraphIndex].formatter(value) : value.toLocaleString();
+                            }
+                        },
+                        reversed: props.dataset[period][selectedGraphIndex].reversed ?? false,
+                    },
+                    tooltip: {
+                        x: {
+                            format: props.dataset[period][selectedGraphIndex].period_format,
+                        },
+                    },
+                    dataLabels: {
+                        enabled: false
+                    },
+                    stroke: {
+                        curve: 'straight'
+                    }
+                }}
+                series={
+                    props.dataset[period][selectedGraphIndex].data.map((data, i) => {
+                        let _graphData = data.graph_data;
+                        if(props.dataset[period][selectedGraphIndex].filterNull){
+                            _graphData = _graphData.filter((data) => {
+                                return !isNaN(data[1]);
+                            });
+
+                            _graphData = _graphData.filter((data) => {
+                                return data[1] !== null;
+                            });
+                        }
+                        console.log(_graphData);
+                        return {
+                            name: data.name,
+                            data: _graphData,
+                            color: data.color ?? theme.palette.primary.main
+                        }
+                    })
+                }
+                type={'line'}
+            />
+        </Box>
+        <Box sx={{ mt: 1 }}>
+            {
+                //props.dataset, is array of objects, each object has a category. split by that
+
+                Object.keys(categorizedButtonIds).map((category, i) => {
+                    return (
+                        <>
+                            <Box>
+                                <Typography variant='h6'>{capitalizeFirstLetter(category)}</Typography>
+                                <ButtonGroup variant='outlined' size='small' color='primary'>
                                     {
-                                        props.dataset.graphs.map((group, i) => (
-                                            <TableRow key={i}>
-                                                <TableCell>
-                                                    <Typography variant="body1">{group.title}</Typography>
-                                                </TableCell>
-                                                <TableCell>
-                                                    {
-                                                        group.graphObjects.map((button, j) => {
-                                                            const disableButton = button.isDailyApi ? (props.user.daily === null || props.user.daily === undefined || props.user.daily.error !== undefined) : false;
-
-                                                            return (
-                                                                <>
-                                                                    <Tooltip title={disableButton ? 'No data available from osu!daily api for this user' : ''}>
-                                                                        <Box sx={{ display: 'inline-block' }}>
-                                                                            <Button sx={{ m: 0.2 }} size='small' disabled={disableButton} variant={graphData.id === button.id ? 'contained' : 'outlined'} key={j} onClick={() => { _setGraphData(button); }}>{button.title}</Button>
-                                                                        </Box>
-                                                                    </Tooltip>
-                                                                </>
-                                                            )
-                                                        }
-                                                        )
-                                                    }
-                                                </TableCell>
-                                            </TableRow>
-                                        )
-                                        )
+                                        categorizedButtonIds[category].map((index, j) => {
+                                            return <Button
+                                                variant={selectedGraphIndex === index ? 'contained' : 'outlined'}
+                                                onClick={() => setSelectedGraphIndex(index)}
+                                                disabled={props.dataset[period][index].disabled ?? false}
+                                            >
+                                                {props.dataset[period][index].name}
+                                            </Button>
+                                        })
                                     }
-                                </TableBody>
-                            </Table>
-                        </Paper>
-                    </Grid>
-                </Grid>
-            </> : <>
-                <Skeleton
-                    sx={{ bgcolor: 'grey.900' }}
-                    variant="rectangular"
-                    animation="wave"
-                    height={600}
-                />
-            </>
-    );
+                                </ButtonGroup>
+                            </Box>
+                            <Divider sx={{ mb: 1, mt: 1 }} />
+                        </>
+                    )
+                })
+            }
+        </Box>
+        <Box sx={{ mt: 1 }}>
+            <Typography variant='h6'>Periodic Increments</Typography>
+            <ButtonGroup variant='outlined' size='small' color="primary">
+                <Button variant={period === 'y' ? 'contained' : 'outlined'} onClick={() => setPeriod('y')}>Yearly</Button>
+                <Button variant={period === 'm' ? 'contained' : 'outlined'} onClick={() => setPeriod('m')}>Monthly</Button>
+                <Button variant={period === 'd' ? 'contained' : 'outlined'} onClick={() => setPeriod('d')}>Daily</Button>
+            </ButtonGroup>
+        </Box>
+    </>
 }
 
 export default SectionGraphs;

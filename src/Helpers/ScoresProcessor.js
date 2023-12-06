@@ -1,29 +1,19 @@
 import moment from "moment";
-import { sleep } from "./Misc";
+import { GetAPI, sleep } from "./Misc";
 import { calculatePP2014, calculatePP2016, calculatePP2020, calculatePPifFC, calculatePPifSS, calculatePPLazer, getBeatmapCount, getBonusPerformance, getLazerScore, getModString, MassCalculatePerformance, mods } from "./Osu";
-import { getPeriodicData } from "./ScoresPeriodProcessor";
 import { getSessions } from "./Session";
+import { getPeriodicData } from "./ScoresPeriodicProcessor.js";
+import axios from "axios";
 
 const FEEDBACK_SLEEP_TIME = 100; // give the browser bit of breathing room to update the UI before each intensive task
 export async function processScores(user, scores, onCallbackError, onScoreProcessUpdate, allow_loved) {
     onScoreProcessUpdate('Fetching beatmap count');
     await sleep(FEEDBACK_SLEEP_TIME);
-    let bmCount;
-    try {
-        bmCount = await getBeatmapCount(allow_loved);
-    } catch (err) {
-        bmCount = null;
-    }
-
-    if (bmCount === null) {
-        onCallbackError('Error fetching beatmap count');
-        return null;
-    }
 
     onScoreProcessUpdate('Preparing scores');
     await sleep(FEEDBACK_SLEEP_TIME);
     scores = prepareScores(user, scores);
-    
+
     const data = {
         grades: {
             XH: 0,
@@ -62,18 +52,6 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
     let [_scores, _performance] = await MassCalculatePerformance(scores);
     scores = _scores;
     data.performance = _performance;
-
-    bmCount.data.forEach(monthData => {
-        data.total_beatmaps += monthData.amount;
-    });
-
-    // await sleep(FEEDBACK_SLEEP_TIME);
-    // onScoreProcessUpdate('Completion data');
-    // data.completion = await getCompletionData(user.alt.user_id, allow_loved);
-
-    onScoreProcessUpdate('Generate monthly beatmap data');
-    await sleep(FEEDBACK_SLEEP_TIME);
-    data.beatmapInfo = getMonthlyBeatmapData(bmCount);
 
     onScoreProcessUpdate('Misc data');
     await sleep(FEEDBACK_SLEEP_TIME);
@@ -135,14 +113,26 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
     // onScoreProcessUpdate('Weigh performance');
     // data.performance = await weighPerformance(scores, onScoreProcessUpdate);
 
-    onScoreProcessUpdate('Monthly data');
+    // onScoreProcessUpdate('Monthly data');
+    // await sleep(FEEDBACK_SLEEP_TIME);
+    // data.monthly = getPeriodicData(scores, data, user);
+
+    onScoreProcessUpdate('Beatmaps');
     await sleep(FEEDBACK_SLEEP_TIME);
-    data.monthly = getPeriodicData(scores, data, user);
+    data.beatmaps_counts = (await axios.get(`${GetAPI()}beatmaps/count_periodic`))?.data;
+
+    onScoreProcessUpdate('Periodic data');
+    await sleep(FEEDBACK_SLEEP_TIME);
+    // data.periodic = getPeriodicData(scores, data, user);
+    data.periodic = {};
+    data.periodic['y'] = getPeriodicData(user, scores, data.beatmaps_counts, 'y');
+    data.periodic['m'] = getPeriodicData(user, scores, data.beatmaps_counts, 'm');
+    data.periodic['d'] = getPeriodicData(user, scores, data.beatmaps_counts, 'd');
 
     onScoreProcessUpdate('Active days');
     await sleep(FEEDBACK_SLEEP_TIME);
     data.activeDays = getActiveDays(scores);
-    
+
     onScoreProcessUpdate('Average day spread');
     await sleep(FEEDBACK_SLEEP_TIME);
     data.averageDaySpread = getDayPlaycountSpread(scores);
@@ -258,7 +248,7 @@ export function prepareScore(score, user = null) {
     score.beatmap = prepareBeatmap(score.beatmap, score.enabled_mods);
 
     score.modString = getModString(score.enabled_mods).toString();
-    score.totalhits = score.count300 + score.count100 + score.count50 + score.countmiss;
+    score.totalhits = score.count300 + score.count100 + score.count50;
 
     score.is_fc = isScoreFullcombo(score);
     score.scoreLazer = Math.floor(getLazerScore(score));
@@ -273,6 +263,7 @@ export function prepareScore(score, user = null) {
 export function prepareBeatmap(beatmap, enabled_mods = null) {
     enabled_mods = enabled_mods ?? mods.None;
 
+    beatmap.stars = parseFloat(beatmap.stars);
     beatmap.objects = beatmap.sliders + beatmap.circles + beatmap.spinners;
     beatmap.modded_length = beatmap.length;
     beatmap.modded_bpm = beatmap.bpm;
@@ -357,15 +348,7 @@ function getMonthlyBeatmapData(beatmaps) {
 }
 
 function isScoreFullcombo(score) {
-    var is_fc = score.perfect === 1;
-
-    if (!is_fc) {
-        if (score.countmiss === 0 && score.beatmap.maxcombo > 0) {
-            const perc_fc = 100 / score.beatmap.maxcombo * score.combo;
-            is_fc = perc_fc >= 99;
-        }
-    }
-
+    const is_fc = (score.countmiss === 0 && ((score.beatmap.maxcombo - score.maxcombo) <= score.count100)) || score.perfect === 1 || score.rank === 'X' || score.rank === 'XH';
     return is_fc;
 }
 
