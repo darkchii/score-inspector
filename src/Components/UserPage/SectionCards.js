@@ -1,8 +1,11 @@
-import { Grid, Paper, Typography, useTheme } from "@mui/material";
+import { Box, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableRow, Typography, useTheme } from "@mui/material";
 import moment from "moment";
 import BestScoreCard from "./BestScoreCard";
 import GlowBar from "../UI/GlowBar";
 import ChartWrapper from "../../Helpers/ChartWrapper.js";
+import { MILESTONES_FORMATTER } from "../../Helpers/Misc.js";
+import { GetFormattedName } from "../../Helpers/Account.js";
+import { Link } from 'react-router-dom';
 
 function SectionCards(props) {
     const theme = useTheme();
@@ -182,6 +185,43 @@ function SectionCards(props) {
                         </Paper>
                         : <></>
                 }
+            </Grid>
+            <Grid>
+                <Paper sx={{p:1}}>
+                    {
+                        props.user.milestones.length > 0 ? <>
+                            <Box>
+                                <TableContainer>
+                                    <Table  size='small'>
+                                        <TableBody>
+                                        {
+                                        props.user.milestones.map((milestone, index) => {
+                                            let text = '';
+
+                                            let formatter = MILESTONES_FORMATTER.find(m => m.name === milestone.achievement);
+                                            if (!formatter) {
+                                                text = `Unknown, contact Amayakase, this should not happen (achievement: ${milestone.achievement})`;
+                                            } else {
+                                                text = formatter.getText(formatter.getValue(milestone.count));
+                                            }
+
+                                            return (
+                                                <TableRow>
+                                                    <TableCell width='15%'>{moment(milestone.time).fromNow()}</TableCell>
+                                                    <TableCell>{text}</TableCell>
+                                                </TableRow>
+                                            )
+                                        })
+                                    }
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                            </Box>
+                        </> : <>
+                            <Typography variant='body'>No recorded milestones found...</Typography>
+                        </>
+                    }
+                </Paper>
             </Grid>
         </>
     )

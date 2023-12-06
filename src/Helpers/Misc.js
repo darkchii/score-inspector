@@ -171,3 +171,79 @@ export function formatNumberAsSize(number) {
         return number.toString();
     }
 }
+
+export const MILESTONES_FORMATTER = [
+    {
+        name: 'Global Rank',
+        getValue: (value) => (<span style={{ fontWeight: 'bold' }}>{value.toLocaleString('en-US')}</span>),
+        getText: (value) => (<span>Reached top #{value}</span>),
+    }, {
+        name: 'Level',
+        getValue: (value) => (<span style={{ fontWeight: 'bold' }}>{value.toLocaleString('en-US')}</span>),
+        getText: (value) => (<span>Reached level {value}</span>),
+    }, {
+        name: 'Playcount',
+        getValue: (value) => (<span style={{ fontWeight: 'bold' }}>{value.toLocaleString('en-US')}</span>),
+        getText: (value) => (<span>Reached {value} playcount</span>)
+    }, {
+        name: 'Playtime',
+        getValue: (value) => (<span style={{ fontWeight: 'bold' }}>{moment.duration(value, 'seconds').asHours()}</span>),
+        getText: (value) => (<span>Reached {value} hours of playtime</span>),
+    }, {
+        name: 'Clears',
+        getValue: (value) => (<span style={{ fontWeight: 'bold' }}>{value.toLocaleString('en-US')}</span>),
+        getText: (value) => (<span>Reached {value} clears</span>),
+    }, {
+        name: 'Total SS',
+        getValue: (value) => (<span style={{ fontWeight: 'bold' }}>{value.toLocaleString('en-US')}</span>),
+        getText: (value) => (<span>Reached {value} total SS ranks</span>),
+    }, {
+        name: 'Total S',
+        getValue: (value) => (<span style={{ fontWeight: 'bold' }}>{value.toLocaleString('en-US')}</span>),
+        getText: (value) => (<span>Reached {value} total S ranks</span>),
+    }, {
+        name: 'Silver SS',
+        getValue: (value) => (<span style={{ fontWeight: 'bold' }}>{value.toLocaleString('en-US')}</span>),
+        getText: (value) => (<span>Reached {value} silver SS ranks</span>),
+    }, {
+        name: 'Silver S',
+        getValue: (value) => (<span style={{ fontWeight: 'bold' }}>{value.toLocaleString('en-US')}</span>),
+        getText: (value) => (<span>Reached {value} silver S ranks</span>),
+    }, {
+        name: 'Gold SS',
+        getValue: (value) => (<span style={{ fontWeight: 'bold' }}>{value.toLocaleString('en-US')}</span>),
+        getText: (value) => (<span>Reached {value} gold SS ranks</span>),
+    }, {
+        name: 'Gold S',
+        getValue: (value) => (<span style={{ fontWeight: 'bold' }}>{value.toLocaleString('en-US')}</span>),
+        getText: (value) => (<span>Reached {value} gold S ranks</span>),
+    }, {
+        name: 'A',
+        getValue: (value) => (<span style={{ fontWeight: 'bold' }}>{value.toLocaleString('en-US')}</span>),
+        getText: (value) => (<span>Reached {value} A ranks</span>),
+    }, {
+        name: 'Total Score',
+        getValue: (value) => (<span style={{ fontWeight: 'bold' }}>{value.toLocaleString('en-US')}</span>),
+        getText: (value) => (<span>Reached {value} total score</span>),
+    }, {
+        name: 'Ranked Score',
+        getValue: (value) => (<span style={{ fontWeight: 'bold' }}>{value.toLocaleString('en-US')}</span>),
+        getText: (value) => (<span>Reached {value} ranked score</span>),
+    }, {
+        name: 'PP',
+        getValue: (value) => (<span style={{ fontWeight: 'bold' }}>{value.toLocaleString('en-US')}</span>),
+        getText: (value) => (<span>Reached {value}pp</span>),
+    }
+]
+
+export function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+export function fastSlice(text, length) {
+    let substr = "";
+    for (var i = 0; i < length; i++) {
+        substr += text.charAt(i);
+    }
+    return substr;
+}

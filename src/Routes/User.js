@@ -106,6 +106,16 @@ function User() {
 
                 user_out.data = _data;
 
+                setLoadingState('Get milestones')
+                try{
+                    const milestones = (await axios.get(`${GetAPI()}scores/milestones/user/${user_out.osu.id}`))?.data;
+                    user_out.milestones = milestones;
+                    console.log(user_out.milestones);
+                }catch(e) {
+                    //ignore
+                    user_out.milestones = [];
+                }
+
                 setLoadingState('Server side stuff');
 
                 if (!config.USE_DEV_API) {
