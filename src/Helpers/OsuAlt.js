@@ -111,10 +111,10 @@ export async function getBestScores(period, stat, limit, loved) {
     return scores;
 }
 
-export async function getScoreActivity(hours = 72) {
+export async function getScoreActivity(interval = 72, period = 'h') {
     try {
         let activity = null;
-        const url = `${GetAPI()}scores/activity?hours=${hours}`;
+        const url = `${GetAPI()}scores/activity?period_amount=${interval}&period=${period}`;
         const res = await axios.get(url, {
             headers: {
                 "Access-Control-Allow-Origin": "*", 'Cache-Control': 'no-cache',

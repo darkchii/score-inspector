@@ -6,77 +6,167 @@ import moment from "moment";
 import Loader from "./UI/Loader";
 import Chart from "react-apexcharts";
 import ChartWrapper from "../Helpers/ChartWrapper.js";
+import { amber, blue, green, grey, purple, red, yellow } from "@mui/material/colors";
+
+const chart_period_data = {
+    'h': {
+        format: 'MMM dd, HH:mm',
+        intervals: [
+            24, 48, 72, 168, 336, 720
+        ]
+    },
+    'd': {
+        format: 'MMM dd',
+        intervals: [
+            7, 14, 30, 60, 90, 180
+        ]
+    }
+}
 
 function ScoreSubmissions(props) {
     const theme = useTheme();
-    const [hours, setHours] = useState(72);
+    const [interval, setInterval] = useState(72);
+    const [period, setPeriod] = useState('h'); //h for hours, d for days
+    const [display, setDisplay] = useState('grades'); //count, count_ss, count_s, count_a, count_b, count_c, count_d
     const [isWorking, setIsWorking] = useState(false);
 
-    const [data, setData] = useState({
-        labels: [],
-        datasets: []
-    })
+    const [data, setData] = useState(null);
+
+    useEffect(() => {
+        setInterval(chart_period_data[period].intervals[0]);
+    }, [period]);
 
     useEffect(() => {
         //get the raw data from api
         (async () => {
             setIsWorking(true);
-            let data = await getScoreActivity(hours);
+            let data = await getScoreActivity(interval, period);
             if (data === null) {
                 setIsWorking(false);
                 return;
             }
 
-            var newData = [];
+            var newData = {};
 
-            for (let i = 0; i < data.hour_entries.length; i++) {
-                let timestamp = moment.utc(data.hour_entries[i].timestamp).local();
-                let count = data.hour_entries[i].entry_count;
-                newData.push([timestamp.toDate().getTime(), count]);
+            for (let i = 0; i < data.time_entries.length; i++) {
+                let timestamp = moment.utc(data.time_entries[i].timestamp).local();
+                let count = data.time_entries[i].entry_count;
+                let count_ss = data.time_entries[i].entry_count_SS;
+                let count_s = data.time_entries[i].entry_count_S;
+                let count_a = data.time_entries[i].entry_count_A;
+                let count_b = data.time_entries[i].entry_count_B;
+                let count_c = data.time_entries[i].entry_count_C;
+                let count_d = data.time_entries[i].entry_count_D;
+                let sum_score = data.time_entries[i].entry_count_score;
+                const _time = timestamp.toDate().getTime();
+                // newData.push([timestamp.toDate().getTime(), count]);
+                if (newData.count === undefined) { newData.count = []; }
+                if (newData.count_ss === undefined) { newData.count_ss = []; }
+                if (newData.count_s === undefined) { newData.count_s = []; }
+                if (newData.count_a === undefined) { newData.count_a = []; }
+                if (newData.count_b === undefined) { newData.count_b = []; }
+                if (newData.count_c === undefined) { newData.count_c = []; }
+                if (newData.count_d === undefined) { newData.count_d = []; }
+                if (newData.entry_count_score === undefined) { newData.entry_count_score = []; }
+                newData.count.push([_time, count]);
+                newData.count_ss.push([_time, count_ss]);
+                newData.count_s.push([_time, count_s]);
+                newData.count_a.push([_time, count_a]);
+                newData.count_b.push([_time, count_b]);
+                newData.count_c.push([_time, count_c]);
+                newData.count_d.push([_time, count_d]);
+                newData.entry_count_score.push([_time, sum_score]);
             }
 
             setData(newData);
             setIsWorking(false);
             // eslint-disable-next-line react-hooks/exhaustive-deps
         })();
-    }, [hours]);
+    }, [interval]);
 
     return (
         <>
             <Grid>
-                <ButtonGroup variant='outlined' size='small' color="primary" aria-label="contained primary button group">
-                    <Button variant={hours === 24 ? 'contained' : 'outlined'} onClick={() => setHours(24)}>24 hours</Button>
-                    <Button variant={hours === 48 ? 'contained' : 'outlined'} onClick={() => setHours(48)}>48 hours</Button>
-                    <Button variant={hours === 72 ? 'contained' : 'outlined'} onClick={() => setHours(72)}>72 hours</Button>
-                    <Button variant={hours === 168 ? 'contained' : 'outlined'} onClick={() => setHours(168)}>1 week</Button>
-                    <Button variant={hours === 336 ? 'contained' : 'outlined'} onClick={() => setHours(336)}>2 weeks</Button>
-                    <Button variant={hours === 720 ? 'contained' : 'outlined'} onClick={() => setHours(720)}>1 month</Button>
+                <ButtonGroup variant='outlined' size='small' color="primary">
+                    {
+                        chart_period_data[period].intervals.map((int, i) => {
+                            return <Button variant={interval === int ? 'contained' : 'outlined'} onClick={() => setInterval(int)} key={i}>{int} {period === 'h' ? 'hours' : 'days'}</Button>
+                        })
+                    }
+                </ButtonGroup>
+                <ButtonGroup variant='outlined' size='small' color="primary">
+                    <Button variant={period === 'h' ? 'contained' : 'outlined'} onClick={() => setPeriod('h')}>Hours</Button>
+                    <Button variant={period === 'd' ? 'contained' : 'outlined'} onClick={() => setPeriod('d')}>Days</Button>
+                </ButtonGroup>
+                <ButtonGroup variant='outlined' size='small' color="primary">
+                    <Button variant={display === 'score' ? 'contained' : 'outlined'} onClick={() => setDisplay('score')}>Score</Button>
+                    <Button variant={display === 'grades' ? 'contained' : 'outlined'} onClick={() => setDisplay('grades')}>Grades</Button>
                 </ButtonGroup>
             </Grid>
             <Grid sx={{ height: 280, position: "relative" }}>
                 {
-                    isWorking || !data || !Array.isArray(data) || data.length <= 0 ?
+                    isWorking || !data ?
                         <Loader /> : <>
                             <ChartWrapper
                                 options={{
                                     chart: {
                                         id: "score-submissions",
+                                        // stacked: true
                                     },
                                     xaxis: {
                                         type: 'datetime',
                                         labels: {
                                             datetimeUTC: false,
-                                            format: 'MMM dd, HH:mm',
+                                            format: chart_period_data[period].format,
                                         },
+                                    },
+                                    yaxis: {
+                                        labels: {
+                                            formatter: (value) => {
+                                                return value.toLocaleString();
+                                            }
+                                        }
                                     },
                                     tooltip: {
                                         x: {
-                                            format: 'MMM dd, HH:mm'
+                                            format: chart_period_data[period].format,
                                         },
                                     },
+                                    stroke: {
+                                        width: [6, 3, 3, 3, 3, 3, 3]
+                                    },
+                                    fill: {
+                                        type: 'gradient',
+                                        gradient: {
+                                            opacityFrom: 0.3,
+                                            opacityTo: 0.5,
+                                        }
+                                    },
+                                    dataLabels: {
+                                        enabled: false
+                                    }
                                 }}
-                                series={[{ name: 'Score Submissions', data: data, color: theme.palette.primary.main }]}
-                                type={'line'}
+                                series={[
+                                    // { name: 'Score Submissions', data: data.count, color: theme.palette.primary.main },
+                                    // { name: 'D', data: data.count_d, color: red[500] },
+                                    // { name: 'C', data: data.count_c, color: purple[300] },
+                                    // { name: 'B', data: data.count_b, color: blue[500] },
+                                    // { name: 'A', data: data.count_a, color: green[500] },
+                                    // { name: 'S', data: data.count_s, color: amber[500] },
+                                    // { name: 'SS', data: data.count_ss, color: grey[100] },
+                                    ...(display === 'grades' ? [
+                                        { name: 'D', data: data.count_d, color: red[500] },
+                                        { name: 'C', data: data.count_c, color: purple[300] },
+                                        { name: 'B', data: data.count_b, color: blue[500] },
+                                        { name: 'A', data: data.count_a, color: green[500] },
+                                        { name: 'S', data: data.count_s, color: amber[500] },
+                                        { name: 'SS', data: data.count_ss, color: grey[100] },
+                                    ] : []),
+                                    ...(display === 'score' ? [
+                                        { name: 'Score', data: data.entry_count_score, color: theme.palette.primary.main },
+                                    ] : [])
+                                ]}
+                                type={'area'}
                             />
                         </>
                 }
