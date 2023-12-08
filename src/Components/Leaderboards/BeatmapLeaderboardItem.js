@@ -88,7 +88,7 @@ function BeatmapLeaderboardItem(props) {
                     </Box>
                 </Box>
 
-                <Box sx={{
+                {/* <Box sx={{
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
@@ -100,9 +100,9 @@ function BeatmapLeaderboardItem(props) {
                                 {Math.round(osu_beatmap?.stars * 100) / 100}*
                             </Typography> : <></>
                     }
-                </Box>
-                
-                <Box sx={{
+                </Box> */}
+
+                {/* <Box sx={{
                     display: 'flex',
                     justifyContent: 'right',
                     alignItems: 'center',
@@ -119,7 +119,59 @@ function BeatmapLeaderboardItem(props) {
 
                         }
                     </Typography>
+                </Box> */}
+                <Box sx={{
+                    display: 'flex',
+                    justifyContent: 'right',
+                    alignItems: 'center',
+                    flexGrow: 1,
+                    pr: 1
+                }}>
+                    {
+                        props.values?.map((value, index) => {
+                            return (
+                                <Box sx={{
+                                    display: 'flex',
+                                    justifyContent: value.alignment,
+                                    alignItems: 'center',
+                                    width: `${100 / props.values.length}%`,
+                                    pl: 1,
+                                    pr: 1,
+                                }}>
+                                    <Typography
+                                        sx={{
+                                            color: value.color ?? 'inherit',
+                                        }}
+                                        variant={value.variant ?? 'h6'}
+                                        textAlign={value.alignment}
+                                        noWrap>
+                                        {value.value}
+                                    </Typography>
+                                </Box>
+                            )
+                        })
+                    }
                 </Box>
+                {/* <Box sx={{
+                    display: 'flex',
+                    justifyContent: 'left',
+                    alignItems: 'center',
+                    width: '15%',
+                    pl: 2
+                }}>
+                    <Typography variant='h6' textAlign={'left'} noWrap>
+                        {
+                            props.statistic?.diff !== undefined && props.statistic?.diff != null ?
+                            ((props.statistic?.customFormat !== undefined && props.statistic?.customFormat != null) ?
+                                <>
+                                    {props.statistic?.customFormat(base_beatmap?.diff)}
+                                </> : <>
+                                    {Math.round(base_beatmap?.diff ?? 0).toLocaleString('en-US')}
+                                </>) : <></>
+
+                        }
+                    </Typography>
+                </Box> */}
             </LeaderboardItem>
         </>
     )

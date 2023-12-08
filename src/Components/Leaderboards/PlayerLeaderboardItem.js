@@ -178,8 +178,16 @@ function PlayerLeaderboardItem(props) {
                                     justifyContent: value.alignment,
                                     alignItems: 'center',
                                     width: `${100 / props.values.length}%`,
+                                    pl: 1,
+                                    pr: 1,
                                 }}>
-                                    <Typography variant='h6' textAlign={value.alignment} noWrap>
+                                    <Typography
+                                        sx={{
+                                            color: value.color ?? 'inherit',
+                                        }}
+                                        variant={value.variant ?? 'h6'}
+                                        textAlign={value.alignment}
+                                        noWrap>
                                         {value.value}
                                     </Typography>
                                 </Box>

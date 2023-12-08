@@ -12,6 +12,8 @@ import PlayerLeaderboardItem from '../Components/Leaderboards/PlayerLeaderboardI
 import BeatmapLeaderboardItem from '../Components/Leaderboards/BeatmapLeaderboardItem';
 import { Helmet } from 'react-helmet';
 import config from "../config.json";
+import { green, grey, red } from '@mui/material/colors';
+import { convertEpochToHumanReadable } from '../Helpers/Misc.js';
 momentDurationFormatSetup(moment);
 
 const GROUPED_STATS = {
@@ -51,6 +53,11 @@ const GROUPED_STATS = {
         {
             name: 'total_score', title: 'Total Score',
             description: 'Total score of all scores.',
+            group: 'score'
+        },
+        {
+            name: 'lazer_standard', title: 'Lazer Standardized',
+            description: 'Lazer standardized score.',
             group: 'score'
         },
         {
@@ -226,21 +233,7 @@ const GROUPED_STATS = {
         {
             name: 'longest_approval', title: 'Longest Rank Time',
             description: 'List of beatmaps sorted by longest time from submission to ranked',
-            customFormat: (value) => `
-                ${value === undefined ? '' : (Object.keys(value).length === 0 ? 'Instant' :
-                    `
-                    ${value.years ? value.years + 'y ' : ''}
-                    ${value.months ? value.months + 'm ' : ''}
-                    ${value.days ? value.days + 'd ' : ''}
-                    ${value.years === undefined && value.months === undefined && value.days === undefined ? `
-                        ${value.hours ? value.hours + 'h' : ''}
-                        ${value.minutes ? value.minutes + 'min' : ''}
-                        ${value.seconds ? value.seconds + 's' : ''}
-                        ` : ''
-                    }
-                    `)
-                }
-            `
+            customFormat: (value) => moment.duration(value, 'seconds').format('y[y] M[m] d[d]')
         },
         {
             name: 'longest_maps', title: 'Longest Maps',
@@ -302,7 +295,7 @@ function Leaders() {
     }, [params.country]);
 
     useEffect(() => {
-        if(page > 1){
+        if (page > 1) {
             update(false);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -413,6 +406,12 @@ function Leaders() {
                         <Stack direction='column' spacing={1}>
                             {
                                 leaderboard.map((entry) => {
+                                    const reformat = (value) => {
+                                        if (statistic?.customFormat !== undefined && statistic?.customFormat != null) {
+                                            return statistic?.customFormat(value);
+                                        }
+                                        return Math.round(value).toLocaleString('en-US');
+                                    }
                                     if (leaderboardType === 'users') {
                                         return (
                                             <PlayerLeaderboardItem
@@ -423,10 +422,16 @@ function Leaders() {
                                                             alignment: 'left'
                                                         },
                                                         {
-                                                            value: statistic?.customFormat !== undefined && statistic?.customFormat != null ?
-                                                                statistic?.customFormat(entry?.stat) :
-                                                                Math.round(entry?.stat).toLocaleString('en-US'),
-                                                            alignment: 'left'
+                                                            value: reformat(entry?.stat),
+                                                            alignment: 'right'
+                                                        },
+                                                        {
+                                                            value: entry?.diff !== undefined && entry?.diff != null ?
+                                                                (entry?.diff > 0 ? `+${reformat(entry?.diff)}` : `${reformat(entry?.diff)}`) :
+                                                                '',
+                                                            alignment: 'left',
+                                                            variant: 'body2',
+                                                            color: grey[500]
                                                         }
                                                     ]
                                                 }
@@ -436,7 +441,30 @@ function Leaders() {
 
                                     if (leaderboardType === 'beatmaps' || leaderboardType === 'beatmapsets') {
                                         return (
-                                            <BeatmapLeaderboardItem statistic={statistic} map={entry} type={leaderboardType} />
+                                            <BeatmapLeaderboardItem
+                                                statistic={statistic}
+                                                map={entry}
+                                                type={leaderboardType}
+                                                values={[
+                                                    ...(leaderboardType === 'beatmaps' ?
+                                                        [{
+                                                            value: `${Math.round(entry?.osu_beatmap?.stars * 100) / 100}*`
+                                                        }]
+                                                        : []),
+                                                    {
+                                                        value: reformat(entry?.stat),
+                                                        alignment: 'right'
+                                                    },
+                                                    {
+                                                        value: entry?.diff !== undefined && entry?.diff != null ?
+                                                            (entry?.diff > 0 ? `+${reformat(entry?.diff)}` : `${reformat(entry?.diff)}`) :
+                                                            '',
+                                                        alignment: 'left',
+                                                        variant: 'body2',
+                                                        color: grey[500]
+                                                    }
+                                                ]}
+                                            />
                                         );
                                     }
 

@@ -247,3 +247,53 @@ export function fastSlice(text, length) {
     }
     return substr;
 }
+
+export function convertEpochToHumanReadable(epochDuration, short = false) {
+    const duration = moment.duration(epochDuration);
+
+    const years = duration.years();
+    const months = duration.months();
+    const days = duration.days();
+    const hours = duration.hours();
+    const minutes = duration.minutes();
+    const seconds = duration.seconds();
+
+    if (short) {
+        const parts = [];
+        if (years > 0) parts.push(`${years}y`);
+        if (months > 0) parts.push(`${months}m`);
+        if (days > 0) parts.push(`${days}d`);
+        if (hours > 0) parts.push(`${hours}h`);
+        if (minutes > 0) parts.push(`${minutes}min`);
+        if (seconds > 0) parts.push(`${seconds}s`);
+        return parts.join(' ');
+    }
+
+    const parts = [];
+
+    if (years > 0) {
+        parts.push(`${years} ${years === 1 ? 'year' : 'years'}`);
+    }
+
+    if (months > 0) {
+        parts.push(`${months} ${months === 1 ? 'month' : 'months'}`);
+    }
+
+    if (days > 0) {
+        parts.push(`${days} ${days === 1 ? 'day' : 'days'}`);
+    }
+
+    if (hours > 0) {
+        parts.push(`${hours} ${hours === 1 ? 'hour' : 'hours'}`);
+    }
+
+    if (minutes > 0) {
+        parts.push(`${minutes} ${minutes === 1 ? 'minute' : 'minutes'}`);
+    }
+
+    if (seconds > 0) {
+        parts.push(`${seconds} ${seconds === 1 ? 'second' : 'seconds'}`);
+    }
+
+    return parts.join(', ').replace(/,([^,]*)$/, ' and$1');
+}

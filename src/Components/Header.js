@@ -32,7 +32,9 @@ const HeaderButtonMenu = styled((props) => (
             horizontal: 'right',
         }}
         {...props}
-    />
+    >
+        {props.children}
+    </Menu>
 ))(({ theme }) => ({
     '& .MuiPaper-root': {
         borderRadius: 6,
@@ -71,7 +73,7 @@ function Header(props) {
     const [showMenu, setShowMenu] = React.useState(null);
 
     const [activeDropDownIndex, setActiveDropDownIndex] = React.useState(null);
-    const [showDropDown, setShowDropDown] = React.useState(null);
+    const [showDropDown, setShowDropDown] = React.useState(false);
     const [anchorElDropDown, setAnchorElDropDown] = React.useState(null);
 
     const headerNavItems = [
@@ -114,8 +116,8 @@ function Header(props) {
             </Typography>
             <Divider />
             <List>
-                {headerNavItems.map((item) => (
-                    <ListItem key={item.name} disablePadding>
+                {headerNavItems.map((item, index) => (
+                    <ListItem key={`${item.name}-${index}`} disablePadding>
                         <ListItemButton startIcon={item.icon}>
                             <ListItemIcon sx={{ minWidth: '40px' }}>{item.icon}</ListItemIcon>
                             <ListItemText primary={item.name} />
@@ -146,7 +148,7 @@ function Header(props) {
                 {
                     headerNavItems[activeDropDownIndex] !== undefined ? headerNavItems[activeDropDownIndex].dropDown.map((item, index) => {
                         return (
-                            <MenuItem onClick={(e) => {
+                            <MenuItem key={`${item.name}-${index}`} onClick={(e) => {
                                 item.onClick();
                                 handleHeaderMenuClose();
                             }} component={item.linkTo ? Link : null} to={item.linkTo ?? null}>

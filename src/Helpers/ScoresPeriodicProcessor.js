@@ -1,6 +1,5 @@
 import { amber, blue, green, grey, purple, red } from "@mui/material/colors";
 import moment from "moment";
-import { GetAPI, fastSlice } from "./Misc.js";
 
 const PERIOD_FORMATS = {
     'm': {

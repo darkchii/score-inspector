@@ -23,19 +23,19 @@ function AccountDropdown(props) {
                 </>
             }
             <MenuList>
-                <MenuItem onClick={() => { navigate(`/user/${props.account.user_id}`); closeMenu(); }}>
+                <MenuItem key={'profile'} onClick={() => { navigate(`/user/${props.account.user_id}`); closeMenu(); }}>
                     <ListItemIcon><PersonIcon /></ListItemIcon>
                     <ListItemText>Profile</ListItemText>
                 </MenuItem>
-                <MenuItem onClick={() => { props.customizeModal.current.setOpen(true); closeMenu(); }}>
+                <MenuItem key={'customize'} onClick={() => { props.customizeModal.current.setOpen(true); closeMenu(); }}>
                     <ListItemIcon><FilterIcon /></ListItemIcon>
                     <ListItemText>Customize</ListItemText>
                 </MenuItem>
-                <MenuItem onClick={() => { props.visitorLogModal.current.setOpen(true); closeMenu(); }}>
+                <MenuItem key={'visited'} onClick={() => { props.visitorLogModal.current.setOpen(true); closeMenu(); }}>
                     <ListItemIcon><PersonSearchIcon /></ListItemIcon>
                     <ListItemText>Visited</ListItemText>
                 </MenuItem>
-                <MenuItem onClick={() => { navigate(`/logout`); closeMenu(); }}>
+                <MenuItem key={'logout'} onClick={() => { navigate(`/logout`); closeMenu(); }}>
                     <ListItemIcon><LogoutIcon /></ListItemIcon>
                     <ListItemText>Logout</ListItemText>
                 </MenuItem>
