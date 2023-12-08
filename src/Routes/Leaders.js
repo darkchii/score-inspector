@@ -61,6 +61,11 @@ const GROUPED_STATS = {
             group: 'score'
         },
         {
+            name: 'lazer_classic', title: 'Lazer Classic',
+            description: 'Lazer classic score.',
+            group: 'score'
+        },
+        {
             name: 'avg_score', title: 'Average Score',
             description: 'Average score of all scores.',
             group: 'score'
