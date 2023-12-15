@@ -11,7 +11,6 @@ function SectionGraphs(props) {
     const [period, setPeriod] = useState('m');
 
     useEffect(() => {
-        console.log(props.dataset);
         const _categorizedButtonIds = [];
         props.dataset[period].forEach((dataset, i) => {
             const category = dataset.category;
@@ -76,7 +75,6 @@ function SectionGraphs(props) {
                                 return data[1] !== null;
                             });
                         }
-                        console.log(_graphData);
                         return {
                             name: data.name,
                             data: _graphData,

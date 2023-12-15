@@ -65,7 +65,6 @@ function Top(props) {
                             significantStat: 'score'
                         },
                     }
-                    console.log(_scores);
                     setScores(_scores);
                 });
             } catch (err) {

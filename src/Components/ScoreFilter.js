@@ -1,4 +1,4 @@
-import { Box, Button, Checkbox, FormControl, FormControlLabel, Grid, Radio, RadioGroup, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Tooltip, Typography } from "@mui/material";
+import { Box, Button, Checkbox, FormControl, FormControlLabel, Grid, InputLabel, ListItemIcon, ListItemText, MenuItem, Modal, Radio, RadioGroup, Select, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Tooltip, Typography } from "@mui/material";
 import moment from "moment";
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
@@ -7,54 +7,122 @@ import { mods, mod_strings_long } from "../Helpers/Osu";
 import { useEffect } from "react";
 import { getModIcon, getPossibleMods, IMG_SVG_GRADE_A, IMG_SVG_GRADE_B, IMG_SVG_GRADE_C, IMG_SVG_GRADE_D, IMG_SVG_GRADE_S, IMG_SVG_GRADE_SH, IMG_SVG_GRADE_X, IMG_SVG_GRADE_XH } from "../Helpers/Assets";
 import ImageToggle from "./ImageToggle";
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 
 const FILTER_FIELD_SIZE = 12 / 7;
 const MIN_DATE = moment('6 Oct 2007');
 const MAX_DATE = moment();
 
+const sorters = [
+    {
+        name: 'PP',
+        sort: (a, b) => {
+            let a_pp = a.pp > 0 ? a.pp : a.estimated_pp;
+            let b_pp = b.pp > 0 ? b.pp : b.estimated_pp;
+            return b_pp - a_pp;
+        }
+    }, {
+        name: 'Score',
+        sort: (a, b) => {
+            return b.score - a.score;
+        }
+    }, {
+        name: 'Date Played',
+        sort: (a, b) => {
+            return moment(b.date_played).unix() - moment(a.date_played).unix();
+        }
+    }, {
+        name: 'Date Ranked',
+        sort: (a, b) => {
+            return moment(b.beatmap.approved_date).unix() - moment(a.beatmap.approved_date).unix();
+        }
+    }, {
+        name: 'Accuracy',
+        sort: (a, b) => {
+            return b.accuracy - a.accuracy;
+        }
+    }, {
+        name: 'Combo',
+        sort: (a, b) => {
+            return b.combo - a.combo;
+        }
+    }, {
+        name: 'Stars',
+        sort: (a, b) => {
+            return b.beatmap.modded_sr.star_rating - a.beatmap.modded_sr.star_rating;
+        }
+    }
+]
+
+const defaultFilterData = {
+    enabledMods: 0,
+    enabledNomod: true,
+    modsUsage: 'any',
+    enabledGrades: ['XH', 'X', 'SH', 'S', 'A', 'B', 'C', 'D'],
+    minScore: null,
+    maxScore: null,
+    minStars: null,
+    maxStars: null,
+    minPP: null,
+    maxPP: null,
+    minAcc: null,
+    maxAcc: null,
+    minCombo: null,
+    maxCombo: null,
+    minAR: null,
+    maxAR: null,
+    minOD: null,
+    maxOD: null,
+    minCS: null,
+    maxCS: null,
+    minHP: null,
+    maxHP: null,
+    minLength: null,
+    maxLength: null,
+    approved: [1, 2, 4],
+    minApprovedDate: MIN_DATE,
+    maxApprovedDate: MAX_DATE,
+    minPlayedDate: MIN_DATE,
+    maxPlayedDate: MAX_DATE,
+    sorter: 'PP_desc',
+    _sorter: sorters[0],
+    query: ''
+}
+
 function ScoreFilter(props) {
     //-1 in range values are simply ignored and no limit is set
     //null is ignored too
-    const [enabledMods, setEnabledMods] = useState(0);
-    const [enabledNomod, setNomodEnabled] = useState(true);
-    const [enabledGrades, setEnabledGrades] = useState(['XH', 'X', 'SH', 'S', 'A', 'B', 'C', 'D']);
-    const [modsState, setModsState] = useState('any');
-    const [minScore, setMinScore] = useState(null);
-    const [maxScore, setMaxScore] = useState(null);
-    const [minStars, setMinStars] = useState(null);
-    const [maxStars, setMaxStars] = useState(null);
-    const [minPP, setMinPP] = useState(null);
-    const [maxPP, setMaxPP] = useState(null);
-    const [minAcc, setMinAcc] = useState(null);
-    const [maxAcc, setMaxAcc] = useState(null);
-    const [minCombo, setMinCombo] = useState(null);
-    const [maxCombo, setMaxCombo] = useState(null);
-    const [minApprovedDate, setMinApprovedDate] = useState(MIN_DATE);
-    const [maxApprovedDate, setMaxApprovedDate] = useState(MAX_DATE);
-    const [minPlayedDate, setMinPlayedDate] = useState(MIN_DATE);
-    const [maxPlayedDate, setMaxPlayedDate] = useState(MAX_DATE);
-    const [checkUniqueSS, setCheckUniqueSS] = useState(false);
-    const [checkUniqueFC, setCheckUniqueFC] = useState(false);
-    const [checkUniqueDTFC, setCheckUniqueDTFC] = useState(false);
+    const [filterData, setFilterData] = useState(null);
 
-    const [columns, setColumns] = useState(null);
+    const setFilterValue = (key, value) => {
+        var newFilterData = { ...filterData };
+        newFilterData[key] = value;
+
+        if (key === 'sorter') {
+            newFilterData._sorter = sorters.find(sorter => sorter.name === value.split('_')[0]);
+            newFilterData._sorter.reverse = value.split('_')[1] === 'asc';
+        }
+        setFilterData(newFilterData);
+    }
 
     const handleModStateChange = (event) => {
-        setModsState(event.target.value);
+        // setModsState(event.target.value);
+        setFilterValue('modsUsage', event.target.value);
     };
 
     const toggleMod = (mod, checked) => {
-        const updatedMods = enabledMods + mods[mod] * (checked ? 1 : -1);
+        const updatedMods = filterData.enabledMods + mods[mod] * (checked ? 1 : -1);
         if (mod === 'None') {
-            setNomodEnabled(checked);
+            setFilterValue('enabledNomod', checked);
         }
-        setEnabledMods(updatedMods);
+        setFilterValue('enabledMods', updatedMods);
     }
 
     const toggleGrade = (grade, checked) => {
         // const updatedMods = enabledMods + mods[mod] * (checked ? 1 : -1);
         // setEnabledMods(updatedMods);
-        var updatedGrades = enabledGrades;
+        var updatedGrades = filterData.enabledGrades;
         if (checked) {
             if (!updatedGrades.includes(grade)) {
                 updatedGrades.push(grade);
@@ -64,48 +132,98 @@ function ScoreFilter(props) {
                 updatedGrades.splice(updatedGrades.indexOf(grade), 1);
             }
         }
-        setEnabledGrades(updatedGrades);
+        setFilterValue('enabledGrades', updatedGrades);
+    }
+
+    const generateQuery = () => {
+        let query = '';
+
+        if (filterData.enabledMods !== 0) {
+            if (filterData.modsUsage === 'any') {
+
+            } else {
+                query += `-m ${filterData.enabledMods} `;
+            }
+        }
+
+        if (filterData.enabledGrades.length < 8) {
+            query += `-letter `;
+            query += filterData.enabledGrades.join(',');
+            query += ' ';
+        }
+
+        if (filterData.minScore !== null && filterData.minScore !== '' && filterData.minScore >= 0) { query += `-score-min ${filterData.minScore} `; }
+        if (filterData.maxScore !== null && filterData.maxScore !== '' && filterData.maxScore >= 0) { query += `-score-max ${filterData.maxScore} `; }
+
+        if (filterData.minStars !== null && filterData.minStars !== '' && filterData.minStars >= 0) { query += `-min ${filterData.minStars} `; }
+        if (filterData.maxStars !== null && filterData.maxStars !== '' && filterData.maxStars >= 0) { query += `-max ${filterData.maxStars} `; }
+
+        if (filterData.minPP !== null && filterData.minPP !== '' && filterData.minPP >= 0) { query += `-pp-min ${filterData.minPP} `; }
+        if (filterData.maxPP !== null && filterData.maxPP !== '' && filterData.maxPP >= 0) { query += `-pp-max ${filterData.maxPP} `; }
+
+        if (filterData.minAcc !== null && filterData.minAcc !== '' && filterData.minAcc >= 0) { query += `-acc-min ${filterData.minAcc} `; }
+        if (filterData.maxAcc !== null && filterData.maxAcc !== '' && filterData.maxAcc >= 0) { query += `-acc-max ${filterData.maxAcc} `; }
+
+        if (filterData.minCombo !== null && filterData.minCombo !== '' && filterData.minCombo >= 0) { query += `-combo-min ${filterData.minCombo} `; }
+        if (filterData.maxCombo !== null && filterData.maxCombo !== '' && filterData.maxCombo >= 0) { query += `-combo-max ${filterData.maxCombo} `; }
+
+        if (filterData.minAR !== null && filterData.minAR !== '' && filterData.minAR >= 0) { query += `-ar-min ${filterData.minAR} `; }
+        if (filterData.maxAR !== null && filterData.maxAR !== '' && filterData.maxAR >= 0) { query += `-ar-max ${filterData.maxAR} `; }
+
+        if (filterData.minOD !== null && filterData.minOD !== '' && filterData.minOD >= 0) { query += `-od-min ${filterData.minOD} `; }
+        if (filterData.maxOD !== null && filterData.maxOD !== '' && filterData.maxOD >= 0) { query += `-od-max ${filterData.maxOD} `; }
+
+        if (filterData.minCS !== null && filterData.minCS !== '' && filterData.minCS >= 0) { query += `-cs-min ${filterData.minCS} `; }
+        if (filterData.maxCS !== null && filterData.maxCS !== '' && filterData.maxCS >= 0) { query += `-cs-max ${filterData.maxCS} `; }
+
+        if (filterData.minHP !== null && filterData.minHP !== '' && filterData.minHP >= 0) { query += `-hp-min ${filterData.minHP} `; }
+        if (filterData.maxHP !== null && filterData.maxHP !== '' && filterData.maxHP >= 0) { query += `-hp-max ${filterData.maxHP} `; }
+
+        if (filterData.minLength !== null && filterData.minLength !== '' && filterData.minLength >= 0) { query += `-length-min ${filterData.minLength} `; }
+        if (filterData.maxLength !== null && filterData.maxLength !== '' && filterData.maxLength >= 0) { query += `-length-max ${filterData.maxLength} `; }
+
+        query += `-start ${moment(filterData.minApprovedDate).format('YYYY-MM-DD')} `;
+        query += `-end ${moment(filterData.maxApprovedDate).format('YYYY-MM-DD')} `;
+
+        query += `-played-start ${moment(filterData.minPlayedDate).format('YYYY-MM-DD')} `;
+        query += `-played-end ${moment(filterData.maxPlayedDate).format('YYYY-MM-DD')} `;
+
+        query += `-order ${filterData._sorter.name.toLowerCase()} -dir ${filterData._sorter.reverse ? 'asc' : 'desc'} `;
+
+        query += '-modded true';
+        return query;
     }
 
     useEffect(() => {
-        var m = 0;
-        getPossibleMods().forEach(mod => {
-            m += mods[mod];
-        });
-        setEnabledMods(m);
+        let _filterData = null;
+        if (props.filterData !== null) {
+            _filterData = props.filterData;
+            //check for missing keys
+            Object.keys(defaultFilterData).forEach(key => {
+                if (_filterData[key] === undefined) {
+                    _filterData[key] = filterData[key];
+                }
+            });
+        } else {
+            _filterData = defaultFilterData;
+            var m = 0;
+            getPossibleMods().forEach(mod => {
+                m += mods[mod];
+            });
+            _filterData.enabledMods = m;
+        }
+        setFilterData(_filterData);
     }, []);
 
-    useEffect(() => {
-        setColumns(props.columns);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, props.columns);
-
     const onApply = () => {
-        props.onApply(columns, {
-            enabledMods: enabledMods,
-            enabledNomod: enabledNomod,
-            modsUsage: modsState,
-            enabledGrades: enabledGrades,
-            scoreRange: [minScore, maxScore],
-            starsRange: [minStars, maxStars],
-            ppRange: [minPP, maxPP],
-            accRange: [minAcc, maxAcc],
-            comboRange: [minCombo, maxCombo],
-            approvedDateRange: [minApprovedDate, maxApprovedDate],
-            playedDateRange: [minPlayedDate, maxPlayedDate],
-            flags: { checkUniqueSS, checkUniqueFC, checkUniqueDTFC }
-        });
+        let _filterData = { ...filterData };
+        _filterData.query = generateQuery();
+        props.onApply(_filterData);
     }
 
-    const updateColumn = (column, checked) => {
-        const _c = columns;
-        _c.forEach(c => {
-            if (c.field === column.field) {
-                c.hide = !checked;
-            }
-        });
-        setColumns(_c);
-    };
+    if (filterData === null) {
+        return <></>;
+    }
 
     return (
         <>
@@ -125,7 +243,7 @@ function ScoreFilter(props) {
                             ))
                         }
                         <FormControl sx={{ ml: 2 }}>
-                            <RadioGroup onChange={handleModStateChange} value={modsState} row>
+                            <RadioGroup onChange={handleModStateChange} value={filterData.modsUsage} row>
                                 <FormControlLabel control={<Radio size='small' />} value='any' label='Any' />
                                 <FormControlLabel control={<Radio size='small' />} value='all' label='All' />
                             </RadioGroup>
@@ -135,42 +253,42 @@ function ScoreFilter(props) {
                         <Grid container>
                             <Tooltip title='Silver SS' arrow>
                                 <Box display="inline">
-                                    <ImageToggle checkedDefault={true} onClick={(checked) => toggleGrade('XH', checked)} sx={{ pr: 0.5 }} height="26px" src={IMG_SVG_GRADE_XH} />
+                                    <ImageToggle checkedDefault={filterData.enabledGrades.includes('XH')} onClick={(checked) => toggleGrade('XH', checked)} sx={{ pr: 0.5 }} height="26px" src={IMG_SVG_GRADE_XH} />
                                 </Box>
                             </Tooltip>
                             <Tooltip title='Silver S' arrow>
                                 <Box display="inline">
-                                    <ImageToggle checkedDefault={true} onClick={(checked) => toggleGrade('SH', checked)} sx={{ pr: 0.5 }} height="26px" src={IMG_SVG_GRADE_SH} />
+                                    <ImageToggle checkedDefault={filterData.enabledGrades.includes('SH')} onClick={(checked) => toggleGrade('SH', checked)} sx={{ pr: 0.5 }} height="26px" src={IMG_SVG_GRADE_SH} />
                                 </Box>
                             </Tooltip>
                             <Tooltip title='Gold SS' arrow>
                                 <Box display="inline">
-                                    <ImageToggle checkedDefault={true} onClick={(checked) => toggleGrade('X', checked)} sx={{ pr: 0.5 }} height="26px" src={IMG_SVG_GRADE_X} />
+                                    <ImageToggle checkedDefault={filterData.enabledGrades.includes('X')} onClick={(checked) => toggleGrade('X', checked)} sx={{ pr: 0.5 }} height="26px" src={IMG_SVG_GRADE_X} />
                                 </Box>
                             </Tooltip>
                             <Tooltip title='Gold S' arrow>
                                 <Box display="inline">
-                                    <ImageToggle checkedDefault={true} onClick={(checked) => toggleGrade('S', checked)} sx={{ pr: 0.5 }} height="26px" src={IMG_SVG_GRADE_S} />
+                                    <ImageToggle checkedDefault={filterData.enabledGrades.includes('S')} onClick={(checked) => toggleGrade('S', checked)} sx={{ pr: 0.5 }} height="26px" src={IMG_SVG_GRADE_S} />
                                 </Box>
                             </Tooltip>
                             <Tooltip title='A' arrow>
                                 <Box display="inline">
-                                    <ImageToggle checkedDefault={true} onClick={(checked) => toggleGrade('A', checked)} sx={{ pr: 0.5 }} height="26px" src={IMG_SVG_GRADE_A} />
+                                    <ImageToggle checkedDefault={filterData.enabledGrades.includes('A')} onClick={(checked) => toggleGrade('A', checked)} sx={{ pr: 0.5 }} height="26px" src={IMG_SVG_GRADE_A} />
                                 </Box>
                             </Tooltip>
                             <Tooltip title='B' arrow>
                                 <Box display="inline">
-                                    <ImageToggle checkedDefault={true} onClick={(checked) => toggleGrade('B', checked)} sx={{ pr: 0.5 }} height="26px" src={IMG_SVG_GRADE_B} />
+                                    <ImageToggle checkedDefault={filterData.enabledGrades.includes('B')} onClick={(checked) => toggleGrade('B', checked)} sx={{ pr: 0.5 }} height="26px" src={IMG_SVG_GRADE_B} />
                                 </Box>
                             </Tooltip>
                             <Tooltip title='C' arrow>
                                 <Box display="inline">
-                                    <ImageToggle checkedDefault={true} onClick={(checked) => toggleGrade('C', checked)} sx={{ pr: 0.5 }} height="26px" src={IMG_SVG_GRADE_C} />
+                                    <ImageToggle checkedDefault={filterData.enabledGrades.includes('C')} onClick={(checked) => toggleGrade('C', checked)} sx={{ pr: 0.5 }} height="26px" src={IMG_SVG_GRADE_C} />
                                 </Box>
                             </Tooltip>
                             <Tooltip title='D' arrow>
                                 <Box display="inline">
-                                    <ImageToggle checkedDefault={true} onClick={(checked) => toggleGrade('D', checked)} sx={{ pr: 0.5 }} height="26px" src={IMG_SVG_GRADE_D} />
+                                    <ImageToggle checkedDefault={filterData.enabledGrades.includes('D')} onClick={(checked) => toggleGrade('D', checked)} sx={{ pr: 0.5 }} height="26px" src={IMG_SVG_GRADE_D} />
                                 </Box>
                             </Tooltip>
                         </Grid>
@@ -178,76 +296,115 @@ function ScoreFilter(props) {
                 </Grid>
                 <Grid container sx={{ pt: 2, '& > *': { pl: 1 } }}>
                     <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE}>
-                        <TextField sx={{ width: '100%' }} label="Min Score" onChange={(e) => setMinScore(e.target.value)} value={minScore} variant="standard" size="small" />
-                        <TextField sx={{ width: '100%' }} label="Max Score" onChange={(e) => setMaxScore(e.target.value)} value={maxScore} variant="standard" size="small" />
+                        <TextField sx={{ width: '100%' }} label="Min Score" type='number' onChange={(e) => setFilterValue('minScore', e.target.value)} value={filterData.minScore} variant="standard" size="small" />
+                        <TextField sx={{ width: '100%' }} label="Max Score" type='number' onChange={(e) => setFilterValue('maxScore', e.target.value)} value={filterData.maxScore} variant="standard" size="small" />
                     </Grid>
                     <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE}>
-                        <TextField sx={{ width: '100%' }} label="Min Stars" onChange={(e) => setMinStars(e.target.value)} value={minStars} variant="standard" size="small" />
-                        <TextField sx={{ width: '100%' }} label="Max Stars" onChange={(e) => setMaxStars(e.target.value)} value={maxStars} variant="standard" size="small" />
+                        <TextField sx={{ width: '100%' }} label="Min Stars" type='number' onChange={(e) => setFilterValue('minStars', e.target.value)} value={filterData.minStars} variant="standard" size="small" />
+                        <TextField sx={{ width: '100%' }} label="Max Stars" type='number' onChange={(e) => setFilterValue('maxStars', e.target.value)} value={filterData.maxStars} variant="standard" size="small" />
                     </Grid>
                     <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE}>
-                        <TextField sx={{ width: '100%' }} label="Min PP" onChange={(e) => setMinPP(e.target.value)} value={minPP} variant="standard" size="small" />
-                        <TextField sx={{ width: '100%' }} label="Max PP" onChange={(e) => setMaxPP(e.target.value)} value={maxPP} variant="standard" size="small" />
+                        <TextField sx={{ width: '100%' }} label="Min PP" type='number' onChange={(e) => setFilterValue('minPP', e.target.value)} value={filterData.minPP} variant="standard" size="small" />
+                        <TextField sx={{ width: '100%' }} label="Max PP" type='number' onChange={(e) => setFilterValue('maxPP', e.target.value)} value={filterData.maxPP} variant="standard" size="small" />
                     </Grid>
                     <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE}>
-                        <TextField sx={{ width: '100%' }} label="Min Acc" onChange={(e) => setMinAcc(e.target.value)} value={minAcc} variant="standard" size="small" />
-                        <TextField sx={{ width: '100%' }} label="Max Acc" onChange={(e) => setMaxAcc(e.target.value)} value={maxAcc} variant="standard" size="small" />
+                        <TextField sx={{ width: '100%' }} label="Min Acc" type='number' onChange={(e) => setFilterValue('minAcc', e.target.value)} value={filterData.minAcc} variant="standard" size="small" />
+                        <TextField sx={{ width: '100%' }} label="Max Acc" type='number' onChange={(e) => setFilterValue('maxAcc', e.target.value)} value={filterData.maxAcc} variant="standard" size="small" />
                     </Grid>
                     <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE}>
-                        <TextField sx={{ width: '100%' }} label="Min Combo" onChange={(e) => setMinCombo(e.target.value)} value={minCombo} variant="standard" size="small" />
-                        <TextField sx={{ width: '100%' }} label="Max Combo" onChange={(e) => setMaxCombo(e.target.value)} value={maxCombo} variant="standard" size="small" />
+                        <TextField sx={{ width: '100%' }} label="Min Combo" type='number' onChange={(e) => setFilterValue('minCombo', e.target.value)} value={filterData.minCombo} variant="standard" size="small" />
+                        <TextField sx={{ width: '100%' }} label="Max Combo" type='number' onChange={(e) => setFilterValue('maxCombo', e.target.value)} value={filterData.maxCombo} variant="standard" size="small" />
                     </Grid>
                     <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE}>
                         <LocalizationProvider dateAdapter={AdapterMoment}>
-                            <DesktopDatePicker minDate={MIN_DATE} maxDate={MAX_DATE} label="Min Ranked Date" inputFormat="MM/DD/YYYY" value={minApprovedDate} onChange={setMinApprovedDate} renderInput={(params) => <TextField variant="standard" size="small" {...params} />} />
-                            <DesktopDatePicker minDate={MIN_DATE} maxDate={MAX_DATE} label="Max Ranked Date" inputFormat="MM/DD/YYYY" value={maxApprovedDate} onChange={setMaxApprovedDate} renderInput={(params) => <TextField variant="standard" size="small" {...params} />} />
+                            <DesktopDatePicker minDate={MIN_DATE} maxDate={MAX_DATE} label="Min Ranked Date" inputFormat="MM/DD/YYYY" value={filterData.minApprovedDate} onChange={(e) => setFilterValue('minApprovedDate', e.target.value)} renderInput={(params) => <TextField variant="standard" size="small" {...params} />} />
+                            <DesktopDatePicker minDate={MIN_DATE} maxDate={MAX_DATE} label="Max Ranked Date" inputFormat="MM/DD/YYYY" value={filterData.maxApprovedDate} onChange={(e) => setFilterValue('maxApprovedDate', e.target.value)} renderInput={(params) => <TextField variant="standard" size="small" {...params} />} />
                         </LocalizationProvider>
                     </Grid>
                     <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE}>
                         <LocalizationProvider dateAdapter={AdapterMoment}>
-                            <DesktopDatePicker minDate={MIN_DATE} maxDate={MAX_DATE} label="Min Played Date" inputFormat="MM/DD/YYYY" value={minPlayedDate} onChange={setMinPlayedDate} renderInput={(params) => <TextField variant="standard" size="small" {...params} />} />
-                            <DesktopDatePicker minDate={MIN_DATE} maxDate={MAX_DATE} label="Max Played Date" inputFormat="MM/DD/YYYY" value={maxPlayedDate} onChange={setMaxPlayedDate} renderInput={(params) => <TextField variant="standard" size="small" {...params} />} />
+                            <DesktopDatePicker minDate={MIN_DATE} maxDate={MAX_DATE} label="Min Played Date" inputFormat="MM/DD/YYYY" value={filterData.minPlayedDate} onChange={(e) => setFilterValue('minPlayedDate', e.target.value)} renderInput={(params) => <TextField variant="standard" size="small" {...params} />} />
+                            <DesktopDatePicker minDate={MIN_DATE} maxDate={MAX_DATE} label="Max Played Date" inputFormat="MM/DD/YYYY" value={filterData.maxPlayedDate} onChange={(e) => setFilterValue('maxPlayedDate', e.target.value)} renderInput={(params) => <TextField variant="standard" size="small" {...params} />} />
                         </LocalizationProvider>
                     </Grid>
                 </Grid>
-                <Grid>
-                    <Stack direction="row" spacing={2} sx={{ pt: 2 }}>
-                        <FormControlLabel label='Is unique SS' control={<Checkbox size='small' onChange={e => setCheckUniqueSS(e.target.checked)} defaultChecked={checkUniqueSS} />} />
-                        <FormControlLabel label='Is unique FC' control={<Checkbox size='small' onChange={e => setCheckUniqueFC(e.target.checked)} defaultChecked={checkUniqueFC} />} />
-                        <FormControlLabel label='Is unique DT FC' control={<Checkbox size='small' onChange={e => setCheckUniqueDTFC(e.target.checked)} defaultChecked={checkUniqueDTFC} />} />
-                    </Stack>
+                <Grid container sx={{ pt: 2, '& > *': { pl: 1 } }}>
+                    <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE}>
+                        <TextField sx={{ width: '100%' }} label="Min AR" type='number' onChange={(e) => setFilterValue('minAR', e.target.value)} value={filterData.minAR} variant="standard" size="small" />
+                        <TextField sx={{ width: '100%' }} label="Max AR" type='number' onChange={(e) => setFilterValue('maxAR', e.target.value)} value={filterData.maxAR} variant="standard" size="small" />
+                    </Grid>
+                    <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE}>
+                        <TextField sx={{ width: '100%' }} label="Min CS" type='number' onChange={(e) => setFilterValue('minCS', e.target.value)} value={filterData.minCS} variant="standard" size="small" />
+                        <TextField sx={{ width: '100%' }} label="Max CS" type='number' onChange={(e) => setFilterValue('maxCS', e.target.value)} value={filterData.maxCS} variant="standard" size="small" />
+                    </Grid>
+                    <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE}>
+                        <TextField sx={{ width: '100%' }} label="Min OD" type='number' onChange={(e) => setFilterValue('minOD', e.target.value)} value={filterData.minOD} variant="standard" size="small" />
+                        <TextField sx={{ width: '100%' }} label="Max OD" type='number' onChange={(e) => setFilterValue('maxOD', e.target.value)} value={filterData.maxOD} variant="standard" size="small" />
+                    </Grid>
+                    <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE}>
+                        <TextField sx={{ width: '100%' }} label="Min HP" type='number' onChange={(e) => setFilterValue('minHP', e.target.value)} value={filterData.minHP} variant="standard" size="small" />
+                        <TextField sx={{ width: '100%' }} label="Max HP" type='number' onChange={(e) => setFilterValue('maxHP', e.target.value)} value={filterData.maxHP} variant="standard" size="small" />
+                    </Grid>
+                    <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE}>
+                        <TextField sx={{ width: '100%' }} label="Min Length" type='number' onChange={(e) => setFilterValue('minLength', e.target.value)} value={filterData.minLength} variant="standard" size="small" />
+                        <TextField sx={{ width: '100%' }} label="Max Length" type='number' onChange={(e) => setFilterValue('maxLength', e.target.value)} value={filterData.maxLength} variant="standard" size="small" />
+                    </Grid>
                 </Grid>
-                <Grid container sx={{ py: 1 }}>
-                    <TableContainer>
-                        <Table size="small">
-                            <TableHead>
-                                <TableRow>
-                                    {
-                                        columns && columns.map((column) => (
-                                            <>
-                                                <TableCell align="center"><Typography variant="subtitles1" sx={{ fontSize: '0.9em' }}>{column.headerName}</Typography></TableCell>
-                                            </>
-                                        ))
-                                    }
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                <TableRow>
-                                    {
-                                        columns && columns.map((column) => (
-                                            <>
-                                                <TableCell align="center"><Checkbox size='small' onChange={(e) => { updateColumn(column, e.target.checked); }} defaultChecked={!column.hide} /></TableCell>
-                                            </>
-                                        ))
-                                    }
-                                </TableRow>
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
+                <Grid container sx={{ pt: 2, '& > *': { pl: 1 } }}>
+                    <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE}>
+                        <FormControl variant="standard" sx={{width:'100%'}}>
+                            <InputLabel id="sort-select-label">Sort</InputLabel>
+                            <Select
+                                labelId="sort-select-label"
+                                id="sort-select"
+                                value={filterData.sorter}
+                                onChange={(e) => setFilterValue('sorter', e.target.value)}
+                                label="Sort"
+                                SelectDisplayProps={{
+                                    style: { display: 'flex', alignItems: 'center' },
+                                }}
+                            >
+                                {
+                                    sorters.map(sorter => {
+                                        return [
+                                            <MenuItem value={`${sorter.name}_desc`}>
+                                                <ListItemIcon>
+                                                    <ArrowDownwardIcon fontSize="small" />
+                                                </ListItemIcon >
+                                                <ListItemText primary={sorter.name} />
+                                            </MenuItem>,
+                                            <MenuItem value={`${sorter.name}_asc`}>
+                                                <ListItemIcon>
+                                                    <ArrowUpwardIcon fontSize="small" />
+                                                </ListItemIcon>
+                                                <ListItemText primary={sorter.name} />
+                                            </MenuItem>
+                                        ]
+                                    })
+                                }
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE}>
+                        <FormControl variant="standard" sx={{width:'100%'}}>
+                            <InputLabel id="sort-select-label">Approved</InputLabel>
+                            <Select
+                                labelId="sort-select-label"
+                                id="sort-select"
+                                value={filterData.approved}
+                                onChange={(e) => setFilterValue('approved', e.target.value)}
+                                label="Approved"
+                                multiple
+                            >
+                                <MenuItem value={1}>Ranked</MenuItem>
+                                <MenuItem value={2}>Approved</MenuItem>
+                                <MenuItem value={4}>Loved</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Grid>
                 </Grid>
                 <Grid sx={{ alignContent: 'center' }}>
                     <Button sx={{ my: 1 }} onClick={onApply} variant="contained">Apply</Button>
-                    <Typography variant='subtitle2'>Enter -1 to ignore a filter</Typography>
                 </Grid>
             </Grid>
         </>

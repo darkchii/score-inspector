@@ -24,7 +24,7 @@ export function getCalculator(version, data, debug = false) {
     }
 
     if (debug) {
-        console.log('output', pp)
+        console.warn('output', pp)
     }
 
     return obj;

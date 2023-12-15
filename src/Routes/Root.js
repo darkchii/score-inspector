@@ -7,7 +7,7 @@ import axios from 'axios';
 import moment from 'moment';
 import momentDurationFormatSetup from "moment-duration-format";
 import ScoreSubmissions from '../Components/ScoreSubmissions';
-import { blue, green, grey, indigo, red } from '@mui/material/colors';
+import { amber, blue, blueGrey, green, grey, indigo, orange, red } from '@mui/material/colors';
 import GlowBar from '../Components/UI/GlowBar';
 import Loader from '../Components/UI/Loader';
 import config from "../config.json";
@@ -90,10 +90,10 @@ function Root() {
                     last_visited: last_visited
                 });
             }).catch((err) => {
-                console.log(err);
+                console.error(err);
             });
         } catch (_err) {
-            console.log(_err);
+            console.error(_err);
         }
 
         try {
@@ -111,10 +111,10 @@ function Root() {
                 setServerStatus({
                     inspector: false
                 });
-                console.log(err);
+                console.error(err);
             });
         } catch (_err) {
-            console.log(_err);
+            console.error(_err);
         }
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -157,19 +157,22 @@ function Root() {
                     </> : <></>
             }
             <Grid container spacing={2} sx={{ pb: 1 }}>
-                <Grid item xs={12} md={3}>
+                <Grid item xs={12} md={12/5}>
                     <StatCard stats={<>
                         <Button variant='contained' component='a' href='https://discord.gg/VZWRZZXcW4' target='_blank'>Join</Button>
                     </>} title={`Join the osu!alt discord`} color={indigo} icon={<PersonIcon />} />
                 </Grid>
-                <Grid item xs={12} md={3}>
+                <Grid item xs={12} md={12/5}>
                     <StatCard stats={serverInfo?.database?.alt?.total_users ? (parseInt(serverInfo?.database?.alt?.total_users ?? 0)).toLocaleString('en-US') : null} title={`Players (${(parseInt(serverInfo?.database?.alt?.tracked_users ?? 0)).toLocaleString('en-US')} live)`} color={blue} icon={<PersonIcon />} />
                 </Grid>
-                <Grid item xs={12} md={3}>
+                <Grid item xs={12} md={12/5}>
                     <StatCard stats={serverInfo?.database?.alt?.total_scores ? formatNumberAsSize(parseInt(serverInfo?.database?.alt?.total_scores ?? 0)) : null} title={'Scores'} color={red} icon={<WorkspacePremiumIcon />} />
                 </Grid>
-                <Grid item xs={12} md={3}>
+                <Grid item xs={12} md={12/5}>
                     <StatCard stats={serverInfo?.database?.inspector?.total_visits ? (parseInt(serverInfo?.database?.inspector?.total_visits ?? 0)).toLocaleString('en-US') : null} title={'Profile visits'} color={green} icon={<BadgeIcon />} />
+                </Grid>
+                <Grid item xs={12} md={12/5}>
+                    <StatCard stats={serverInfo?.database?.inspector?.unique_visits ? (parseInt(serverInfo?.database?.inspector?.unique_visits ?? 0)).toLocaleString('en-US') : null} title={'Unique users visited'} color={blueGrey} icon={<BadgeIcon />} />
                 </Grid>
             </Grid>
             <Grid container spacing={2}>
@@ -426,6 +429,17 @@ function StatCard(props) {
                 }} />
                 <Grid container direction="column" sx={{ position: 'relative', zIndex: 500 }}>
                     <Grid item>
+                        <Typography
+                            sx={{
+                                fontSize: props.titleSize ?? '1rem',
+                                fontWeight: 500,
+                                color: theme.palette.secondary[200]
+                            }}
+                        >
+                            {props.title}
+                        </Typography>
+                    </Grid>
+                    <Grid item>
                         <Grid container direction="row" alignItems="center" spacing={1}>
                             <Grid item>
                                 <Avatar variant="rounded" sx={{ color: props.color[props.brightness ?? 300], backgroundColor: 'white' }}>
@@ -438,17 +452,6 @@ function StatCard(props) {
                                 </Typography>
                             </Grid>
                         </Grid>
-                    </Grid>
-                    <Grid item sx={{ mb: 1.25 }}>
-                        <Typography
-                            sx={{
-                                fontSize: props.titleSize ?? '1rem',
-                                fontWeight: 500,
-                                color: theme.palette.secondary[200]
-                            }}
-                        >
-                            {props.title}
-                        </Typography>
                     </Grid>
                 </Grid>
             </Box>

@@ -32,8 +32,6 @@ function Staff(props) {
                         skipAltData: true,
                     }, true);
 
-                    console.log(full_users)
-
                     for (let user of full_users) {
                         if (user) {
                             _users.push(user);

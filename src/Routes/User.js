@@ -40,8 +40,6 @@ function User() {
                 setLoadingState('Fetching user data');
                 const user_out = await getFullUser(user_in);
 
-                console.log(user_out);
-
                 const onScoreDownloadProgress = (progress) => {
                     setLoadingState(`Fetching user scores (${formatBytes(progress.loaded)})`);
                 };
@@ -77,7 +75,6 @@ function User() {
                 user_out.scores = _scores;
 
                 const onScoreProcessUpdate = (progress) => {
-                    // console.log(progress);
                     setLoadingState(`Processing user scores (${progress})`);
                 };
 
@@ -110,7 +107,6 @@ function User() {
                 try{
                     const milestones = (await axios.get(`${GetAPI()}scores/milestones/user/${user_out.osu.id}`))?.data;
                     user_out.milestones = milestones;
-                    console.log(user_out.milestones);
                 }catch(e) {
                     //ignore
                     user_out.milestones = [];

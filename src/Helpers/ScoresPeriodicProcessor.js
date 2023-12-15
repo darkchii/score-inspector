@@ -26,14 +26,9 @@ const PERIOD_FORMATS = {
 }
 
 export function getPeriodicData(user, scores, beatmaps, period = 'd') {
-    console.time('getPeriodicData')
     //we first generate the list of dates
     let dates = getDates(user, period);
-
     let graph_data = getScoresPeriodicData(user, scores, dates, beatmaps, period);
-    console.timeEnd('getPeriodicData')
-
-    console.log(graph_data);
     return graph_data;
 }
 

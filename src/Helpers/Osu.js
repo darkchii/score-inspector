@@ -522,7 +522,6 @@ export function FilterStarratingArray(sr_arr, mods_enum) {
 export async function MassCalculatePerformance(scores) {
     // scores.forEach(score => {
     let uniqueSystems = [];
-    console.log(scores[0]);
     for await (const score of scores) {
         const recalcs = await Promise.all([
             {
@@ -591,7 +590,6 @@ export async function MassCalculatePerformance(scores) {
                 data.weighted[system] += score.recalc[system].weight * (score.recalc[system].total ?? 0);
             }
         });
-        console.log(`Weighted ${system}: ${data.weighted[system]}`);
 
         if (system !== 'lazer') {
             data.weighted[system] += bonus_pp;

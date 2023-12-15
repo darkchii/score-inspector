@@ -4,6 +4,7 @@ import { calculatePP2014, calculatePP2016, calculatePP2020, calculatePPifFC, cal
 import { getSessions } from "./Session";
 import { getPeriodicData } from "./ScoresPeriodicProcessor.js";
 import axios from "axios";
+import { getCalculator } from "./Performance/Performance.js";
 
 const FEEDBACK_SLEEP_TIME = 100; // give the browser bit of breathing room to update the UI before each intensive task
 export async function processScores(user, scores, onCallbackError, onScoreProcessUpdate, allow_loved) {
@@ -244,14 +245,18 @@ export function prepareScore(score, user = null) {
     score.pp = Math.max(0, parseFloat(score.pp));
     score.date_played_moment = moment(score.date_played);
     score.enabled_mods = parseInt(score.enabled_mods);
-
+    
     score.beatmap = prepareBeatmap(score.beatmap, score.enabled_mods);
-
+    
     score.modString = getModString(score.enabled_mods).toString();
     score.totalhits = score.count300 + score.count100 + score.count50;
-
+    
     score.is_fc = isScoreFullcombo(score);
     score.scoreLazer = Math.floor(getLazerScore(score));
+    
+    score.estimated_pp = getCalculator('live', {
+        score: score,
+    }).total;
 
     if (!score.user && user) {
         score.user = user.alt;

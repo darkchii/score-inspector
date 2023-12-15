@@ -115,8 +115,6 @@ function Population() {
             return b.value - a.value;
         });
 
-        console.log(fixed_countries);
-
         setOrderedCountries(fixed_countries);
 
         const chartData = {

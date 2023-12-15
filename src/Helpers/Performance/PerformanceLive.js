@@ -11,7 +11,7 @@ export function getPerformanceLive(data, debug = false) {
     data.totalhits = data.count300 + data.count100 + data.count50 + data.countmiss;
     data.accuracy = getAccuracy(data);
 
-    data.modded_sr = score.beatmap.modded_sr[sr_model] ?? score.beatmap.modded_sr;
+    data.modded_sr = score.beatmap.modded_sr;
     data.lengthBonus = 0.95 + 0.4 * Math.min(1, data.totalhits / 2000.0) + (data.totalhits > 2000 ? (Math.log10(data.totalhits / 2000.0) * 0.5) : 0.0);
     data.comboScalingFactor = getComboScalingFactor(data.combo, data.score.beatmap.maxcombo);
     data.effectiveMissCount = getEffectiveMissCount(data);

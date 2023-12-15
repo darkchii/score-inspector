@@ -54,11 +54,9 @@ function LeadersScore(props) {
                     _data.push([moment(item.date, "YYYY-MM-DD").toDate().getTime(), item.total_ranked_score]);
                 });
 
-                console.log(_data);
-
                 setScoreGraphData(_data);
             } catch (err) {
-                console.log(err);
+                console.error(err);
             }
         })()
     }, []);
@@ -77,14 +75,12 @@ function LeadersScore(props) {
                     _allDates = data?.data;
                     setAllDates(data?.data);
                 } catch (err) {
-                    console.log(err);
+                    console.error(err);
                 } finally {
                     setIsLoadingDates(false);
                 }
 
                 if (date === null && _allDates.length > 0 && !params.date) {
-                    console.log(`setting date to ${_allDates[_allDates.length - 1]}`);
-
                     setDate(_allDates[_allDates.length - 1]);
                 }
             })();
@@ -92,7 +88,6 @@ function LeadersScore(props) {
     }, []);
 
     useEffect(() => {
-        console.log(`page: ${page}, date: ${date}`);
         if (!date || !page) return;
         (async () => {
             setIsLoadingLeaderboard(true);
@@ -103,7 +98,7 @@ function LeadersScore(props) {
                 setIsPreviousDayRecorded(_isPreviousDayRecorded);
                 setLeaderboard(data?.data);
             } catch (err) {
-                console.log(err);
+                console.error(err);
             } finally {
                 setIsLoadingLeaderboard(false);
             }

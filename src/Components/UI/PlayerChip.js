@@ -63,7 +63,7 @@ function PlayerChip(props) {
                             setPlayerData(_playerData[0]);
                         }
                     } catch (err) {
-                        console.log(err);
+                        console.error(err);
                     }
 
                     setIsWorking(false);

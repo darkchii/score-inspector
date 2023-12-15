@@ -80,7 +80,6 @@ function SectionDaily(props) {
                     setTotalSessionLength(len);
                 }
 
-                console.log(annotations);
                 setSessionAnnotations(annotations);
                 setSessionCount(activities.length);
             }
