@@ -179,21 +179,30 @@ export async function getBeatmapMaxscore(beatmap_id) {
 
 const MAX_SCORE = 1000000;
 export function getLazerScore(score, classic = true) {
-    const mul = getModMultiplier(score.enabled_mods);
-    let val = ((((
-        (50 * score.count50 + 100 * score.count100 + 300 * score.count300) / (300 * score.count50 + 300 * score.count100 + 300 * score.count300 + 300 * score.countmiss)) *
-        300000) + ((score.combo / score.beatmap.maxcombo) * 700000)) * mul);
+    const mul = getModMultiplier(score.enabled_mods) * 0.96; //0.96 is the classic mod multiplier
 
-    if (classic) {
-        val = Math.pow(((val / MAX_SCORE) * score.beatmap.objects), 2) * 36;
-    }
+    const standardized = (Math.pow((50 * score.count50 + 100 * score.count100 + 300 * score.count300) / (300 * score.count50 + 300 * score.count100 + 300 * score.count300 + 300 * score.countmiss), 5) * 500000) + (Math.pow(score.combo / score.beatmap.maxcombo, 0.75) * 500000) * mul;
+    
+    if(!classic)
+        return standardized;
+    
+    const lazerscore = Math.round((score.beatmap.objects * score.beatmap.objects) * 32.57 + 100000 * standardized / MAX_SCORE)
+    return lazerscore;
+    // const mul = getModMultiplier(score.enabled_mods);
+    // let val = ((((
+    //     (50 * score.count50 + 100 * score.count100 + 300 * score.count300) / (300 * score.count50 + 300 * score.count100 + 300 * score.count300 + 300 * score.countmiss)) *
+    //     500000) + ((score.combo / score.beatmap.maxcombo) * 500000)) * mul);
 
-    //theres a bug with beatmap, if val is Infinity, set to 0
-    if (val === Infinity) {
-        val = 0;
-    }
+    // if (classic) {
+    //     val = Math.pow(((val / MAX_SCORE) * score.beatmap.objects), 2) * 36;
+    // }
 
-    return val;
+    // //theres a bug with beatmap, if val is Infinity, set to 0
+    // if (val === Infinity) {
+    //     val = 0;
+    // }
+
+    // return val;
 }
 
 export function getModMultiplier(enabled_mods) {

@@ -63,7 +63,7 @@ function PlayerLeaderboardItem(props) {
                     justifyContent: 'left',
                     alignItems: 'center',
                     pl: 1,
-                    width: '80px'
+                    width: '100px'
                 }}>
                     <Typography variant='h6' sx={{ fontSize: '1.3em' }} noWrap>
                         #{base_user?.rank ?? 0}

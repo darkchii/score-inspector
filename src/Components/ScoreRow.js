@@ -37,7 +37,7 @@ function ScoreRow(props) {
                                     <img src={getGradeIcon(score.rank)} alt={score.rank} />
                                 </Grid>
 
-                                <Grid item xs={3.4} sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
+                                <Grid item xs={3.8} sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
                                     <Tooltip title={`${score.beatmap.artist} - ${score.beatmap.title} [${score.beatmap.diffname}]`}>
                                         <Typography sx={{ fontSize: '0.8rem', maxWidth: '100%', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
                                             {score.beatmap.artist} - {score.beatmap.title}
@@ -48,7 +48,7 @@ function ScoreRow(props) {
                                     </Tooltip>
                                 </Grid>
 
-                                <Grid item xs={0.4} sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
+                                <Grid item xs={0.5} sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
                                     <Typography sx={{ fontSize: '0.8rem', maxWidth: '100%', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
                                         {score.top_score?.pos ? `#${score.top_score?.pos.toLocaleString('en-US')}` : ''}                    
                                     </Typography>
@@ -147,6 +147,7 @@ function ScoreRow(props) {
                                             bgcolor: theme.palette.background.paper,
                                             borderRadius: 0,
                                             position: 'relative',
+                                            pr: 1,
                                             '&:before': {
                                                 bgcolor: theme.palette.background.default,
                                                 clipPath: 'polygon(0 0,100% 50%,0 100%)',

@@ -57,12 +57,12 @@ const GROUPED_STATS = {
         },
         {
             name: 'lazer_standard', title: 'Lazer Standardized',
-            description: 'Lazer standardized score.',
+            description: 'Lazer standardized score (approximation).',
             group: 'score'
         },
         {
             name: 'lazer_classic', title: 'Lazer Classic',
-            description: 'Lazer classic score.',
+            description: 'Lazer classic score (approximation).',
             group: 'score'
         },
         {
@@ -408,7 +408,7 @@ function Leaders() {
                     </Box>
                     :
                     leaderboard !== null && leaderboard !== undefined && Array.isArray(leaderboard) ? <>
-                        <Stack direction='column' spacing={1}>
+                        <Stack direction='column' spacing={0.6}>
                             {
                                 leaderboard.map((entry) => {
                                     const reformat = (value) => {

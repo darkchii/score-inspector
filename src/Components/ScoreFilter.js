@@ -22,32 +22,44 @@ const sorters = [
             let b_pp = b.pp > 0 ? b.pp : b.estimated_pp;
             return b_pp - a_pp;
         }
-    }, {
+    }, 
+    {
         name: 'Score',
         sort: (a, b) => {
             return b.score - a.score;
         }
-    }, {
+    }, 
+    {
+        name: 'Lazer Score',
+        sort: (a, b) => {
+            return b.scoreLazer - a.scoreLazer;
+        }
+    },
+    {
         name: 'Date Played',
         sort: (a, b) => {
             return moment(b.date_played).unix() - moment(a.date_played).unix();
         }
-    }, {
+    }, 
+    {
         name: 'Date Ranked',
         sort: (a, b) => {
             return moment(b.beatmap.approved_date).unix() - moment(a.beatmap.approved_date).unix();
         }
-    }, {
+    }, 
+    {
         name: 'Accuracy',
         sort: (a, b) => {
             return b.accuracy - a.accuracy;
         }
-    }, {
+    }, 
+    {
         name: 'Combo',
         sort: (a, b) => {
             return b.combo - a.combo;
         }
-    }, {
+    }, 
+    {
         name: 'Stars',
         sort: (a, b) => {
             return b.beatmap.modded_sr.star_rating - a.beatmap.modded_sr.star_rating;

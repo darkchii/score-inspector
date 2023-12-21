@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
-import { Button, ButtonGroup, Grid, useTheme } from "@mui/material";
+import { Alert, Button, ButtonGroup, Grid, useTheme } from "@mui/material";
 import { getScoreActivity } from "../Helpers/OsuAlt";
 import moment from "moment";
 import Loader from "./UI/Loader";
@@ -19,6 +19,18 @@ const chart_period_data = {
         format: 'MMM dd',
         intervals: [
             7, 14, 30, 60, 90, 180
+        ]
+    },
+    'm': {
+        format: 'MMM yyyy',
+        intervals: [
+            6, 12, 24, 36, 48, 60, -1
+        ]
+    },
+    'y': {
+        format: 'yyyy',
+        intervals: [
+            5, 10, -1
         ]
     }
 }
@@ -90,17 +102,34 @@ function ScoreSubmissions(props) {
                 <ButtonGroup variant='outlined' size='small' color="primary">
                     {
                         chart_period_data[period].intervals.map((int, i) => {
-                            return <Button variant={interval === int ? 'contained' : 'outlined'} onClick={() => setInterval(int)} key={i}>{int} {period === 'h' ? 'hours' : 'days'}</Button>
+                            return <Button
+                                variant={interval === int ? 'contained' : 'outlined'}
+                                onClick={() => setInterval(int)} key={i}>
+                                {
+                                    int === -1 ? 'All' : `
+                                    ${int}
+                                    ${{
+                                            'h': 'Hours',
+                                            'd': 'Days',
+                                            'm': 'Months',
+                                            'y': 'Years'
+                                        }[period]}
+                                    `
+                                }
+                            </Button>
                         })
                     }
                 </ButtonGroup>
                 <ButtonGroup variant='outlined' size='small' color="primary">
                     <Button variant={period === 'h' ? 'contained' : 'outlined'} onClick={() => setPeriod('h')}>Hours</Button>
                     <Button variant={period === 'd' ? 'contained' : 'outlined'} onClick={() => setPeriod('d')}>Days</Button>
+                    <Button variant={period === 'm' ? 'contained' : 'outlined'} onClick={() => setPeriod('m')}>Months</Button>
+                    <Button variant={period === 'y' ? 'contained' : 'outlined'} onClick={() => setPeriod('y')}>Years</Button>
                 </ButtonGroup>
                 <ButtonGroup variant='outlined' size='small' color="primary">
                     <Button variant={display === 'score' ? 'contained' : 'outlined'} onClick={() => setDisplay('score')}>Score</Button>
                     <Button variant={display === 'grades' ? 'contained' : 'outlined'} onClick={() => setDisplay('grades')}>Grades</Button>
+                    <Button variant={display === 'clears' ? 'contained' : 'outlined'} onClick={() => setDisplay('clears')}>Clears</Button>
                 </ButtonGroup>
             </Grid>
             <Grid sx={{ height: 280, position: "relative" }}>
@@ -164,13 +193,20 @@ function ScoreSubmissions(props) {
                                     ] : []),
                                     ...(display === 'score' ? [
                                         { name: 'Score', data: data.entry_count_score, color: theme.palette.primary.main },
-                                    ] : [])
+                                    ] : []),
+                                    ...(display === 'clears' ? [
+                                        { name: 'Clears', data: data.count, color: theme.palette.primary.main },
+                                    ] : []),
                                 ]}
                                 type={'area'}
                             />
                         </>
                 }
             </Grid>
+            <Alert severity='info' sx={{ mt: 1 }}>
+                Only shows data osu!alternative has gathered, but trend should be accurate. <br />
+                Longer periods may take a while to load.
+            </Alert>
         </>
     );
 }

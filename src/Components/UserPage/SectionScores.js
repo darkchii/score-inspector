@@ -21,7 +21,7 @@ function SectionScores(props) {
     const [cachedFilterData, setCachedFilterData] = useState(null);
 
     const _setFilteredScores = useCallback((scores) => {
-        setFilteredScores(JSON.parse(JSON.stringify(scores)));
+        setFilteredScores(scores);
         setPage(1);
     }, []);
 
@@ -39,10 +39,11 @@ function SectionScores(props) {
 
     const handleFilter = (filter) => {
         if (filter !== null) {
-            var scores = JSON.parse(JSON.stringify(props.user.scores));
+            const full_scores = props.user.scores;
+            var scores = [];
 
             //approved status
-            scores = scores.filter(score => {
+            scores = full_scores.filter(score => {
                 return filter.approved.includes(score.beatmap.approved);
             });
 

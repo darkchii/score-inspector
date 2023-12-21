@@ -175,12 +175,12 @@ function LeadersScore(props) {
                                                             },
                                                             {
                                                                 value: (
-                                                                    <span>
+                                                                    <span style={{ fontSize: '0.7rem', lineHeight: '0.4rem' }}>
                                                                         {item.ranked_score.toLocaleString('en-US')}
                                                                         <span>
                                                                             <Typography color={
                                                                                 (ranked_score_diff ?? 0) > 0 ? green[400] : grey[400]
-                                                                            } variant="caption" display="block">
+                                                                            } sx={{ fontSize: '0.6rem', lineHeight: '0.4rem' }} display="block">
                                                                                 +{(ranked_score_diff ?? 0).toLocaleString('en-US')}
                                                                             </Typography>
                                                                         </span>
@@ -231,7 +231,7 @@ function LeadersScore(props) {
                                                         }
                                                     }
                                                 },
-                                                dataLabels:{
+                                                dataLabels: {
                                                     enabled: false
                                                 },
                                                 markers: {

@@ -1,6 +1,7 @@
 import { toast } from "react-toastify";
 import config from "../config.json";
 import moment from "moment";
+import { NumberFormatBase } from "react-number-format";
 
 export const sleep = ms => new Promise(r => setTimeout(r, ms));
 
@@ -297,3 +298,25 @@ export function convertEpochToHumanReadable(epochDuration, short = false) {
 
     return parts.join(', ').replace(/,([^,]*)$/, ' and$1');
 }
+
+export function formatLargeNumber(value) {
+    return (
+      <NumberFormatBase
+        value={value}
+        displayType={'text'}
+        thousandSeparator={true}
+        renderText={(formattedValue) => (
+          <span>
+            {formattedValue.split(',').map((part, index, array) => (
+              <span key={index}>
+                {part}
+                {index !== array.length - 1 && (
+                  <sup style={{ fontSize: '70%' }}>{',000'.substring(part.length)}</sup>
+                )}
+              </span>
+            ))}
+          </span>
+        )}
+      />
+    );
+  }
