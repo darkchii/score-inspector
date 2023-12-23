@@ -213,7 +213,7 @@ function SectionDaily(props) {
             }
         }
 
-        setDynamicRange(Math.max(0, highestClears));
+        setDynamicRange(Math.max(0, Math.min(100, highestClears)));
 
         setYearGraphData(days);
     }, [selectedYear])
