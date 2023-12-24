@@ -56,16 +56,6 @@ const GROUPED_STATS = {
             group: 'score'
         },
         {
-            name: 'lazer_standard', title: 'Lazer Standardized',
-            description: 'Lazer standardized score (approximation).',
-            group: 'score'
-        },
-        {
-            name: 'lazer_classic', title: 'Lazer Classic',
-            description: 'Lazer classic score (approximation).',
-            group: 'score'
-        },
-        {
             name: 'avg_score', title: 'Average Score',
             description: 'Average score of all scores.',
             group: 'score'
