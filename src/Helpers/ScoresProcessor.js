@@ -46,6 +46,11 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
             star_rating: 0
         },
         allow_loved: allow_loved,
+        best_days: {
+            clears: [],
+            ss: [],
+            score: [],
+        }
     };
 
     onScoreProcessUpdate('Calculating performance');
@@ -129,6 +134,13 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
     data.periodic['y'] = getPeriodicData(user, scores, data.beatmaps_counts, 'y');
     data.periodic['m'] = getPeriodicData(user, scores, data.beatmaps_counts, 'm');
     data.periodic['d'] = getPeriodicData(user, scores, data.beatmaps_counts, 'd');
+
+    onScoreProcessUpdate('Best days');
+    await sleep(FEEDBACK_SLEEP_TIME);
+    data.best_days = ProcessBestDays(scores);
+    console.log('BEST DAYS TEST');
+    console.log(data.best_days);
+    console.log('BEST DAYS TEST');
 
     onScoreProcessUpdate('Active days');
     await sleep(FEEDBACK_SLEEP_TIME);
@@ -221,6 +233,49 @@ async function weighPerformance(scores, onScoreProcessUpdate) {
     return data;
 }
 
+const BEST_DAYS_AMOUNT = 5;
+function ProcessBestDays(scores) {
+    //group scores by day
+    const days = {};
+    scores.forEach(score => {
+        const day = new Date(score.date_played).toISOString().slice(0, 10);
+        if (!days[day]) {
+            days[day] = [];
+        }
+        days[day].push(score);
+    });
+
+    //convert to array
+    const days_array = [];
+    Object.keys(days).forEach(key => {
+        days_array.push({
+            day: key,
+            scores: days[key],
+            clears: days[key].length,
+            ss: days[key].filter(score => { return score.rank === 'XH' || score.rank === 'X' }).length,
+            score: days[key].reduce((acc, score) => { return acc + score.score; }, 0),
+        });
+    });
+
+    const best_days = [
+        {
+            name: 'Clears',
+            data: days_array.sort((a, b) => { return b.clears - a.clears; }).slice(0, BEST_DAYS_AMOUNT).map(day => { return { day: day.day, value: day.clears }; }),
+
+        }, 
+        {
+            name: 'SS',
+            data: days_array.sort((a, b) => { return b.ss - a.ss; }).slice(0, BEST_DAYS_AMOUNT).map(day => { return { day: day.day, value: day.ss }; }),
+        },
+        {
+            name: 'Score',
+            data: days_array.sort((a, b) => { return b.score - a.score; }).slice(0, BEST_DAYS_AMOUNT).map(day => { return { day: day.day, value: day.score }; })
+        }
+    ]
+
+    return best_days;
+}
+
 export function prepareScores(user, scores, calculateOtherPP = true) {
     let debugged = false;
     scores.forEach((score, index) => {
@@ -245,15 +300,15 @@ export function prepareScore(score, user = null) {
     score.pp = Math.max(0, parseFloat(score.pp));
     score.date_played_moment = moment(score.date_played);
     score.enabled_mods = parseInt(score.enabled_mods);
-    
+
     score.beatmap = prepareBeatmap(score.beatmap, score.enabled_mods);
-    
+
     score.modString = getModString(score.enabled_mods).toString();
     score.totalhits = score.count300 + score.count100 + score.count50;
-    
+
     score.is_fc = isScoreFullcombo(score);
     score.scoreLazer = Math.floor(getLazerScore(score));
-    
+
     score.estimated_pp = getCalculator('live', {
         score: score,
     }).total;

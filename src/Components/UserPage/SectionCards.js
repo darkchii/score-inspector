@@ -171,7 +171,7 @@ function SectionCards(props) {
                                         name: 'Scores set at this hour of the day',
                                         data: props.user.data.averageDaySpread.values.map((value, i) => {
                                             const start = props.user.data.averageDaySpread.hours[i];
-                                            const end = i<props.user.data.averageDaySpread.hours.length-1 ? props.user.data.averageDaySpread.hours[i + 1] : props.user.data.averageDaySpread.hours[0];
+                                            const end = i < props.user.data.averageDaySpread.hours.length - 1 ? props.user.data.averageDaySpread.hours[i + 1] : props.user.data.averageDaySpread.hours[0];
                                             return {
                                                 x: `${start} - ${end}`,
                                                 y: value
@@ -186,42 +186,80 @@ function SectionCards(props) {
                         : <></>
                 }
             </Grid>
-            <Grid>
-                <Paper sx={{p:1}}>
-                    {
-                        props.user.milestones.length > 0 ? <>
-                            <Box>
-                                <TableContainer>
-                                    <Table  size='small'>
-                                        <TableBody>
-                                        {
-                                        props.user.milestones.map((milestone, index) => {
-                                            let text = '';
+            <Grid container spacing={1}>
+                <Grid item xs={12} md={6}>
+                    <Paper sx={{ p: 1 }}>
+                        {
+                            props.user.milestones.length > 0 ? <>
+                                <Box>
+                                    <TableContainer>
+                                        <Table size='small'>
+                                            <TableBody>
+                                                {
+                                                    props.user.milestones.map((milestone, index) => {
+                                                        let text = '';
 
-                                            let formatter = MILESTONES_FORMATTER.find(m => m.name === milestone.achievement);
-                                            if (!formatter) {
-                                                text = `Unknown, contact Amayakase, this should not happen (achievement: ${milestone.achievement})`;
-                                            } else {
-                                                text = formatter.getText(formatter.getValue(milestone.count));
-                                            }
+                                                        let formatter = MILESTONES_FORMATTER.find(m => m.name === milestone.achievement);
+                                                        if (!formatter) {
+                                                            text = `Unknown, contact Amayakase, this should not happen (achievement: ${milestone.achievement})`;
+                                                        } else {
+                                                            text = formatter.getText(formatter.getValue(milestone.count));
+                                                        }
 
-                                            return (
-                                                <TableRow>
-                                                    <TableCell width='15%'>{moment(milestone.time).fromNow()}</TableCell>
-                                                    <TableCell>{text}</TableCell>
-                                                </TableRow>
-                                            )
-                                        })
-                                    }
-                                        </TableBody>
-                                    </Table>
-                                </TableContainer>
-                            </Box>
-                        </> : <>
-                            <Typography variant='body'>No recorded milestones found...</Typography>
-                        </>
-                    }
-                </Paper>
+                                                        return (
+                                                            <TableRow>
+                                                                <TableCell width='15%'>{moment(milestone.time).fromNow()}</TableCell>
+                                                                <TableCell>{text}</TableCell>
+                                                            </TableRow>
+                                                        )
+                                                    })
+                                                }
+                                            </TableBody>
+                                        </Table>
+                                    </TableContainer>
+                                </Box>
+                            </> : <>
+                                <Typography variant='body'>No recorded milestones found...</Typography>
+                            </>
+                        }
+                    </Paper>
+                </Grid>
+                <Grid item xs={12} md={6}>
+                    <Paper sx={{ p: 1 }}>
+                        <Typography variant='h6'>Productive days</Typography>
+                        <Grid container spacing={1}>
+                            {
+                                props.user.data.best_days.map((day_container) => {
+                                    return (
+                                        <Grid item xs={6}>
+                                            <Typography variant='body1'>{day_container.name}</Typography>
+                                            <TableContainer>
+                                                <Table size='small'>
+                                                    <TableBody>
+                                                        {
+                                                            day_container.data.map((day_data) => {
+                                                                const day = moment(day_data.day);
+                                                                const count = day_data.value;
+                                                                return (
+                                                                    // <Typography variant='body2'>{day} - {count.toLocaleString('en-US')}</Typography>
+                                                                    <TableRow>
+                                                                        <TableCell>{day.fromNow()}</TableCell>
+                                                                        <TableCell>{count.toLocaleString('en-US')}</TableCell>
+                                                                    </TableRow>
+                                                                )
+                                                            })
+                                                        }
+                                                    </TableBody>
+                                                </Table>
+                                            </TableContainer>
+                                            {/* <Typography variant='body2'>{day_container.count.toLocaleString('en-US')}</Typography> */}
+                                        </Grid>
+                                    )
+                                })
+                            }
+                        </Grid>
+                    </Paper>
+                </Grid>
             </Grid>
         </>
     )

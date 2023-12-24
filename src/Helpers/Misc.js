@@ -301,22 +301,22 @@ export function convertEpochToHumanReadable(epochDuration, short = false) {
 
 export function formatLargeNumber(value) {
     return (
-      <NumberFormatBase
-        value={value}
-        displayType={'text'}
-        thousandSeparator={true}
-        renderText={(formattedValue) => (
-          <span>
-            {formattedValue.split(',').map((part, index, array) => (
-              <span key={index}>
-                {part}
-                {index !== array.length - 1 && (
-                  <sup style={{ fontSize: '70%' }}>{',000'.substring(part.length)}</sup>
-                )}
-              </span>
-            ))}
-          </span>
-        )}
-      />
+        <NumberFormatBase
+            value={value}
+            displayType={'text'}
+            thousandSeparator={true}
+            renderText={(formattedValue) => (
+                <span>
+                    {formattedValue.split(',').map((part, index, array) => (
+                        <span key={index}>
+                            {part}
+                            {index !== array.length - 1 && (
+                                <sup style={{ fontSize: '70%' }}>{',000'.substring(part.length)}</sup>
+                            )}
+                        </span>
+                    ))}
+                </span>
+            )}
+        />
     );
-  }
+}
