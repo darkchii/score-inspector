@@ -178,31 +178,22 @@ export async function getBeatmapMaxscore(beatmap_id) {
 }
 
 const MAX_SCORE = 1000000;
+const STANDARDISED_ACCURACY_PORTION = 0.5;
+const STANDARDISED_COMBO_PORTION = 0.5;
 export function getLazerScore(score, classic = true) {
-    const mul = getModMultiplier(score.enabled_mods) * 0.96; //0.96 is the classic mod multiplier
+    const legacyModMultiplier = getModMultiplier(score.enabled_mods);
+    const mul = legacyModMultiplier * 0.96;
 
-    const standardized = (Math.pow((50 * score.count50 + 100 * score.count100 + 300 * score.count300) / (300 * score.count50 + 300 * score.count100 + 300 * score.count300 + 300 * score.countmiss), 5) * 500000) + (Math.pow(score.combo / score.beatmap.maxcombo, 0.75) * 500000) * mul;
-    
-    if(!classic)
-        return standardized;
-    
-    const lazerscore = Math.round((score.beatmap.objects * score.beatmap.objects) * 32.57 + 100000 * standardized / MAX_SCORE)
-    return lazerscore;
-    // const mul = getModMultiplier(score.enabled_mods);
-    // let val = ((((
-    //     (50 * score.count50 + 100 * score.count100 + 300 * score.count300) / (300 * score.count50 + 300 * score.count100 + 300 * score.count300 + 300 * score.countmiss)) *
-    //     500000) + ((score.combo / score.beatmap.maxcombo) * 500000)) * mul);
+    const standardised_acc = (Math.pow((50 * score.count50 + 100 * score.count100 + 300 * score.count300) / (300 * score.count50 + 300 * score.count100 + 300 * score.count300 + 300 * score.countmiss), 5) * 1000000 * STANDARDISED_ACCURACY_PORTION);
+    const standardised_combo = (Math.pow(score.combo / score.beatmap.maxcombo, 0.75) * 1000000 * STANDARDISED_COMBO_PORTION);
+    const standardised = (standardised_acc + standardised_combo) * mul;
 
-    // if (classic) {
-    //     val = Math.pow(((val / MAX_SCORE) * score.beatmap.objects), 2) * 36;
-    // }
+    if (!classic)
+        return standardised ?? 0;
 
-    // //theres a bug with beatmap, if val is Infinity, set to 0
-    // if (val === Infinity) {
-    //     val = 0;
-    // }
-
-    // return val;
+    // const lazerscore = Math.round((score.beatmap.objects * score.beatmap.objects) * 36 + 100000 * standardised / (MAX_SCORE * mul))
+    const lazerscore = Math.round(36 * Math.pow((standardised / 1000000) * score.beatmap.objects, 2))
+    return lazerscore ?? 0;
 }
 
 export function getModMultiplier(enabled_mods) {

@@ -25,31 +25,31 @@ function SectionCards(props) {
         {
             title: 'Avg PP',
             value: (Math.round((props.user.data?.average.pp ?? 0) * 100) / 100).toLocaleString('en-US'),
-            size: 1
+            size: 0.75
         },
         {
             title: 'Avg Acc',
             value: (Math.round((props.user.data?.average.acc ?? 0) * 100) / 100).toLocaleString('en-US') + '%',
-            size: 1
+            size: 0.75
         },
         {
             title: 'Avg Length',
             value: moment.duration(props.user.data?.average.length ?? 0, 'seconds').format('mm:ss'),
-            size: 1
+            size: 0.75
         },
         {
             title: 'Avg Stars',
             value: (Math.round((props.user.data?.average.star_rating ?? 0) * 100) / 100).toLocaleString('en-US') + '*',
+            size: 0.75
+        },
+        {
+            title: 'Fullcombo\'d',
+            value: (((Math.round(props.user.data?.fcRate * 1000) ?? 0) / 10).toLocaleString('en-US') ?? 0) + '%',
             size: 1
         },
         {
             title: 'Score per clear',
             value: Math.round(props.user.data?.average.score)?.toLocaleString('en-US') ?? 0,
-            size: 1
-        },
-        {
-            title: 'Fullcombo\'d',
-            value: (((Math.round(props.user.data?.fcRate * 1000) ?? 0) / 10).toLocaleString('en-US') ?? 0) + '%',
             size: 1
         },
         {
@@ -63,9 +63,14 @@ function SectionCards(props) {
             size: 1.25
         },
         {
-            title: 'Lazer Score',
-            value: Math.round(props.user.data?.total.scoreLazer)?.toLocaleString('en-US') ?? 0,
-            size: 1.5
+            title: 'Lazer Classic',
+            value: Math.round(props.user.data?.total.scoreLazerClassic)?.toLocaleString('en-US') ?? 0,
+            size: 1.25
+        },
+        {
+            title: 'Lazer Standardised',
+            value: Math.round(props.user.data?.total.scoreLazerStandardised)?.toLocaleString('en-US') ?? 0,
+            size: 1.25
         },
         {
             title: 'Score Length',
@@ -94,7 +99,7 @@ function SectionCards(props) {
         },
         {
             title: 'Completion',
-            value: (props.user.scores?.length > 0 ? Math.round((100 / props.user.data.total_beatmaps * props.user.scores?.length) * 100) / 100 : 0) + '%',
+            value: (props.user.scores?.length > 0 ? Math.round((100 / props.user.data.beatmaps_count_total * props.user.scores?.length) * 100) / 100 : 0) + '%',
             size: 1
         },
         {

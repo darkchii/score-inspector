@@ -8,9 +8,6 @@ import { getCalculator } from "./Performance/Performance.js";
 
 const FEEDBACK_SLEEP_TIME = 100; // give the browser bit of breathing room to update the UI before each intensive task
 export async function processScores(user, scores, onCallbackError, onScoreProcessUpdate, allow_loved) {
-    onScoreProcessUpdate('Fetching beatmap count');
-    await sleep(FEEDBACK_SLEEP_TIME);
-
     onScoreProcessUpdate('Preparing scores');
     await sleep(FEEDBACK_SLEEP_TIME);
     scores = prepareScores(user, scores);
@@ -35,7 +32,8 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
             acc: 0,
             length: 0,
             star_rating: 0,
-            scoreLazer: 0,
+            scoreLazerClassic: 0,
+            scoreLazerStandardised: 0,
             is_fc: 0,
         },
         average: {
@@ -70,7 +68,8 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
         data.total.acc += score.accuracy ?? 0;
         data.total.length += score.beatmap.modded_length ?? 0;
         data.total.star_rating += score.beatmap.modded_sr.star_rating ?? 0;
-        data.total.scoreLazer += score.scoreLazer ?? 0;
+        data.total.scoreLazerClassic += score.scoreLazerClassic ?? 0;
+        data.total.scoreLazerStandardised += score.scoreLazerStandardised ?? 0;
         data.total.is_fc += score.is_fc ?? 0;
     }
 
@@ -126,6 +125,8 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
     onScoreProcessUpdate('Beatmaps');
     await sleep(FEEDBACK_SLEEP_TIME);
     data.beatmaps_counts = (await axios.get(`${GetAPI()}beatmaps/count_periodic`))?.data;
+    data.beatmaps_count_total = (await axios.get(`${GetAPI()}beatmaps/count?include_loved=true`))?.data;
+    console.log(data.beatmaps_count_total);
 
     onScoreProcessUpdate('Periodic data');
     await sleep(FEEDBACK_SLEEP_TIME);
@@ -286,6 +287,8 @@ export function prepareScores(user, scores, calculateOtherPP = true) {
         }
     });
 
+    console.log(scores);
+
     return scores;
 }
 
@@ -307,7 +310,8 @@ export function prepareScore(score, user = null) {
     score.totalhits = score.count300 + score.count100 + score.count50;
 
     score.is_fc = isScoreFullcombo(score);
-    score.scoreLazer = Math.floor(getLazerScore(score));
+    score.scoreLazerClassic = Math.floor(getLazerScore(score));
+    score.scoreLazerStandardised = Math.floor(getLazerScore(score, false));
 
     score.estimated_pp = getCalculator('live', {
         score: score,
