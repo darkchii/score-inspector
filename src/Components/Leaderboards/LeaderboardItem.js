@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
 
-export const LEADERBOARD_ITEM_HEIGHT = 28;
+export const LEADERBOARD_ITEM_HEIGHT = 50;
 export const LEADERBOARD_BORDER_RADIUS = '8px';
 
 export function LeaderboardItem(props) {
