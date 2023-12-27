@@ -210,12 +210,16 @@ const GROUPED_STATS = {
     ],
     'beatmaps': [
         {
+            name: 'most_cleared', title: 'Most Cleared',
+            description: 'List of most cleared beatmaps',
+        },
+        {
             name: 'most_played', title: 'Most Played',
             description: 'List of most played beatmaps',
         },
         {
-            name: 'most_played_loved', title: 'Most Played Loved',
-            description: 'List of most played loved beatmaps',
+            name: 'most_played_sets', title: 'Most Played Sets',
+            description: 'List of most played beatmapsets',
         },
         {
             name: 'most_ssed', title: 'Most SSed',

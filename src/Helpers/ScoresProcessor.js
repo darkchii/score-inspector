@@ -115,22 +115,13 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
     await sleep(FEEDBACK_SLEEP_TIME);
     data.bestScores = getBestScores(scores);
 
-    // onScoreProcessUpdate('Weigh performance');
-    // data.performance = await weighPerformance(scores, onScoreProcessUpdate);
-
-    // onScoreProcessUpdate('Monthly data');
-    // await sleep(FEEDBACK_SLEEP_TIME);
-    // data.monthly = getPeriodicData(scores, data, user);
-
     onScoreProcessUpdate('Beatmaps');
     await sleep(FEEDBACK_SLEEP_TIME);
     data.beatmaps_counts = (await axios.get(`${GetAPI()}beatmaps/count_periodic`))?.data;
     data.beatmaps_count_total = (await axios.get(`${GetAPI()}beatmaps/count?include_loved=true`))?.data;
-    console.log(data.beatmaps_count_total);
 
     onScoreProcessUpdate('Periodic data');
     await sleep(FEEDBACK_SLEEP_TIME);
-    // data.periodic = getPeriodicData(scores, data, user);
     data.periodic = {};
     data.periodic['y'] = getPeriodicData(user, scores, data.beatmaps_counts, 'y');
     data.periodic['m'] = getPeriodicData(user, scores, data.beatmaps_counts, 'm');
@@ -139,9 +130,6 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
     onScoreProcessUpdate('Best days');
     await sleep(FEEDBACK_SLEEP_TIME);
     data.best_days = ProcessBestDays(scores);
-    console.log('BEST DAYS TEST');
-    console.log(data.best_days);
-    console.log('BEST DAYS TEST');
 
     onScoreProcessUpdate('Active days');
     await sleep(FEEDBACK_SLEEP_TIME);
