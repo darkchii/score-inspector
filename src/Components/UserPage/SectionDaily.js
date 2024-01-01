@@ -333,7 +333,7 @@ function SectionDaily(props) {
                                         width: '12px',
                                         backgroundColor: themeColor,
                                         margin: '2px',
-                                    }}></Box><Typography variant="body2">{Math.min(dynamicRange, 100)}{dynamicRange > 100 ? '+' : ''} clear{dynamicRange > 0 ? 's' : ''}</Typography>
+                                    }}></Box><Typography variant="body2">{Math.min(dynamicRange, 100)}+ clears</Typography>
                             </Box>
                             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                                 <Typography variant="body2">Currently viewing {selectedDay}</Typography>
