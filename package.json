@@ -35,7 +35,7 @@
     "react-country-flag": "^3.1.0",
     "react-dom": "^18.2.0",
     "react-error-boundary": "^4.0.12",
-    "react-fast-marquee": "^1.6.1",
+    "react-fast-marquee": "^1.6.2",
     "react-helmet": "^6.1.0",
     "react-number-format": "^5.3.1",
     "react-router-dom": "^6.21.1",
