@@ -7,7 +7,7 @@
     "DONATE_URL": "https://www.buymeacoffee.com/darkchii",
     "OSU_CLIENT_ID": 19537,
     "OSU_CLIENT_ID_DEV": 19559,
-    "USE_DEV_API": true,
+    "USE_DEV_API": false,
     "NOTIFICATIONS": {
         "position": "top-right",
         "theme": "dark"

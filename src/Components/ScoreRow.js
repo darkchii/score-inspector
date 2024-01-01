@@ -60,7 +60,7 @@ function ScoreRow(props) {
                                             {score.score.toLocaleString('en-US')}
                                         </Typography>
                                         <Typography sx={{ fontSize: '0.75rem', maxWidth: '100%', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
-                                            {score.scoreLazer.toLocaleString('en-US')} (lazer)
+                                            {score.scoreLazerClassic.toLocaleString('en-US')} (lazer)
                                         </Typography>
                                     </Box>
                                 </Grid>

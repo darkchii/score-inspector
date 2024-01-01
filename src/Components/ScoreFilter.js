@@ -32,7 +32,7 @@ const sorters = [
     {
         name: 'Lazer Score',
         sort: (a, b) => {
-            return b.scoreLazer - a.scoreLazer;
+            return b.scoreLazerClassic - a.scoreLazerClassic;
         }
     },
     {
