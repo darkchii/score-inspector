@@ -64,7 +64,8 @@ function getScoresPeriodicData(user, scores, dates, beatmaps, period = 'm') {
 function processCurrentData(scores, data, period = 'm') {
     for (let i = 0; i < scores.length; i++) {
         let score = scores[i];
-        let date = correctDate(score.date_played, period);
+        let date_string = score.date_played_moment.format(PERIOD_FORMATS[period].format_str_num_only);
+        let date = correctDate(date_string, period);
         data[date].scores.push(score);
         data[date][`gained_grade_${score.rank.toLowerCase()}`] += 1;
         data[date].gained_fc += score.is_fc ? 1 : 0;
@@ -164,21 +165,21 @@ function processCompletionData(scores, data_array, period = 'm') {
         data_array[i].total_completion_score = 100 / data_array[i].total_beatmaps_score * data_array[i].total_score;
 
         if (isNaN(data_array[i].total_completion_clears) || !isFinite(data_array[i].total_completion_clears)) {
-            if(previous_data !== undefined)
+            if (previous_data !== undefined)
                 data_array[i].total_completion_clears = previous_data.total_completion_clears;
             else
                 data_array[i].total_completion_clears = 0;
         }
 
         if (isNaN(data_array[i].total_completion_length) || !isFinite(data_array[i].total_completion_length)) {
-            if(previous_data !== undefined)
+            if (previous_data !== undefined)
                 data_array[i].total_completion_length = previous_data.total_completion_length;
             else
                 data_array[i].total_completion_length = 0;
         }
 
         if (isNaN(data_array[i].total_completion_score) || !isFinite(data_array[i].total_completion_score)) {
-            if(previous_data !== undefined)
+            if (previous_data !== undefined)
                 data_array[i].total_completion_score = previous_data.total_completion_score;
             else
                 data_array[i].total_completion_score = 0;
@@ -609,7 +610,7 @@ function generateGraphData(user, data_array, period = 'm') {
         filterNull: true,
         data: [
             {
-                name: 'FC Rate', 
+                name: 'FC Rate',
                 graph_data: data_array.map((data) => { return [data.date, data.total_fc_rate] }),
             }
         ],
@@ -642,7 +643,7 @@ function generateGraphData(user, data_array, period = 'm') {
         filterNull: true,
         data: [
             {
-                name: 'SS Rate', 
+                name: 'SS Rate',
                 graph_data: data_array.map((data) => { return [data.date, data.total_ss_rate] }),
             }
         ],
