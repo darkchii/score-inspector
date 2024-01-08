@@ -83,6 +83,7 @@ function Header(props) {
             ],
         },
         { name: 'Leaderboards', icon: <LeaderboardIcon />, onClick: () => { }, linkTo: '/leaderboard', dropDown: [
+            { name: 'Top Score Per Month', icon: <EmojiEventsIcon />, onClick: () => { }, linkTo: '/month_score' },
             { name: 'Historic Score Rank', icon: <HistoryIcon />, onClick: () => { }, linkTo: '/score' },
             { name: 'Countries', icon: <PublicIcon />, onClick: () => { }, linkTo: '/population' },
         ] },
