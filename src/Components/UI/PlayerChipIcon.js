@@ -15,7 +15,7 @@ const PlayerTooltip = styled(({ className, ...props }) => (
     background-color: transparent;
 `);
 
-function PlayerChip(props) {
+function PlayerChipIcon(props) {
     const theme = useTheme();
     const [matchesLoggedInUser, setMatchesLoggedInUser] = useState(false);
     const [isHovering, setIsHovering] = useState(false);
@@ -25,9 +25,8 @@ function PlayerChip(props) {
 
     const AvatarClone = cloneElement(props.avatar, {
         sx: {
-            width: '20px',
-            height: '20px',
-            mr: 0.5,
+            width: '40px',
+            height: '40px',
         }
     });
 
@@ -95,46 +94,17 @@ function PlayerChip(props) {
                 </>}
             placement="top">
             <Box sx={{
-                display: 'flex',
-                borderRadius: '5px',
-                // bgcolor: '#ffffff22',
-                bgcolor: `${matchesLoggedInUser ? theme.palette.primary.main : '#ffffff'}22`,
+                borderRadius: '50%',
                 textDecoration: 'none',
                 color: '#fff',
-                p: 0.25,
-                pr: 1,
                 width: 'fit-content',
                 alignItems: 'center',
                 justifyContent: 'center',
             }}>
                 {AvatarClone}
-                <Typography variant={props.variant}>
-                    {props.label}
-                </Typography>
-                {
-                    props.roleIcons && props.roleIcons.length > 0 ? <Grid sx={{ ml: 0.5, display: 'flex' }}>
-                        {
-                            props.roleIcons.map((v, i) => {
-                                return (
-                                    <Avatar
-                                        key={i}
-                                        sx={{
-                                            width: '20px',
-                                            height: '20px',
-                                            backgroundColor: '#ffffff00',
-                                            border: 'none'
-                                        }}
-                                    >
-                                        {v}
-                                    </Avatar>
-                                )
-                            })
-                        }
-                    </Grid> : <></>
-                }
             </Box>
         </PlayerTooltip>
     </>
 }
 
-export default PlayerChip;
+export default PlayerChipIcon;

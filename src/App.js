@@ -32,6 +32,7 @@ import Admin from './Routes/Admin';
 import LeadersScore from './Routes/LeadersScore';
 import Milestones from './Routes/Milestones';
 import Docs from './Routes/Docs';
+import LeadersMonthly from './Routes/LeadersMonthly.js';
 
 function App() {
   const [loginData, setLoginData] = useState(null);
@@ -134,6 +135,7 @@ function App() {
                   <Route index element={<Tools />} />
                   <Route path=":tool" element={<Tools />} />
                 </Route>
+                <Route path="month_score" element={<LeadersMonthly />} />
                 <Route path="score" element={<LeadersScore />}>
                   <Route index element={<LeadersScore />} />
                   <Route path="page/:page" element={<LeadersScore />}>

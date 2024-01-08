@@ -4,6 +4,7 @@ import axios from "axios";
 import { Avatar, Box, Chip, Tooltip } from "@mui/material";
 import * as Muicon from "@mui/icons-material";
 import PlayerChip from "../Components/UI/PlayerChip.js";
+import PlayerChipIcon from "../Components/UI/PlayerChipIcon.js";
 
 const ROLE_PADDING = 0.2;
 
@@ -18,6 +19,7 @@ export function GetFormattedName(inspector_user, settings = null) {
         is_link: false,
         size: 'small',
         show_avatar: true,
+        icon_only: false,
         ...settings
     };
     let name = inspector_user?.known_username;
@@ -32,18 +34,39 @@ export function GetFormattedName(inspector_user, settings = null) {
     return (
         <>
             <Tooltip title={_settings.custom_tooltip ?? ''} placement='top'>
-                <PlayerChip sx={{
-                    pr: inspector_user.roles?.length > 0 ? 1 : 0, '&:hover': {
-                        cursor: _settings.is_link ? 'pointer' : 'default'
-                    },
-                    borderRadius: '5px',
-                    textDecoration: 'none',
-                }}
-                    user_id={inspector_user.osu_id}
-                    roleIcons={Array.isArray(inspector_user.roles) && GetRoleIcons(inspector_user.roles)}
-                    avatar={_settings.show_avatar ? <Avatar alt={name} src={`https://a.ppy.sh/${inspector_user.osu_id}`} /> : null}
-                    label={name}
-                    size={_settings.size} />
+                {
+                    _settings.icon_only ? <>
+                        <PlayerChipIcon sx={{
+                            pr: inspector_user.roles?.length > 0 ? 1 : 0, '&:hover': {
+                                cursor: _settings.is_link ? 'pointer' : 'default'
+                            },
+                            borderRadius: '5px',
+                            textDecoration: 'none'
+                        }}
+                            user_id={inspector_user.osu_id}
+                            roleIcons={Array.isArray(inspector_user.roles) && GetRoleIcons(inspector_user.roles)}
+                            avatar={_settings.show_avatar ? <Avatar alt={name} src={`https://a.ppy.sh/${inspector_user.osu_id}`} /> : null}
+                            label={name}
+                            settings={_settings}
+                            variant={_settings.variant ?? 'body2'}
+                            size={_settings.size} />
+                    </> : <>
+                        <PlayerChip sx={{
+                            pr: inspector_user.roles?.length > 0 ? 1 : 0, '&:hover': {
+                                cursor: _settings.is_link ? 'pointer' : 'default'
+                            },
+                            borderRadius: '5px',
+                            textDecoration: 'none'
+                        }}
+                            user_id={inspector_user.osu_id}
+                            roleIcons={Array.isArray(inspector_user.roles) && GetRoleIcons(inspector_user.roles)}
+                            avatar={_settings.show_avatar ? <Avatar alt={name} src={`https://a.ppy.sh/${inspector_user.osu_id}`} /> : null}
+                            label={name}
+                            settings={_settings}
+                            variant={_settings.variant ?? 'body2'}
+                            size={_settings.size} />
+                    </>
+                }
             </Tooltip>
         </>
     );
