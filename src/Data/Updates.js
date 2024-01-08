@@ -12,8 +12,17 @@ const PLATFORMTYPES = {
 
 const updates = [
     {
+        version: '2.7.1',
+        date: '2024-01-09',
+        changes: [
+            [PLATFORMTYPES.WEB | PLATFORMTYPES.API, CHANGETYPES.NEW, 'Added top scorer for ranked/loved beatmaps per month', 'd99d2864e8abf0801f3e917216d6127641da3e15'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.FIX, 'Fixed level text displayed incorrectly', 'ead31793dd04544cbc053a21e1830ca81b9613e9'],
+            [PLATFORMTYPES.API, CHANGETYPES.FIX, 'Fixed unable to first-time login']
+        ]
+    },
+    {
         version: '2.7.0',
-        date: '2023-06-23',
+        date: '2024-01-01',
         changes: [
             [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Added milestone tracking and page', '12831f8e222d92503e4ddd33bed5176bbfcbcdd1'],
             [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Added score rank history tracking', '101e3581715041165ad1593a9dee33f7e51b6389'],
