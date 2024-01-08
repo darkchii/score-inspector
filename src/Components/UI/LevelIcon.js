@@ -1,4 +1,4 @@
-import { Box, Stack, Tooltip } from "@mui/material";
+import { Box, Stack, Tooltip, Typography } from "@mui/material";
 import { PNG_LEVEL_BADGE } from "../../Helpers/Assets";
 import ScaleText from "react-scale-text";
 
@@ -44,15 +44,14 @@ function LevelIcon(props) {
                 height: '55%',
                 flexDirection: 'column',
                 textAlign: 'center',
-                alignContent: 'center'
+                alignContent: 'center',
+                justifyContent: 'center',
             }}>
-                <Tooltip title={`Level: ${_props.level}.${props.levelProgress}`} sx={{ width: '100%', height: '100%' }}>
-                    <Stack sx={{ width: '100%', height: '100%' }}>
-                        <ScaleText>
-                            {_props.level}
-                        </ScaleText>
-                    </Stack>
-                </Tooltip>
+                <Box sx={{ width: '100%', height:'80%' }}>
+                    <ScaleText>
+                        {_props.level}
+                    </ScaleText>
+                </Box>
             </Box>
         </Box>
     )
