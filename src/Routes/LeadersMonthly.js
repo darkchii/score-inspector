@@ -6,6 +6,7 @@ import config from "../config.json";
 import { Helmet } from "react-helmet";
 import { GetAPI } from "../Helpers/Misc.js";
 import { GetFormattedName } from "../Helpers/Account.js";
+import moment from "moment";
 
 function LeadersMonthly(props) {
     const theme = useTheme();
@@ -121,21 +122,24 @@ function LeadersMonthly(props) {
                                                         <Box>
                                                             <Grid container spacing={1}>
                                                                 {
-                                                                    item.months.map((month) => (
-                                                                        <Grid item xs={3} key={month.month} sx={{
-                                                                            display: 'flex',
-                                                                            justifyContent: 'center',
-                                                                            alignItems: 'center',
-                                                                            flexDirection: 'column'
-                                                                        }}>
-                                                                            {/* convert to 3 letter month */}
-                                                                            <Typography variant="body" component="div">{new Date(`${item.year}-${month.month}-01`).toLocaleString('default', { month: 'long' })}</Typography>
-                                                                            {GetFormattedName(month.top.user.inspector_user, {
-                                                                                icon_only: true,
-                                                                            })}
-                                                                            <Typography variant="subtitle2" component="div">{parseInt(month.top.total_score).toLocaleString('en-US')}</Typography>
-                                                                        </Grid>
-                                                                    ))
+                                                                    item.months.map((month) => {
+                                                                        let _date = moment(new Date(`${item.year}-${month.month}-01 UTC`)).utc().format('MMMM');
+                                                                        return (
+                                                                            <Grid item xs={3} key={month.month} sx={{
+                                                                                display: 'flex',
+                                                                                justifyContent: 'center',
+                                                                                alignItems: 'center',
+                                                                                flexDirection: 'column'
+                                                                            }}>
+                                                                                {/* convert to 3 letter month */}
+                                                                                <Typography variant="body" component="div">{_date}</Typography>
+                                                                                {GetFormattedName(month.top.user.inspector_user, {
+                                                                                    icon_only: true,
+                                                                                })}
+                                                                                <Typography variant="subtitle2" component="div">{parseInt(month.top.total_score).toLocaleString('en-US')}</Typography>
+                                                                            </Grid>
+                                                                        )
+                                                                    })
                                                                 }
                                                             </Grid>
                                                         </Box>
@@ -144,7 +148,7 @@ function LeadersMonthly(props) {
                                             ))
                                         }
                                     </Grid>
-                                    <Divider sx={{mt: 1, mb: 1}} />
+                                    <Divider sx={{ mt: 1, mb: 1 }} />
                                     <Box>
                                         <Typography variant="h6" component="div">Top Players</Typography>
 
