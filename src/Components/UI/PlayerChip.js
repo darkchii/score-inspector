@@ -13,6 +13,7 @@ const PlayerTooltip = styled(({ className, ...props }) => (
     <Tooltip {...props} componentsProps={{ tooltip: { className: className } }} />
 ))(`
     background-color: transparent;
+    max-width: none;
 `);
 
 function PlayerChip(props) {
