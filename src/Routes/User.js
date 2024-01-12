@@ -49,7 +49,7 @@ function User() {
                     setIsLoading(false);
                     setErrorMessage("User not found");
 
-                    if(user_out?.inspector_user?.is_banned) {
+                    if (user_out?.inspector_user?.is_banned) {
                         setErrorMessage("User is banned from scores inspector");
                     }
                     return;
@@ -104,10 +104,10 @@ function User() {
                 user_out.data = _data;
 
                 setLoadingState('Get milestones')
-                try{
+                try {
                     const milestones = (await axios.get(`${GetAPI()}scores/milestones/user/${user_out.osu.id}`))?.data;
                     user_out.milestones = milestones;
-                }catch(e) {
+                } catch (e) {
                     //ignore
                     user_out.milestones = [];
                 }
@@ -150,6 +150,15 @@ function User() {
                     <Stack spacing={2} direction='column'>
                         <Typography variant='h4'>Whoops, couldn't show profile</Typography>
                         <Typography variant='subtitle1'>What went wrong: {errorMessage}</Typography>
+                        {/* if errorMessage contains 'user_out.alt is undefined' */}
+                        {
+                            errorMessage?.includes('user_out.alt is undefined') ? <Alert severity='warning'>
+                                You likely registered with the bot very recently or haven't yet. If not, do so.
+                                Please wait for up to an hour to update your profile.
+                                You can check using the !clears command until your user is visible.
+                            </Alert>
+                                : <></>
+                        }
                         <Link sx={{ textDecoration: 'none' }} href={`https://osu.ppy.sh/users/${params.id}`} target='_blank'>
                             <Typography variant='title' sx={{ fontSize: '1em' }}>Try osu! profile ....</Typography>
                         </Link>
