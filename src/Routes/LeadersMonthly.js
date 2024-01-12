@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import Loader from "../Components/UI/Loader";
-import { Avatar, Box, Divider, Grid, Paper, Typography, useTheme } from "@mui/material";
+import { Avatar, Box, Chip, Divider, Grid, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography, useTheme } from "@mui/material";
 import config from "../config.json";
 import { Helmet } from "react-helmet";
 import { GetAPI } from "../Helpers/Misc.js";
@@ -13,6 +13,7 @@ function LeadersMonthly(props) {
 
     const [isLoading, setIsLoading] = useState(true);
     const [data, setData] = useState(null);
+    const [dataOvertakes, setDataOvertakes] = useState(null);
     const [dataMostAppearances, setDataMostAppearances] = useState(null);
 
     useEffect(() => {
@@ -83,6 +84,31 @@ function LeadersMonthly(props) {
                     console.error(json);
                     setData([]);
                 }
+
+                const overtakes_res = await fetch(`${GetAPI()}scores/monthly_score_farmers/log`);
+                const overtakes_json = await overtakes_res.json();
+
+                if (Array.isArray(overtakes_json)) {
+                    //convert all "time" (utc) to moment objects (local time)
+                    overtakes_json.forEach((item) => {
+                        item.time_moment = moment(item.time).local();
+                        item.old_total_score = parseInt(item.old_total_score);
+                        item.new_total_score = parseInt(item.new_total_score);
+                    });
+
+                    //sort by time (descending)
+                    overtakes_json.sort((a, b) => {
+                        return b.time_moment - a.time_moment;
+                    });
+
+                    setDataOvertakes(overtakes_json);
+                } else {
+                    console.error(overtakes_json);
+                    setDataOvertakes([]);
+                }
+
+
+                console.log(overtakes_json);
             } catch (err) {
                 console.error(err);
                 setData([]);
@@ -97,7 +123,7 @@ function LeadersMonthly(props) {
                 <title>Month Score Farmers - {config.APP_NAME}</title>
             </Helmet>
             {
-                isLoading || data === null || dataMostAppearances === null ? (
+                isLoading || data === null || dataMostAppearances === null || dataOvertakes === null ? (
                     <Loader />
                 ) : (
                     <>
@@ -150,25 +176,58 @@ function LeadersMonthly(props) {
                                     </Grid>
                                     <Divider sx={{ mt: 1, mb: 1 }} />
                                     <Box>
-                                        <Typography variant="h6" component="div">Top Players</Typography>
+                                        <Typography variant="h6" component="div">Top Players by Months ({dataMostAppearances.length})</Typography>
 
                                         <Grid container spacing={1}>
                                             {
-                                                dataMostAppearances.map((item) => (
-                                                    <Grid item xs={1} key={item.user_id} sx={{
-                                                        display: 'flex',
-                                                        justifyContent: 'center',
-                                                        alignItems: 'center',
-                                                        flexDirection: 'column'
-                                                    }}>
-                                                        {GetFormattedName(item.user.inspector_user, {
-                                                            icon_only: true,
-                                                        })}
-                                                        <Typography variant="subtitle2" component="div">{item.count}</Typography>
-                                                    </Grid>
-                                                ))
+                                                dataMostAppearances.map((item, index) => {
+                                                    return (
+                                                        <Grid item xs={12 / 8} key={item.user_id}>
+                                                            <Paper elevation={3} sx={{ p: 1 }}>
+                                                                <Stack direction="column" spacing={1}
+                                                                    sx={{
+                                                                        justifyContent: 'center',
+                                                                        alignItems: 'center',
+                                                                    }}>
+                                                                    {GetFormattedName(item.user.inspector_user, {
+                                                                        icon_only: true,
+                                                                    })}
+                                                                    {/* <Typography variant="subtitle2" component="div">{item.count}</Typography> */}
+                                                                    <Chip size='small' label={item.count} />
+                                                                </Stack>
+                                                            </Paper>
+                                                        </Grid>
+                                                    )
+                                                })
                                             }
                                         </Grid>
+                                    </Box>
+                                    <Divider sx={{ mt: 1, mb: 1 }} />
+                                    <Box>
+                                        <Typography variant="h6" component="div">Overtakes</Typography>
+                                        <TableContainer>
+                                            <Table size="small">
+                                                <TableBody>
+                                                    {
+                                                        dataOvertakes.map((item) => {
+                                                            const year = item.period.split('-')[0] ?? item.period;
+                                                            const month = item.period.split('-')[1] ?? null;
+                                                            let _date = moment(new Date(`${year}-${month ?? '01'}-01 UTC`)).utc().format('MMMM');
+                                                            return (
+                                                                <TableRow>
+                                                                    <TableCell style={{width: '0%'}}><Chip size='small' label={`${item.time_moment.fromNow()}`} /></TableCell>
+                                                                    <TableCell style={{width: '0%'}}>{GetFormattedName(item.new_user.inspector_user)}</TableCell>
+                                                                    <TableCell style={{width: '0%'}}>overtook</TableCell>
+                                                                    <TableCell style={{width: '0%'}}>{GetFormattedName(item.old_user.inspector_user)}</TableCell>
+                                                                    <TableCell style={{width: '15%'}}>on {month ? _date : ''} {year}</TableCell>
+                                                                    <TableCell style={{width: '90%'}}></TableCell>
+                                                                </TableRow>
+                                                            )
+                                                        })
+                                                    }
+                                                </TableBody>
+                                            </Table>
+                                        </TableContainer>
                                     </Box>
                                 </>
                             ) : (
