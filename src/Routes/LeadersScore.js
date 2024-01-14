@@ -175,12 +175,12 @@ function LeadersScore(props) {
                                                             },
                                                             {
                                                                 value: (
-                                                                    <span style={{ fontSize: '0.7rem', lineHeight: '0.4rem' }}>
+                                                                    <span>
                                                                         {item.ranked_score.toLocaleString('en-US')}
                                                                         <span>
                                                                             <Typography color={
                                                                                 (ranked_score_diff ?? 0) > 0 ? green[400] : grey[400]
-                                                                            } sx={{ fontSize: '0.6rem', lineHeight: '0.4rem' }} display="block">
+                                                                            } sx={{ fontSize: '0.8rem', lineHeight: '0.6rem' }} display="block">
                                                                                 +{(ranked_score_diff ?? 0).toLocaleString('en-US')}
                                                                             </Typography>
                                                                         </span>
