@@ -215,6 +215,7 @@ function LeadersMonthly(props) {
                                                             let _date = moment(new Date(`${year}-${month ?? '01'}-01 UTC`)).utc().format('MMMM');
                                                             return (
                                                                 <TableRow>
+                                                                    <TableCell style={{width: '0%'}}><Chip color="primary" size='small' label={`Score`} /></TableCell>
                                                                     <TableCell style={{width: '0%'}}><Chip size='small' label={`${item.time_moment.fromNow()}`} /></TableCell>
                                                                     <TableCell style={{width: '0%'}}>{GetFormattedName(item.new_user.inspector_user)}</TableCell>
                                                                     <TableCell style={{width: '0%'}}>overtook</TableCell>

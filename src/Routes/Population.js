@@ -95,6 +95,10 @@ function Population() {
 
         population.forEach((p) => {
             let cc = p.code;
+            if(!cc){
+                console.warn(fixed_countries);
+                console.warn(p);
+            }
             let feature = fixed_countries.find((c) => c.code?.toLowerCase() === cc.toLowerCase());
             if (feature) {
                 feature.value = p[valueType] ?? 0;
@@ -224,6 +228,12 @@ function Population() {
             description: 'Total ranked score'
         },
         {
+            name: 'National Top Score',
+            value: 'max_score',
+            output: (v) => `${v.toLocaleString()}`,
+            description: 'Sum of all national #1 scores'
+        },
+        {
             name: 'Average PP',
             value: 'avg_pp',
             output: (v) => (Math.round(v * 100) / 100).toLocaleString() + 'pp',
@@ -344,7 +354,7 @@ function Population() {
             {
                 orderedCountries &&
                 <>
-                    <TableContainer component={Paper} elevation={4} sx={{ mt: 2, width: 600 }}>
+                    <TableContainer component={Paper} elevation={4} sx={{ mt: 2, maxWidth: 900 }}>
                         <Table size="small">
                             <TableHead>
                                 <TableRow>
