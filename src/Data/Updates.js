@@ -13,7 +13,7 @@ const PLATFORMTYPES = {
 const updates = [
     {
         version: '2.7.2',
-        date: '2024-01-14',
+        date: '2024-01-15',
         changes: [
             [PLATFORMTYPES.WEB, CHANGETYPES.FIX, 'Fixed month name localization on month top players', '911db114312c578a9e8b6a9b2abacd6c9c3eb93e'],
             [PLATFORMTYPES.WEB, CHANGETYPES.FIX, 'Fixed player cards not centered on tooltips', 'ae9ad3a86076930537e2788fafd977d5a459d11c'],
