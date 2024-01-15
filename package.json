@@ -22,7 +22,7 @@
     "chartjs-plugin-annotation": "^3.0.1",
     "chartjs-plugin-datalabels": "^2.2.0",
     "chartjs-plugin-zoom": "^2.0.1",
-    "countries-list": "^2.6.1",
+    "countries-list": "^3.0.6",
     "dayjs": "^1.11.10",
     "draft-js-export-html": "^1.4.1",
     "html-react-parser": "^5.0.11",
