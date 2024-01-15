@@ -12,6 +12,18 @@ const PLATFORMTYPES = {
 
 const updates = [
     {
+        version: '2.7.2',
+        date: '2024-01-14',
+        changes: [
+            [PLATFORMTYPES.WEB, CHANGETYPES.FIX, 'Fixed month name localization on month top players', '911db114312c578a9e8b6a9b2abacd6c9c3eb93e'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.FIX, 'Fixed player cards not centered on tooltips', 'ae9ad3a86076930537e2788fafd977d5a459d11c'],
+            [PLATFORMTYPES.API | PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Added top month overtakes logging', '1d9e42c08fd0cf7e1aafd75f4a5de01065a374d1'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.MISC, 'Added extra info in case user has no users2 entry yet in osu alt database', 'c99d3b331f9cfb18cebe8f3ea16d4fcaeee99526'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.FIX, 'Fixed font sizes on score history leaderboards', 'e335dd38333ab8f9fecf67fb288c9ba0f98d93a3'],
+            [PLATFORMTYPES.API, CHANGETYPES.MISC, 'Country/population stats are now cached'],
+        ]
+    },
+    {
         version: '2.7.1',
         date: '2024-01-09',
         changes: [
