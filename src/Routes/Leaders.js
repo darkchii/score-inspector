@@ -131,6 +131,17 @@ const GROUPED_STATS = {
             group: 'generic'
         },
         {
+            name: 'monthly_playcount', title: 'Play Count Monthly',
+            description: 'Number of times that the user has played a beatmap in a month.',
+            group: 'generic',
+            //convert YYYY-MM-DD to January 2021 for example (use moment)
+            extraFormatter: (value) => {
+                if(value === undefined || value === null) return '';
+                let _date = moment(new Date(`${value[0]} UTC`)).utc().format('MMMM YYYY');
+                return `${_date}`;
+            }
+        },
+        {
             name: 'playtime', title: 'Play Time', customFormat: (value) => (Math.round(moment.duration(value, 'seconds').asHours())).toLocaleString('en-US') + ' hours',
             description: 'Total tracked time spent playing osu!',
             group: 'generic'
@@ -144,6 +155,17 @@ const GROUPED_STATS = {
             name: 'replays_watched', title: 'Replays Watched',
             description: 'Number of times that the user\'s replays have been watched.',
             group: 'generic'
+        },
+        {
+            name: 'monthly_replays_watched', title: 'Replays Watched Monthly',
+            description: 'Number of times that the user\'s replays have been watched per month.',
+            group: 'generic',
+            //convert YYYY-MM-DD to January 2021 for example (use moment)
+            extraFormatter: (value) => {
+                if(value === undefined || value === null) return '';
+                let _date = moment(new Date(`${value[0]} UTC`)).utc().format('MMMM YYYY');
+                return `${_date}`;
+            }
         },
         {
             name: 'scores_first_count', title: 'First Places',
@@ -431,7 +453,16 @@ function Leaders() {
                                                             alignment: 'left',
                                                             variant: 'body2',
                                                             color: grey[500]
-                                                        }
+                                                        },
+                                                        //only if extraFormatter is defined
+                                                        ...(statistic?.extraFormatter !== undefined && statistic?.extraFormatter != null ?
+                                                            [{
+                                                                value: statistic?.extraFormatter(entry?.extra_data),
+                                                                alignment: 'left',
+                                                                variant: 'body2',
+                                                                color: grey[500]
+                                                            }]
+                                                            : [])
                                                     ]
                                                 }
                                                 user={entry} />
