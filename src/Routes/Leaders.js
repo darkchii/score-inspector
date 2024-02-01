@@ -6,7 +6,6 @@ import ReactCountryFlag from 'react-country-flag';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getLeaderboard } from '../Helpers/OsuAlt';
 import moment from 'moment/moment';
-import countries from "countries-list";
 import momentDurationFormatSetup from "moment-duration-format";
 import PlayerLeaderboardItem from '../Components/Leaderboards/PlayerLeaderboardItem';
 import BeatmapLeaderboardItem from '../Components/Leaderboards/BeatmapLeaderboardItem';
@@ -14,6 +13,7 @@ import { Helmet } from 'react-helmet';
 import config from "../config.json";
 import { green, grey, red } from '@mui/material/colors';
 import { convertEpochToHumanReadable } from '../Helpers/Misc.js';
+import { countries } from 'countries-list';
 momentDurationFormatSetup(moment);
 
 const GROUPED_STATS = {
@@ -276,7 +276,7 @@ function Leaders() {
     const [statistic, setStatistic] = useState(params.stat ? Object.values(GROUPED_STATS).flat(1).find((stat) => stat.name === params.stat) : GROUPED_STATS['pp'][0]);
     const [page, setPage] = useState(params.page ? parseInt(params.page) : 1);
     const [totalPages, setTotalPages] = useState(0);
-    const [country, setCountry] = useState(params.country && countries.countries[params.country.toUpperCase()] ? params.country.toLowerCase() : 'world');
+    const [country, setCountry] = useState(params.country && countries[params.country.toUpperCase()] ? params.country.toLowerCase() : 'world');
     const [countryList, setCountryList] = useState([]);
     const [leaderboard, setLeaderboard] = useState(null);
     const [leaderboardType, setLeaderboardType] = useState('users');
@@ -284,8 +284,8 @@ function Leaders() {
 
     useEffect(() => {
         const _c = [];
-        for (const key in countries.countries) {
-            _c.push({ code: key.toLowerCase(), name: countries.countries[key].name });
+        for (const key in countries) {
+            _c.push({ code: key.toLowerCase(), name: countries[key].name });
         }
         setCountryList([{ code: 'world', name: 'Worldwide' }, ..._c]);
     }, []);
