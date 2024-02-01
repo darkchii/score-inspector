@@ -37,6 +37,7 @@ import PNG_MOD_HD from "../Assets/MOD_HD.png";
 import PNG_MOD_HR from "../Assets/MOD_HR.png";
 import PNG_MOD_TD from "../Assets/MOD_TD.png";
 import PNG_MOD_NM from "../Assets/MOD_NM.png";
+import PNG_MOD_CL from "../Assets/MOD_CL.png";
 
 import PNG_GUEST from "../Assets/Guest.png";
 
@@ -62,6 +63,7 @@ function getModIcon(modString) {
         case "HD": return PNG_MOD_HD;
         case "HR": return PNG_MOD_HR;
         case "TD": return PNG_MOD_TD;
+        case "CL": return PNG_MOD_CL;
         case "None": return PNG_MOD_NM;
     }
 }
@@ -80,6 +82,7 @@ export function getPossibleMods() {
         "FL",
         "TD",
         "SO",
+        "CL",
         "None"
     ]
 }
@@ -146,6 +149,7 @@ export {
     PNG_MOD_HR,
     PNG_MOD_TD,
     PNG_MOD_NM,
+    PNG_MOD_CL,
     getModIcon,
     getGradeIcon,
     IMG_SVG_GRADE_XH,
