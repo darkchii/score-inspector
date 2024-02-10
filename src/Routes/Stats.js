@@ -85,7 +85,7 @@ function Stats(props) {
                     These stats are based on what osu!alternative has gathered. Most if not all active and top players are in it, but alot is missing as well.
                 </Alert>
 
-                <Grid sx={{ width: '100%' }}>
+                {/* <Grid sx={{ width: '100%' }}>
                     <Card sx={{ width: '100%' }}>
                         <CardHeader title='PP Records' />
                         <CardContent sx={{ width: '100%' }}>
@@ -174,7 +174,7 @@ function Stats(props) {
                             }
                         </CardContent>
                     </Card>
-                </Grid>
+                </Grid> */}
 
                 <Grid container>
                     <Grid item xs={12} lg={6.5}>
