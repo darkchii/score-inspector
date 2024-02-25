@@ -12,23 +12,26 @@ export function getPerformanceLive(data, debug = false) {
     data.accuracy = getAccuracy(data);
 
     data.modded_sr = score.beatmap.modded_sr;
-    data.lengthBonus = 0.95 + 0.4 * Math.min(1, data.totalhits / 2000.0) + (data.totalhits > 2000 ? (Math.log10(data.totalhits / 2000.0) * 0.5) : 0.0);
-    data.comboScalingFactor = getComboScalingFactor(data.combo, data.score.beatmap.maxcombo);
-    data.effectiveMissCount = getEffectiveMissCount(data);
-    data.aim = getAimValue(data);
-    data.speed = getSpeedValue(data);
-    data.acc = getAccuracyValue(data);
-    data.flashlight = getFlashlightValue(data);
-    data.total = getTotalValue(data);
-
+    if(data.modded_sr){
+        data.lengthBonus = 0.95 + 0.4 * Math.min(1, data.totalhits / 2000.0) + (data.totalhits > 2000 ? (Math.log10(data.totalhits / 2000.0) * 0.5) : 0.0);
+        data.comboScalingFactor = getComboScalingFactor(data.combo, data.score.beatmap.maxcombo);
+        data.effectiveMissCount = getEffectiveMissCount(data);
+        data.aim = getAimValue(data);
+        data.speed = getSpeedValue(data);
+        data.acc = getAccuracyValue(data);
+        data.flashlight = getFlashlightValue(data);
+        data.total = getTotalValue(data);
+    
+    }
+    
     data.score = undefined;
 
     const output = {
-        aim: data.aim,
-        speed: data.speed,
-        acc: data.acc,
-        flashlight: data.flashlight,
-        total: data.total,
+        aim: data.aim ?? 0,
+        speed: data.speed ?? 0,
+        acc: data.acc ?? 0,
+        flashlight: data.flashlight ?? 0,
+        total: data.total ?? 0,
         version: 'live',
         model: sr_model,
         accuracy: data.accuracy,

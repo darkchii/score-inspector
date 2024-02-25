@@ -156,6 +156,11 @@ function Root() {
                         </Modal>
                     </> : <></>
             }
+            <Grid sx={{ pb: 1 }}>
+                <Alert severity="warning">
+                    Lazer scores are currently <b>not</b> supported. Inspector 2.0 will no longer be updated. A rewrite (3.0) is in progress, and will be completed once osu!alternative supports lazer as well.
+                </Alert>
+            </Grid>
             <Grid container spacing={2} sx={{ pb: 1 }}>
                 <Grid item xs={12} md={12/5}>
                     <StatCard stats={<>

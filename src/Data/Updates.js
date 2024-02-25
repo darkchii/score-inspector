@@ -12,6 +12,14 @@ const PLATFORMTYPES = {
 
 const updates = [
     {
+        version: '2.7.3',
+        date: '2024-02-25',
+        changes: [
+            [PLATFORMTYPES.API, CHANGETYPES.FIX, 'Temporarily fixed top scores page to ignore modded star rating if not in database'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.MISC, 'Added lazer disclaimer alert on index page'],
+        ]
+    },
+    {
         version: '2.7.2',
         date: '2024-01-15',
         changes: [

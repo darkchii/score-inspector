@@ -147,7 +147,7 @@ function Top(props) {
                                                                                 {(scores[i].significantStat === 'pp' && !score.is_fc && score.recalc['fc']) ? `(${Math.round(score.recalc['fc']?.total).toLocaleString('en-US')}pp if FC)` : ''} {Math.round(score[scores[i].significantStat]).toLocaleString('en-US')}{scores[i].significantStat === 'pp' ? `pp` : ''}
                                                                             </Typography>
                                                                             <Typography sx={{ textAlign: 'right' }} variant='body1'>
-                                                                                {score.modString} {score.is_fc ? 'FC' : ''} {Math.round(score.accuracy * 100) / 100}% {Math.round(score.beatmap.modded_sr.star_rating * 10) / 10}*
+                                                                                {score.modString} {score.is_fc ? 'FC' : ''} {Math.round(score.accuracy * 100) / 100}% {Math.round((score.beatmap.modded_sr?.star_rating ?? 0) * 10) / 10}*
                                                                             </Typography>
                                                                         </Box>
                                                                     </Box>
