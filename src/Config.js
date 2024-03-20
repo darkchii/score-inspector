@@ -1,0 +1,20 @@
+const config = {
+    "BASE_URL": "https://score.kirino.sh",
+    "BASE_URL_DEV": "http://localhost:3000",
+    "API": "https://api.kirino.sh/inspector/",
+    "API_DEV": "http://localhost:3863/",
+    "SCORE_API": "https://score.respektive.pw/u/",
+    "DONATE_URL": "https://www.paypal.com/donate/?hosted_button_id=JFRBMAG2BK4GG",
+    "OSU_CLIENT_ID": 19537,
+    "OSU_CLIENT_ID_DEV": 19559,
+    "USE_DEV_API": true,
+    "NOTIFICATIONS": {
+        "position": "top-right",
+        "theme": "dark"
+    },
+    "DISCORD_SERVER_ID": "792807563980308481",
+    "GOOGLE_ANALYTICS_ID": "G-N10X700RQM",
+    "APP_NAME": "osu! scores inspector"
+}
+
+export default config;
