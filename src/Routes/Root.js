@@ -158,7 +158,7 @@ function Root() {
             }
             <Grid sx={{ pb: 1 }}>
                 <Alert severity="warning">
-                    Lazer scores are currently <b>not</b> supported. Inspector 2.0 will no longer be updated. A rewrite (3.0) is in progress, and will be completed once osu!alternative supports lazer as well.
+                    Lazer scores are currently <b>not</b> supported. Support will be added once osu!alternative is updated.
                 </Alert>
             </Grid>
             <Grid container spacing={2} sx={{ pb: 1 }}>
@@ -333,16 +333,6 @@ function Root() {
                                     allowtransparency="true"
                                     frameborder="0"
                                     sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
-                            </Box>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Box>
-                                <a href="https://www.buymeacoffee.com/kirino" target='_blank' rel='noreferrer'>
-                                    <img
-                                        alt='Buy me a billion score'
-                                        width='100%'
-                                        src={`https://img.buymeacoffee.com/button-api/?text=Buy me a billion score&emoji=🍕&slug=kirino&button_colour=${theme.palette.background.paper.substring(1)}&font_colour=ffffff&font_family=Lato&outline_colour=000000&coffee_colour=FFDD00`} />
-                                </a>
                             </Box>
                         </Grid>
                         <Grid item xs={12}>

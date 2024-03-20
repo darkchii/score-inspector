@@ -407,7 +407,8 @@ export function isScoreRealistic(score) {
 }
 
 export function getBonusPerformance(clears) {
-    return 416.6667 * (1 - Math.pow(0.9994, clears));
+    // return 416.6667 * (1 - Math.pow(0.9994, clears));
+    return 416.6667 * (1 - Math.pow(0.995, Math.min(1000, clears)));
 }
 
 export async function getBeatmapCount(loved = true) {
