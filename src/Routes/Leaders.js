@@ -1,4 +1,4 @@
-import { Alert, AlertTitle, Box, Button, CircularProgress, FormControl, InputLabel, Link, MenuItem, Pagination, Paper, Select, Stack, Tooltip, Typography } from '@mui/material';
+import { Alert, AlertTitle, Box, Button, ButtonGroup, CircularProgress, FormControl, InputLabel, Link, MenuItem, Pagination, Paper, Select, Stack, Tooltip, Typography } from '@mui/material';
 import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
@@ -17,7 +17,7 @@ import { countries } from 'countries-list';
 momentDurationFormatSetup(moment);
 
 const GROUPED_STATS = {
-    'pp': [
+    'PP': [
         {
             name: 'pp', title: 'PP', customFormat: (value) => (Math.round(value)).toLocaleString('en-US') + 'pp',
             description: 'Weighted pp of all scores. This is the main ranking metric.',
@@ -44,7 +44,7 @@ const GROUPED_STATS = {
             group: 'pp'
         },
     ],
-    'score': [
+    'Score': [
         {
             name: 'ranked_score', title: 'Ranked Score',
             description: 'Total ranked score of all scores.',
@@ -81,7 +81,7 @@ const GROUPED_STATS = {
             group: 'score'
         }
     ],
-    'grade': [
+    'Grades': [
         {
             name: 'ss', title: 'Total SS',
             group: 'grade'
@@ -107,7 +107,7 @@ const GROUPED_STATS = {
             group: 'grade'
         },
     ],
-    'accuracy': [
+    'Accuracy': [
         {
             name: 'acc', title: 'Profile Accuracy', customFormat: (value) => `${(Math.round(value * 100) / 100)}%`,
             description: 'Weighted accuracy',
@@ -119,7 +119,7 @@ const GROUPED_STATS = {
             group: 'accuracy'
         },
     ],
-    'generic': [
+    'Generic': [
         {
             name: 'total_hits', title: 'Hit Count',
             description: 'Total number of hits that the user has achieved.',
@@ -136,7 +136,7 @@ const GROUPED_STATS = {
             group: 'generic',
             //convert YYYY-MM-DD to January 2021 for example (use moment)
             extraFormatter: (value) => {
-                if(value === undefined || value === null) return '';
+                if (value === undefined || value === null) return '';
                 let _date = moment(new Date(`${value[0]} UTC`)).utc().format('MMMM YYYY');
                 return `${_date}`;
             }
@@ -162,7 +162,7 @@ const GROUPED_STATS = {
             group: 'generic',
             //convert YYYY-MM-DD to January 2021 for example (use moment)
             extraFormatter: (value) => {
-                if(value === undefined || value === null) return '';
+                if (value === undefined || value === null) return '';
                 let _date = moment(new Date(`${value[0]} UTC`)).utc().format('MMMM YYYY');
                 return `${_date}`;
             }
@@ -193,7 +193,7 @@ const GROUPED_STATS = {
             group: 'generic'
         }
     ],
-    'completion': [
+    'Completion': [
         {
             name: 'clears', title: 'Clears',
             description: 'Amount of clears the user has. This includes B, C and D ranks',
@@ -230,7 +230,7 @@ const GROUPED_STATS = {
             group: 'generic'
         },
     ],
-    'beatmaps': [
+    'Beatmaps': [
         {
             name: 'most_cleared', title: 'Most Cleared',
             description: 'List of most cleared beatmaps',
@@ -265,6 +265,12 @@ const GROUPED_STATS = {
             name: 'set_with_most_maps', title: 'Most difficulties',
             description: 'Sets with the most difficulties'
         }
+    ],
+    'Experimental': [
+        {
+            name: 'dedication_wither', title: 'Dedication Points',
+            description: 'A custom metric catered towards alternative farm players. Idea by WitherFlower, modified by boob enjoyer',
+        },
     ]
 }
 
@@ -361,16 +367,22 @@ function Leaders() {
                 {
                     Object.keys(GROUPED_STATS).map((group) => {
                         return (
-                            <Paper elevation={3} sx={{ m: 0.2, p: 0.4, display: 'inline-block' }}>
-                                {
-                                    GROUPED_STATS[group].map((stat) => {
-                                        return (
-                                            <Tooltip title={stat.description ?? ''}>
-                                                <Button sx={{ m: 0.1 }} disabled={isLoading} size='small' variant={stat.name === statistic.name ? 'contained' : 'outlined'} onClick={() => navigate(`stat/${stat.name}/page/1/country/${country ?? 'world'}`)}>{stat.title}</Button>
-                                            </Tooltip>
-                                        );
-                                    })
-                                }
+                            <Paper elevation={3} sx={{ m: 0.2, p: 0.6, display: 'inline-block' }}>
+                                <Typography variant='body2' sx={{
+                                    fontSize: '0.8em',
+                                    color: grey[500],
+                                }}>{group}</Typography>
+                                <ButtonGroup sx={{ display: 'flex', flexWrap: 'wrap' }} size='small' variant='outlined'>
+                                    {
+                                        GROUPED_STATS[group].map((stat) => {
+                                            return (
+                                                <Tooltip title={stat.description ?? ''}>
+                                                    <Button sx={{ m: 0.1 }} disabled={isLoading} size='small' variant={stat.name === statistic.name ? 'contained' : 'outlined'} onClick={() => navigate(`stat/${stat.name}/page/1/country/${country ?? 'world'}`)}>{stat.title}</Button>
+                                                </Tooltip>
+                                            );
+                                        })
+                                    }
+                                </ButtonGroup>
                             </Paper>
                         )
                     })
