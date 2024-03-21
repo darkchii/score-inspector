@@ -279,7 +279,7 @@ function Leaders() {
     const params = useParams();
 
     const [isLoading, setIsLoading] = useState(false);
-    const [statistic, setStatistic] = useState(params.stat ? Object.values(GROUPED_STATS).flat(1).find((stat) => stat.name === params.stat) : GROUPED_STATS['pp'][0]);
+    const [statistic, setStatistic] = useState(params.stat ? Object.values(GROUPED_STATS).flat(1).find((stat) => stat.name === params.stat) : GROUPED_STATS['PP'][0]);
     const [page, setPage] = useState(params.page ? parseInt(params.page) : 1);
     const [totalPages, setTotalPages] = useState(0);
     const [country, setCountry] = useState(params.country && countries[params.country.toUpperCase()] ? params.country.toLowerCase() : 'world');
@@ -301,9 +301,9 @@ function Leaders() {
         if (params.stat) {
             const _stat = Object.values(GROUPED_STATS).flat(1).find((stat) => stat.name === params.stat);
             if (_stat) setStatistic(_stat);
-            else setStatistic(GROUPED_STATS['pp'][0]);
+            else setStatistic(GROUPED_STATS['PP'][0]);
         } else {
-            setStatistic(GROUPED_STATS['pp'][0]);
+            setStatistic(GROUPED_STATS['PP'][0]);
         }
     }, [params.stat]);
 

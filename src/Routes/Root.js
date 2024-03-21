@@ -19,6 +19,7 @@ import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
 import BadgeIcon from '@mui/icons-material/Badge';
 import TodayTopPlayers from '../Components/TodayTopPlayers.js';
 import BetterAlert from '../Components/UI/BetterAlert.js';
+import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js';
 
 momentDurationFormatSetup(moment);
 
@@ -162,21 +163,21 @@ function Root() {
                 </Alert>
             </Grid>
             <Grid container spacing={2} sx={{ pb: 1 }}>
-                <Grid item xs={12} md={12/5}>
+                <Grid item xs={12} md={12 / 5}>
                     <StatCard stats={<>
                         <Button variant='contained' component='a' href='https://discord.gg/VZWRZZXcW4' target='_blank'>Join</Button>
                     </>} title={`Join the osu!alt discord`} color={indigo} icon={<PersonIcon />} />
                 </Grid>
-                <Grid item xs={12} md={12/5}>
+                <Grid item xs={12} md={12 / 5}>
                     <StatCard stats={serverInfo?.database?.alt?.total_users ? (parseInt(serverInfo?.database?.alt?.total_users ?? 0)).toLocaleString('en-US') : null} title={`Players (${(parseInt(serverInfo?.database?.alt?.tracked_users ?? 0)).toLocaleString('en-US')} live)`} color={blue} icon={<PersonIcon />} />
                 </Grid>
-                <Grid item xs={12} md={12/5}>
+                <Grid item xs={12} md={12 / 5}>
                     <StatCard stats={serverInfo?.database?.alt?.total_scores ? formatNumberAsSize(parseInt(serverInfo?.database?.alt?.total_scores ?? 0)) : null} title={'Scores'} color={red} icon={<WorkspacePremiumIcon />} />
                 </Grid>
-                <Grid item xs={12} md={12/5}>
+                <Grid item xs={12} md={12 / 5}>
                     <StatCard stats={serverInfo?.database?.inspector?.total_visits ? (parseInt(serverInfo?.database?.inspector?.total_visits ?? 0)).toLocaleString('en-US') : null} title={'Profile visits'} color={green} icon={<BadgeIcon />} />
                 </Grid>
-                <Grid item xs={12} md={12/5}>
+                <Grid item xs={12} md={12 / 5}>
                     <StatCard stats={serverInfo?.database?.inspector?.unique_visits ? (parseInt(serverInfo?.database?.inspector?.unique_visits ?? 0)).toLocaleString('en-US') : null} title={'Unique users visited'} color={blueGrey} icon={<BadgeIcon />} />
                 </Grid>
             </Grid>
@@ -320,6 +321,21 @@ function Root() {
                                             }) : <Loader />
                                         }
                                     </Stack>
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Card elevation={2}>
+                                <CardContent>
+                                    {/* paypal dono link */}
+                                    <Button
+                                        component='a'
+                                        href={config.PAYPAL_URL}
+                                        target='_blank'
+                                        variant='contained'
+                                        fullWidth>Donate</Button>
+                                    <Typography variant='body2' align='center'>Donations help keep the site running</Typography>
+                                    <Typography variant='body2' align='center'>Add your username to the notes to get a Donator role on the site.</Typography>
                                 </CardContent>
                             </Card>
                         </Grid>
