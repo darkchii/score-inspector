@@ -169,10 +169,10 @@ function Root() {
                     </>} title={`Join the osu!alt discord`} color={indigo} icon={<PersonIcon />} />
                 </Grid>
                 <Grid item xs={12} md={12 / 5}>
-                    <StatCard stats={serverInfo?.database?.alt?.total_users ? (parseInt(serverInfo?.database?.alt?.total_users ?? 0)).toLocaleString('en-US') : null} title={`Players (${(parseInt(serverInfo?.database?.alt?.tracked_users ?? 0)).toLocaleString('en-US')} live)`} color={blue} icon={<PersonIcon />} />
+                    <StatCard stats={serverInfo?.database?.alt?.user_count ? (parseInt(serverInfo?.database?.alt?.user_count ?? 0)).toLocaleString('en-US') : null} title={`Players (${(parseInt(serverInfo?.database?.alt?.priority_user_count ?? 0)).toLocaleString('en-US')} live)`} color={blue} icon={<PersonIcon />} />
                 </Grid>
                 <Grid item xs={12} md={12 / 5}>
-                    <StatCard stats={serverInfo?.database?.alt?.total_scores ? formatNumberAsSize(parseInt(serverInfo?.database?.alt?.total_scores ?? 0)) : null} title={'Scores'} color={red} icon={<WorkspacePremiumIcon />} />
+                    <StatCard stats={serverInfo?.database?.alt?.score_count ? formatNumberAsSize(parseInt(serverInfo?.database?.alt?.score_count ?? 0)) : null} title={'Scores'} color={red} icon={<WorkspacePremiumIcon />} />
                 </Grid>
                 <Grid item xs={12} md={12 / 5}>
                     <StatCard stats={serverInfo?.database?.inspector?.total_visits ? (parseInt(serverInfo?.database?.inspector?.total_visits ?? 0)).toLocaleString('en-US') : null} title={'Profile visits'} color={green} icon={<BadgeIcon />} />
