@@ -41,6 +41,9 @@
     "react-virtualized": "^9.22.5",
     "react-virtuoso": "^4.7.8"
   },
+  "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
+  },
   "scripts": {
     "start": "set PORT=3006 && react-scripts start",
     "build": "react-scripts build",

@@ -11,7 +11,6 @@ import Update from './Routes/Update';
 import { Route, Routes } from 'react-router-dom/dist';
 import User from './Routes/User';
 import Leaders from './Routes/Leaders';
-import Snowfall from 'react-snowfall';
 import { getSettings, loadSettings } from './Helpers/Settings';
 import Top from './Routes/Top';
 import Stats from './Routes/Stats';
@@ -164,14 +163,6 @@ function App() {
           </Box>
         </Box>
       </ThemeProvider>
-      {
-        getSettings().snowFall ?
-          <Snowfall style={{
-            position: 'fixed',
-            width: '100vw',
-            height: '100vh',
-          }} /> : <></>
-      }
     </>
   );
 }
