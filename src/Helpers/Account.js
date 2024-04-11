@@ -222,6 +222,22 @@ export function GetLoginIDUnsafe() {
     return null;
 }
 
+export async function GetLoginToken() {
+    if (await IsUserLoggedIn()) {
+        return localStorage.getItem('auth_token');
+    }
+
+    return null;
+}
+
+export function GetLoginTokenUnsafe() {
+    if(IsUserLoggedInUnsafe()){
+        return localStorage.getItem('auth_token');
+    }
+
+    return null;
+}
+
 export async function UpdateVisitor(target_id) {
     let res = null;
     try {

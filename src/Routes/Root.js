@@ -1,13 +1,13 @@
-import { Alert, Avatar, Box, Button, Card, CardContent, CircularProgress, Divider, Grid, Link, Modal, Paper, Skeleton, Stack, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
+import { Alert, Avatar, Box, Button, Card, CardContent, CircularProgress, Divider, Grid, Link, Modal, Paper, Skeleton, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from '@mui/material';
 import { Link as RouterLink, useSearchParams } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
-import { formatBytes, formatNumberAsSize, GetAPI, MODAL_STYLE, parseReadableStreamToJson, showNotification } from '../Helpers/Misc';
+import { formatNumberAsSize, GetAPI, MODAL_STYLE, parseReadableStreamToJson, showNotification } from '../Helpers/Misc';
 import { GetFormattedName, GetLoginIDUnsafe, GetTopVisited, LoginUser } from '../Helpers/Account';
 import axios from 'axios';
 import moment from 'moment';
 import momentDurationFormatSetup from "moment-duration-format";
 import ScoreSubmissions from '../Components/ScoreSubmissions';
-import { amber, blue, blueGrey, green, grey, indigo, orange, red } from '@mui/material/colors';
+import { blue, blueGrey, green, grey, indigo, red } from '@mui/material/colors';
 import GlowBar from '../Components/UI/GlowBar';
 import Loader from '../Components/UI/Loader';
 import config from "../config.json";
@@ -19,16 +19,9 @@ import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
 import BadgeIcon from '@mui/icons-material/Badge';
 import TodayTopPlayers from '../Components/TodayTopPlayers.js';
 import BetterAlert from '../Components/UI/BetterAlert.js';
-import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js';
+import MapPoll from '../Components/MapPoll.js';
 
 momentDurationFormatSetup(moment);
-
-const IMPORTANT_NOTES = [
-    'Only plays with highest score on a beatmap are counted, not highest PP',
-    'Only scores that osu!alt has are available, join the Discord',
-    'You can\'t add missing users, they have to add themselves',
-    'For feature requests etc. join the Discord',
-];
 
 const GUIDE_NEW_USERS = [
     'Join the osu!alt discord',
@@ -38,7 +31,6 @@ const GUIDE_NEW_USERS = [
 ];
 
 function Root() {
-    const theme = useTheme();
     const [isModalOpen, setIsModalOpen] = useState(true);
     const [osuAuthCode, setOsuAuthCode] = useState(null);
     const [searchParams] = useSearchParams();
@@ -189,20 +181,6 @@ function Root() {
                                 <CardContent>
                                     <Grid container spacing={1}>
                                         <Grid item xs={12} md={6}>
-                                            <Typography variant='title'>Info</Typography>
-                                            <Stack spacing={0.5}>
-                                                {
-                                                    IMPORTANT_NOTES.map((note, index) => {
-                                                        return (
-                                                            <BetterAlert severity='primary'>
-                                                                <Typography>{note}</Typography>
-                                                            </BetterAlert>
-                                                        );
-                                                    })
-                                                }
-                                            </Stack>
-                                        </Grid>
-                                        <Grid item xs={12} md={6}>
                                             <Typography variant='title'>For new users</Typography>
                                             <Stack spacing={0.5}>
                                                 {
@@ -215,6 +193,12 @@ function Root() {
                                                     })
                                                 }
                                             </Stack>
+                                        </Grid>
+                                        <Grid item xs={12} md={6}>
+                                            <Typography variant='title'>Map Poll</Typography>
+                                            <Box sx={{ width: '100%' }}>
+                                                <MapPoll />
+                                            </Box>
                                         </Grid>
                                     </Grid>
                                 </CardContent>
