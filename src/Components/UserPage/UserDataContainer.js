@@ -12,7 +12,6 @@ import SectionGrades from "./SectionGrades";
 import SectionGraphs from "./SectionGraphs";
 import SectionScores from "./SectionScores";
 import SectionDaily from "./SectionDaily";
-// import SectionComments from "./SectionComments";
 import styled from "@emotion/styled";
 import SectionCompletion from "./SectionCompletion";
 import SectionPacks from "./SectionPacks";
@@ -67,9 +66,6 @@ function UserDataContainer(props) {
                 </TabPanel>
                 <TabPanel sx={{ p: 0 }} value={_IDs['scores']}>
                     <SectionScores user={props.user} />
-                </TabPanel>
-                <TabPanel sx={{ p: 0 }} value={_IDs['comments']}>
-                    {/* <SectionComments user={props.user} /> */}
                 </TabPanel>
                 <TabPanel sx={{ p: 0 }} value={_IDs['completion']}>
                     <SectionCompletion user={props.user} />
