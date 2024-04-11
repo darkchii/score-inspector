@@ -1,4 +1,4 @@
-import { Alert, Avatar, Box, Button, Card, CardContent, CircularProgress, Divider, Grid, Link, Modal, Paper, Skeleton, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from '@mui/material';
+import { Alert, Avatar, Box, Button, Card, CardContent, CardHeader, CircularProgress, Divider, Grid, Link, Modal, Paper, Skeleton, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from '@mui/material';
 import { Link as RouterLink, useSearchParams } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import { formatNumberAsSize, GetAPI, MODAL_STYLE, parseReadableStreamToJson, showNotification } from '../Helpers/Misc';
@@ -375,7 +375,7 @@ function StatCard(props) {
             backgroundColor: props.color[props.brightness ?? 600],
             overflow: 'hidden',
             position: 'relative',
-            height: props.height ?? 130
+            height: props.height ?? 100
         }}>
             {
                 props?.stats === null || props?.stats === undefined ?
@@ -391,7 +391,7 @@ function StatCard(props) {
                             opacity: 0.5
                         }} /> : <></>
             }
-            <Box sx={{ p: 1.5, zIndex: 300 }}>
+            <Box sx={{ p: 1, zIndex: 300 }}>
                 <Box sx={{
                     position: 'absolute',
                     width: '100%',
@@ -435,18 +435,9 @@ function StatCard(props) {
                         </Typography>
                     </Grid>
                     <Grid item>
-                        <Grid container direction="row" alignItems="center" spacing={1}>
-                            <Grid item>
-                                <Avatar variant="rounded" sx={{ color: props.color[props.brightness ?? 300], backgroundColor: 'white' }}>
-                                    {props.icon}
-                                </Avatar>
-                            </Grid>
-                            <Grid item>
-                                <Typography sx={{ fontSize: props.statSize ?? '2.125rem', fontWeight: 500, mt: 1.75, mb: 0.75 }}>
-                                    {props?.stats ?? '-'}
-                                </Typography>
-                            </Grid>
-                        </Grid>
+                        <Typography sx={{ fontSize: props.statSize ?? '2.3rem', fontWeight: 500, mt: 0.5, mb: 0.75 }}>
+                            {props?.stats ?? '-'}
+                        </Typography>
                     </Grid>
                 </Grid>
             </Box>
