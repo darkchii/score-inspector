@@ -44,7 +44,8 @@
     "react-snowfall": "^1.2.1",
     "react-sticky-box": "^2.0.5",
     "react-toastify": "^9.1.3",
-    "react-virtualized": "^9.22.5"
+    "react-virtualized": "^9.22.5",
+    "react-virtuoso": "^4.7.8"
   },
   "scripts": {
     "start": "set PORT=3006 && react-scripts start",

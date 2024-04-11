@@ -1,12 +1,33 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useState } from "react";
+import { Fragment, forwardRef, useEffect, useState } from "react";
 import Loader from "../Components/UI/Loader";
-import { Avatar, Box, Chip, Divider, Grid, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography, useTheme } from "@mui/material";
+import { Avatar, Box, Button, ButtonGroup, Chip, Collapse, Divider, Grid, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, useTheme } from "@mui/material";
 import config from "../config.json";
 import { Helmet } from "react-helmet";
 import { GetAPI } from "../Helpers/Misc.js";
 import { GetFormattedName } from "../Helpers/Account.js";
 import moment from "moment";
+import { TableVirtuoso } from "react-virtuoso";
+
+const value_format = {
+    score: (value) => parseInt(value).toLocaleString('en-US'),
+    ss: (value) => parseInt(value).toLocaleString('en-US'),
+    pp: (value) => `${parseInt(value).toLocaleString('en-US')}pp`,
+    clears: (value) => parseInt(value).toLocaleString('en-US'),
+    fcclears: (value) => parseInt(value).toLocaleString('en-US'),
+}
+
+const VirtuosoTableComponents = {
+    Scroller: forwardRef((props, ref) => (
+        <TableContainer component={Paper} {...props} ref={ref} />
+    )),
+    Table: (props) => (
+        <Table {...props} sx={{ borderCollapse: 'separate', tableLayout: 'fixed' }} />
+    ),
+    TableHead,
+    TableRow: ({ item: _item, ...props }) => <TableRow {...props} />,
+    TableBody: forwardRef((props, ref) => <TableBody {...props} ref={ref} />),
+};
 
 function LeadersMonthly(props) {
     const theme = useTheme();
@@ -15,107 +36,119 @@ function LeadersMonthly(props) {
     const [data, setData] = useState(null);
     const [dataOvertakes, setDataOvertakes] = useState(null);
     const [dataMostAppearances, setDataMostAppearances] = useState(null);
+    const [dataType, setDataType] = useState('score');
 
-    useEffect(() => {
+    const fetchData = async () => {
         setIsLoading(true);
-        (async () => {
-            try {
-                const res = await fetch(`${GetAPI()}scores/monthly_score_farmers`);
-                const json = await res.json();
-                // console.log(json);
-                //if array, then we have data
-                if (Array.isArray(json)) {
-                    //change structure
-                    //get all YYYY only
-                    let _data = [];
-                    json.forEach((item) => {
-                        if (item.period.length === 4) {
-                            _data.push({
-                                year: item.period,
-                                top: item,
-                                months: []
+        setData(null);
+        setDataOvertakes(null);
+        setDataMostAppearances(null);
+        try {
+            const res = await fetch(`${GetAPI()}scores/monthly_farmers/${dataType}`);
+            const json = await res.json();
+            //if array, then we have data
+            if (Array.isArray(json)) {
+                //change structure
+                //get all YYYY only
+                let _data = [];
+                json.forEach((item) => {
+                    if (item.period.length === 4) {
+                        _data.push({
+                            year: item.period,
+                            top: item,
+                            months: []
+                        });
+                    }
+                });
+
+                //get all YYYY-MM
+                json.forEach((item) => {
+                    if (item.period.length === 7) {
+                        let year = item.period.split('-')[0];
+                        let month = item.period.split('-')[1];
+
+                        //find the year
+                        let yearIndex = _data.findIndex((item) => item.year === year);
+                        if (yearIndex !== -1) {
+                            _data[yearIndex].months.push({
+                                month: month,
+                                top: item
                             });
                         }
-                    });
+                    }
+                });
 
-                    //get all YYYY-MM
-                    json.forEach((item) => {
-                        if (item.period.length === 7) {
-                            let year = item.period.split('-')[0];
-                            let month = item.period.split('-')[1];
+                const _dataMostAppearances = [];
 
-                            //find the year
-                            let yearIndex = _data.findIndex((item) => item.year === year);
-                            if (yearIndex !== -1) {
-                                _data[yearIndex].months.push({
-                                    month: month,
-                                    top: item
-                                });
-                            }
+                //count months for each user
+                _data.forEach((item) => {
+                    item.months.forEach((month) => {
+                        let userIndex = _dataMostAppearances.findIndex((item) => item.user_id === month.top.user_id);
+                        if (userIndex === -1) {
+                            _dataMostAppearances.push({
+                                user_id: month.top.user_id,
+                                user: month.top.user,
+                                count: 1
+                            });
+                        } else {
+                            _dataMostAppearances[userIndex].count++;
                         }
                     });
+                });
 
-                    const _dataMostAppearances = [];
+                //sort by count
+                _dataMostAppearances.sort((a, b) => {
+                    return b.count - a.count;
+                });
 
-                    //count months for each user
-                    _data.forEach((item) => {
-                        item.months.forEach((month) => {
-                            let userIndex = _dataMostAppearances.findIndex((item) => item.user_id === month.top.user_id);
-                            if (userIndex === -1) {
-                                _dataMostAppearances.push({
-                                    user_id: month.top.user_id,
-                                    user: month.top.user,
-                                    count: 1
-                                });
-                            } else {
-                                _dataMostAppearances[userIndex].count++;
-                            }
-                        });
-                    });
+                console.log(_data);
 
-                    //sort by count
-                    _dataMostAppearances.sort((a, b) => {
-                        return b.count - a.count;
-                    });
-
-                    setDataMostAppearances(_dataMostAppearances);
-                    setData(_data);
-                } else {
-                    console.error(json);
-                    setData([]);
-                }
-
-                const overtakes_res = await fetch(`${GetAPI()}scores/monthly_score_farmers/log`);
-                const overtakes_json = await overtakes_res.json();
-
-                if (Array.isArray(overtakes_json)) {
-                    //convert all "time" (utc) to moment objects (local time)
-                    overtakes_json.forEach((item) => {
-                        item.time_moment = moment(item.time).local();
-                        item.old_total_score = parseInt(item.old_total_score);
-                        item.new_total_score = parseInt(item.new_total_score);
-                    });
-
-                    //sort by time (descending)
-                    overtakes_json.sort((a, b) => {
-                        return b.time_moment - a.time_moment;
-                    });
-
-                    setDataOvertakes(overtakes_json);
-                } else {
-                    console.error(overtakes_json);
-                    setDataOvertakes([]);
-                }
-
-
-                console.log(overtakes_json);
-            } catch (err) {
-                console.error(err);
+                setDataMostAppearances(_dataMostAppearances);
+                setData(_data);
+            } else {
+                console.error(json);
                 setData([]);
             }
-            setIsLoading(false);
-        })();
+
+            const overtakes_res = await fetch(`${GetAPI()}scores/monthly_farmers/log/${dataType}`);
+            const overtakes_json = await overtakes_res.json();
+
+            if (Array.isArray(overtakes_json)) {
+                //convert all "time" (utc) to moment objects (local time)
+                overtakes_json.forEach((item) => {
+                    item.time_moment = moment(item.time).local();
+                    item.old_total_score = parseInt(item.old_total_score);
+                    item.new_total_score = parseInt(item.new_total_score);
+                });
+
+                //sort by time (descending)
+                overtakes_json.sort((a, b) => {
+                    return b.time_moment - a.time_moment;
+                });
+
+                setDataOvertakes(overtakes_json);
+            } else {
+                console.error(overtakes_json);
+                setDataOvertakes([]);
+            }
+
+
+        } catch (err) {
+            console.error(err);
+            setData([]);
+        }
+        setIsLoading(false);
+    }
+
+    useEffect(() => {
+        setDataType('score');
     }, [])
+
+    useEffect(() => {
+        (async () => {
+            await fetchData();
+        })()
+    }, [dataType])
 
     return (
         <>
@@ -127,6 +160,13 @@ function LeadersMonthly(props) {
                     <Loader />
                 ) : (
                     <>
+                        <ButtonGroup sx={{ pb: 1 }}>
+                            <Button disabled={dataType === 'score'} variant={dataType === 'score' ? 'contained' : 'outlined'} onClick={() => setDataType('score')}>Total Score</Button>
+                            <Button disabled={dataType === 'ss'} variant={dataType === 'ss' ? 'contained' : 'outlined'} onClick={() => setDataType('ss')}>Total SS</Button>
+                            <Button disabled={dataType === 'pp'} variant={dataType === 'pp' ? 'contained' : 'outlined'} onClick={() => setDataType('pp')}>Total PP</Button>
+                            <Button disabled={dataType === 'clears'} variant={dataType === 'clears' ? 'contained' : 'outlined'} onClick={() => setDataType('clears')}>Clears</Button>
+                            <Button disabled={dataType === 'fcclears'} variant={dataType === 'fcclears' ? 'contained' : 'outlined'} onClick={() => setDataType('fcclears')}>Full Combos</Button>
+                        </ButtonGroup>
                         {
                             data.length > 0 ? (
                                 <>
@@ -141,7 +181,7 @@ function LeadersMonthly(props) {
                                                         }}>
                                                             <Typography variant="body" component="div" sx={{ flex: 1 }}>{GetFormattedName(item.top.user.inspector_user)}</Typography>
                                                             {/* show behind above, but all the way right */}
-                                                            <Typography variant="body" component="div" sx={{ flex: 1 }}>{parseInt(item.top.total_score).toLocaleString('en-US')}</Typography>
+                                                            <Typography variant="body" component="div" sx={{ flex: 1 }}>{value_format[dataType](item.top.total_score)}</Typography>
                                                             <Typography variant="h6" component="div">{item.year}</Typography>
                                                         </Box>
                                                         <Divider sx={{ mt: 0.5, mb: 0.5 }} />
@@ -162,7 +202,7 @@ function LeadersMonthly(props) {
                                                                                 {GetFormattedName(month.top.user.inspector_user, {
                                                                                     icon_only: true,
                                                                                 })}
-                                                                                <Typography variant="subtitle2" component="div">{parseInt(month.top.total_score).toLocaleString('en-US')}</Typography>
+                                                                                <Typography variant="subtitle2" component="div">{value_format[dataType](month.top.total_score)}</Typography>
                                                                             </Grid>
                                                                         )
                                                                     })
@@ -205,7 +245,7 @@ function LeadersMonthly(props) {
                                     <Divider sx={{ mt: 1, mb: 1 }} />
                                     <Box>
                                         <Typography variant="h6" component="div">Overtakes</Typography>
-                                        <TableContainer>
+                                        {/* <TableContainer>
                                             <Table size="small">
                                                 <TableBody>
                                                     {
@@ -215,20 +255,39 @@ function LeadersMonthly(props) {
                                                             let _date = moment(new Date(`${year}-${month ?? '01'}-01 UTC`)).utc().format('MMMM');
                                                             return (
                                                                 <TableRow>
-                                                                    <TableCell style={{width: '0%'}}><Chip color="primary" size='small' label={`Score`} /></TableCell>
-                                                                    <TableCell style={{width: '0%'}}><Chip size='small' label={`${item.time_moment.fromNow()}`} /></TableCell>
-                                                                    <TableCell style={{width: '0%'}}>{GetFormattedName(item.new_user.inspector_user)}</TableCell>
-                                                                    <TableCell style={{width: '0%'}}>overtook</TableCell>
-                                                                    <TableCell style={{width: '0%'}}>{GetFormattedName(item.old_user.inspector_user)}</TableCell>
-                                                                    <TableCell style={{width: '15%'}}>on {month ? _date : ''} {year}</TableCell>
-                                                                    <TableCell style={{width: '90%'}}></TableCell>
+                                                                    <TableCell style={{ width: '0%' }}><Chip color="primary" size='small' label={`Score`} /></TableCell>
+                                                                    <TableCell style={{ width: '0%' }}><Chip size='small' label={`${item.time_moment.fromNow()}`} /></TableCell>
+                                                                    <TableCell style={{ width: '0%' }}>{GetFormattedName(item.new_user.inspector_user)}</TableCell>
+                                                                    <TableCell style={{ width: '0%' }}>overtook</TableCell>
+                                                                    <TableCell style={{ width: '0%' }}>{GetFormattedName(item.old_user.inspector_user)}</TableCell>
+                                                                    <TableCell style={{ width: '15%' }}>on {month ? _date : ''} {year}</TableCell>
+                                                                    <TableCell style={{ width: '90%' }}></TableCell>
                                                                 </TableRow>
                                                             )
                                                         })
                                                     }
                                                 </TableBody>
                                             </Table>
-                                        </TableContainer>
+                                        </TableContainer> */}
+                                        <Paper style={{ height: 400, width: '100%' }}>
+                                            <TableVirtuoso
+                                                data={dataOvertakes}
+                                                components={VirtuosoTableComponents}
+                                                itemContent={(index, item) => {
+                                                    return (
+                                                        <TableRow sx={{ height: '40px' }}>
+                                                            <TableCell width='5%'><Chip color="primary" size='small' label={`Score`} /></TableCell>
+                                                            <TableCell width='5%'><Chip size='small' label={`${item.time_moment.fromNow()}`} /></TableCell>
+                                                            <TableCell width='10%'>{GetFormattedName(item.new_user.inspector_user)}</TableCell>
+                                                            <TableCell width='5%'>overtook</TableCell>
+                                                            <TableCell width='10%'>{GetFormattedName(item.old_user.inspector_user)}</TableCell>
+                                                            <TableCell width='10%'>on {item.period}</TableCell>
+                                                            <TableCell width='45%'> </TableCell>
+                                                        </TableRow>
+                                                    )
+                                                }}
+                                            />
+                                        </Paper>
                                     </Box>
                                 </>
                             ) : (
