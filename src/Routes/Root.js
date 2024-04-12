@@ -375,7 +375,6 @@ function StatCard(props) {
             backgroundColor: props.color[props.brightness ?? 600],
             overflow: 'hidden',
             position: 'relative',
-            height: props.height ?? 100
         }}>
             {
                 props?.stats === null || props?.stats === undefined ?
@@ -435,7 +434,7 @@ function StatCard(props) {
                         </Typography>
                     </Grid>
                     <Grid item>
-                        <Typography sx={{ fontSize: props.statSize ?? '2.3rem', fontWeight: 500, mt: 0.5, mb: 0.75 }}>
+                        <Typography sx={{ fontSize: props.statSize ?? '2.3rem', fontWeight: 500, mt: 0.5 }}>
                             {props?.stats ?? '-'}
                         </Typography>
                     </Grid>
