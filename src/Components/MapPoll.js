@@ -25,7 +25,7 @@ function MapPoll() {
             }
             setActivePoll(current_poll);
             setUserData(user);
-            setCanVote(current_poll.scores.length === current_poll.maps.length && !current_poll.voted)
+            setCanVote(current_poll.scores?.length === current_poll.maps.length && !current_poll.voted)
         })();
     }, []);
 
