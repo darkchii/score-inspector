@@ -37,6 +37,12 @@ function LeadersScore(props) {
     //also check if sorting is valid
     const [sorting, setSorting] = useState(params.sort && VALID_SORTING.includes(params.sort) ? params.sort : 'rank');
     const [scoreGraphData, setScoreGraphData] = useState(null);
+    const [timelineEvents, setTimelineEvents] = useState([
+        {
+            date: '2023-11-02',
+            title: 'Proper daily tracking started',
+        }
+    ]);
 
     useEffect(() => {
         (async () => {
@@ -51,8 +57,21 @@ function LeadersScore(props) {
                 data?.data?.daily_total_ranked_score?.forEach((item) => {
                     // _data.labels.push(moment(item.date, "YYYY-MM-DD"));
                     // _data.values.push(item.total_ranked_score);
-                    _data.push([moment(item.date, "YYYY-MM-DD").toDate().getTime(), item.total_ranked_score]);
+                    if (!_data[0]) {
+                        _data[0] = [];
+                    }
+                    _data[0].push([moment(item.date, "YYYY-MM-DD").toDate().getTime(), item.total_ranked_score]);
                 });
+
+                //also get difference between each data point
+                for (let i = 1; i < _data[0].length; i++) {
+                    if (!_data[1]) {
+                        _data[1] = [];
+                    }
+                    const diff = _data[0][i][1] - _data[0][i - 1][1];
+                    _data[1].push([_data[0][i][0], diff]);
+                }
+                console.log(_data);
 
                 setScoreGraphData(_data);
             } catch (err) {
@@ -198,50 +217,100 @@ function LeadersScore(props) {
                             </Box>
                             {
                                 scoreGraphData !== null ? (
-                                    <Box sx={{
-                                        height: 300,
-                                        mr: 2
-                                    }}>
-                                        <ChartWrapper
-                                            options={{
-                                                chart: {
-                                                    id: "score-lb-rankedscore",
-                                                },
-                                                yaxis: {
-                                                    labels: {
-                                                        formatter: (value) => {
-                                                            return formatNumberAsSize(value);
-                                                        }
-                                                    }
-                                                },
-                                                xaxis: {
-                                                    type: 'datetime',
-                                                    labels: {
-                                                        datetimeUTC: false,
-                                                        format: 'MMM dd yyyy',
+                                    <>
+                                        <Box sx={{
+                                            height: 300,
+                                            mr: 2
+                                        }}>
+                                            <ChartWrapper
+                                                options={{
+                                                    chart: {
+                                                        id: "score-lb-rankedscore",
                                                     },
-                                                },
-                                                tooltip: {
-                                                    x: {
-                                                        format: 'MMM dd yyyy',
-                                                    },
-                                                    y: {
-                                                        formatter: (value) => {
-                                                            return value.toLocaleString('en-US');
+                                                    yaxis: {
+                                                        title: 'Total ranked score in top 10k',
+                                                        labels: {
+                                                            formatter: (value) => {
+                                                                return formatNumberAsSize(value);
+                                                            }
                                                         }
-                                                    }
-                                                },
-                                                dataLabels: {
-                                                    enabled: false
-                                                },
-                                                markers: {
-                                                    size: 2
-                                                }
-                                            }}
-                                            series={[{ name: 'Total ranked score in top 10k', data: scoreGraphData, color: theme.palette.primary.main }]}
-                                            type={'line'}
-                                        />
-                                    </Box>
+                                                    },
+                                                    xaxis: {
+                                                        type: 'datetime',
+                                                        labels: {
+                                                            datetimeUTC: false,
+                                                            format: 'MMM dd yyyy',
+                                                        },
+                                                    },
+                                                    tooltip: {
+                                                        x: {
+                                                            format: 'MMM dd yyyy',
+                                                        },
+                                                        y: {
+                                                            formatter: (value) => {
+                                                                return value.toLocaleString('en-US');
+                                                            }
+                                                        }
+                                                    },
+                                                    dataLabels: {
+                                                        enabled: false
+                                                    },
+                                                    markers: {
+                                                        size: 2
+                                                    },
+                                                }}
+                                                series={[
+                                                    { name: 'Total ranked score in top 10k', type: 'line', data: scoreGraphData[0], color: theme.palette.primary.main },
+                                                ]}
+                                            />
+                                        </Box>
+                                        <Box sx={{
+                                            height: 300,
+                                            mr: 2
+                                        }}>
+                                            <ChartWrapper
+                                                options={{
+                                                    chart: {
+                                                        id: "score-lb-rankedscore",
+                                                    },
+                                                    yaxis: {
+                                                        title: 'Gained ranked score',
+                                                        labels: {
+                                                            formatter: (value) => {
+                                                                return formatNumberAsSize(value);
+                                                            }
+                                                        }
+                                                    },
+                                                    xaxis: {
+                                                        type: 'datetime',
+                                                        labels: {
+                                                            datetimeUTC: false,
+                                                            format: 'MMM dd yyyy',
+                                                        },
+                                                    },
+                                                    tooltip: {
+                                                        x: {
+                                                            format: 'MMM dd yyyy',
+                                                        },
+                                                        y: {
+                                                            formatter: (value) => {
+                                                                return value.toLocaleString('en-US');
+                                                            }
+                                                        }
+                                                    },
+                                                    dataLabels: {
+                                                        enabled: false
+                                                    },
+                                                    markers: {
+                                                        size: 2
+                                                    },
+                                                }}
+                                                series={[
+                                                    { name: 'Gained ranked score', type: 'column', data: scoreGraphData[1], color: theme.palette.primary.secondary },
+                                                ]}
+                                            />
+                                        </Box>
+                                    </>
                                 ) : null
                             }
                         </Box>
