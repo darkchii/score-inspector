@@ -245,48 +245,32 @@ function LeadersMonthly(props) {
                                     <Divider sx={{ mt: 1, mb: 1 }} />
                                     <Box>
                                         <Typography variant="h6" component="div">Overtakes</Typography>
-                                        {/* <TableContainer>
-                                            <Table size="small">
-                                                <TableBody>
-                                                    {
-                                                        dataOvertakes.map((item) => {
-                                                            const year = item.period.split('-')[0] ?? item.period;
-                                                            const month = item.period.split('-')[1] ?? null;
-                                                            let _date = moment(new Date(`${year}-${month ?? '01'}-01 UTC`)).utc().format('MMMM');
+                                        <Paper style={{ height: 400, width: '100%' }}>
+                                            {
+                                                dataOvertakes.length > 0 ? (
+                                                    <TableVirtuoso
+                                                        data={dataOvertakes}
+                                                        components={VirtuosoTableComponents}
+                                                        itemContent={(index, item) => {
                                                             return (
-                                                                <TableRow>
-                                                                    <TableCell style={{ width: '0%' }}><Chip color="primary" size='small' label={`Score`} /></TableCell>
-                                                                    <TableCell style={{ width: '0%' }}><Chip size='small' label={`${item.time_moment.fromNow()}`} /></TableCell>
-                                                                    <TableCell style={{ width: '0%' }}>{GetFormattedName(item.new_user.inspector_user)}</TableCell>
-                                                                    <TableCell style={{ width: '0%' }}>overtook</TableCell>
-                                                                    <TableCell style={{ width: '0%' }}>{GetFormattedName(item.old_user.inspector_user)}</TableCell>
-                                                                    <TableCell style={{ width: '15%' }}>on {month ? _date : ''} {year}</TableCell>
-                                                                    <TableCell style={{ width: '90%' }}></TableCell>
+                                                                <TableRow sx={{ height: '40px' }}>
+                                                                    <TableCell width='5%'><Chip color="primary" size='small' label={`Score`} /></TableCell>
+                                                                    <TableCell width='5%'><Chip size='small' label={`${item.time_moment.fromNow()}`} /></TableCell>
+                                                                    <TableCell width='10%'>{GetFormattedName(item.new_user.inspector_user)}</TableCell>
+                                                                    <TableCell width='5%'>overtook</TableCell>
+                                                                    <TableCell width='10%'>{GetFormattedName(item.old_user.inspector_user)}</TableCell>
+                                                                    <TableCell width='10%'>on {item.period}</TableCell>
+                                                                    <TableCell width='45%'> </TableCell>
                                                                 </TableRow>
                                                             )
-                                                        })
-                                                    }
-                                                </TableBody>
-                                            </Table>
-                                        </TableContainer> */}
-                                        <Paper style={{ height: 400, width: '100%' }}>
-                                            <TableVirtuoso
-                                                data={dataOvertakes}
-                                                components={VirtuosoTableComponents}
-                                                itemContent={(index, item) => {
-                                                    return (
-                                                        <TableRow sx={{ height: '40px' }}>
-                                                            <TableCell width='5%'><Chip color="primary" size='small' label={`Score`} /></TableCell>
-                                                            <TableCell width='5%'><Chip size='small' label={`${item.time_moment.fromNow()}`} /></TableCell>
-                                                            <TableCell width='10%'>{GetFormattedName(item.new_user.inspector_user)}</TableCell>
-                                                            <TableCell width='5%'>overtook</TableCell>
-                                                            <TableCell width='10%'>{GetFormattedName(item.old_user.inspector_user)}</TableCell>
-                                                            <TableCell width='10%'>on {item.period}</TableCell>
-                                                            <TableCell width='45%'> </TableCell>
-                                                        </TableRow>
-                                                    )
-                                                }}
-                                            />
+                                                        }}
+                                                    />
+                                                ) : (
+                                                    <Box sx={{ color: theme.palette.text.primary, p: 1 }}>
+                                                        No overtakes recorded yet.
+                                                    </Box>
+                                                )
+                                            }
                                         </Paper>
                                     </Box>
                                 </>
