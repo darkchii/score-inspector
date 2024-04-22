@@ -17,6 +17,34 @@ const value_format = {
     fcclears: (value) => parseInt(value).toLocaleString('en-US'),
 }
 
+const value_types = {
+    score: {
+        name: 'Total Score',
+        dataType: 'score',
+        format: (value) => parseInt(value).toLocaleString('en-US'),
+    },
+    ss: {
+        name: 'Total SS',
+        dataType: 'ss',
+        format: (value) => parseInt(value).toLocaleString('en-US'),
+    },
+    pp: {
+        name: 'Total PP',
+        dataType: 'pp',
+        format: (value) => `${parseInt(value).toLocaleString('en-US')}pp`,
+    },
+    clears: {
+        name: 'Clears',
+        dataType: 'clears',
+        format: (value) => parseInt(value).toLocaleString('en-US'),
+    },
+    fcclears: {
+        name: 'Full Combos',
+        dataType: 'fcclears',
+        format: (value) => parseInt(value).toLocaleString('en-US'),
+    }
+}
+
 const VirtuosoTableComponents = {
     Scroller: forwardRef((props, ref) => (
         <TableContainer component={Paper} {...props} ref={ref} />
@@ -161,11 +189,18 @@ function LeadersMonthly(props) {
                 ) : (
                     <>
                         <ButtonGroup sx={{ pb: 1 }}>
-                            <Button disabled={dataType === 'score'} variant={dataType === 'score' ? 'contained' : 'outlined'} onClick={() => setDataType('score')}>Total Score</Button>
+                            {/* <Button disabled={dataType === 'score'} variant={dataType === 'score' ? 'contained' : 'outlined'} onClick={() => setDataType('score')}>Total Score</Button>
                             <Button disabled={dataType === 'ss'} variant={dataType === 'ss' ? 'contained' : 'outlined'} onClick={() => setDataType('ss')}>Total SS</Button>
                             <Button disabled={dataType === 'pp'} variant={dataType === 'pp' ? 'contained' : 'outlined'} onClick={() => setDataType('pp')}>Total PP</Button>
                             <Button disabled={dataType === 'clears'} variant={dataType === 'clears' ? 'contained' : 'outlined'} onClick={() => setDataType('clears')}>Clears</Button>
-                            <Button disabled={dataType === 'fcclears'} variant={dataType === 'fcclears' ? 'contained' : 'outlined'} onClick={() => setDataType('fcclears')}>Full Combos</Button>
+                            <Button disabled={dataType === 'fcclears'} variant={dataType === 'fcclears' ? 'contained' : 'outlined'} onClick={() => setDataType('fcclears')}>Full Combos</Button> */}
+                            {
+                                Object.keys(value_types).map((key) => {
+                                    return (
+                                        <Button key={key} disabled={dataType === key} variant={dataType === key ? 'contained' : 'outlined'} onClick={() => setDataType(key)}>{value_types[key].name}</Button>
+                                    )
+                                })
+                            }
                         </ButtonGroup>
                         {
                             data.length > 0 ? (
@@ -181,7 +216,7 @@ function LeadersMonthly(props) {
                                                         }}>
                                                             <Typography variant="body" component="div" sx={{ flex: 1 }}>{GetFormattedName(item.top.user.inspector_user)}</Typography>
                                                             {/* show behind above, but all the way right */}
-                                                            <Typography variant="body" component="div" sx={{ flex: 1 }}>{value_format[dataType](item.top.total_score)}</Typography>
+                                                            <Typography variant="body" component="div" sx={{ flex: 1 }}>{value_types[dataType].format(item.top.total_score)}</Typography>
                                                             <Typography variant="h6" component="div">{item.year}</Typography>
                                                         </Box>
                                                         <Divider sx={{ mt: 0.5, mb: 0.5 }} />
@@ -202,7 +237,7 @@ function LeadersMonthly(props) {
                                                                                 {GetFormattedName(month.top.user.inspector_user, {
                                                                                     icon_only: true,
                                                                                 })}
-                                                                                <Typography variant="subtitle2" component="div">{value_format[dataType](month.top.total_score)}</Typography>
+                                                                                <Typography variant="subtitle2" component="div">{value_types[dataType].format(month.top.total_score)}</Typography>
                                                                             </Grid>
                                                                         )
                                                                     })
@@ -254,7 +289,7 @@ function LeadersMonthly(props) {
                                                         itemContent={(index, item) => {
                                                             return (
                                                                 <TableRow sx={{ height: '40px' }}>
-                                                                    <TableCell width='5%'><Chip color="primary" size='small' label={`Score`} /></TableCell>
+                                                                    <TableCell width='5%'><Chip color="primary" size='small' label={value_types[dataType].name} /></TableCell>
                                                                     <TableCell width='5%'><Chip size='small' label={`${item.time_moment.fromNow()}`} /></TableCell>
                                                                     <TableCell width='10%'>{GetFormattedName(item.new_user.inspector_user)}</TableCell>
                                                                     <TableCell width='5%'>overtook</TableCell>
