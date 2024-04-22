@@ -1,4 +1,4 @@
-import { Box, Button, FormControl, FormControlLabel, Radio, RadioGroup, Stack, Tooltip, Typography } from "@mui/material";
+import { Box, Button, Radio, Tooltip, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { GetCurrentPoll, SubmitVote } from "../Helpers/MapPoll";
 import Loader from "./UI/Loader";
@@ -86,17 +86,12 @@ function MapPoll() {
                 })
             }
             <Button variant="contained" size='small' color="primary"
-                disabled={!selectedMap || !canVote || !userData}
+                disabled={!selectedMap || !canVote || !userData || isWorking}
                 onClick={submitVote}
             >{
                     preVote ? 'You have already voted' : (
                         canVote ? 'Submit' : 'Not all maps played yet')
                 }</Button>
-            {/* test, allow without all scored */}
-            {/* <Button variant="contained" size='small' color="primary"
-                disabled={!selectedMap || !userData || isWorking}
-                onClick={submitVote}
-            >Submit</Button> */}
         </Box>
     </>
 }

@@ -4,9 +4,8 @@ import { Alert, Button, ButtonGroup, Grid, useTheme } from "@mui/material";
 import { getScoreActivity } from "../Helpers/OsuAlt";
 import moment from "moment";
 import Loader from "./UI/Loader";
-import Chart from "react-apexcharts";
 import ChartWrapper from "../Helpers/ChartWrapper.js";
-import { amber, blue, green, grey, purple, red, yellow } from "@mui/material/colors";
+import { amber, blue, green, grey, purple, red } from "@mui/material/colors";
 
 const chart_period_data = {
     'h': {

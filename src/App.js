@@ -1,4 +1,4 @@
-import { Alert, Box, Card, CardContent, Container, CssBaseline, Typography } from '@mui/material';
+import { Alert, Box, Card, CardContent, CssBaseline, Typography } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import React, { useEffect, useState } from 'react';
 import './App.css';
@@ -11,7 +11,7 @@ import Update from './Routes/Update';
 import { Route, Routes } from 'react-router-dom/dist';
 import User from './Routes/User';
 import Leaders from './Routes/Leaders';
-import { getSettings, loadSettings } from './Helpers/Settings';
+import { loadSettings } from './Helpers/Settings';
 import Top from './Routes/Top';
 import Stats from './Routes/Stats';
 import Beatmaps from './Routes/Beatmaps';

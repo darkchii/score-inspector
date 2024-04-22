@@ -10,7 +10,6 @@ import { GetFormattedName } from '../Helpers/Account';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import config from "../config.json";
-import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 
 const MILESTONES_PER_PAGE = 50;
 

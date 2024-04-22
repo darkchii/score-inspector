@@ -1,6 +1,6 @@
 import axios from "axios";
 import { GetAPI } from "./Misc";
-import { GetLoginID, GetLoginIDUnsafe, GetLoginTokenUnsafe } from "./Account";
+import { GetLoginIDUnsafe, GetLoginTokenUnsafe } from "./Account";
 
 export async function GetCurrentPoll() {
     try {

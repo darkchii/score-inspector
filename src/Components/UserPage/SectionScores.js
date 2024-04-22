@@ -1,22 +1,16 @@
 import { useState } from 'react';
 import { useCallback } from 'react';
-import { Box, Button, Dialog, DialogContent, DialogTitle, Modal, Pagination, Stack, TextField, Typography } from '@mui/material';
+import { Box, Button, Dialog, DialogContent, DialogTitle, Pagination, Stack, Typography } from '@mui/material';
 import { useEffect } from 'react';
-import ScoreModal from '../ScoreModal';
 import ScoreRow from '../ScoreRow.js';
-import { Grid } from 'react-virtualized';
 import ScoreFilter from '../ScoreFilter.js';
 import moment from 'moment';
 
 const SCORES_PER_PAGE = 100;
 
 function SectionScores(props) {
-    const [, updateState] = useState();
-    const [modalData, setModalData] = useState({ active: false });
-    const [scores, setScores] = useState([]);
     const [filteredScores, setFilteredScores] = useState([]);
     const [page, setPage] = useState(1);
-    const [scoreFilter, setScoreFilter] = useState({});
     const [scoreFilterModalOpen, setScoreFilterModalOpen] = useState(false);
     const [cachedFilterData, setCachedFilterData] = useState(null);
 
@@ -32,7 +26,6 @@ function SectionScores(props) {
             let b_pp = b.pp > 0 ? b.pp : b.estimated_pp;
             return b_pp - a_pp;
         });
-        setScores(props.user.scores);
         _setFilteredScores(props.user.scores);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -116,7 +109,7 @@ function SectionScores(props) {
             mt: 2
         }}>
             {
-                props.user.scores.length > 0 && scoreFilter ?
+                props.user.scores.length > 0 ?
                     <>
                         <Box sx={{
                             display: 'flex',

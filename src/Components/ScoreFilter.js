@@ -1,4 +1,4 @@
-import { Box, Button, Checkbox, FormControl, FormControlLabel, Grid, InputLabel, ListItemIcon, ListItemText, MenuItem, Modal, Radio, RadioGroup, Select, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Tooltip, Typography } from "@mui/material";
+import { Box, Button, FormControl, FormControlLabel, Grid, InputLabel, ListItemIcon, ListItemText, MenuItem, Radio, RadioGroup, Select, TextField, Tooltip } from "@mui/material";
 import moment from "moment";
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
@@ -225,6 +225,7 @@ function ScoreFilter(props) {
             _filterData.enabledMods = m;
         }
         setFilterData(_filterData);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const onApply = () => {

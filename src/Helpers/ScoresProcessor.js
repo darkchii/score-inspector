@@ -1,6 +1,6 @@
 import moment from "moment";
 import { GetAPI, sleep } from "./Misc";
-import { calculatePP2014, calculatePP2016, calculatePP2020, calculatePPifFC, calculatePPifSS, calculatePPLazer, getBeatmapCount, getBonusPerformance, getLazerScore, getModString, MassCalculatePerformance, mods } from "./Osu";
+import { getLazerScore, getModString, MassCalculatePerformance, mods } from "./Osu";
 import { getSessions } from "./Session";
 import { getPeriodicData } from "./ScoresPeriodicProcessor.js";
 import axios from "axios";
@@ -138,86 +138,6 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
     onScoreProcessUpdate('Average day spread');
     await sleep(FEEDBACK_SLEEP_TIME);
     data.averageDaySpread = getDayPlaycountSpread(scores);
-
-    return data;
-}
-
-async function weighPerformance(scores, onScoreProcessUpdate) {
-    scores = calculatePPifFC(scores);
-    scores = calculatePPifSS(scores);
-    scores = calculatePP2014(scores);
-    scores = calculatePP2016(scores);
-    scores = calculatePP2020(scores);
-    scores = calculatePPLazer(scores);
-
-    scores.sort((a, b) => {
-        return b.pp - a.pp;
-    });
-    scores.forEach(score => { score.pp_weight = Math.pow(0.95, index); index++; });
-    var index = 0;
-
-    const data = {};
-
-    data.weighted = {};
-
-    data.weighted.v1 = 0;
-    data.weighted.fc = 0;
-    data.weighted.ss = 0;
-    data.weighted.xexxar = 0;
-    data.weighted._2014 = 0;
-    data.weighted._2016 = 0;
-    data.weighted._2020 = 0;
-    data.weighted.lazer = 0;
-
-    let xexxar_score_pp = 0;
-    let xexxar_total_pp = 0;
-    scores.forEach((score, index) => {
-        xexxar_score_pp += score.pp * Math.pow(0.95, index);
-        xexxar_total_pp += score.pp;
-    });
-    data.weighted.xexxar = ((2 - 1) * xexxar_score_pp + 0.75 * xexxar_score_pp * (Math.log(xexxar_total_pp) / Math.log(xexxar_score_pp))) / 2;
-
-    scores.forEach(score => {
-        if (!isNaN(score.pp_fc.total)) {
-            data.weighted.fc += score.pp_fc.total * score.pp_fc.weight;
-        }
-        if (!isNaN(score.pp_ss.total)) {
-            data.weighted.ss += score.pp_ss.total * score.pp_ss.weight;
-        }
-        if (!isNaN(score.pp_2014.total)) {
-            data.weighted._2014 += score.pp_2014.total * score.pp_2014.weight;
-        }
-        if (!isNaN(score.pp_2016.total)) {
-            data.weighted._2016 += score.pp_2016.total * score.pp_2016.weight;
-        }
-        if (!isNaN(score.pp_2020.total)) {
-            data.weighted._2020 += score.pp_2020.total * score.pp_2020.weight;
-        }
-        if (!isNaN(score.pp_lazer.total)) {
-            data.weighted.lazer += score.pp_lazer.total * score.pp_lazer.weight;
-        }
-    });
-    const bonus = getBonusPerformance(scores.length);
-    data.weighted.fc += bonus;
-    data.weighted.ss += bonus;
-    data.weighted._2014 += bonus;
-    data.weighted._2016 += bonus;
-    data.weighted._2020 += bonus;
-    // data.weighted.lazer += bonus;
-
-    scores.sort((a, b) => {
-        return b.pp_v1?.total - a.pp_v1?.total;
-    });
-
-    let j = 1;
-    let rank_score = 0;
-    scores.forEach(score => {
-        rank_score += score.pp_v1.total * j;
-        j *= 0.994;
-    });
-
-    rank_score = Math.max(0, Math.log(rank_score + 1) * 400);
-    data.weighted.v1 = rank_score;
 
     return data;
 }
@@ -372,31 +292,6 @@ function getActiveDays(scores) {
         return new Date(a) - new Date(b);
     });
     return arrayActiveDays;
-}
-
-function getMonthlyBeatmapData(beatmaps) {
-    var beatmapInfo = {};
-    beatmapInfo.monthly = [];
-
-    beatmaps.data.forEach(monthData => {
-        const y = monthData.year;
-        const m = monthData.month;
-        beatmapInfo.monthly[`${y}-${m}-01`] = monthData;
-    });
-
-    var bm_maps = 0;
-    var bm_score = 0;
-    var bm_length = 0;
-    beatmapInfo.monthlyCumulative = [];
-    Object.keys(beatmapInfo.monthly).forEach(key => {
-        const o = JSON.parse(JSON.stringify(beatmapInfo.monthly[key]));
-        o.amount = bm_maps += o.amount;
-        o.score = bm_score += o.score;
-        o.length = bm_length += o.length;
-        beatmapInfo.monthlyCumulative[key] = o;
-    });
-
-    return beatmapInfo;
 }
 
 function isScoreFullcombo(score) {

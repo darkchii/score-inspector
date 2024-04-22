@@ -1,17 +1,14 @@
-import { Alert, AlertTitle, Box, Button, ButtonGroup, Card, CardContent, CardHeader, CircularProgress, Grid, Link, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography, tableCellClasses, tableRowClasses } from "@mui/material";
+import { Alert, AlertTitle, Box, Card, CardContent, CardHeader, CircularProgress, Grid, Link, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography, tableCellClasses, tableRowClasses } from "@mui/material";
 import moment from "moment";
 import { useEffect, useState } from "react";
-import { IMG_SVG_GRADE_A, IMG_SVG_GRADE_B, IMG_SVG_GRADE_C, IMG_SVG_GRADE_D, IMG_SVG_GRADE_S, IMG_SVG_GRADE_SH, IMG_SVG_GRADE_X, IMG_SVG_GRADE_XH, getGradeIcon, getModIcon } from "../Helpers/Assets";
+import { IMG_SVG_GRADE_A, IMG_SVG_GRADE_B, IMG_SVG_GRADE_C, IMG_SVG_GRADE_D, IMG_SVG_GRADE_S, IMG_SVG_GRADE_SH, IMG_SVG_GRADE_X, IMG_SVG_GRADE_XH } from "../Helpers/Assets";
 import { getScoreStats } from "../Helpers/OsuAlt";
-import { approval_state, getModString, mod_strings_long, mods } from "../Helpers/Osu";
+import { approval_state } from "../Helpers/Osu";
 import CheckIcon from '@mui/icons-material/Check';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import config from "../config.json";
 import { Helmet } from "react-helmet";
 import { GetFormattedName } from "../Helpers/Account";
-import PerformanceRecordsChart from "../Components/PerformanceRecordsChart.js";
-import { grey } from "@mui/material/colors";
-import DoubleArrowIcon from '@mui/icons-material/DoubleArrow';
 
 const TIME_PERIODS = [
     { name: '30min', label: 'Last 30 minutes' },
@@ -63,7 +60,6 @@ const MISC_STATS = [
 function Stats(props) {
     const [scoreStats, setScoreStats] = useState(undefined);
     const [statsTime, setStatsTime] = useState(-1);
-    const [ppRecordDisplay, setPPRecordDisplay] = useState('chart');
 
     useEffect(() => {
         (async () => {
@@ -84,97 +80,6 @@ function Stats(props) {
                     <AlertTitle>Notice</AlertTitle>
                     These stats are based on what osu!alternative has gathered. Most if not all active and top players are in it, but alot is missing as well.
                 </Alert>
-
-                {/* <Grid sx={{ width: '100%' }}>
-                    <Card sx={{ width: '100%' }}>
-                        <CardHeader title='PP Records' />
-                        <CardContent sx={{ width: '100%' }}>
-                            <ButtonGroup variant='outlined' size='small' sx={{ mb: 1 }}>
-                                <Button variant={ppRecordDisplay === 'chart' ? 'contained' : 'outlined'} onClick={() => setPPRecordDisplay('chart')}>Chart</Button>
-                                <Button variant={ppRecordDisplay === 'table' ? 'contained' : 'outlined'} onClick={() => setPPRecordDisplay('table')}>Table</Button>
-                            </ButtonGroup>
-                            {
-                                {
-                                    'chart': <PerformanceRecordsChart height={350} data={scoreStats?.pp_records} />,
-                                    'table': <>
-                                        <TableContainer>
-                                            <Table size='small'>
-                                                <TableHead>
-                                                    <TableCell>Player</TableCell>
-                                                    <TableCell align="right">PP</TableCell>
-                                                    <TableCell></TableCell>
-                                                    <TableCell align="right">Date</TableCell>
-                                                    <TableCell></TableCell>
-                                                    <TableCell></TableCell>
-                                                    <TableCell></TableCell>
-                                                    <TableCell></TableCell>
-                                                    <TableCell>Map</TableCell>
-                                                </TableHead>
-                                                <TableBody>
-                                                    {
-                                                        scoreStats?.pp_records?.map((record, index) => {
-                                                            let dateDiff = 0;
-                                                            let ppDiff = 0;
-                                                            let milestone = Math.floor(record.pp / 100) * 100;
-                                                            if (index > 0) {
-                                                                const prevRecord = scoreStats.pp_records[index - 1];
-                                                                dateDiff = moment(record.date_played).diff(moment(prevRecord.date_played), 'days');
-                                                                ppDiff = record.pp - prevRecord.pp;
-
-                                                                if (prevRecord.pp >= milestone) {
-                                                                    milestone = null;
-                                                                }
-                                                            }
-                                                            if (index === 0) {
-                                                                milestone = null;
-                                                            }
-                                                            return (
-                                                                <>
-                                                                    {
-                                                                        milestone !== null && (
-                                                                            <>
-                                                                                <TableRow key={record.id}>
-                                                                                    <TableCell colSpan={9} sx={{ backgroundColor: grey[900] }}>
-                                                                                        <Typography sx={{ fontSize: '0.75rem' }}>
-                                                                                            <DoubleArrowIcon fontSize='0.5rem' sx={{transform: 'rotate(90deg)'}} /> First {milestone.toLocaleString('en-US')}pp score
-                                                                                        </Typography>
-                                                                                    </TableCell>
-                                                                                </TableRow>
-                                                                            </>
-                                                                        )
-                                                                    }
-                                                                    <TableRow key={record.id}>
-                                                                        <TableCell>{GetFormattedName(record.user.inspector_user)}</TableCell>
-                                                                        <TableCell align="right">{Math.round(record.pp).toLocaleString('en-US')}pp</TableCell>
-                                                                        <TableCell sx={{ fontSize: '0.7rem', color: grey[500] }}>(+{Math.round(ppDiff).toLocaleString('en-US')}pp)</TableCell>
-                                                                        <TableCell align="right">{moment(record.date_played).format("DD-MM-YYYY")}</TableCell>
-                                                                        <TableCell sx={{ fontSize: '0.7rem', color: grey[500] }}>(+{dateDiff} days)</TableCell>
-                                                                        <TableCell>{
-                                                                            <img height="20px" src={getGradeIcon(record.score.rank)} alt={record.score.rank} />
-                                                                        }</TableCell>
-                                                                        <TableCell>{getModString(parseInt(record.score.enabled_mods)).map(mod => (
-                                                                            <Tooltip title={mod_strings_long[mods[mod]]}>
-                                                                                <img height="20px" src={getModIcon(mod)} alt={mod} />
-                                                                            </Tooltip>
-                                                                        ))}</TableCell>
-                                                                        <TableCell>{Math.round(record.score.beatmap.modded_sr.star_rating * 10) / 10}*</TableCell>
-                                                                        <TableCell>
-                                                                            {record.score.beatmap.artist} - {record.score.beatmap.title} [{record.score.beatmap.diffname}]
-                                                                        </TableCell>
-                                                                    </TableRow>
-                                                                </>
-                                                            )
-                                                        })
-                                                    }
-                                                </TableBody>
-                                            </Table>
-                                        </TableContainer>
-                                    </>
-                                }[ppRecordDisplay]
-                            }
-                        </CardContent>
-                    </Card>
-                </Grid> */}
 
                 <Grid container>
                     <Grid item xs={12} lg={6.5}>

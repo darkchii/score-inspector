@@ -11,8 +11,7 @@ import PlayerLeaderboardItem from '../Components/Leaderboards/PlayerLeaderboardI
 import BeatmapLeaderboardItem from '../Components/Leaderboards/BeatmapLeaderboardItem';
 import { Helmet } from 'react-helmet';
 import config from "../config.json";
-import { green, grey, red } from '@mui/material/colors';
-import { convertEpochToHumanReadable } from '../Helpers/Misc.js';
+import { grey } from '@mui/material/colors';
 import { countries } from 'countries-list';
 momentDurationFormatSetup(moment);
 

@@ -1,12 +1,10 @@
-import { Alert, Avatar, AvatarGroup, Box, Chip, Grid, Tooltip, Typography, styled, useTheme } from "@mui/material";
+import { Alert, Avatar, Box, Grid, Tooltip, Typography, styled, useTheme } from "@mui/material";
 import { useEffect } from "react";
 import { useState } from "react";
 import { cloneElement } from "react";
 import { GetLoginIDUnsafe, IsUserLoggedInUnsafe } from "../../Helpers/Account.js";
 import Loader from "./Loader.js";
-import { sleep } from "../../Helpers/Misc.js";
 import { getFullUser } from "../../Helpers/Osu.js";
-import { set } from "lodash";
 import PlayerCard from "../PlayerCard.js";
 
 const PlayerTooltip = styled(({ className, ...props }) => (
@@ -71,6 +69,7 @@ function PlayerChip(props) {
                 })();
             }
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isHovering]);
 
     return <>

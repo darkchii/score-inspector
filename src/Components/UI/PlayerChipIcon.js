@@ -1,12 +1,9 @@
-import { Alert, Avatar, AvatarGroup, Box, Chip, Grid, Tooltip, Typography, styled, useTheme } from "@mui/material";
+import { Alert, Box, Tooltip, Typography, styled } from "@mui/material";
 import { useEffect } from "react";
 import { useState } from "react";
 import { cloneElement } from "react";
-import { GetLoginIDUnsafe, IsUserLoggedInUnsafe } from "../../Helpers/Account.js";
 import Loader from "./Loader.js";
-import { sleep } from "../../Helpers/Misc.js";
 import { getFullUser } from "../../Helpers/Osu.js";
-import { set } from "lodash";
 import PlayerCard from "../PlayerCard.js";
 
 const PlayerTooltip = styled(({ className, ...props }) => (
@@ -17,8 +14,6 @@ const PlayerTooltip = styled(({ className, ...props }) => (
 `);
 
 function PlayerChipIcon(props) {
-    const theme = useTheme();
-    const [matchesLoggedInUser, setMatchesLoggedInUser] = useState(false);
     const [isHovering, setIsHovering] = useState(false);
     const [isWorking, setIsWorking] = useState(false);
     const [playerData, setPlayerData] = useState(null);
@@ -30,12 +25,6 @@ function PlayerChipIcon(props) {
             height: '40px',
         }
     });
-
-    useEffect(() => {
-        if (IsUserLoggedInUnsafe() && !isNaN(GetLoginIDUnsafe())) {
-            setMatchesLoggedInUser(parseInt(GetLoginIDUnsafe()) === props.user_id);
-        }
-    }, [props]);
 
     useEffect(() => {
         if (!isHovering) {
@@ -70,6 +59,7 @@ function PlayerChipIcon(props) {
                 })();
             }
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isHovering]);
 
     return <>

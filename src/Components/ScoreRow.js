@@ -1,4 +1,4 @@
-import { Box, Grid, Stack, Tooltip, Typography, useTheme } from "@mui/material";
+import { Box, Grid, Tooltip, Typography, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
 import { getGradeIcon, getModIcon } from "../Helpers/Assets.js";
 import moment from "moment";

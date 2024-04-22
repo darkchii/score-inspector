@@ -6,13 +6,11 @@ import Loader from "../UI/Loader";
 import axios from "axios";
 import { GetAPI } from "../../Helpers/Misc";
 import { Box, Grid } from "@mui/material";
-import { useNavigate } from "react-router-dom";
 import { GetFormattedName } from "../../Helpers/Account";
 
 function SectionFriends(props) {
     const [friends, setFriends] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const navigate = useNavigate();
 
     useEffect(() => {
         (async () => {

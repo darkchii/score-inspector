@@ -1,21 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Fragment, forwardRef, useEffect, useState } from "react";
+import { forwardRef, useEffect, useState } from "react";
 import Loader from "../Components/UI/Loader";
-import { Avatar, Box, Button, ButtonGroup, Chip, Collapse, Divider, Grid, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, useTheme } from "@mui/material";
+import { Box, Button, ButtonGroup, Chip, Divider, Grid, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, useTheme } from "@mui/material";
 import config from "../config.json";
 import { Helmet } from "react-helmet";
 import { GetAPI } from "../Helpers/Misc.js";
 import { GetFormattedName } from "../Helpers/Account.js";
 import moment from "moment";
 import { TableVirtuoso } from "react-virtuoso";
-
-const value_format = {
-    score: (value) => parseInt(value).toLocaleString('en-US'),
-    ss: (value) => parseInt(value).toLocaleString('en-US'),
-    pp: (value) => `${parseInt(value).toLocaleString('en-US')}pp`,
-    clears: (value) => parseInt(value).toLocaleString('en-US'),
-    fcclears: (value) => parseInt(value).toLocaleString('en-US'),
-}
 
 const value_types = {
     score: {
@@ -286,9 +278,10 @@ function LeadersMonthly(props) {
                                                     <TableVirtuoso
                                                         data={dataOvertakes}
                                                         components={VirtuosoTableComponents}
+                                                        size={'small'}
                                                         itemContent={(index, item) => {
                                                             return (
-                                                                <TableRow sx={{ height: '40px' }}>
+                                                                <TableRow>
                                                                     <TableCell width='5%'><Chip color="primary" size='small' label={value_types[dataType].name} /></TableCell>
                                                                     <TableCell width='5%'><Chip size='small' label={`${item.time_moment.fromNow()}`} /></TableCell>
                                                                     <TableCell width='10%'>{GetFormattedName(item.new_user.inspector_user)}</TableCell>

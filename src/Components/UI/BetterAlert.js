@@ -1,6 +1,4 @@
-import { Alert, Box, useTheme } from "@mui/material";
-import { useEffect } from "react";
-import { useState } from "react";
+import { Alert } from "@mui/material";
 
 function BetterAlert(props) {
     return (

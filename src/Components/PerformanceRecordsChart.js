@@ -1,4 +1,4 @@
-import { Alert, Box, useTheme } from "@mui/material";
+import { Box, useTheme } from "@mui/material";
 import { useEffect } from "react";
 import { useState } from "react";
 import {
@@ -13,7 +13,6 @@ import {
     TimeScale
 } from 'chart.js';
 import zoomPlugin from 'chartjs-plugin-zoom';
-import { Line } from 'react-chartjs-2';
 import 'chartjs-adapter-moment';
 import ChartWrapper from "../Helpers/ChartWrapper.js";
 import moment from "moment";

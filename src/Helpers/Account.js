@@ -1,7 +1,7 @@
 import { GetAPI, GetOsuApiRedirect, parseReadableStreamToJson, showNotification } from "./Misc";
 import config from '../config.json';
 import axios from "axios";
-import { Avatar, Box, Chip, Tooltip } from "@mui/material";
+import { Avatar, Box, Tooltip } from "@mui/material";
 import * as Muicon from "@mui/icons-material";
 import PlayerChip from "../Components/UI/PlayerChip.js";
 import PlayerChipIcon from "../Components/UI/PlayerChipIcon.js";

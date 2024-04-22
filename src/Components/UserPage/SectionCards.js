@@ -4,8 +4,6 @@ import BestScoreCard from "./BestScoreCard";
 import GlowBar from "../UI/GlowBar";
 import ChartWrapper from "../../Helpers/ChartWrapper.js";
 import { MILESTONES_FORMATTER } from "../../Helpers/Misc.js";
-import { GetFormattedName } from "../../Helpers/Account.js";
-import { Link } from 'react-router-dom';
 
 function SectionCards(props) {
     const theme = useTheme();

@@ -1,7 +1,7 @@
-import { Box, Button, ButtonGroup, Divider, Grid, Paper, Skeleton, Table, TableBody, TableCell, TableRow, Tooltip, Typography, useTheme } from "@mui/material";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { Box, Button, ButtonGroup, Divider, Skeleton, Typography, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
 import ChartWrapper from "../../Helpers/ChartWrapper.js";
-import ApexCharts from 'apexcharts';
 import { capitalizeFirstLetter } from "../../Helpers/Misc.js";
 
 function SectionGraphs(props) {

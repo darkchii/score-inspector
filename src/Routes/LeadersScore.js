@@ -37,12 +37,6 @@ function LeadersScore(props) {
     //also check if sorting is valid
     const [sorting, setSorting] = useState(params.sort && VALID_SORTING.includes(params.sort) ? params.sort : 'rank');
     const [scoreGraphData, setScoreGraphData] = useState(null);
-    const [timelineEvents, setTimelineEvents] = useState([
-        {
-            date: '2023-11-02',
-            title: 'Proper daily tracking started',
-        }
-    ]);
 
     useEffect(() => {
         (async () => {
