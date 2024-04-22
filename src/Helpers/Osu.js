@@ -177,8 +177,8 @@ export async function getBeatmapMaxscore(beatmap_id) {
     return beatmap.data;
 }
 
-const STANDARDISED_ACCURACY_PORTION = 0.5;
-const STANDARDISED_COMBO_PORTION = 0.5;
+const STANDARDISED_ACCURACY_PORTION = 0.3;
+const STANDARDISED_COMBO_PORTION = 0.7;
 export function getLazerScore(score, classic = true) {
     const legacyModMultiplier = getModMultiplier(score.enabled_mods);
     const mul = legacyModMultiplier * 0.96;
