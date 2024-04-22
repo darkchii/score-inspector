@@ -12,7 +12,7 @@
     "@mui/lab": "^5.0.0-alpha.160",
     "@mui/material": "^5.15.4",
     "@mui/x-date-pickers": "^6.19.0",
-    "apexcharts": "^3.45.1",
+    "apexcharts": "^3.48.0",
     "axios": "^1.6.8",
     "buffer": "^6.0.3",
     "chart.js": "^4.4.1",
