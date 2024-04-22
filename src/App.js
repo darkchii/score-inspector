@@ -113,7 +113,7 @@ function App() {
                 <Route path="/" element={<Root />} />
                 <Route path="update/:id" element={<Update />} />
                 <Route path="*" element={<Error />} />
-                <Route path="user/:id" element={<User />} />
+                <Route path="user/:id/:page?" element={<User />} />
                 <Route path="dev" element={<CompDev />} />
                 <Route path="top" element={<Top />} />
                 <Route path="stats" element={<Stats />} />

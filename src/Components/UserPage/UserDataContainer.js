@@ -1,6 +1,6 @@
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import { Box, Paper, Stack, Tab } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PersonIcon from '@mui/icons-material/Person';
 import TodayIcon from '@mui/icons-material/Today';
 import AutoGraphIcon from '@mui/icons-material/AutoGraph';
@@ -17,6 +17,8 @@ import SectionCompletion from "./SectionCompletion";
 import SectionPacks from "./SectionPacks";
 import GroupIcon from '@mui/icons-material/Group';
 import SectionFriends from "./SectionFriends";
+import { useParams } from "react-router-dom";
+import _ from "lodash";
 
 const StyledTab = styled(Tab)({
     minHeight: 'auto',
@@ -24,7 +26,8 @@ const StyledTab = styled(Tab)({
 });
 
 function UserDataContainer(props) {
-    const [tab, setTab] = useState('0');
+    const [tab, setTab] = useState(null);
+    const params = useParams();
 
     const _IDs = {
         'profile': '0',
@@ -37,11 +40,26 @@ function UserDataContainer(props) {
         'friends': '8'
     }
 
+    useEffect(()=>{
+        if (params.page) {
+            setTab(_IDs[params.page]);
+        }else{
+            setTab(_IDs['profile']);
+        }
+    }, [params.page]);
+
+    if(!tab) return null;
+
     return (
         <>
             <TabContext value={tab}>
                 <Box component={Paper}>
-                    <TabList onChange={(e, v) => setTab(v)} centered>
+                    <TabList onChange={(e, v) => {
+                        setTab(v);
+                        //set the :page parameter in the URL
+                        //props.history.push(`/user/${props.user.osu.id}/${_.invert(_IDs)[v]}`);
+                        window.history.pushState({}, '', `/user/${props.user.osu.id}/${_.invert(_IDs)[v]}`);
+                    }} centered>
                         <StyledTab icon={<PersonIcon />} iconPosition='start' label='Profile' value={_IDs['profile']} />
                         <StyledTab icon={<TodayIcon />} iconPosition='start' label='Daily' value={_IDs['daily']} />
                         <StyledTab icon={<AutoGraphIcon />} iconPosition='start' label='Graphs' value={_IDs['graphs']} />
