@@ -19,7 +19,7 @@
     "chartjs-adapter-moment": "^1.0.1",
     "chartjs-chart-geo": "^4.2.8",
     "chartjs-plugin-zoom": "^2.0.1",
-    "countries-list": "^3.0.6",
+    "countries-list": "^3.1.0",
     "dayjs": "^1.11.10",
     "lodash": "^4.17.21",
     "moment": "^2.30.1",
