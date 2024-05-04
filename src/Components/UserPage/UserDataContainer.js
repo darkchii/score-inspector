@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import { Box, Paper, Stack, Tab } from "@mui/material";
 import { useEffect, useState } from "react";

@@ -93,6 +93,7 @@ export function readFileAsync(file) {
 }
 
 export function nestedSearch(object, keyArray) {
+    if (!object) return null;
     const _keyArray = [...keyArray];
     const _currentKey = _keyArray.shift();
     if (_keyArray.length === 0) {
