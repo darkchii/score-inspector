@@ -5,6 +5,7 @@ import ReactCountryFlag from "react-country-flag";
 import { GetFormattedName, GetRoleIcon, GetRoles } from "../../Helpers/Account";
 import TwitterIcon from '@mui/icons-material/Twitter';
 import { DiscordIcon } from "../../Helpers/Icons";
+import { getBonusPerformance } from "../../Helpers/Osu";
 
 const MAX_VISITORS = 5;
 function SectionHeader(props) {
@@ -98,7 +99,7 @@ function SectionHeader(props) {
                                         </> : <></>
                                     }
                                 </Stack>
-                                <Typography variant='h6'>{Math.round(props.user.osu.statistics.pp).toLocaleString('en-US')}pp <Tooltip title='Sum of pp from every set score'><span>({Math.round(props.user.data?.total.pp ?? 0).toLocaleString('en-US')}pp total)</span></Tooltip></Typography>
+                                <Typography variant='h6'>{Math.round(props.user.osu.statistics.pp).toLocaleString('en-US')}pp ({(Math.round(getBonusPerformance(props.user.scores.length ?? 0)*100)/100).toLocaleString('en-US')}pp bonus, <Tooltip title='Sum of pp from every set score'><span>{Math.round(props.user.data?.total.pp ?? 0).toLocaleString('en-US')}pp total</span></Tooltip>)</Typography>
                                 <Stack direction='row' spacing={1} sx={{ m: 0.5 }}>
                                     {
                                         props.user.osu.twitter !== null ? <>
