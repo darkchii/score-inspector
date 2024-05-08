@@ -8,6 +8,7 @@ import '@fontsource/roboto/700.css';
 import "@fontsource/comfortaa";
 import App from './App';
 import { BrowserRouter } from 'react-router-dom';
+import 'react-virtualized/styles.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

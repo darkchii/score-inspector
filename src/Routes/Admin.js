@@ -1,17 +1,19 @@
 import { useEffect, useState } from "react";
 import { AdminGetUsers, AdminValidate, GetRemoteRoles, GetRoleIcon } from "../Helpers/Account";
-import { Alert, Button, ButtonGroup, Grid, ListItem, Paper, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
+import { Alert, Box, Button, ButtonGroup, Grid, ListItem, Paper, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
 import { Link, useParams } from "react-router-dom";
 import Loader from "../Components/UI/Loader";
-import { List } from "react-virtualized";
 import ImageIcon from '@mui/icons-material/Image';
 import HideImageIcon from '@mui/icons-material/HideImage';
 import { green, red } from "@mui/material/colors";
 import { Helmet } from "react-helmet";
 import config from "../config.json";
 import PeopleIcon from '@mui/icons-material/People';
+import { AutoSizer, Column, Table as VTable } from 'react-virtualized';
+import BlockIcon from '@mui/icons-material/Block';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
-const NAV_WIDTH = 3;
+const NAV_WIDTH = 2;
 function Admin(props) {
     const [isAdmin, setIsAdmin] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
@@ -149,7 +151,10 @@ function AdminUsers(props) {
                     <Grid item xs={1} sx={{ display: 'flex', justifyContent: 'right', alignItems: 'center' }}>
                         <Typography variant="subtitle1">#{user.id}</Typography>
                     </Grid>
-                    <Grid item xs={4} sx={{ display: 'flex', justifyContent: 'left' }}>
+                    <Grid item xs={2} sx={{ display: 'flex', justifyContent: 'right', alignItems: 'center' }}>
+                        <Typography variant="subtitle1">#{(user.osu_user?.global_rank.toLocaleString('en-US')) ?? '-'}</Typography>
+                    </Grid>
+                    <Grid item xs={3} sx={{ display: 'flex', justifyContent: 'left' }}>
                         <Typography variant="subtitle1">{user.known_username}</Typography>
                     </Grid>
                     <Grid item xs={2} sx={{ display: 'flex', justifyContent: 'left' }}>
@@ -183,13 +188,67 @@ function AdminUsers(props) {
             {
                 users?.length > 0 ?
                     <>
-                        <List
-                            width={800}
-                            height={600}
+                        {/* <List
+                            width='100%'
+                            height={800}
                             rowRenderer={listRenderer}
                             rowCount={users?.length}
                             rowHeight={40}
-                        />
+                        /> */}
+                        <Box sx={{
+                            width: '100%',
+                            height: 680
+                        }}>
+                            <Typography variant='h6'>Inspector Users</Typography>
+                            {/* active users have a global_rank */}
+                            <Typography variant='subtitle1'>Registered: {(users?.length).toLocaleString('en-US')}, active: {(users.filter(u => u.osu_user?.global_rank).length).toLocaleString('en-US')}</Typography>
+                            <Box sx={{
+                                mt: 2
+                            }} />
+                            <AutoSizer>
+                                {({ width, height }) => (
+                                    <VTable
+                                        width={width}
+                                        height={height}
+                                        headerHeight={20}
+                                        rowHeight={30}
+                                        rowCount={users.length}
+                                        rowGetter={({ index }) => users[index]}
+                                    >
+                                        <Column label='ID' dataKey='id' width={50} cellRenderer={({ cellData }) => `#${cellData}`} />
+                                        <Column label='Rank' dataKey='osu_user' cellDataGetter={({ rowData }) => rowData.osu_user?.global_rank} width={100} cellRenderer={({ cellData }) => `#${(cellData?.toLocaleString('en-US') ?? '-')}`} />
+                                        <Column label='PP' dataKey='osu_user.pp' cellDataGetter={({ rowData }) => rowData.osu_user?.pp} width={100} cellRenderer={({ cellData }) => `${(cellData?.toLocaleString('en-US') ?? '-')}pp`} />
+                                        <Column label='Username' dataKey='known_username' width={200} cellRenderer={({ cellData }) => `${cellData}`} />
+                                        <Column label='ID' dataKey='osu_id' width={100} cellRenderer={({ cellData }) => `(${cellData})`} />
+                                        <Column label='Roles' dataKey='roles' width={100} cellRenderer={({ cellData }) => `${cellData.length} roles`} />
+                                        <Column label='Prefs' dataKey='' width={100}
+                                            cellRenderer={({ rowData }) => (
+                                                <>
+                                                    {
+                                                        rowData.background_image ?
+                                                            <ImageIcon sx={{ color: green[400] }} />
+                                                            :
+                                                            <HideImageIcon sx={{ color: red[400] }} />
+                                                    }
+                                                    {
+                                                        rowData.is_friends_public ?
+                                                            <PeopleIcon sx={{ color: green[400] }} />
+                                                            :
+                                                            <PeopleIcon sx={{ color: red[400] }} />
+                                                    }
+                                                    {
+                                                        rowData.is_banned ?
+                                                            <BlockIcon sx={{ color: red[400] }} />
+                                                            :
+                                                            <CheckCircleOutlineIcon sx={{ color: green[400] }} />
+                                                    }
+                                                </>
+                                            )}
+                                        />
+                                    </VTable>
+                                )}
+                            </AutoSizer>
+                        </Box>
                     </>
                     : <Loader />
             }
