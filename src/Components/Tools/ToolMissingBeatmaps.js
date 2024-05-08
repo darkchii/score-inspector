@@ -4,6 +4,11 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { GetAPI, readFileAsync, showNotification } from "../../Helpers/Misc";
 import { OsuDb } from "../../Helpers/OsuDb/OsuDb";
+import { AutoSizer, Column, Table as VTable } from 'react-virtualized';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import TableRowsIcon from '@mui/icons-material/TableRows';
+import { green, red } from "@mui/material/colors";
 
 const modeNames = {
     0: "Standard",
@@ -73,7 +78,8 @@ function ToolMissingBeatmaps() {
                         out.missingRankedSets.push({
                             set_id: beatmap.set_id,
                             artist: beatmap.artist,
-                            title: beatmap.title
+                            title: beatmap.title,
+                            approved_date: beatmap.approved_date
                         });
                     }
                 }
@@ -85,10 +91,15 @@ function ToolMissingBeatmaps() {
                         out.missingLovedSets.push({
                             set_id: beatmap.set_id,
                             artist: beatmap.artist,
-                            title: beatmap.title
+                            title: beatmap.title,
+                            approved_date: beatmap.approved_date
                         });
                     }
                 }
+
+                //order by approved date descending
+                out.missingRankedSets.sort((a, b) => new Date(b.approved_date) - new Date(a.approved_date));
+                out.missingLovedSets.sort((a, b) => new Date(b.approved_date) - new Date(a.approved_date));
 
                 missingModes.push(out);
             } catch (err) {
@@ -168,19 +179,28 @@ function ToolMissingBeatmaps() {
                                 <>
                                     <Grid item xs={4}>
                                         <Paper elevation={2} sx={{ p: 1 }}>
-                                            <Typography variant="subtitle1">{modeNames[index]}</Typography>
+                                        <Stack alignItems="center" direction="row" gap={2}>
+                                                <TableRowsIcon />
+                                                <Typography variant="subtitle1">{modeNames[index]}</Typography>
+                                            </Stack>
                                             <Typography variant="h6">{total?.toLocaleString('en-US') ?? '-'}</Typography>
                                         </Paper>
                                     </Grid>
                                     <Grid item xs={4}>
                                         <Paper elevation={2} sx={{ p: 1 }}>
-                                            <Typography variant="subtitle1">Ranked</Typography>
+                                            <Stack alignItems="center" direction="row" gap={2}>
+                                                <CheckCircleOutlineIcon />
+                                                <Typography variant="subtitle1">Ranked</Typography>
+                                            </Stack>
                                             <Typography variant="h6">{mode?.ranked?.length?.toLocaleString('en-US') ?? '-'}</Typography>
                                         </Paper>
                                     </Grid>
                                     <Grid item xs={4}>
                                         <Paper elevation={2} sx={{ p: 1 }}>
-                                            <Typography variant="subtitle1">Loved</Typography>
+                                        <Stack alignItems="center" direction="row" gap={2}>
+                                                <FavoriteBorderIcon />
+                                                <Typography variant="subtitle1">Loved</Typography>
+                                            </Stack>
                                             <Typography variant="h6">{mode?.loved?.length?.toLocaleString('en-US') ?? '-'}</Typography>
                                         </Paper>
                                     </Grid>
@@ -206,7 +226,7 @@ function ToolMissingBeatmaps() {
                                 return (
                                     <>
                                         <Paper elevation={2}>
-                                            <Box sx={{m:1}}>
+                                            <Box sx={{ m: 1 }}>
                                                 <Typography variant="h5">{modeNames[index]}</Typography>
                                                 <Grid container>
                                                     <Grid item xs={12 / 2}>
@@ -229,22 +249,29 @@ function ToolMissingBeatmaps() {
                                                         <Typography>Ranked</Typography>
                                                     </AccordionSummary>
                                                     <AccordionDetails>
-                                                        <TableContainer component={Paper}>
-                                                            <Table size='small'>
-                                                                <TableBody>
-                                                                    {
-                                                                        mode?.missingRankedSets?.map((set) => (
-                                                                            <TableRow key={set.set_id}>
-                                                                                <TableCell>{set.set_id}</TableCell>
-                                                                                <TableCell>{set.artist} - {set.title}</TableCell>
-                                                                                <TableCell><Link href={`https://osu.ppy.sh/beatmapsets/${set.set_id}`} target='_blank'>osu!</Link></TableCell>
-                                                                                <TableCell><Link href={`osu://dl/${set.set_id}`} target='_blank'>osu!direct</Link></TableCell>
-                                                                            </TableRow>
-                                                                        ))
-                                                                    }
-                                                                </TableBody>
-                                                            </Table>
-                                                        </TableContainer>
+                                                        <Box sx={{
+                                                            width: '100%',
+                                                            height: 400,
+                                                        }}>
+                                                            <AutoSizer>
+                                                                {({ height, width }) => (
+                                                                    <VTable
+                                                                        width={width}
+                                                                        height={height}
+                                                                        rowCount={mode?.missingRankedSets?.length}
+                                                                        rowGetter={({ index }) => mode?.missingRankedSets[index]}
+                                                                        rowHeight={30}
+                                                                        headerHeight={30}
+                                                                    >
+                                                                        <Column label='Set ID' dataKey='set_id' width={100} />
+                                                                        <Column label='Artist - Title' dataKey='artist' width={650} cellRenderer={({ rowData }) => <span>{rowData.artist} - {rowData.title}</span>} />
+                                                                        <Column label='Ranked' dataKey='approved_date' width={650} cellRenderer={({ rowData }) => <span>{new Date(rowData.approved_date).toLocaleDateString()}</span>} />
+                                                                        <Column label='osu!' dataKey='set_id' width={100} cellRenderer={({ rowData }) => <Link href={`https://osu.ppy.sh/beatmapsets/${rowData.set_id}`} target='_blank'>osu!</Link>} />
+                                                                        <Column label='osu!direct' dataKey='set_id' width={150} cellRenderer={({ rowData }) => <Link href={`osu://dl/${rowData.set_id}`}>osu!direct</Link>} />
+                                                                    </VTable>
+                                                                )}
+                                                            </AutoSizer>
+                                                        </Box>
                                                     </AccordionDetails>
                                                 </Accordion>
                                                 <Accordion>
@@ -252,22 +279,29 @@ function ToolMissingBeatmaps() {
                                                         <Typography>Loved</Typography>
                                                     </AccordionSummary>
                                                     <AccordionDetails>
-                                                        <TableContainer component={Paper}>
-                                                            <Table size='small'>
-                                                                <TableBody>
-                                                                    {
-                                                                        mode?.missingLovedSets?.map((set) => (
-                                                                            <TableRow key={set.set_id}>
-                                                                                <TableCell>{set.set_id}</TableCell>
-                                                                                <TableCell>{set.artist} - {set.title}</TableCell>
-                                                                                <TableCell><Link href={`https://osu.ppy.sh/beatmapsets/${set.set_id}`} target='_blank'>osu!</Link></TableCell>
-                                                                                <TableCell><Link href={`osu://dl/${set.set_id}`} target='_blank'>osu!direct</Link></TableCell>
-                                                                            </TableRow>
-                                                                        ))
-                                                                    }
-                                                                </TableBody>
-                                                            </Table>
-                                                        </TableContainer>
+                                                        <Box sx={{
+                                                            width: '100%',
+                                                            height: 400,
+                                                        }}>
+                                                            <AutoSizer>
+                                                                {({ height, width }) => (
+                                                                    <VTable
+                                                                        width={width}
+                                                                        height={height}
+                                                                        rowCount={mode?.missingLovedSets?.length}
+                                                                        rowGetter={({ index }) => mode?.missingLovedSets[index]}
+                                                                        rowHeight={30}
+                                                                        headerHeight={30}
+                                                                    >
+                                                                        <Column label='Set ID' dataKey='set_id' width={100} />
+                                                                        <Column label='Artist - Title' dataKey='artist' width={650} cellRenderer={({ rowData }) => <span>{rowData.artist} - {rowData.title}</span>} />
+                                                                        <Column label='Ranked' dataKey='approved_date' width={650} cellRenderer={({ rowData }) => <span>{new Date(rowData.approved_date).toLocaleDateString()}</span>} />
+                                                                        <Column label='osu!' dataKey='set_id' width={100} cellRenderer={({ rowData }) => <Link href={`https://osu.ppy.sh/beatmapsets/${rowData.set_id}`} target='_blank'>osu!</Link>} />
+                                                                        <Column label='osu!direct' dataKey='set_id' width={150} cellRenderer={({ rowData }) => <Link href={`osu://dl/${rowData.set_id}`}>osu!direct</Link>} />
+                                                                    </VTable>
+                                                                )}
+                                                            </AutoSizer>
+                                                        </Box>
                                                     </AccordionDetails>
                                                 </Accordion>
                                             </Box>
