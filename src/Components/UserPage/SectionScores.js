@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 import ScoreRow from '../ScoreRow.js';
 import ScoreFilter from '../ScoreFilter.js';
 import moment from 'moment';
+import { FilterScores } from '../../Helpers/Osu.js';
 
 const SCORES_PER_PAGE = 100;
 
@@ -32,72 +33,7 @@ function SectionScores(props) {
 
     const handleFilter = (filter) => {
         if (filter !== null) {
-            const full_scores = props.user.scores;
-            var scores = [];
-
-            //approved status
-            scores = full_scores.filter(score => {
-                return filter.approved.includes(score.beatmap.approved);
-            });
-
-            //mods
-            scores = scores.filter(score => {
-                if (filter.modsUsage === 'any') {
-                    if (score.enabled_mods === 0 && filter.enabledNomod) {
-                        return true;
-                    }
-                    return (filter.enabledMods & score.enabled_mods) !== 0;
-                }
-                return filter.enabledMods === score.enabled_mods;
-            });
-
-            //grades
-            scores = scores.filter(score => {
-                return filter.enabledGrades.includes(score.rank);
-            });
-
-            if (filter.minScore !== null && filter.minScore !== '' && filter.minScore >= 0) { scores = scores.filter(score => score.score >= filter.minScore); }
-            if (filter.maxScore !== null && filter.maxScore !== '' && filter.maxScore >= 0) { scores = scores.filter(score => score.score <= filter.maxScore); }
-
-            if (filter.minStars !== null && filter.minStars !== '' && filter.minStars >= 0) { scores = scores.filter(score => score.beatmap.modded_sr.star_rating >= filter.minStars); }
-            if (filter.maxStars !== null && filter.maxStars !== '' && filter.maxStars >= 0) { scores = scores.filter(score => score.beatmap.modded_sr.star_rating <= filter.maxStars); }
-
-            if (filter.minPP !== null && filter.minPP !== '' && filter.minPP >= 0) { scores = scores.filter(score => score.pp >= filter.minPP); }
-            if (filter.maxPP !== null && filter.maxPP !== '' && filter.maxPP >= 0) { scores = scores.filter(score => score.pp <= filter.maxPP); }
-
-            if (filter.minAcc !== null && filter.minAcc !== '' && filter.minAcc >= 0) { scores = scores.filter(score => score.accuracy >= filter.minAcc); }
-            if (filter.maxAcc !== null && filter.maxAcc !== '' && filter.maxAcc >= 0) { scores = scores.filter(score => score.accuracy <= filter.maxAcc); }
-
-            if (filter.minCombo !== null && filter.minCombo !== '' && filter.minCombo >= 0) { scores = scores.filter(score => score.combo >= filter.minCombo); }
-            if (filter.maxCombo !== null && filter.maxCombo !== '' && filter.maxCombo >= 0) { scores = scores.filter(score => score.combo <= filter.maxCombo); }
-
-            if (filter.minAR !== null && filter.minAR !== '' && filter.minAR >= 0) { scores = scores.filter(score => score.beatmap.modded_sr.modded_ar >= filter.minAR); }
-            if (filter.maxAR !== null && filter.maxAR !== '' && filter.maxAR >= 0) { scores = scores.filter(score => score.beatmap.modded_sr.modded_ar <= filter.maxAR); }
-
-            if (filter.minOD !== null && filter.minOD !== '' && filter.minOD >= 0) { scores = scores.filter(score => score.beatmap.modded_sr.modded_od >= filter.minOD); }
-            if (filter.maxOD !== null && filter.maxOD !== '' && filter.maxOD >= 0) { scores = scores.filter(score => score.beatmap.modded_sr.modded_od <= filter.maxOD); }
-
-            if (filter.minCS !== null && filter.minCS !== '' && filter.minCS >= 0) { scores = scores.filter(score => score.beatmap.modded_sr.modded_cs >= filter.minCS); }
-            if (filter.maxCS !== null && filter.maxCS !== '' && filter.maxCS >= 0) { scores = scores.filter(score => score.beatmap.modded_sr.modded_cs <= filter.maxCS); }
-
-            if (filter.minHP !== null && filter.minHP !== '' && filter.minHP >= 0) { scores = scores.filter(score => score.beatmap.modded_sr.modded_hp >= filter.minHP); }
-            if (filter.maxHP !== null && filter.maxHP !== '' && filter.maxHP >= 0) { scores = scores.filter(score => score.beatmap.modded_sr.modded_hp <= filter.maxHP); }
-
-            if (filter.minLength !== null && filter.minLength !== '' && filter.minLength >= 0) { scores = scores.filter(score => score.beatmap.modded_length >= filter.minLength); }
-            if (filter.maxLength !== null && filter.maxLength !== '' && filter.maxLength >= 0) { scores = scores.filter(score => score.beatmap.modded_length <= filter.maxLength); }
-
-            scores = scores.filter(score => {
-                return moment(score.beatmap.approved_date).isBetween(filter.minApprovedDate, filter.maxApprovedDate, undefined, '[]');
-            });
-
-            scores = scores.filter(score => {
-                return moment(score.date_played).isBetween(filter.minPlayedDate, filter.maxPlayedDate, undefined, '[]');
-            });
-
-            scores.sort(filter._sorter.sort);
-            if (filter._sorter.reverse) {
-                scores.reverse();
-            }
+            let { scores, _filter} = FilterScores(props.user.scores, filter);
 
             _setFilteredScores(scores);
             setCachedFilterData(filter);

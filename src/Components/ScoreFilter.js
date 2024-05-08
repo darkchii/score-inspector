@@ -22,13 +22,13 @@ const sorters = [
             let b_pp = b.pp > 0 ? b.pp : b.estimated_pp;
             return b_pp - a_pp;
         }
-    }, 
+    },
     {
         name: 'Score',
         sort: (a, b) => {
             return b.score - a.score;
         }
-    }, 
+    },
     {
         name: 'Lazer Score',
         sort: (a, b) => {
@@ -40,25 +40,25 @@ const sorters = [
         sort: (a, b) => {
             return moment(b.date_played).unix() - moment(a.date_played).unix();
         }
-    }, 
+    },
     {
         name: 'Date Ranked',
         sort: (a, b) => {
             return moment(b.beatmap.approved_date).unix() - moment(a.beatmap.approved_date).unix();
         }
-    }, 
+    },
     {
         name: 'Accuracy',
         sort: (a, b) => {
             return b.accuracy - a.accuracy;
         }
-    }, 
+    },
     {
         name: 'Combo',
         sort: (a, b) => {
             return b.combo - a.combo;
         }
-    }, 
+    },
     {
         name: 'Stars',
         sort: (a, b) => {
@@ -92,7 +92,7 @@ const defaultFilterData = {
     maxHP: null,
     minLength: null,
     maxLength: null,
-    approved: [1, 2, 4],
+    approved: [1, 2],
     minApprovedDate: MIN_DATE,
     maxApprovedDate: MAX_DATE,
     minPlayedDate: MIN_DATE,
@@ -225,11 +225,12 @@ function ScoreFilter(props) {
             _filterData.enabledMods = m;
         }
         setFilterData(_filterData);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const onApply = () => {
         let _filterData = { ...filterData };
+        _filterData.order = filterData._sorter.name.toLowerCase();
         _filterData.query = generateQuery();
         props.onApply(_filterData);
     }
@@ -365,7 +366,7 @@ function ScoreFilter(props) {
                 </Grid>
                 <Grid container sx={{ pt: 2, '& > *': { pl: 1 } }}>
                     <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE}>
-                        <FormControl variant="standard" sx={{width:'100%'}}>
+                        <FormControl variant="standard" sx={{ width: '100%' }}>
                             <InputLabel id="sort-select-label">Sort</InputLabel>
                             <Select
                                 labelId="sort-select-label"
@@ -399,7 +400,7 @@ function ScoreFilter(props) {
                         </FormControl>
                     </Grid>
                     <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE}>
-                        <FormControl variant="standard" sx={{width:'100%'}}>
+                        <FormControl variant="standard" sx={{ width: '100%' }}>
                             <InputLabel id="sort-select-label">Approved</InputLabel>
                             <Select
                                 labelId="sort-select-label"

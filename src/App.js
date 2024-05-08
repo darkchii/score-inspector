@@ -32,6 +32,7 @@ import LeadersScore from './Routes/LeadersScore';
 import Milestones from './Routes/Milestones';
 import Docs from './Routes/Docs';
 import LeadersMonthly from './Routes/LeadersMonthly.js';
+import Scores from './Routes/Scores.js';
 
 function App() {
   const [loginData, setLoginData] = useState(null);
@@ -120,6 +121,7 @@ function App() {
                 <Route path="beatmaps" element={<Beatmaps />} />
                 <Route path="staff" element={<Staff />} />
                 <Route path="population" element={<Population />} />
+                <Route path="scores" element={<Scores />} />
                 <Route path="docs" element={<Docs />} />
                 <Route path="logout" element={<Logout />} />
                 <Route path="milestones" element={<Milestones />}>
