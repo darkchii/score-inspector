@@ -1,4 +1,4 @@
-import { Accordion, AccordionDetails, AccordionSummary, Alert, Box, Button, CircularProgress, Grid, Link, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Alert, Box, Button, CircularProgress, Grid, Link, Paper, Stack, Typography } from "@mui/material";
 import axios from "axios";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -8,7 +8,6 @@ import { AutoSizer, Column, Table as VTable } from 'react-virtualized';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import TableRowsIcon from '@mui/icons-material/TableRows';
-import { green, red } from "@mui/material/colors";
 
 const modeNames = {
     0: "Standard",

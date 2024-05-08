@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { AdminGetUsers, AdminValidate, GetRemoteRoles, GetRoleIcon } from "../Helpers/Account";
-import { Alert, Box, Button, ButtonGroup, Grid, ListItem, Paper, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
+import { Alert, Box, Button, ButtonGroup, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
 import { Link, useParams } from "react-router-dom";
 import Loader from "../Components/UI/Loader";
 import ImageIcon from '@mui/icons-material/Image';
@@ -139,62 +139,11 @@ function AdminUsers(props) {
         })();
     }, []);
 
-    const listRenderer = ({ index, key, style }) => {
-        const user = users[index];
-        return (
-            <ListItem key={key} style={{
-                ...style,
-                backgroundColor: `rgba(0,0,0,0.4)`,
-                borderRadius: '5px'
-            }}>
-                <Grid container spacing={2}>
-                    <Grid item xs={1} sx={{ display: 'flex', justifyContent: 'right', alignItems: 'center' }}>
-                        <Typography variant="subtitle1">#{user.id}</Typography>
-                    </Grid>
-                    <Grid item xs={2} sx={{ display: 'flex', justifyContent: 'right', alignItems: 'center' }}>
-                        <Typography variant="subtitle1">#{(user.osu_user?.global_rank.toLocaleString('en-US')) ?? '-'}</Typography>
-                    </Grid>
-                    <Grid item xs={3} sx={{ display: 'flex', justifyContent: 'left' }}>
-                        <Typography variant="subtitle1">{user.known_username}</Typography>
-                    </Grid>
-                    <Grid item xs={2} sx={{ display: 'flex', justifyContent: 'left' }}>
-                        <Typography variant="subtitle1">({user.osu_id})</Typography>
-                    </Grid>
-                    <Grid item xs={1} sx={{ display: 'flex', justifyContent: 'left' }}>
-                        <Typography variant="subtitle1">
-                            {
-                                user.background_image ?
-                                    <ImageIcon sx={{ color: green[400] }} />
-                                    :
-                                    <HideImageIcon sx={{ color: red[400] }} />
-                            }
-                            {
-                                user.is_friends_public ?
-                                    <PeopleIcon sx={{ color: green[400] }} />
-                                    :
-                                    <PeopleIcon sx={{ color: red[400] }} />
-                            }</Typography>
-                    </Grid>
-                    <Grid item xs={2} sx={{ display: 'flex', justifyContent: 'left' }}>
-                        <Typography variant="subtitle1">{user.roles.length} roles</Typography>
-                    </Grid>
-                </Grid>
-            </ListItem>
-        )
-    }
-
     return (
         <>
             {
                 users?.length > 0 ?
                     <>
-                        {/* <List
-                            width='100%'
-                            height={800}
-                            rowRenderer={listRenderer}
-                            rowCount={users?.length}
-                            rowHeight={40}
-                        /> */}
                         <Box sx={{
                             width: '100%',
                             height: 680
