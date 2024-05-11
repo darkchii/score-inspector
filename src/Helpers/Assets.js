@@ -82,7 +82,6 @@ export function getPossibleMods() {
         "FL",
         "TD",
         "SO",
-        "CL",
         "None"
     ]
 }

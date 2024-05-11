@@ -9,8 +9,10 @@ import { getModIcon, getPossibleMods, IMG_SVG_GRADE_A, IMG_SVG_GRADE_B, IMG_SVG_
 import ImageToggle from "./ImageToggle";
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import { countries } from 'countries-list';
+import ReactCountryFlag from "react-country-flag";
 
-const FILTER_FIELD_SIZE = 12 / 7;
+const FILTER_FIELD_SIZE = 12 / 5;
 const MIN_DATE = moment('6 Oct 2007');
 const MAX_DATE = moment();
 
@@ -69,7 +71,7 @@ const sorters = [
 
 const defaultFilterData = {
     enabledMods: 0,
-    enabledNomod: true,
+    enabledNomod: false,
     modsUsage: 'any',
     enabledGrades: ['XH', 'X', 'SH', 'S', 'A', 'B', 'C', 'D'],
     minScore: null,
@@ -92,11 +94,14 @@ const defaultFilterData = {
     maxHP: null,
     minLength: null,
     maxLength: null,
+    minRank: null,
+    maxRank: null,
     approved: [1, 2],
     minApprovedDate: MIN_DATE,
     maxApprovedDate: MAX_DATE,
     minPlayedDate: MIN_DATE,
     maxPlayedDate: MAX_DATE,
+    country: ['world'],
     sorter: 'PP_desc',
     _sorter: sorters[0],
     query: ''
@@ -106,6 +111,8 @@ function ScoreFilter(props) {
     //-1 in range values are simply ignored and no limit is set
     //null is ignored too
     const [filterData, setFilterData] = useState(null);
+    const [countryList, setCountryList] = useState([]);
+
 
     const setFilterValue = (key, value) => {
         var newFilterData = { ...filterData };
@@ -124,11 +131,18 @@ function ScoreFilter(props) {
     };
 
     const toggleMod = (mod, checked) => {
-        const updatedMods = filterData.enabledMods + mods[mod] * (checked ? 1 : -1);
+        console.log(`Mod: ${mod} Checked: ${checked}`);
         if (mod === 'None') {
             setFilterValue('enabledNomod', checked);
+        } else {
+            var updatedMods = filterData.enabledMods;
+            if (checked) {
+                updatedMods += mods[mod];
+            } else {
+                updatedMods -= mods[mod];
+            }
+            setFilterValue('enabledMods', updatedMods);
         }
-        setFilterValue('enabledMods', updatedMods);
     }
 
     const toggleGrade = (grade, checked) => {
@@ -207,6 +221,12 @@ function ScoreFilter(props) {
     }
 
     useEffect(() => {
+        const _c = [];
+        for (const key in countries) {
+            _c.push({ code: key.toLowerCase(), name: countries[key].name });
+        }
+        setCountryList([{ code: 'world', name: 'Worldwide' }, ..._c]);
+
         let _filterData = null;
         if (props.filterData !== null) {
             _filterData = props.filterData;
@@ -218,11 +238,6 @@ function ScoreFilter(props) {
             });
         } else {
             _filterData = defaultFilterData;
-            var m = 0;
-            getPossibleMods().forEach(mod => {
-                m += mods[mod];
-            });
-            _filterData.enabledMods = m;
         }
         setFilterData(_filterData);
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -250,7 +265,13 @@ function ScoreFilter(props) {
 
                                     <Tooltip title={mod_strings_long[mods[mod]]} arrow>
                                         <Box display="inline">
-                                            <ImageToggle checkedDefault={true} onClick={(checked) => toggleMod(mod, checked)} sx={{ pr: 0.5 }} height="34px" src={getModIcon(mod)} alt={mod} />
+                                            <ImageToggle
+                                                checkedDefault={mod === 'None' ? filterData.enabledNomod : (filterData.enabledMods & mods[mod]) === mods[mod]}
+                                                onClick={(checked) => toggleMod(mod, checked)}
+                                                sx={{ pr: 0.5 }}
+                                                height="34px"
+                                                src={getModIcon(mod)}
+                                                alt={mod} />
                                         </Box>
                                     </Tooltip>
                                 </>
@@ -308,65 +329,80 @@ function ScoreFilter(props) {
                         </Grid>
                     </Grid>
                 </Grid>
-                <Grid container sx={{ pt: 2, '& > *': { pl: 1 } }}>
-                    <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE}>
-                        <TextField sx={{ width: '100%' }} label="Min Score" type='number' onChange={(e) => setFilterValue('minScore', e.target.value)} value={filterData.minScore} variant="standard" size="small" />
-                        <TextField sx={{ width: '100%' }} label="Max Score" type='number' onChange={(e) => setFilterValue('maxScore', e.target.value)} value={filterData.maxScore} variant="standard" size="small" />
+                <Grid container>
+                    <Grid item xs={12} md={8} lg={8} sx={{ pr: 1 }}>
+                        <Grid container sx={{ pt: 2, '& > *': { pl: 1 } }}>
+                            {/* inline */}
+                            <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE} sx={{ display: 'flex', }}>
+                                <TextField sx={{ width: '100%' }} label="Min Score" type='number' onChange={(e) => setFilterValue('minScore', e.target.value)} value={filterData.minScore} variant="standard" size="small" />
+                                <TextField sx={{ width: '100%' }} label="Max Score" type='number' onChange={(e) => setFilterValue('maxScore', e.target.value)} value={filterData.maxScore} variant="standard" size="small" />
+                            </Grid>
+                            <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE} sx={{ display: 'flex', }}>
+                                <TextField sx={{ width: '100%' }} label="Min Stars" type='number' onChange={(e) => setFilterValue('minStars', e.target.value)} value={filterData.minStars} variant="standard" size="small" />
+                                <TextField sx={{ width: '100%' }} label="Max Stars" type='number' onChange={(e) => setFilterValue('maxStars', e.target.value)} value={filterData.maxStars} variant="standard" size="small" />
+                            </Grid>
+                            <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE} sx={{ display: 'flex', }}>
+                                <TextField sx={{ width: '100%' }} label="Min PP" type='number' onChange={(e) => setFilterValue('minPP', e.target.value)} value={filterData.minPP} variant="standard" size="small" />
+                                <TextField sx={{ width: '100%' }} label="Max PP" type='number' onChange={(e) => setFilterValue('maxPP', e.target.value)} value={filterData.maxPP} variant="standard" size="small" />
+                            </Grid>
+                            <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE} sx={{ display: 'flex', }}>
+                                <TextField sx={{ width: '100%' }} label="Min Acc" type='number' onChange={(e) => setFilterValue('minAcc', e.target.value)} value={filterData.minAcc} variant="standard" size="small" />
+                                <TextField sx={{ width: '100%' }} label="Max Acc" type='number' onChange={(e) => setFilterValue('maxAcc', e.target.value)} value={filterData.maxAcc} variant="standard" size="small" />
+                            </Grid>
+                            <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE} sx={{ display: 'flex', }}>
+                                <TextField sx={{ width: '100%' }} label="Min Combo" type='number' onChange={(e) => setFilterValue('minCombo', e.target.value)} value={filterData.minCombo} variant="standard" size="small" />
+                                <TextField sx={{ width: '100%' }} label="Max Combo" type='number' onChange={(e) => setFilterValue('maxCombo', e.target.value)} value={filterData.maxCombo} variant="standard" size="small" />
+                            </Grid>
+                            <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE} sx={{ display: 'flex', }}>
+                                <TextField sx={{ width: '100%' }} label="Min AR" type='number' onChange={(e) => setFilterValue('minAR', e.target.value)} value={filterData.minAR} variant="standard" size="small" />
+                                <TextField sx={{ width: '100%' }} label="Max AR" type='number' onChange={(e) => setFilterValue('maxAR', e.target.value)} value={filterData.maxAR} variant="standard" size="small" />
+                            </Grid>
+                            <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE} sx={{ display: 'flex', }}>
+                                <TextField sx={{ width: '100%' }} label="Min CS" type='number' onChange={(e) => setFilterValue('minCS', e.target.value)} value={filterData.minCS} variant="standard" size="small" />
+                                <TextField sx={{ width: '100%' }} label="Max CS" type='number' onChange={(e) => setFilterValue('maxCS', e.target.value)} value={filterData.maxCS} variant="standard" size="small" />
+                            </Grid>
+                            <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE} sx={{ display: 'flex', }}>
+                                <TextField sx={{ width: '100%' }} label="Min OD" type='number' onChange={(e) => setFilterValue('minOD', e.target.value)} value={filterData.minOD} variant="standard" size="small" />
+                                <TextField sx={{ width: '100%' }} label="Max OD" type='number' onChange={(e) => setFilterValue('maxOD', e.target.value)} value={filterData.maxOD} variant="standard" size="small" />
+                            </Grid>
+                            <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE} sx={{ display: 'flex', }}>
+                                <TextField sx={{ width: '100%' }} label="Min HP" type='number' onChange={(e) => setFilterValue('minHP', e.target.value)} value={filterData.minHP} variant="standard" size="small" />
+                                <TextField sx={{ width: '100%' }} label="Max HP" type='number' onChange={(e) => setFilterValue('maxHP', e.target.value)} value={filterData.maxHP} variant="standard" size="small" />
+                            </Grid>
+                            <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE} sx={{ display: 'flex', }}>
+                                <TextField sx={{ width: '100%' }} label="Min Length" type='number' onChange={(e) => setFilterValue('minLength', e.target.value)} value={filterData.minLength} variant="standard" size="small" />
+                                <TextField sx={{ width: '100%' }} label="Max Length" type='number' onChange={(e) => setFilterValue('maxLength', e.target.value)} value={filterData.maxLength} variant="standard" size="small" />
+                            </Grid>
+                            {
+                                props.extended ? <>
+                                    <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE} sx={{ display: 'flex', }}>
+                                        <TextField sx={{ width: '100%' }} label="Min User Rank" type='number' onChange={(e) => setFilterValue('minRank', e.target.value)} value={filterData.minRank} variant="standard" size="small" />
+                                        <TextField sx={{ width: '100%' }} label="Max User Rank" type='number' onChange={(e) => setFilterValue('maxRank', e.target.value)} value={filterData.maxRank} variant="standard" size="small" />
+                                    </Grid>
+                                </> : <></>
+                            }
+                        </Grid>
                     </Grid>
-                    <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE}>
-                        <TextField sx={{ width: '100%' }} label="Min Stars" type='number' onChange={(e) => setFilterValue('minStars', e.target.value)} value={filterData.minStars} variant="standard" size="small" />
-                        <TextField sx={{ width: '100%' }} label="Max Stars" type='number' onChange={(e) => setFilterValue('maxStars', e.target.value)} value={filterData.maxStars} variant="standard" size="small" />
-                    </Grid>
-                    <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE}>
-                        <TextField sx={{ width: '100%' }} label="Min PP" type='number' onChange={(e) => setFilterValue('minPP', e.target.value)} value={filterData.minPP} variant="standard" size="small" />
-                        <TextField sx={{ width: '100%' }} label="Max PP" type='number' onChange={(e) => setFilterValue('maxPP', e.target.value)} value={filterData.maxPP} variant="standard" size="small" />
-                    </Grid>
-                    <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE}>
-                        <TextField sx={{ width: '100%' }} label="Min Acc" type='number' onChange={(e) => setFilterValue('minAcc', e.target.value)} value={filterData.minAcc} variant="standard" size="small" />
-                        <TextField sx={{ width: '100%' }} label="Max Acc" type='number' onChange={(e) => setFilterValue('maxAcc', e.target.value)} value={filterData.maxAcc} variant="standard" size="small" />
-                    </Grid>
-                    <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE}>
-                        <TextField sx={{ width: '100%' }} label="Min Combo" type='number' onChange={(e) => setFilterValue('minCombo', e.target.value)} value={filterData.minCombo} variant="standard" size="small" />
-                        <TextField sx={{ width: '100%' }} label="Max Combo" type='number' onChange={(e) => setFilterValue('maxCombo', e.target.value)} value={filterData.maxCombo} variant="standard" size="small" />
-                    </Grid>
-                    <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE}>
-                        <LocalizationProvider dateAdapter={AdapterMoment}>
-                            <DesktopDatePicker minDate={MIN_DATE} maxDate={MAX_DATE} label="Min Ranked Date" inputFormat="MM/DD/YYYY" value={filterData.minApprovedDate} onChange={(e) => setFilterValue('minApprovedDate', e.target.value)} renderInput={(params) => <TextField variant="standard" size="small" {...params} />} />
-                            <DesktopDatePicker minDate={MIN_DATE} maxDate={MAX_DATE} label="Max Ranked Date" inputFormat="MM/DD/YYYY" value={filterData.maxApprovedDate} onChange={(e) => setFilterValue('maxApprovedDate', e.target.value)} renderInput={(params) => <TextField variant="standard" size="small" {...params} />} />
-                        </LocalizationProvider>
-                    </Grid>
-                    <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE}>
-                        <LocalizationProvider dateAdapter={AdapterMoment}>
-                            <DesktopDatePicker minDate={MIN_DATE} maxDate={MAX_DATE} label="Min Played Date" inputFormat="MM/DD/YYYY" value={filterData.minPlayedDate} onChange={(e) => setFilterValue('minPlayedDate', e.target.value)} renderInput={(params) => <TextField variant="standard" size="small" {...params} />} />
-                            <DesktopDatePicker minDate={MIN_DATE} maxDate={MAX_DATE} label="Max Played Date" inputFormat="MM/DD/YYYY" value={filterData.maxPlayedDate} onChange={(e) => setFilterValue('maxPlayedDate', e.target.value)} renderInput={(params) => <TextField variant="standard" size="small" {...params} />} />
-                        </LocalizationProvider>
+                    <Grid item xs={12} md={4} lg={4}>
+                        <Grid container>
+                            <Grid item xs={12}>
+                                <LocalizationProvider dateAdapter={AdapterMoment}>
+                                    <DesktopDatePicker minDate={MIN_DATE} maxDate={MAX_DATE} label="Min Ranked Date" inputFormat="MM/DD/YYYY" value={filterData.minApprovedDate} onChange={(e) => setFilterValue('minApprovedDate', e)} renderInput={(params) => <TextField variant="standard" size="small" {...params} />} />
+                                    <DesktopDatePicker minDate={MIN_DATE} maxDate={MAX_DATE} label="Max Ranked Date" inputFormat="MM/DD/YYYY" value={filterData.maxApprovedDate} onChange={(e) => setFilterValue('maxApprovedDate', e)} renderInput={(params) => <TextField variant="standard" size="small" {...params} />} />
+                                </LocalizationProvider>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <LocalizationProvider dateAdapter={AdapterMoment}>
+                                    <DesktopDatePicker minDate={MIN_DATE} maxDate={MAX_DATE} label="Min Played Date" inputFormat="MM/DD/YYYY" value={filterData.minPlayedDate} onChange={(e) => setFilterValue('minPlayedDate', e)} renderInput={(params) => <TextField variant="standard" size="small" {...params} />} />
+                                    <DesktopDatePicker minDate={MIN_DATE} maxDate={MAX_DATE} label="Max Played Date" inputFormat="MM/DD/YYYY" value={filterData.maxPlayedDate} onChange={(e) => setFilterValue('maxPlayedDate', e)} renderInput={(params) => <TextField variant="standard" size="small" {...params} />} />
+                                </LocalizationProvider>
+                            </Grid>
+                        </Grid>
                     </Grid>
                 </Grid>
                 <Grid container sx={{ pt: 2, '& > *': { pl: 1 } }}>
                     <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE}>
-                        <TextField sx={{ width: '100%' }} label="Min AR" type='number' onChange={(e) => setFilterValue('minAR', e.target.value)} value={filterData.minAR} variant="standard" size="small" />
-                        <TextField sx={{ width: '100%' }} label="Max AR" type='number' onChange={(e) => setFilterValue('maxAR', e.target.value)} value={filterData.maxAR} variant="standard" size="small" />
-                    </Grid>
-                    <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE}>
-                        <TextField sx={{ width: '100%' }} label="Min CS" type='number' onChange={(e) => setFilterValue('minCS', e.target.value)} value={filterData.minCS} variant="standard" size="small" />
-                        <TextField sx={{ width: '100%' }} label="Max CS" type='number' onChange={(e) => setFilterValue('maxCS', e.target.value)} value={filterData.maxCS} variant="standard" size="small" />
-                    </Grid>
-                    <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE}>
-                        <TextField sx={{ width: '100%' }} label="Min OD" type='number' onChange={(e) => setFilterValue('minOD', e.target.value)} value={filterData.minOD} variant="standard" size="small" />
-                        <TextField sx={{ width: '100%' }} label="Max OD" type='number' onChange={(e) => setFilterValue('maxOD', e.target.value)} value={filterData.maxOD} variant="standard" size="small" />
-                    </Grid>
-                    <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE}>
-                        <TextField sx={{ width: '100%' }} label="Min HP" type='number' onChange={(e) => setFilterValue('minHP', e.target.value)} value={filterData.minHP} variant="standard" size="small" />
-                        <TextField sx={{ width: '100%' }} label="Max HP" type='number' onChange={(e) => setFilterValue('maxHP', e.target.value)} value={filterData.maxHP} variant="standard" size="small" />
-                    </Grid>
-                    <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE}>
-                        <TextField sx={{ width: '100%' }} label="Min Length" type='number' onChange={(e) => setFilterValue('minLength', e.target.value)} value={filterData.minLength} variant="standard" size="small" />
-                        <TextField sx={{ width: '100%' }} label="Max Length" type='number' onChange={(e) => setFilterValue('maxLength', e.target.value)} value={filterData.maxLength} variant="standard" size="small" />
-                    </Grid>
-                </Grid>
-                <Grid container sx={{ pt: 2, '& > *': { pl: 1 } }}>
-                    <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE}>
-                        <FormControl variant="standard" sx={{ width: '100%' }}>
+                        <FormControl variant="standard" sx={{ width: '100%' }} size='small'>
                             <InputLabel id="sort-select-label">Sort</InputLabel>
                             <Select
                                 labelId="sort-select-label"
@@ -400,7 +436,7 @@ function ScoreFilter(props) {
                         </FormControl>
                     </Grid>
                     <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE}>
-                        <FormControl variant="standard" sx={{ width: '100%' }}>
+                        <FormControl variant="standard" sx={{ width: '100%' }} size='small'>
                             <InputLabel id="sort-select-label">Approved</InputLabel>
                             <Select
                                 labelId="sort-select-label"
@@ -415,6 +451,37 @@ function ScoreFilter(props) {
                                 <MenuItem value={4}>Loved</MenuItem>
                             </Select>
                         </FormControl>
+                    </Grid>
+                    <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE}>
+                        {
+                            countryList.length > 0 ?
+                                <FormControl variant="standard" sx={{ width: '100%' }} size='small'>
+                                    <InputLabel size='small' id={`country_dropdown_label`}>Country</InputLabel>
+                                    <Select
+                                        size='small'
+                                        value={filterData.country}
+                                        // onChange={e => setCountry(e.target.value)}
+                                        onChange={e => setFilterValue('country', e.target.value)}
+                                        labelId={`country_dropdown_label`}
+                                        label='Country'
+                                        multiple
+                                    >
+                                        {
+                                            countryList.map((value) => {
+                                                return (
+                                                    <MenuItem key={value.code} value={value.code}>
+                                                        {
+                                                            value.code !== 'world' ? <ReactCountryFlag style={{ lineHeight: '1em', fontSize: '1.4em', borderRadius: '5px' }} cdnUrl="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/" countryCode={value.code} /> : <></>
+                                                        }
+                                                        &nbsp;{value.name}
+                                                    </MenuItem>
+                                                )
+                                            })
+                                        }
+                                    </Select>
+                                </FormControl>
+                                : <></>
+                        }
                     </Grid>
                 </Grid>
                 <Grid sx={{ alignContent: 'center' }}>
