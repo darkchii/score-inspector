@@ -610,15 +610,21 @@ export function FilterScores(full_scores, filter) {
     });
 
     //mods
-    scores = scores.filter(score => {
-        if (filter.modsUsage === 'any') {
-            if (score.enabled_mods === 0 && filter.enabledNomod) {
-                return true;
+    console.log(`Filtering by mods: ${filter.enabledMods} ${filter.modsUsage} ${filter.enabledNomod}`); // eslint-disable-line no-console
+    if (filter.enabled_mods > 0 || filter.enabledMods) {
+        scores = scores.filter(score => {
+            if (filter.modsUsage === 'any') {
+                if (score.enabled_mods === 0 && filter.enabledNomod) {
+                    return true;
+                }
+                return (filter.enabledMods & score.enabled_mods) !== 0;
             }
-            return (filter.enabledMods & score.enabled_mods) !== 0;
-        }
-        return filter.enabledMods === score.enabled_mods;
-    });
+            if (filter.enabledNomod) {
+                return score.enabled_mods === 0;
+            }
+            return filter.enabledMods === score.enabled_mods;
+        });
+    }
 
     //grades
     scores = scores.filter(score => {
