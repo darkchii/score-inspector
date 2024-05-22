@@ -2,6 +2,10 @@ import axios from "axios";
 import { GetAPI } from "./Misc";
 import { getCalculator } from "./Performance/Performance.js";
 import moment from "moment";
+import BADGE_COMPLETIONIST_STANDARD from "../Assets/Completionists/standard.png";
+import BADGE_COMPLETIONIST_TAIKO from "../Assets/Completionists/taiko.png";
+import BADGE_COMPLETIONIST_CATCH from "../Assets/Completionists/catch.png";
+import BADGE_COMPLETIONIST_MANIA from "../Assets/Completionists/mania.png";
 
 export const approval_state = {
     '-2': 'Graveyard',
@@ -12,6 +16,26 @@ export const approval_state = {
     '3': 'Qualified',
     '4': 'Loved'
 }
+
+export const osu_modes = [
+    {
+        id: 0,
+        name: 'osu!standard',
+        completion_badge: BADGE_COMPLETIONIST_STANDARD
+    }, {
+        id: 1,
+        name: 'osu!taiko',
+        completion_badge: BADGE_COMPLETIONIST_TAIKO
+    }, {
+        id: 2,
+        name: 'osu!catch',
+        completion_badge: BADGE_COMPLETIONIST_CATCH
+    }, {
+        id: 3,
+        name: 'osu!mania',
+        completion_badge: BADGE_COMPLETIONIST_MANIA
+    }
+]
 
 export const PP_SYSTEM_NAMES = {
     'live': { title: 'Live', description: 'The current PP system' },

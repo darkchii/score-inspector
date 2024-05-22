@@ -20,6 +20,7 @@ import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 import HistoryIcon from '@mui/icons-material/History';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import ListIcon from '@mui/icons-material/List';
+import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
 
 const HeaderButtonMenu = styled((props) => (
     <Menu
@@ -81,6 +82,7 @@ function Header(props) {
         {
             name: 'Search', icon: <SearchIcon />, onClick: () => searchElement.current.setOpen(true), dropDown: [
                 { name: 'Staff', icon: <SupervisorAccountIcon />, onClick: () => { }, linkTo: '/staff' },
+                { name: 'Completionists', icon: <MilitaryTechIcon />, onClick: () => { }, linkTo: '/completionists' },
             ],
         },
         { name: 'Leaderboards', icon: <LeaderboardIcon />, onClick: () => { }, linkTo: '/leaderboard', dropDown: [

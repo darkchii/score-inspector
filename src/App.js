@@ -14,7 +14,6 @@ import Leaders from './Routes/Leaders';
 import { loadSettings } from './Helpers/Settings';
 import Top from './Routes/Top';
 import Stats from './Routes/Stats';
-import Beatmaps from './Routes/Beatmaps';
 import { IsUserLoggedIn } from './Helpers/Account';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -33,6 +32,7 @@ import Milestones from './Routes/Milestones';
 import Docs from './Routes/Docs';
 import LeadersMonthly from './Routes/LeadersMonthly.js';
 import Scores from './Routes/Scores.js';
+import Completionists from './Routes/Completionists.js';
 
 function App() {
   const [loginData, setLoginData] = useState(null);
@@ -118,11 +118,11 @@ function App() {
                 <Route path="dev" element={<CompDev />} />
                 <Route path="top" element={<Top />} />
                 <Route path="stats" element={<Stats />} />
-                <Route path="beatmaps" element={<Beatmaps />} />
                 <Route path="staff" element={<Staff />} />
                 <Route path="population" element={<Population />} />
                 <Route path="scores" element={<Scores />} />
                 <Route path="docs" element={<Docs />} />
+                <Route path="completionists" element={<Completionists />} />
                 <Route path="logout" element={<Logout />} />
                 <Route path="milestones" element={<Milestones />}>
                   <Route index element={<Milestones />} />
