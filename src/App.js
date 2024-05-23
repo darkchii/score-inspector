@@ -33,6 +33,7 @@ import Docs from './Routes/Docs';
 import LeadersMonthly from './Routes/LeadersMonthly.js';
 import Scores from './Routes/Scores.js';
 import Completionists from './Routes/Completionists.js';
+import Clan from './Routes/Clan.js';
 
 function App() {
   const [loginData, setLoginData] = useState(null);
@@ -124,6 +125,7 @@ function App() {
                 <Route path="docs" element={<Docs />} />
                 <Route path="completionists" element={<Completionists />} />
                 <Route path="logout" element={<Logout />} />
+                <Route path="clan/:id?" element={<Clan />} />
                 <Route path="milestones" element={<Milestones />}>
                   <Route index element={<Milestones />} />
                   <Route path="page/:page" element={<Milestones />} />

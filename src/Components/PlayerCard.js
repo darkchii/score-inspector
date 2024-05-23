@@ -90,6 +90,11 @@ function PlayerCard(props) {
                                                 cdnUrl="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/"
                                                 countryCode={props.user.osu?.country_code}
                                             />
+                                            {
+                                                props.user.inspector_user?.clan_member ? 
+                                                    <span><b style={{color: `#${props.user.inspector_user?.clan_member.clan.color}` }}>{`[${props.user.inspector_user?.clan_member.clan.tag}] `}</b></span>
+                                                : null
+                                            }
                                             {props.user.osu?.username}
                                         </Typography>
                                         {

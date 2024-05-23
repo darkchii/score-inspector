@@ -21,6 +21,7 @@ import HistoryIcon from '@mui/icons-material/History';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import ListIcon from '@mui/icons-material/List';
 import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
+import GroupIcon from '@mui/icons-material/Group';
 
 const HeaderButtonMenu = styled((props) => (
     <Menu
@@ -95,6 +96,7 @@ function Header(props) {
         { name: 'Tools', icon: <BuildIcon />, onClick: () => { }, linkTo: '/tools' },
         { name: 'Milestones', icon: <EmojiEventsIcon />, onClick: () => { }, linkTo: '/milestones' },
         { name: 'Scores', icon: <ListIcon />, onClick: () => { }, linkTo: '/scores' },
+        { name: 'Clans', icon: <GroupIcon />, onClick: () => { }, linkTo: '/clan' },
     ];
 
     const handleHeaderMenuOpen = (event, index) => {
