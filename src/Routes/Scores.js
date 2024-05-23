@@ -1,9 +1,7 @@
-import { useEffect, useState } from "react";
-import { GetFormattedName, GetRemoteRoles, GetRemoteUsersByRole, GetRoleIcon } from "../Helpers/Account";
-import { Accordion, AccordionDetails, AccordionSummary, Alert, Box, Card, CardContent, CardHeader, Chip, Grid, Stack, Tooltip, Typography } from "@mui/material";
-import PlayerCard from "../Components/PlayerCard";
-import { useNavigate } from "react-router-dom/dist";
-import { FilterScores, getFullUser, getModString, mod_strings_long, mods } from "../Helpers/Osu";
+import { useState } from "react";
+import { GetFormattedName } from "../Helpers/Account";
+import { Accordion, AccordionDetails, AccordionSummary, Alert, Box, Tooltip, Typography } from "@mui/material";
+import { getModString, mod_strings_long, mods } from "../Helpers/Osu";
 import Loader from "../Components/UI/Loader";
 import { Helmet } from "react-helmet";
 import config from "../config.json";
@@ -15,7 +13,6 @@ import { AutoSizer, Column, Table as VTable } from 'react-virtualized';
 import { getGradeIcon, getModIcon } from "../Helpers/Assets";
 
 function Scores(props) {
-    const navigate = useNavigate();
     const [cachedFilterData, setCachedFilterData] = useState(null);
     const [scores, setScores] = useState([]);
     const [isWorking, setIsWorking] = useState(false);

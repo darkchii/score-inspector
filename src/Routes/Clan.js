@@ -1,11 +1,11 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Helmet } from "react-helmet";
 import config from "../config.json";
-import { Alert, Box, Button, ButtonGroup, Card, CardContent, Container, Divider, Grid, Modal, Stack, Table, TableBody, TableCell, TableContainer, TableRow, TextField, Typography, tableCellClasses } from "@mui/material";
+import { Alert, Box, Button, Card, CardContent, Container, Divider, Grid, Modal, Stack, Table, TableBody, TableCell, TableContainer, TableRow, TextField, Typography, tableCellClasses } from "@mui/material";
 import { useState } from "react";
 import { MODAL_STYLE, showNotification } from "../Helpers/Misc";
 import { useEffect } from "react";
 import { GetFormattedName, GetLoginID, GetLoginToken, GetUser } from "../Helpers/Account";
-import { set } from "lodash";
 import { CreateClan, DeleteClan, GetClan, GetClanList, UpdateClan } from "../Helpers/Clan";
 import { useNavigate, useParams } from "react-router-dom";
 import Loader from "../Components/UI/Loader";
@@ -513,7 +513,7 @@ function ClanFormFields(props) {
     const [clanDescription, setClanDescription] = useState(props.clan?.clan.description ?? '');
     const [clanColor, setClanColor] = useState(props.clan?.clan.color ?? 'ffffff');
     const [clanHeaderUrl, setClanHeaderUrl] = useState(props.clan?.clan.header_image_url ?? '');
-    const [isEditMode, setIsEditMode] = useState(props.clan ? true : false);
+    const [isEditMode] = useState(props.clan ? true : false);
 
     const [exampleUser, setExampleUser] = useState(null);
 

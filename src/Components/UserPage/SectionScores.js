@@ -4,7 +4,6 @@ import { Box, Button, Dialog, DialogContent, DialogTitle, Pagination, Stack, Typ
 import { useEffect } from 'react';
 import ScoreRow from '../ScoreRow.js';
 import ScoreFilter from '../ScoreFilter.js';
-import moment from 'moment';
 import { FilterScores } from '../../Helpers/Osu.js';
 
 const SCORES_PER_PAGE = 100;
@@ -33,6 +32,7 @@ function SectionScores(props) {
 
     const handleFilter = (filter) => {
         if (filter !== null) {
+            // eslint-disable-next-line no-unused-vars
             let { scores, _filter} = FilterScores(props.user.scores, filter);
 
             _setFilteredScores(scores);

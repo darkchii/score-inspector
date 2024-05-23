@@ -1,11 +1,6 @@
-import { useState, useEffect } from "react";
-import { Box, Tooltip, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import GlowBar from "../UI/GlowBar";
 import { LeaderboardItem } from "./LeaderboardItem";
-import CheckIcon from '@mui/icons-material/Check';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import { approval_state } from "../../Helpers/Osu";
-import { green, red, yellow } from "@mui/material/colors";
 import { useNavigate } from "react-router-dom";
 
 function ClanLeaderboardItem(props) {
