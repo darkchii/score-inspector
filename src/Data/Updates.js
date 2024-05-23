@@ -15,9 +15,11 @@ const updates = [
         version: '3.0.0',
         date: '2024-05-04',
         changes: [
-            [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Added daily poll of 5 random beatmaps'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Added clans', '00ca1dffcdf0d379c74b35d4e342acccb5802cc1'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Added completionists page', 'b413ebbf809b63d16642938b3560c2298bcafab5'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Added global scores browser', '9efab4544402065237ebe3787ee4057f010cab16'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Added daily poll of 5 random beatmaps', '73ce2bb8cdc1c5eeb6c090b23d5aaa136f8b8912'],
             [PLATFORMTYPES.WEB | PLATFORMTYPES.API, CHANGETYPES.NEW, 'Added more monthly farm statistic types', '9dc6361e8ccad52ee82e3de4e73c274a671bad4a'],
-            [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Added more monthly farm statistic types', '9dc6361e8ccad52ee82e3de4e73c274a671bad4a'],
             [PLATFORMTYPES.WEB, CHANGETYPES.MISC, 'User page tabs now have a dedicated URL section, allowing direct linking and refreshing', 'd44491eb0119b2fcb9f264b5ce8e22027f0b07db'],
             [PLATFORMTYPES.WEB, CHANGETYPES.MISC, 'Missing modded star ratings will now get value 0, to keep showing the scores', 'b4f0092eed016c68c40f633b102256900ad0459e'],
             [PLATFORMTYPES.WEB | PLATFORMTYPES.API, CHANGETYPES.FIX, 'Index statistics load much faster now', '420f661bac62804109f76dc85374346cc3aa7ad0'],
