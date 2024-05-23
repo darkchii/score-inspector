@@ -1,16 +1,18 @@
 import { Helmet } from "react-helmet";
 import config from "../config.json";
-import { Alert, Box, Button, Card, CardContent, Container, Divider, Grid, Modal, Stack, Table, TableBody, TableCell, TableContainer, TableRow, TextField, Typography, tableCellClasses } from "@mui/material";
+import { Alert, Box, Button, ButtonGroup, Card, CardContent, Container, Divider, Grid, Modal, Stack, Table, TableBody, TableCell, TableContainer, TableRow, TextField, Typography, tableCellClasses } from "@mui/material";
 import { useState } from "react";
 import { MODAL_STYLE, showNotification } from "../Helpers/Misc";
 import { useEffect } from "react";
 import { GetFormattedName, GetLoginID, GetLoginToken, GetUser } from "../Helpers/Account";
 import { set } from "lodash";
-import { CreateClan, DeleteClan, GetClan, UpdateClan } from "../Helpers/Clan";
+import { CreateClan, DeleteClan, GetClan, GetClanList, UpdateClan } from "../Helpers/Clan";
 import { useNavigate, useParams } from "react-router-dom";
 import Loader from "../Components/UI/Loader";
 import PlayerCard from "../Components/PlayerCard";
 import moment from "moment";
+import ClanLeaderboardItem from "../Components/Leaderboards/ClanLeaderboardItem";
+import { grey } from "@mui/material/colors";
 
 //always round to 2 decimal places, and toLocaleString for commas
 const CLAN_STATS = [
@@ -101,38 +103,79 @@ const CLAN_STATS = [
         format: (stats) => (stats.total_hits ?? 0).toLocaleString('en-US'),
         ranking: true,
         key: 'total_hits',
+    }, {
+        name: 'Members',
+        format: (stats) => (stats.members ?? 0).toLocaleString('en-US'),
+        ranking: false,
+        display: false,
+        key: 'members',
     }
 ]
 
 function Clan(props) {
+    const [clanList, setClanList] = useState([]);
     const [clanCreatorModalOpen, setClanCreatorModalOpen] = useState(false);
     const [loggedInUser, setLoggedInUser] = useState(null);
     const [clanData, setClanData] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [clanRemoveModalOpen, setClanRemoveModalOpen] = useState(false);
     const [clanEditModalOpen, setClanEditModalOpen] = useState(false);
+    const [currentClanSorter, setCurrentClanSorter] = useState('average_pp');
     const params = useParams();
     const navigate = useNavigate();
 
+    const loadClan = (id) => {
+        setClanData(null);
+        setIsLoading(true);
+
+        (async () => {
+            try {
+                const data = await GetClan(params.id);
+                console.log(data);
+                setClanData(data);
+            } catch (err) {
+                showNotification('Error', 'An error occurred while fetching the clan data.', 'error');
+                showNotification('Error', err.message, 'error');
+            }
+            setIsLoading(false);
+        })();
+    }
+
+    const loadClanList = () => {
+        setIsLoading(true);
+        setClanList([]);
+
+        (async () => {
+            try {
+                const data = await GetClanList();
+
+                //this is only ever used for sorting, so api doesnt do this
+                //add member count to stats
+                data.clans.forEach((clan) => {
+                    clan.clan_stats.members = clan.clan_members.length;
+                });
+                let clans = data.clans;
+                setClanList(clans ?? []);
+            } catch (err) {
+                showNotification('Error', 'An error occurred while fetching the clan list.', 'error');
+                showNotification('Error', err.message, 'error');
+            }
+        })();
+
+        setIsLoading(false);
+    }
+
     useEffect(() => {
         if (params.id) {
-            //fetch clan data
-            setClanData(null);
-            setIsLoading(true);
-
-            (async () => {
-                try {
-                    const data = await GetClan(params.id);
-                    console.log(data);
-                    setClanData(data);
-                } catch (err) {
-                    showNotification('Error', 'An error occurred while fetching the clan data.', 'error');
-                    showNotification('Error', err.message, 'error');
-                }
-                setIsLoading(false);
-            })();
+            loadClan(params.id);
         }
     }, [params.id]);
+
+    useEffect(() => {
+        if (!params.id) {
+            loadClanList();
+        }
+    }, []);
 
     useEffect(() => {
         (async () => {
@@ -245,7 +288,8 @@ function Clan(props) {
                                                                 }}>
                                                                     <TableBody>
                                                                         {
-                                                                            CLAN_STATS.map((stat) => {
+                                                                            //remove where display is false
+                                                                            CLAN_STATS.filter((stat) => stat.display !== false).map((stat) => {
                                                                                 return (
                                                                                     <TableRow key={stat.key}>
                                                                                         <TableCell>{stat.name}</TableCell>
@@ -306,27 +350,80 @@ function Clan(props) {
                                 )
                         )
                         :
-                        <Box style={{
-                            display: 'flex',
-                        }}>
-                            <Typography variant='h6'>Clans</Typography>
-                            {/* <img src={osu_modes[mode].completion_badge} alt={`${osu_modes[mode].name} badge`} style={{
-                        marginLeft: 'auto',
-                    }} /> */}
+                        <>
+                            <Box style={{
+                                display: 'flex',
+                            }}>
+                                <Typography variant='h6'>Clans</Typography>
+                                {
+                                    loggedInUser && loggedInUser.clan_member?.clan && loggedInUser.clan_member?.clan ?
+                                        <Button
+                                            onClick={() => navigate(`/clan/${loggedInUser.clan_member.clan.id}`)}
+                                            variant='contained' color='primary' sx={{
+                                                marginLeft: 'auto',
+                                            }}>Go to {loggedInUser.clan_member.clan.name}</Button> :
+                                        <Button
+                                            onClick={() => setClanCreatorModalOpen(true)}
+                                            variant='contained' color='primary' sx={{
+                                                marginLeft: 'auto',
+                                            }}>Create a clan</Button>
+                                }
+                            </Box>
+                            <Box sx={{ mt: 2 }}>
+                                {
+                                    CLAN_STATS.map((stat) => {
+                                        return (
+                                            <Button
+                                                onClick={() => setCurrentClanSorter(stat.key)}
+                                                variant={currentClanSorter === stat.key ? 'contained' : 'outlined'}
+                                                size='small'
+                                                sx={{ mr: 1, mb: 1 }}
+                                            >
+                                                {stat.name}
+                                            </Button>
+                                        )
+                                    })
+                                }
+                            </Box>
                             {
-                                loggedInUser && loggedInUser.clan_member?.clan && loggedInUser.clan_member?.clan ?
-                                    <Button
-                                        onClick={() => navigate(`/clan/${loggedInUser.clan_member.clan.id}`)}
-                                        variant='contained' color='primary' sx={{
-                                            marginLeft: 'auto',
-                                        }}>{loggedInUser.clan_member.clan.name}</Button> :
-                                    <Button
-                                        onClick={() => setClanCreatorModalOpen(true)}
-                                        variant='contained' color='primary' sx={{
-                                            marginLeft: 'auto',
-                                        }}>Create a clan</Button>
+                                clanList.length > 0 ? <>
+                                    <Box sx={{ 
+                                        mt: 2,
+                                        //max height of 80vh
+                                        maxHeight: '80vh',
+                                        overflowY: 'auto'
+                                     }}>
+                                        <Stack direction='column' spacing={0.6}>
+                                            {
+                                                //sort by current sorter
+                                                clanList.sort((a, b) => b.clan_stats[currentClanSorter] - a.clan_stats[currentClanSorter]).map((clan, index) => {
+                                                    return (
+                                                        <ClanLeaderboardItem
+                                                            index={index + 1}
+                                                            clan={clan}
+                                                            onClick={() => navigate(`/clan/${clan.id}`)}
+                                                            values={
+                                                                [
+                                                                    //empty
+                                                                    { value: '', alignment: 'left', variant: 'body2' },
+                                                                    //select stat name from clan_stats entry
+                                                                    {
+                                                                        value: CLAN_STATS.find((stat) => stat.key === currentClanSorter).name, alignment: 'right', variant: 'body2',
+                                                                        color: grey[500]
+                                                                    },
+                                                                    //select clan_stat entry from sorter, then use format function
+                                                                    { value: CLAN_STATS.find((stat) => stat.key === currentClanSorter).format(clan.clan_stats), alignment: 'left', variant: 'body2' },
+                                                                ]
+                                                            }
+                                                        />
+                                                    )
+                                                })
+                                            }
+                                        </Stack>
+                                    </Box>
+                                </> : <Typography variant='body1'>Clan list empty.</Typography>
                             }
-                        </Box>
+                        </>
                 }
             </Container>
         </>

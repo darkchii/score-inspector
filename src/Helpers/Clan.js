@@ -43,3 +43,8 @@ export async function DeleteClan(data) {
     const body = await parseReadableStreamToJson(response.body);
     return body;
 }
+
+export async function GetClanList(){
+    const response = await axios.get(`${GetAPI()}clans/list`);
+    return response.data;
+}
