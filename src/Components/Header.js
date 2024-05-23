@@ -86,11 +86,13 @@ function Header(props) {
                 { name: 'Completionists', icon: <MilitaryTechIcon />, onClick: () => { }, linkTo: '/completionists' },
             ],
         },
-        { name: 'Leaderboards', icon: <LeaderboardIcon />, onClick: () => { }, linkTo: '/leaderboard', dropDown: [
-            { name: 'Top Score Per Month', icon: <EmojiEventsIcon />, onClick: () => { }, linkTo: '/month_score' },
-            { name: 'Historic Score Rank', icon: <HistoryIcon />, onClick: () => { }, linkTo: '/score' },
-            { name: 'Countries', icon: <PublicIcon />, onClick: () => { }, linkTo: '/population' },
-        ] },
+        {
+            name: 'Leaderboards', icon: <LeaderboardIcon />, onClick: () => { }, linkTo: '/leaderboard', dropDown: [
+                { name: 'Top Score Per Month', icon: <EmojiEventsIcon />, onClick: () => { }, linkTo: '/month_score' },
+                { name: 'Historic Score Rank', icon: <HistoryIcon />, onClick: () => { }, linkTo: '/score' },
+                { name: 'Countries', icon: <PublicIcon />, onClick: () => { }, linkTo: '/population' },
+            ]
+        },
         { name: 'Top Scores', icon: <StarIcon />, onClick: () => { }, linkTo: '/top' },
         { name: 'Stats', icon: <DataUsageIcon />, onClick: () => { }, linkTo: '/stats' },
         { name: 'Tools', icon: <BuildIcon />, onClick: () => { }, linkTo: '/tools' },
@@ -125,7 +127,9 @@ function Header(props) {
             <List>
                 {headerNavItems.map((item, index) => (
                     <ListItem key={`${item.name}-${index}`} disablePadding>
-                        <ListItemButton startIcon={item.icon}>
+                        {/* onClick for item.onClick or make it a Link component */}
+                        {/* <ListItemButton onClick={() => item.onClick()} startIcon={item.icon}> */}
+                        <ListItemButton component={Link} to={item.linkTo} startIcon={item.icon} onClick={() => item.onClick()}>
                             <ListItemIcon sx={{ minWidth: '40px' }}>{item.icon}</ListItemIcon>
                             <ListItemText primary={item.name} />
                         </ListItemButton>
