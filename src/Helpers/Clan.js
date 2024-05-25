@@ -26,9 +26,12 @@ export async function UpdateClan(data) {
 
 }
 
-export async function GetClan(id) {
+export async function GetClan(id, login_user_id = null, login_user_token = null) {
     // const response = await fetch(`${GetAPI()}clans/get/${id}`);
-    const response = await axios.get(`${GetAPI()}clans/get/${id}`);
+    const response = await axios.post(`${GetAPI()}clans/get/${id}`, {
+        login_user_id: login_user_id,
+        login_user_token: login_user_token
+    });
     return response.data;
 }
 
@@ -44,7 +47,45 @@ export async function DeleteClan(data) {
     return body;
 }
 
-export async function GetClanList(){
+export async function JoinRequestClan(clan_id, user_id, token) {
+    const response = await axios.post(`${GetAPI()}clans/join_request`, {
+        clan_id: clan_id,
+        user_id: user_id,
+        token: token
+    });
+    return response.data;
+}
+
+export async function AcceptJoinRequestClan(accepter_id, join_request_id, token, clan_id) {
+    const response = await axios.post(`${GetAPI()}clans/accept_request`, {
+        owner_id: accepter_id,
+        join_request_id: join_request_id,
+        token: token,
+        clan_id: clan_id
+    });
+    return response.data;
+}
+
+export async function RejectJoinRequestClan(rejecter_id, join_request_id, token, clan_id) {
+    const response = await axios.post(`${GetAPI()}clans/reject_request`, {
+        owner_id: rejecter_id,
+        join_request_id: join_request_id,
+        token: token,
+        clan_id: clan_id
+    });
+    return response.data;
+}
+
+export async function LeaveClan(user_id, token, clan_id) {
+    const response = await axios.post(`${GetAPI()}clans/leave`, {
+        user_id: user_id,
+        token: token,
+        clan_id: clan_id
+    });
+    return response.data;
+}
+
+export async function GetClanList() {
     const response = await axios.get(`${GetAPI()}clans/list`);
     return response.data;
 }

@@ -207,10 +207,10 @@ export async function IsUserLoggedIn() {
     }
 }
 
-export async function GetUser(osu_id) {
+export async function GetUser(osu_id, session_token = null) {
     try {
         const res = await axios.get(`${GetAPI()}login/get/${osu_id}`);
-        if (res.data !== null && res.data?.osu_id?.toString() === osu_id.toString()) {
+        if(res.data !== null && res.data?.osu_id?.toString() === osu_id.toString()){
             return res.data;
         }
         return null;

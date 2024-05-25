@@ -1,18 +1,19 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Helmet } from "react-helmet";
 import config from "../config.json";
-import { Alert, Box, Button, Card, CardContent, Container, Divider, Grid, Modal, Stack, Table, TableBody, TableCell, TableContainer, TableRow, TextField, Typography, tableCellClasses } from "@mui/material";
+import { Alert, Box, Button, Card, CardContent, Container, Divider, Grid, Modal, Stack, Table, TableBody, TableCell, TableContainer, TableRow, TextField, Tooltip, Typography, tableCellClasses } from "@mui/material";
 import { useState } from "react";
 import { MODAL_STYLE, showNotification } from "../Helpers/Misc";
 import { useEffect } from "react";
 import { GetFormattedName, GetLoginID, GetLoginToken, GetUser } from "../Helpers/Account";
-import { CreateClan, DeleteClan, GetClan, GetClanList, UpdateClan } from "../Helpers/Clan";
+import { AcceptJoinRequestClan, CreateClan, DeleteClan, GetClan, GetClanList, JoinRequestClan, LeaveClan, RejectJoinRequestClan, UpdateClan } from "../Helpers/Clan";
 import { useNavigate, useParams } from "react-router-dom";
 import Loader from "../Components/UI/Loader";
 import PlayerCard from "../Components/PlayerCard";
 import moment from "moment";
 import ClanLeaderboardItem from "../Components/Leaderboards/ClanLeaderboardItem";
 import { grey } from "@mui/material/colors";
+import sanitize from "sanitize-html";
 
 //always round to 2 decimal places, and toLocaleString for commas
 const CLAN_STATS = [
@@ -124,13 +125,82 @@ function Clan(props) {
     const params = useParams();
     const navigate = useNavigate();
 
-    const loadClan = (id) => {
+    const eventRequestJoinClan = async () => {
+        try {
+            const response = await JoinRequestClan(params.id, loggedInUser.osu_id, await GetLoginToken());
+            if (response.error) {
+                showNotification('Error', response.error, 'error');
+            } else {
+                showNotification('Success', 'Request sent successfully.', 'success');
+                await loadClan(params.id, true);
+            }
+        } catch (err) {
+            showNotification('Error', 'An error occurred while requesting to join the clan.', 'error');
+        }
+    }
+
+    const eventLeaveClan = async () => {
+        try {
+            const response = await LeaveClan(loggedInUser.osu_id, await GetLoginToken(), params.id);
+            if (response.error) {
+                showNotification('Error', response.error, 'error');
+            } else {
+                showNotification('Success', 'Left the clan.', 'success');
+                await loadClan(params.id, true);
+            }
+        } catch (err) {
+            showNotification('Error', 'An error occurred while leaving the clan.', 'error');
+        }
+    }
+
+    const eventAcceptJoinRequest = async (request) => {
+        try {
+            const response = await AcceptJoinRequestClan(loggedInUser.osu_id, request.user.alt.user_id, await GetLoginToken(), clanData.clan.id);
+            if (response.error) {
+                showNotification('Error', response.error, 'error');
+            } else {
+                showNotification('Success', 'Request accepted successfully.', 'success');
+                await loadClan(params.id, true);
+            }
+        } catch (err) {
+            showNotification('Error', 'An error occurred while accepting the join request.', 'error');
+        }
+    }
+
+    const eventRejectJoinRequest = async (request) => {
+        try {
+            const response = await RejectJoinRequestClan(loggedInUser.osu_id, request.user.alt.user_id, await GetLoginToken(), clanData.clan.id);
+            if (response.error) {
+                showNotification('Error', response.error, 'error');
+            } else {
+                showNotification('Success', 'Request rejected successfully.', 'success');
+                await loadClan(params.id, true);
+            }
+        } catch (err) {
+            showNotification('Error', 'An error occurred while rejecting the join request.', 'error');
+        }
+    }
+
+    const loadUser = async (force_reload_user = false) => {
+        if (loggedInUser && !force_reload_user) return loggedInUser;
+        const _user = await GetLoginID();
+        if (_user) {
+            const __user = await GetUser(_user);
+            setLoggedInUser(__user || null);
+            return __user;
+        }
+        return null;
+    }
+
+    const loadClan = (id, force_reload_user = false) => {
         setClanData(null);
         setIsLoading(true);
 
         (async () => {
             try {
-                const data = await GetClan(params.id);
+                const _user = await loadUser(force_reload_user);
+                console.log('TRACKER', _user);
+                const data = await GetClan(params.id, _user?.osu_id ?? null, (await GetLoginToken()) ?? null);
                 console.log(data);
                 setClanData(data);
             } catch (err) {
@@ -179,10 +249,9 @@ function Clan(props) {
 
     useEffect(() => {
         (async () => {
-            const _user = await GetLoginID();
-            if (_user) {
-                const __user = await GetUser(_user);
-                setLoggedInUser(__user || null);
+            await loadUser();
+            if (!params.id) {
+                loadClanList();
             }
         })()
     }, [params]);
@@ -268,6 +337,34 @@ function Clan(props) {
                                                         <CardContent>
                                                             <Typography variant='h6'><span style={{ color: `#${clanData.clan.color}` }}>[{clanData.clan.tag}]</span> {clanData.clan.name}</Typography>
                                                             <Typography variant='body1'>{clanData.clan.description}</Typography>
+                                                            {
+                                                                loggedInUser
+                                                                    && loggedInUser.clan_member?.clan?.owner !== loggedInUser?.osu_id
+                                                                    ? (
+                                                                        loggedInUser.clan_member && loggedInUser.clan_member.clan.id === clanData.clan.id ? <>
+                                                                            <Button
+                                                                                onClick={eventLeaveClan}
+                                                                                size='small'
+                                                                                variant='contained'
+                                                                                color='error'
+                                                                                sx={{
+                                                                                    mt: 2
+                                                                                }}>
+                                                                                Leave
+                                                                            </Button>
+                                                                        </> : <>
+                                                                            <Button
+                                                                                onClick={eventRequestJoinClan}
+                                                                                size='small'
+                                                                                variant='contained'
+                                                                                sx={{
+                                                                                    mt: 2
+                                                                                }}>
+                                                                                Request to join
+                                                                            </Button>
+                                                                        </>
+                                                                    ) : <></>
+                                                            }
                                                         </CardContent>
                                                     </Card>
                                                     <Box sx={{ mt: 2 }} />
@@ -308,7 +405,7 @@ function Clan(props) {
                                                 <Grid item xs={12} md={8}>
                                                     {
                                                         //if owner, show Edit button
-                                                        loggedInUser && loggedInUser.clan_member.clan && loggedInUser.clan_member.clan.id === clanData.clan.id ?
+                                                        loggedInUser && loggedInUser?.clan_member?.clan && loggedInUser?.clan_member?.clan?.id === clanData.clan.id ?
                                                             <>
                                                                 <Button
                                                                     variant='contained'
@@ -326,12 +423,16 @@ function Clan(props) {
                                                     }
                                                     <Box sx={{ mt: 2 }}>
                                                         <Typography variant='h6'>Owner</Typography>
-                                                        <PlayerCard onClick={() => { navigate(`/user/${clanData.owner.osu_id}`); }} user={clanData.owner.user} />
+                                                        {
+                                                            clanData.owner ?
+                                                                <PlayerCard onClick={() => { navigate(`/user/${clanData.owner.osu_id}`); }} user={clanData.owner.user} />
+                                                                : <Alert severity='error'>Owner not found, this might be a bug.</Alert>
+                                                        }
                                                         <Divider sx={{ mt: 1, mb: 1 }} />
                                                         <Typography variant='h6'>Members</Typography>
                                                         {
                                                             //map clan members except owner
-                                                            clanData.members.length > 1 ? clanData.members.filter((member) => member.user.osu_id !== clanData.owner.osu_id).map((member) => {
+                                                            clanData.members.length > 1 ? clanData.members.filter((member) => member.user && member.user.osu_id !== clanData.owner.osu_id).map((member) => {
                                                                 return (
                                                                     <Grid sx={{ height: '80px' }}>
                                                                         <PlayerCard onClick={() => { navigate(`/user/${member.osu_id}`); }} user={member.user} />
@@ -339,6 +440,48 @@ function Clan(props) {
                                                                 )
                                                             }) :
                                                                 <Typography variant='subtitle2' sx={{ fontStyle: 'italic', }}>No other members</Typography>
+                                                        }
+                                                        {
+                                                            //if owner, show member requests
+                                                            clanData.clan.owner === loggedInUser?.osu_id ?
+                                                                <>
+                                                                    <Divider sx={{ mt: 1, mb: 1 }} />
+                                                                    <Typography variant='h6'>Member requests</Typography>
+                                                                    <Grid sx={{
+                                                                        maxHeight: '60vh',
+                                                                        overflowY: 'auto',
+                                                                    }}>
+                                                                        {
+                                                                            clanData.pending_members?.length > 0 ?
+                                                                                //for testing, duplicate the requests multiple times
+                                                                                clanData.pending_members.map((request) => {
+                                                                                    return (
+                                                                                        <Grid sx={{ height: '80px', mb: 10 }}>
+                                                                                            {/* playercard but with extra buttons for accept/reject */}
+                                                                                            <PlayerCard onClick={() => { navigate(`/user/${request.osu_id}`); }} user={request.user} />
+                                                                                            <Grid>
+                                                                                                <Button
+                                                                                                    onClick={() => { eventAcceptJoinRequest(request) }}
+                                                                                                    variant='contained'
+                                                                                                    color='primary'
+                                                                                                    sx={{ mr: 1 }}>
+                                                                                                    Accept
+                                                                                                </Button>
+                                                                                                <Button
+                                                                                                    onClick={() => { eventRejectJoinRequest(request) }}
+                                                                                                    variant='contained'
+                                                                                                    color='error'
+                                                                                                    sx={{ mr: 1 }}>
+                                                                                                    Reject
+                                                                                                </Button>
+                                                                                            </Grid>
+                                                                                        </Grid>
+                                                                                    )
+                                                                                }) :
+                                                                                <Typography variant='subtitle2' sx={{ fontStyle: 'italic', }}>No requests</Typography>
+                                                                        }
+                                                                    </Grid>
+                                                                </> : <></>
                                                         }
                                                     </Box>
                                                 </Grid>
@@ -387,12 +530,12 @@ function Clan(props) {
                             </Box>
                             {
                                 clanList.length > 0 ? <>
-                                    <Box sx={{ 
+                                    <Box sx={{
                                         mt: 2,
                                         //max height of 80vh
                                         maxHeight: '80vh',
                                         overflowY: 'auto'
-                                     }}>
+                                    }}>
                                         <Stack direction='column' spacing={0.6}>
                                             {
                                                 //sort by current sorter
@@ -545,11 +688,16 @@ function ClanFormFields(props) {
         (async () => {
 
             await props.onSubmit({
-                clanName,
-                clanTag,
-                clanDescription,
-                clanColor,
-                clanHeaderUrl,
+                // clanName,
+                // clanTag,
+                // clanDescription,
+                // clanColor,
+                // clanHeaderUrl,
+                clanName: sanitize(clanName),
+                clanTag: sanitize(clanTag),
+                clanDescription: sanitize(clanDescription),
+                clanColor: sanitize(clanColor),
+                clanHeaderUrl: sanitize(clanHeaderUrl),
             });
 
             setIsWorking(false);
@@ -575,6 +723,9 @@ function ClanFormFields(props) {
                                         value={clanName}
                                         onChange={(e) => setClanName(e.target.value)}
                                         disabled={isWorking}
+                                        inputProps={{
+                                            maxLength: 20,
+                                        }}
                                     />
                                     <TextField
                                         label='Clan tag'
@@ -582,6 +733,9 @@ function ClanFormFields(props) {
                                         value={clanTag}
                                         onChange={(e) => setClanTag(e.target.value)}
                                         disabled={isWorking}
+                                        inputProps={{
+                                            maxLength: 5,
+                                        }}
                                     />
                                     <TextField
                                         label='Clan description'
@@ -589,6 +743,9 @@ function ClanFormFields(props) {
                                         value={clanDescription}
                                         onChange={(e) => setClanDescription(e.target.value)}
                                         disabled={isWorking}
+                                        inputProps={{
+                                            maxLength: 100,
+                                        }}
                                     />
                                     <TextField
                                         label='Clan color'
@@ -596,6 +753,9 @@ function ClanFormFields(props) {
                                         value={clanColor}
                                         onChange={(e) => setClanColor(e.target.value)}
                                         disabled={isWorking}
+                                        inputProps={{
+                                            maxLength: 6,
+                                        }}
                                     />
                                     {
                                         isEditMode ? <>
@@ -605,6 +765,9 @@ function ClanFormFields(props) {
                                                 value={clanHeaderUrl}
                                                 onChange={(e) => setClanHeaderUrl(e.target.value)}
                                                 disabled={isWorking}
+                                                inputProps={{
+                                                    maxLength: 255,
+                                                }}
                                             />
                                         </> : <></>
                                     }

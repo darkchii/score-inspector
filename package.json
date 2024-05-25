@@ -4,6 +4,8 @@
   "private": true,
   "homepage": "https://score.kirino.sh",
   "dependencies": {
+    "@ckeditor/ckeditor5-build-classic": "^41.4.2",
+    "@ckeditor/ckeditor5-react": "^7.0.0",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@fontsource/comfortaa": "^5.0.20",
@@ -38,7 +40,8 @@
     "react-scripts": "^5.0.1",
     "react-toastify": "^10.0.5",
     "react-virtualized": "^9.22.5",
-    "react-virtuoso": "^4.7.10"
+    "react-virtuoso": "^4.7.10",
+    "sanitize-html": "^2.13.0"
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
