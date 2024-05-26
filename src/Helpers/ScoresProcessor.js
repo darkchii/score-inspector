@@ -117,7 +117,7 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
 
     onScoreProcessUpdate('Beatmaps');
     await sleep(FEEDBACK_SLEEP_TIME);
-    data.beatmaps_counts = (await axios.get(`${GetAPI()}beatmaps/count_periodic`))?.data;
+    data.beatmaps_counts = (await axios.get(`${GetAPI()}beatmaps/count_periodic?include_loved=true`))?.data;
     data.beatmaps_count_total = (await axios.get(`${GetAPI()}beatmaps/count?include_loved=true`))?.data;
 
     onScoreProcessUpdate('Periodic data');

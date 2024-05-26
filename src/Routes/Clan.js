@@ -403,11 +403,12 @@ function Clan(props) {
                                                                         {
                                                                             //remove where display is false
                                                                             CLAN_STATS.filter((stat) => stat.display !== false).map((stat) => {
+                                                                                const ranking = clanData.ranking[stat.key];
                                                                                 return (
                                                                                     <TableRow key={stat.key}>
                                                                                         <TableCell>{stat.name}</TableCell>
                                                                                         <TableCell>{stat.format(clanData.stats)}</TableCell>
-                                                                                        <TableCell>{stat.ranking ? `#${clanData.ranking[stat.key]}` : ''}</TableCell>
+                                                                                        <TableCell>{stat.ranking ? `#${ranking.toLocaleString()}` : ''}</TableCell>
                                                                                     </TableRow>
                                                                                 )
                                                                             })
@@ -441,7 +442,7 @@ function Clan(props) {
                                                         <Typography variant='h6'>Owner</Typography>
                                                         {
                                                             clanData.owner ?
-                                                                <PlayerCard onClick={() => { navigate(`/user/${clanData.owner.osu_id}`); }} user={clanData.owner.user} />
+                                                                <PlayerCard onClick={() => { navigate(`/user/${clanData.owner.user.osu.id}`); }} user={clanData.owner.user} />
                                                                 : <Alert severity='error'>Owner not found, this might be a bug.</Alert>
                                                         }
                                                         <Divider sx={{ mt: 1, mb: 1 }} />
@@ -493,7 +494,7 @@ function Clan(props) {
                                                                                     return (
                                                                                         <Grid sx={{ height: '80px', mb: 10 }}>
                                                                                             {/* playercard but with extra buttons for accept/reject */}
-                                                                                            <PlayerCard onClick={() => { navigate(`/user/${request.osu_id}`); }} user={request.user} />
+                                                                                            <PlayerCard onClick={() => { navigate(`/user/${request.user.osu.id}`); }} user={request.user} />
                                                                                             <Grid>
                                                                                                 <Button
                                                                                                     onClick={() => { eventAcceptJoinRequest(request) }}

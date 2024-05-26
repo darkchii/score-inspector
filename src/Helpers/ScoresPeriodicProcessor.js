@@ -52,9 +52,15 @@ function getScoresPeriodicData(user, scores, dates, beatmaps, period = 'm') {
         return moment(a.date).diff(moment(b.date));
     });
 
+    let _beatmaps = {};
+
+    for (let i = 0; i < beatmaps[period].length; i++) {
+        _beatmaps[beatmaps[period][i].date] = beatmaps[period][i];
+    }
+
     data_array = processCumulativeData(data_array, period);
     data_array = processAverageData(scores, data_array, period);
-    data_array = processCompletionData(scores, data_array, period);
+    data_array = processCompletionData(_beatmaps, data_array, period);
     data_array = postprocessOsuDailyData(data_array, period);
 
     const graph_data = generateGraphData(user, data_array, period);
@@ -93,33 +99,29 @@ function processCumulativeData(data_array, period = 'm') {
         let previous_data = data_array[i - 1];
         let current_data = data_array[i];
 
-        if (previous_data === undefined) {
-            continue;
-        }
+        current_data.total_fc = (previous_data?.total_fc ?? 0) + current_data.gained_fc;
+        current_data.total_grade_xh = (previous_data?.total_grade_xh ?? 0) + current_data.gained_grade_xh;
+        current_data.total_grade_x = (previous_data?.total_grade_x ?? 0) + current_data.gained_grade_x;
+        current_data.total_grade_total_ss = (previous_data?.total_grade_total_ss ?? 0) + current_data.gained_grade_total_ss;
+        current_data.total_grade_sh = (previous_data?.total_grade_sh ?? 0) + current_data.gained_grade_sh;
+        current_data.total_grade_s = (previous_data?.total_grade_s ?? 0) + current_data.gained_grade_s;
+        current_data.total_grade_total_s = (previous_data?.total_grade_total_s ?? 0) + current_data.gained_grade_total_s;
+        current_data.total_grade_a = (previous_data?.total_grade_a ?? 0) + current_data.gained_grade_a;
+        current_data.total_grade_b = (previous_data?.total_grade_b ?? 0) + current_data.gained_grade_b;
+        current_data.total_grade_c = (previous_data?.total_grade_c ?? 0) + current_data.gained_grade_c;
+        current_data.total_grade_d = (previous_data?.total_grade_d ?? 0) + current_data.gained_grade_d;
 
-        current_data.total_fc = previous_data.total_fc + current_data.gained_fc;
-        current_data.total_grade_xh = previous_data.total_grade_xh + current_data.gained_grade_xh;
-        current_data.total_grade_x = previous_data.total_grade_x + current_data.gained_grade_x;
-        current_data.total_grade_total_ss = previous_data.total_grade_total_ss + current_data.gained_grade_total_ss;
-        current_data.total_grade_sh = previous_data.total_grade_sh + current_data.gained_grade_sh;
-        current_data.total_grade_s = previous_data.total_grade_s + current_data.gained_grade_s;
-        current_data.total_grade_total_s = previous_data.total_grade_total_s + current_data.gained_grade_total_s;
-        current_data.total_grade_a = previous_data.total_grade_a + current_data.gained_grade_a;
-        current_data.total_grade_b = previous_data.total_grade_b + current_data.gained_grade_b;
-        current_data.total_grade_c = previous_data.total_grade_c + current_data.gained_grade_c;
-        current_data.total_grade_d = previous_data.total_grade_d + current_data.gained_grade_d;
+        current_data.total_beatmaps = (previous_data?.total_beatmaps ?? 0) + current_data.gained_beatmaps;
 
-        current_data.total_beatmaps = previous_data.total_beatmaps + current_data.gained_beatmaps;
+        current_data.total_score = (previous_data?.total_score ?? 0) + current_data.gained_score;
+        current_data.total_ss_score = (previous_data?.total_ss_score ?? 0) + current_data.gained_ss_score;
+        current_data.total_pp = (previous_data?.total_pp ?? 0) + current_data.gained_pp;
+        current_data.total_length = (previous_data?.total_length ?? 0) + current_data.gained_length;
+        current_data.total_clears = (previous_data?.total_clears ?? 0) + current_data.gained_clears;
+        current_data.total_hit_count = (previous_data?.total_hit_count ?? 0) + current_data.gained_hit_count;
 
-        current_data.total_score = previous_data.total_score + current_data.gained_score;
-        current_data.total_ss_score = previous_data.total_ss_score + current_data.gained_ss_score;
-        current_data.total_pp = previous_data.total_pp + current_data.gained_pp;
-        current_data.total_length = previous_data.total_length + current_data.gained_length;
-        current_data.total_clears = previous_data.total_clears + current_data.gained_clears;
-        current_data.total_hit_count = previous_data.total_hit_count + current_data.gained_hit_count;
-
-        current_data.temp_total_acc = previous_data.temp_total_acc + current_data.temp_periodic_acc;
-        current_data.total_average_acc = current_data.temp_total_acc / current_data.total_clears;
+        current_data.temp_total_acc = (previous_data?.temp_total_acc ?? 0) + current_data.temp_periodic_acc;
+        current_data.total_average_acc = (current_data?.temp_total_acc ?? 0) / current_data.total_clears;
 
         current_data.total_hits_per_play = current_data.total_hit_count / current_data.total_clears;
         current_data.total_ss_rate = 100 / current_data.total_clears * current_data.total_grade_total_ss;
@@ -157,12 +159,16 @@ function processAverageData(scores, data, period = 'm') {
     return data;
 }
 
-function processCompletionData(scores, data_array, period = 'm') {
+function processCompletionData(beatmaps, data_array, period = 'm') {
     for (let i = 0; i < data_array.length; i++) {
         const previous_data = data_array[i - 1];
-        data_array[i].total_completion_clears = 100 / data_array[i].total_beatmaps * data_array[i].total_clears;
-        data_array[i].total_completion_length = 100 / data_array[i].total_beatmaps_length * data_array[i].total_length;
-        data_array[i].total_completion_score = 100 / data_array[i].total_beatmaps_score * data_array[i].total_score;
+        data_array[i].total_completion_clears = 100 / (beatmaps[data_array[i].date]?.amount_total ?? 0) * data_array[i].total_clears;
+        data_array[i].total_completion_length = 100 / (beatmaps[data_array[i].date]?.length_total ?? 0) * data_array[i].total_length;
+        data_array[i].total_completion_score = 100 / (beatmaps[data_array[i].date]?.score_total ?? 0) * data_array[i].total_score;
+
+        if(period === 'y'){
+            // console.log(beatmaps[data_array[i].date]);
+        }
 
         if (isNaN(data_array[i].total_completion_clears) || !isFinite(data_array[i].total_completion_clears)) {
             if (previous_data !== undefined)
@@ -1042,7 +1048,7 @@ function getDateDefaults(date, beatmaps, period = 'm') {
             data.gained_beatmaps = parseInt(beatmap_period_data.amount);
             data.gained_beatmaps_length = parseInt(beatmap_period_data.length);
             data.gained_beatmaps_score = parseInt(beatmap_period_data.score);
-
+            
             data.total_beatmaps = parseInt(beatmap_period_data.amount_total);
             data.total_beatmaps_length = parseInt(beatmap_period_data.length_total);
             data.total_beatmaps_score = parseInt(beatmap_period_data.score_total);
