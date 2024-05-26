@@ -422,7 +422,9 @@ function Clan(props) {
                                                 <Grid item xs={12} md={8}>
                                                     {
                                                         //if owner, show Edit button
-                                                        loggedInUser && loggedInUser?.clan_member?.clan && loggedInUser?.clan_member?.clan?.id === clanData.clan.id ?
+                                                        loggedInUser && loggedInUser?.clan_member?.clan && loggedInUser?.clan_member?.clan?.id === clanData.clan.id 
+                                                        && clanData.clan.owner === loggedInUser?.osu_id
+                                                        ?
                                                             <>
                                                                 <Button
                                                                     variant='contained'
@@ -456,7 +458,8 @@ function Clan(props) {
                                                                             <PlayerCard onClick={() => { navigate(`/user/${member.user.osu.id}`); }} user={member.user} />
                                                                         </Grid>
                                                                         <Typography variant='body2' sx={{ fontStyle: 'italic', }}>Joined {moment(member.join_date).fromNow()}{
-                                                                            loggedInUser && loggedInUser?.clan_member?.clan && loggedInUser?.clan_member?.clan?.id === clanData.clan.id ?
+                                                                            loggedInUser && loggedInUser?.clan_member?.clan && loggedInUser?.clan_member?.clan?.id === clanData.clan.id
+                                                                            && clanData.clan.owner === loggedInUser?.osu_id ?
                                                                                 <Button
                                                                                     onClick={() => { eventRemoveMember(member.user.osu.id) }}
                                                                                     variant='contained'
