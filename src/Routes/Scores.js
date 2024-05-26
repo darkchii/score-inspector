@@ -114,15 +114,26 @@ function Scores(props) {
                                             <Column label="User" dataKey="user.username" cellRenderer={({ rowData }) => GetFormattedName(rowData.inspector_user)} width={150} />
                                             <Column label="Map" dataKey="map.title" cellRenderer={({ rowData }) => <span>{rowData.beatmap.artist} - {rowData.beatmap.title}</span>} width={450} />
                                             <Column dataKey="map.diffname" cellRenderer={({ rowData }) => <span>{rowData.beatmap.diffname}</span>} width={150} />
-                                            <Column label="Stars" cellRenderer={({ rowData }) => {
-                                                if (rowData.enabledMods !== 0) {
+                                            <Column label="Stars" cellRenderer={({ rowData }) =>
+                                            // if (rowData.enabledMods !== '0') {
+                                            {
+                                                if (parseFloat(rowData.beatmap.stars) !== parseFloat(rowData.beatmap.modded_sr.star_rating)) {
+                                                    return <>
+                                                        <span style={{ 
+                                                            textDecoration: 'line-through',
+                                                            color: 'gray',
+                                                            //italics
+                                                            }}>{parseFloat(rowData.beatmap.stars).toFixed(2)}*</span>
+                                                    </>
+                                                }
+                                                return `${parseFloat(rowData.beatmap.stars).toFixed(2)}*`
+                                            }} width={100} />
+                                            <Column label="" dataKey="stars_orig" cellRenderer={({ rowData }) => {
+                                                if (parseFloat(rowData.beatmap.stars) !== parseFloat(rowData.beatmap.modded_sr.star_rating)) {
                                                     return `${rowData.beatmap.modded_sr.star_rating.toFixed(2)}*`
                                                 }
                                                 return '';
                                             }
-                                            } width={100} />
-                                            <Column label="" dataKey="stars_orig" cellRenderer={({ rowData }) =>
-                                                `${parseFloat(rowData.beatmap.stars).toFixed(2)}*`
                                             } width={100} />
                                             <Column label="Score" dataKey="score" cellDataGetter={({ rowData }) => rowData.score.toLocaleString('en-US')} width={100} />
                                             <Column label="PP" dataKey="pp" cellDataGetter={({ rowData }) => `${Math.round(rowData.pp ?? 0).toLocaleString('en-US')}pp`} width={100} />
