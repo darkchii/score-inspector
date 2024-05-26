@@ -56,29 +56,35 @@ function SectionHeader(props) {
                             </Grid>
                             <Grid item xs={8}>
                                 <Stack direction='row' spacing={1} sx={{ m: 0.5 }}>
-                                    <Typography variant='h4'>{props.user.osu.username}{
-                                        props.user.inspector_user !== undefined ? <>
-                                            {
-                                                GetRoles(props.user.inspector_user)?.map((role, index) => {
-                                                    //const _role = ROLES.find(r => r.id === role);
-                                                    //if (_role === undefined) return <></>;
-                                                    //if(!role.is_visible) return <></>
-                                                    return (
-                                                        <>
-                                                            <Box sx={{ display: 'inline-block' }}>
-                                                                {/* <Tooltip title={role.title}>
+                                    <Typography variant='h4'>
+                                        {
+                                            props.user.inspector_user?.clan_member && !props.user.inspector_user?.clan_member.pending ?
+                                                <span><b style={{ color: `#${props.user.inspector_user?.clan_member.clan.color}` }}>{`[${props.user.inspector_user?.clan_member.clan.tag}] `}</b></span>
+                                                : null
+                                        }
+                                        {props.user.osu.username}{
+                                            props.user.inspector_user !== undefined ? <>
+                                                {
+                                                    GetRoles(props.user.inspector_user)?.map((role, index) => {
+                                                        //const _role = ROLES.find(r => r.id === role);
+                                                        //if (_role === undefined) return <></>;
+                                                        //if(!role.is_visible) return <></>
+                                                        return (
+                                                            <>
+                                                                <Box sx={{ display: 'inline-block' }}>
+                                                                    {/* <Tooltip title={role.title}>
                                                                     {GetRoleIcon(role)}
                                                                 </Tooltip> */}
-                                                                <Tooltip title={role.description}>
-                                                                    <Chip size='small' sx={{ m: 0.2, backgroundColor: `#${role.color}aa` }} icon={GetRoleIcon(role)} label={role.title} />
-                                                                </Tooltip>
-                                                            </Box>
-                                                        </>
-                                                    )
-                                                })
-                                            }
-                                        </> : <></>
-                                    }</Typography>
+                                                                    <Tooltip title={role.description}>
+                                                                        <Chip size='small' sx={{ m: 0.2, backgroundColor: `#${role.color}aa` }} icon={GetRoleIcon(role)} label={role.title} />
+                                                                    </Tooltip>
+                                                                </Box>
+                                                            </>
+                                                        )
+                                                    })
+                                                }
+                                            </> : <></>
+                                        }</Typography>
                                 </Stack>
                                 <Stack alignItems='center' direction='row' spacing={1}>
                                     <ReactCountryFlag style={{ lineHeight: '1em', fontSize: '1.4em', borderRadius: '5px' }} cdnUrl="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/" countryCode={props.user.osu.country.code} />
@@ -99,7 +105,7 @@ function SectionHeader(props) {
                                         </> : <></>
                                     }
                                 </Stack>
-                                <Typography variant='h6'>{Math.round(props.user.osu.statistics.pp).toLocaleString('en-US')}pp ({(Math.round(getBonusPerformance(props.user.scores.length ?? 0)*100)/100).toLocaleString('en-US')}pp bonus, <Tooltip title='Sum of pp from every set score'><span>{Math.round(props.user.data?.total.pp ?? 0).toLocaleString('en-US')}pp total</span></Tooltip>)</Typography>
+                                <Typography variant='h6'>{Math.round(props.user.osu.statistics.pp).toLocaleString('en-US')}pp ({(Math.round(getBonusPerformance(props.user.scores.length ?? 0) * 100) / 100).toLocaleString('en-US')}pp bonus, <Tooltip title='Sum of pp from every set score'><span>{Math.round(props.user.data?.total.pp ?? 0).toLocaleString('en-US')}pp total</span></Tooltip>)</Typography>
                                 <Stack direction='row' spacing={1} sx={{ m: 0.5 }}>
                                     {
                                         props.user.osu.twitter !== null ? <>
