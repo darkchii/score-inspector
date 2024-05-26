@@ -13,7 +13,7 @@ const PLATFORMTYPES = {
 const updates = [
     {
         version: '3.0.0',
-        date: '2024-05-04',
+        date: '2024-05-27',
         changes: [
             [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Added clans', '00ca1dffcdf0d379c74b35d4e342acccb5802cc1'],
             [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Added completionists page', 'b413ebbf809b63d16642938b3560c2298bcafab5'],
