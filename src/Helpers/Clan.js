@@ -76,6 +76,17 @@ export async function RejectJoinRequestClan(rejecter_id, join_request_id, token,
     return response.data;
 }
 
+export async function RemoveClanMember(owner_id, member_id, token, clan_id) {
+    const response = await axios.post(`${GetAPI()}clans/remove_member`, {
+        owner_id: owner_id,
+        member_id: member_id,
+        token: token,
+        clan_id: clan_id
+    });
+    return response.data;
+
+}
+
 export async function LeaveClan(user_id, token, clan_id) {
     const response = await axios.post(`${GetAPI()}clans/leave`, {
         user_id: user_id,

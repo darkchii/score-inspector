@@ -6,7 +6,7 @@ import { useState } from "react";
 import { MODAL_STYLE, showNotification } from "../Helpers/Misc";
 import { useEffect } from "react";
 import { GetFormattedName, GetLoginID, GetLoginToken, GetUser } from "../Helpers/Account";
-import { AcceptJoinRequestClan, CreateClan, DeleteClan, GetClan, GetClanList, JoinRequestClan, LeaveClan, RejectJoinRequestClan, UpdateClan } from "../Helpers/Clan";
+import { AcceptJoinRequestClan, CreateClan, DeleteClan, GetClan, GetClanList, JoinRequestClan, LeaveClan, RejectJoinRequestClan, RemoveClanMember, UpdateClan } from "../Helpers/Clan";
 import { useNavigate, useParams } from "react-router-dom";
 import Loader from "../Components/UI/Loader";
 import PlayerCard from "../Components/PlayerCard";
@@ -181,6 +181,20 @@ function Clan(props) {
         }
     }
 
+    const eventRemoveMember = async (user_id) => {
+        try {
+            const response = await RemoveClanMember(loggedInUser.osu_id, user_id, await GetLoginToken(), clanData.clan.id);
+            if (response.error) {
+                showNotification('Error', response.error, 'error');
+            } else {
+                showNotification('Success', 'Member removed successfully.', 'success');
+                await loadClan(params.id, true);
+            }
+        } catch (err) {
+            showNotification('Error', 'An error occurred while removing the member.', 'error');
+        }
+    }
+
     const loadUser = async (force_reload_user = false) => {
         if (loggedInUser && !force_reload_user) return loggedInUser;
         const _user = await GetLoginID();
@@ -199,9 +213,11 @@ function Clan(props) {
         (async () => {
             try {
                 const _user = await loadUser(force_reload_user);
-                console.log('TRACKER', _user);
-                const data = await GetClan(params.id, _user?.osu_id ?? null, (await GetLoginToken()) ?? null);
-                console.log(data);
+                const data = await GetClan(id, _user?.osu_id ?? null, (await GetLoginToken()) ?? null);
+
+                //without owner
+                const full_members = data.members?.filter((member) => member?.user?.osu?.id !== data?.owner?.user?.osu?.id);
+                console.log(full_members);
                 setClanData(data);
             } catch (err) {
                 showNotification('Error', 'An error occurred while fetching the clan data.', 'error');
@@ -432,11 +448,30 @@ function Clan(props) {
                                                         <Typography variant='h6'>Members</Typography>
                                                         {
                                                             //map clan members except owner
-                                                            clanData.members.length > 1 ? clanData.members.filter((member) => member.user && member.user.osu_id !== clanData.owner.osu_id).map((member) => {
+                                                            clanData.members.length > 1 ? clanData.members.filter((member) => member.user && member?.user?.osu?.id !== clanData?.owner?.user?.osu?.id).map((member) => {
                                                                 return (
-                                                                    <Grid sx={{ height: '80px' }}>
-                                                                        <PlayerCard onClick={() => { navigate(`/user/${member.osu_id}`); }} user={member.user} />
-                                                                    </Grid>
+                                                                    <>
+                                                                        <Grid sx={{ height: '80px' }}>
+                                                                            <PlayerCard onClick={() => { navigate(`/user/${member.user.osu.id}`); }} user={member.user} />
+                                                                        </Grid>
+                                                                        <Typography variant='body2' sx={{ fontStyle: 'italic', }}>Joined {moment(member.join_date).fromNow()}{
+                                                                            loggedInUser && loggedInUser?.clan_member?.clan && loggedInUser?.clan_member?.clan?.id === clanData.clan.id ?
+                                                                                <Button
+                                                                                    onClick={() => { eventRemoveMember(member.user.osu.id) }}
+                                                                                    variant='contained'
+                                                                                    color='error'
+                                                                                    sx={{ ml: 1 }}
+                                                                                    size='small'
+                                                                                >
+                                                                                    Remove
+                                                                                </Button>
+                                                                                : <></>
+                                                                        }</Typography>
+                                                                        {
+                                                                            //if not last member, show divider
+                                                                            member !== clanData.members[clanData.members.length - 1] ? <Divider sx={{ mt: 1, mb: 1 }} /> : <></>
+                                                                        }
+                                                                    </>
                                                                 )
                                                             }) :
                                                                 <Typography variant='subtitle2' sx={{ fontStyle: 'italic', }}>No other members</Typography>
