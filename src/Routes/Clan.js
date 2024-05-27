@@ -14,6 +14,7 @@ import moment from "moment";
 import ClanLeaderboardItem from "../Components/Leaderboards/ClanLeaderboardItem";
 import { grey } from "@mui/material/colors";
 import sanitize from "sanitize-html";
+import { getLevelForScore } from "../Helpers/Osu";
 
 //always round to 2 decimal places, and toLocaleString for commas
 const CLAN_STATS = [
@@ -49,6 +50,13 @@ const CLAN_STATS = [
         ranking: true,
         key: 'total_score',
     }, {
+        name: 'Level',
+        format: (stats) => getLevelForScore(stats.total_score ?? 0).toLocaleString('en-US'),
+        ranking: false,
+        display: true,
+        sort_value: (stats) => getLevelForScore(stats.total_score ?? 0),
+        key: 'level',
+    }, {
         name: 'Clears',
         format: (stats) => (stats.clears ?? 0).toLocaleString('en-US'),
         description: 'Total clears of all members',
@@ -58,11 +66,13 @@ const CLAN_STATS = [
         name: 'Total SS',
         format: (stats) => ((stats.total_ss ?? 0) + (stats.total_ssh ?? 0)).toLocaleString('en-US'),
         ranking: true,
+        sort_value: (stats) => (stats.total_ss ?? 0) + (stats.total_ssh ?? 0),
         key: 'total_ss',
     }, {
         name: 'Total S',
         format: (stats) => ((stats.total_s ?? 0) + (stats.total_sh ?? 0)).toLocaleString('en-US'),
         ranking: true,
+        sort_value: (stats) => (stats.total_s ?? 0) + (stats.total_sh ?? 0),
         key: 'total_s',
     }, {
         name: 'Total A',
@@ -403,7 +413,7 @@ function Clan(props) {
                                                                         {
                                                                             //remove where display is false
                                                                             CLAN_STATS.filter((stat) => stat.display !== false).map((stat) => {
-                                                                                const ranking = clanData.ranking[stat.key];
+                                                                                const ranking = clanData.ranking[stat.key] ?? 0;
                                                                                 return (
                                                                                     <TableRow key={stat.key}>
                                                                                         <TableCell>{stat.name}</TableCell>
@@ -422,9 +432,9 @@ function Clan(props) {
                                                 <Grid item xs={12} md={8}>
                                                     {
                                                         //if owner, show Edit button
-                                                        loggedInUser && loggedInUser?.clan_member?.clan && loggedInUser?.clan_member?.clan?.id === clanData.clan.id 
-                                                        && clanData.clan.owner === loggedInUser?.osu_id
-                                                        ?
+                                                        loggedInUser && loggedInUser?.clan_member?.clan && loggedInUser?.clan_member?.clan?.id === clanData.clan.id
+                                                            && clanData.clan.owner === loggedInUser?.osu_id
+                                                            ?
                                                             <>
                                                                 <Button
                                                                     variant='contained'
@@ -459,7 +469,7 @@ function Clan(props) {
                                                                         </Grid>
                                                                         <Typography variant='body2' sx={{ fontStyle: 'italic', }}>Joined {moment(member.join_date).fromNow()}{
                                                                             loggedInUser && loggedInUser?.clan_member?.clan && loggedInUser?.clan_member?.clan?.id === clanData.clan.id
-                                                                            && clanData.clan.owner === loggedInUser?.osu_id ?
+                                                                                && clanData.clan.owner === loggedInUser?.osu_id ?
                                                                                 <Button
                                                                                     onClick={() => { eventRemoveMember(member.user.osu.id) }}
                                                                                     variant='contained'
@@ -578,7 +588,16 @@ function Clan(props) {
                                         <Stack direction='column' spacing={0.6}>
                                             {
                                                 //sort by current sorter
-                                                clanList.sort((a, b) => b.clan_stats[currentClanSorter] - a.clan_stats[currentClanSorter]).map((clan, index) => {
+                                                clanList.sort((a, b) =>
+                                                    // b.clan_stats[currentClanSorter] - a.clan_stats[currentClanSorter]
+                                                {
+                                                    //check if theres a sort_value function, if not, use the value directly
+                                                    const a_sorter = CLAN_STATS.find((stat) => stat.key === currentClanSorter).sort_value ? CLAN_STATS.find((stat) => stat.key === currentClanSorter).sort_value(a.clan_stats) : a.clan_stats[currentClanSorter];
+                                                    const b_sorter = CLAN_STATS.find((stat) => stat.key === currentClanSorter).sort_value ? CLAN_STATS.find((stat) => stat.key === currentClanSorter).sort_value(b.clan_stats) : b.clan_stats[currentClanSorter];
+
+                                                    return b_sorter - a_sorter;
+                                                }
+                                                ).map((clan, index) => {
                                                     return (
                                                         <ClanLeaderboardItem
                                                             index={index + 1}
