@@ -25,7 +25,7 @@ function ClanLeaderboardItem(props) {
                 </Box>
 
                 <Box sx={{
-                    width: '5%',
+                    width: '7%',
                     position: 'relative',
                     p: 0,
                     height: '100%',
