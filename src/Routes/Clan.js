@@ -43,11 +43,11 @@ const CLAN_STATS = [
     {
         name: 'Ranked score',
         key: 'ranked_score',
-        format: (stats) => (stats.ranked_score ?? 0).toLocaleString('en-US'),
+        format: (stats) => parseInt(stats.ranked_score ?? 0).toLocaleString('en-US'),
         ranking: true,
     }, {
         name: 'Total score',
-        format: (stats) => (stats.total_score ?? 0).toLocaleString('en-US'),
+        format: (stats) => parseInt(stats.total_score ?? 0).toLocaleString('en-US'),
         ranking: true,
         key: 'total_score',
     }, {
@@ -412,7 +412,7 @@ function Clan(props) {
                                                             <Typography variant='h6'>Statistics</Typography>
                                                             <Typography variant='body1'>Members: {clanData.members.length}</Typography>
                                                             <Typography variant='body1'>Created: {moment(clanData.clan.creation_date).fromNow()}</Typography>
-                                                            <Typography variant='body1'>Owner: {GetFormattedName(clanData.owner.user.inspector_user)}</Typography>
+                                                            <Typography variant='body1'>Owner: {GetFormattedName(clanData.owner?.user?.inspector_user ?? {})}</Typography>
                                                             <Divider sx={{ mt: 1, mb: 1 }} />
                                                             {/* <Typography variant='body1'>Ranked score: {clanData.stats.ranked_score ?? 0}</Typography>
                                                             <Typography variant='body1'>Total score: {clanData.stats.total_score ?? 0}</Typography> */}
@@ -465,7 +465,7 @@ function Clan(props) {
                                                             : <></>
                                                     }
                                                     <Box sx={{ mt: 2 }}>
-                                                        <Box display='flex' sx={{mb: 1}}>
+                                                        <Box display='flex' sx={{ mb: 1 }}>
                                                             <Typography variant='h6'>Members</Typography>
                                                             {/* dropdown for sorter */}
                                                             <FormControl sx={{
@@ -546,15 +546,6 @@ function Clan(props) {
                                                                                             : <></>
                                                                                     }
                                                                                 </Box>
-                                                                                {/* <Grid sx={{ height: '80px' }}>
-                                                                                <PlayerCard onClick={() => { navigate(`/user/${member.user.osu.id}`); }} user={member.user} />
-                                                                            </Grid>
-                                                                            <Typography variant='body2' sx={{ fontStyle: 'italic', }}>Joined {moment(member.join_date).fromNow()}
-                                                                            </Typography>
-                                                                            {
-                                                                                //if not last member, show divider
-                                                                                member !== clanData.members[clanData.members.length - 1] ? <Divider sx={{ mt: 1, mb: 1 }} /> : <></>
-                                                                            } */}
                                                                             </>
                                                                         )
                                                                     }) :
@@ -571,41 +562,76 @@ function Clan(props) {
                                                                         maxHeight: '60vh',
                                                                         overflowY: 'auto',
                                                                     }}>
-                                                                        {
-                                                                            clanData.pending_members?.length > 0 ?
-                                                                                //for testing, duplicate the requests multiple times
-                                                                                clanData.pending_members.map((request) => {
-                                                                                    return (
-                                                                                        <Grid sx={{ height: '80px', mb: 10 }}>
-                                                                                            {/* playercard but with extra buttons for accept/reject */}
-                                                                                            <PlayerCard onClick={() => { navigate(`/user/${request.user.osu.id}`); }} user={request.user} />
-                                                                                            <Grid>
-                                                                                                <Button
-                                                                                                    onClick={() => { eventAcceptJoinRequest(request) }}
-                                                                                                    variant='contained'
-                                                                                                    color='primary'
-                                                                                                    sx={{ mr: 1 }}>
-                                                                                                    Accept
-                                                                                                </Button>
-                                                                                                <Button
-                                                                                                    onClick={() => { eventRejectJoinRequest(request) }}
-                                                                                                    variant='contained'
-                                                                                                    color='error'
-                                                                                                    sx={{ mr: 1 }}>
-                                                                                                    Reject
-                                                                                                </Button>
-                                                                                            </Grid>
-                                                                                        </Grid>
-                                                                                    )
-                                                                                }) :
-                                                                                <Typography variant='subtitle2' sx={{ fontStyle: 'italic', }}>No requests</Typography>
-                                                                        }
+                                                                        <Stack spacing={1}>
+                                                                            {
+                                                                                clanData.pending_members?.length > 0 ?
+                                                                                    //for testing, duplicate the requests multiple times
+                                                                                    clanData.pending_members.map((request, index) => {
+                                                                                        return (
+                                                                                            <Box display='flex' alignItems='center'>
+                                                                                                <Box flexGrow={1}>
+                                                                                                    <PlayerLeaderboardItem
+                                                                                                        user={{
+                                                                                                            osu_user: request.user.osu,
+                                                                                                            username: request.user.osu.username,
+                                                                                                            rank: index + 1,
+                                                                                                            user_id: request.user.osu.id,
+                                                                                                        }}
+                                                                                                    />
+                                                                                                </Box>
+                                                                                                {
+                                                                                                    loggedInUser && loggedInUser?.clan_member?.clan && loggedInUser?.clan_member?.clan?.id === clanData.clan.id
+                                                                                                        && clanData.clan.owner === loggedInUser?.osu_id ?
+                                                                                                        <Box>
+                                                                                                            <Button
+                                                                                                                onClick={() => { eventAcceptJoinRequest(request) }}
+                                                                                                                variant='contained'
+                                                                                                                color='primary'
+                                                                                                                sx={{ mr: 1, ml: 1 }}>
+                                                                                                                Accept
+                                                                                                            </Button>
+                                                                                                            <Button
+                                                                                                                onClick={() => { eventRejectJoinRequest(request) }}
+                                                                                                                variant='contained'
+                                                                                                                color='error'
+                                                                                                                sx={{ mr: 1 }}>
+                                                                                                                Reject
+                                                                                                            </Button>
+                                                                                                        </Box>
+                                                                                                        : <></>
+                                                                                                }
+                                                                                            </Box>
+                                                                                            // <Grid sx={{ height: '80px', mb: 10 }}>
+                                                                                            //     {/* playercard but with extra buttons for accept/reject */}
+                                                                                            //     <PlayerCard onClick={() => { navigate(`/user/${request.user.osu.id}`); }} user={request.user} />
+                                                                                            //     <Grid>
+                                                                                            //         <Button
+                                                                                            //             onClick={() => { eventAcceptJoinRequest(request) }}
+                                                                                            //             variant='contained'
+                                                                                            //             color='primary'
+                                                                                            //             sx={{ mr: 1 }}>
+                                                                                            //             Accept
+                                                                                            //         </Button>
+                                                                                            //         <Button
+                                                                                            //             onClick={() => { eventRejectJoinRequest(request) }}
+                                                                                            //             variant='contained'
+                                                                                            //             color='error'
+                                                                                            //             sx={{ mr: 1 }}>
+                                                                                            //             Reject
+                                                                                            //         </Button>
+                                                                                            //     </Grid>
+                                                                                            // </Grid>
+                                                                                        )
+                                                                                    }) :
+                                                                                    <Typography variant='subtitle2' sx={{ fontStyle: 'italic', }}>No requests</Typography>
+                                                                            }
+                                                                        </Stack>
                                                                     </Grid>
                                                                 </> : <></>
                                                         }
-                                                    </Box>
-                                                </Grid>
-                                            </Grid>
+                                                    </Box >
+                                                </Grid >
+                                            </Grid >
                                             <Alert severity='info' sx={{ mt: 2 }}>
                                                 <Typography variant='body1'>Members not registered on the osu!alternative Discord may be missing stats.</Typography>
                                             </Alert>
@@ -697,7 +723,7 @@ function Clan(props) {
                             }
                         </>
                 }
-            </Container>
+            </Container >
         </>
     );
 }
