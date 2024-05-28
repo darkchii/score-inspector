@@ -17,7 +17,7 @@
     "apexcharts": "^3.49.1",
     "axios": "^1.7.2",
     "buffer": "^6.0.3",
-    "chart.js": "^4.4.2",
+    "chart.js": "^4.4.3",
     "chartjs-adapter-moment": "^1.0.1",
     "chartjs-chart-geo": "^4.3.0",
     "chartjs-plugin-zoom": "^2.0.1",
