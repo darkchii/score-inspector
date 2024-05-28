@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Helmet } from "react-helmet";
 import config from "../config.json";
-import { Alert, Box, Button, Card, CardContent, Container, Divider, Grid, Modal, Stack, Table, TableBody, TableCell, TableContainer, TableRow, TextField, Tooltip, Typography, tableCellClasses } from "@mui/material";
+import { Alert, Box, Button, Card, CardContent, Container, Divider, FormControl, Grid, InputLabel, MenuItem, Modal, Select, Stack, Table, TableBody, TableCell, TableContainer, TableRow, TextField, Tooltip, Typography, tableCellClasses } from "@mui/material";
 import { useState } from "react";
 import { MODAL_STYLE, showNotification } from "../Helpers/Misc";
 import { useEffect } from "react";
@@ -15,6 +15,7 @@ import ClanLeaderboardItem from "../Components/Leaderboards/ClanLeaderboardItem"
 import { grey } from "@mui/material/colors";
 import sanitize from "sanitize-html";
 import { getLevelForScore } from "../Helpers/Osu";
+import PlayerLeaderboardItem from '../Components/Leaderboards/PlayerLeaderboardItem';
 
 //always round to 2 decimal places, and toLocaleString for commas
 const CLAN_STATS = [
@@ -52,7 +53,7 @@ const CLAN_STATS = [
     }, {
         name: 'Level',
         format: (stats) => getLevelForScore(stats.total_score ?? 0).toLocaleString('en-US'),
-        ranking: false,
+        ranking: true,
         display: true,
         sort_value: (stats) => getLevelForScore(stats.total_score ?? 0),
         key: 'level',
@@ -120,6 +121,16 @@ const CLAN_STATS = [
         ranking: false,
         display: false,
         key: 'members',
+        user: false, //not a user stat
+    }, {
+        name: 'Joined',
+        format: (stats) => moment(stats.join_date).fromNow(),
+        ranking: false,
+        display: false,
+        clanlist: false,
+        key: 'join_date',
+        sort_value: (stats) => new Date(stats.join_date),
+        dir: 'asc',
     }
 ]
 
@@ -131,7 +142,7 @@ function Clan(props) {
     const [isLoading, setIsLoading] = useState(false);
     const [clanRemoveModalOpen, setClanRemoveModalOpen] = useState(false);
     const [clanEditModalOpen, setClanEditModalOpen] = useState(false);
-    const [currentClanSorter, setCurrentClanSorter] = useState('average_pp');
+    const [currentClanSorter, setCurrentClanSorter] = useState(CLAN_STATS[0].key);
     const params = useParams();
     const navigate = useNavigate();
 
@@ -229,6 +240,7 @@ function Clan(props) {
                 const full_members = data.members?.filter((member) => member?.user?.osu?.id !== data?.owner?.user?.osu?.id);
                 console.log(full_members);
                 setClanData(data);
+                setCurrentClanSorter(CLAN_STATS[0].key);
             } catch (err) {
                 showNotification('Error', 'An error occurred while fetching the clan data.', 'error');
                 showNotification('Error', err.message, 'error');
@@ -252,6 +264,7 @@ function Clan(props) {
                 });
                 let clans = data.clans;
                 setClanList(clans ?? []);
+                setCurrentClanSorter(CLAN_STATS[0].key);
             } catch (err) {
                 showNotification('Error', 'An error occurred while fetching the clan list.', 'error');
                 showNotification('Error', err.message, 'error');
@@ -399,6 +412,7 @@ function Clan(props) {
                                                             <Typography variant='h6'>Statistics</Typography>
                                                             <Typography variant='body1'>Members: {clanData.members.length}</Typography>
                                                             <Typography variant='body1'>Created: {moment(clanData.clan.creation_date).fromNow()}</Typography>
+                                                            <Typography variant='body1'>Owner: {GetFormattedName(clanData.owner.user.inspector_user)}</Typography>
                                                             <Divider sx={{ mt: 1, mb: 1 }} />
                                                             {/* <Typography variant='body1'>Ranked score: {clanData.stats.ranked_score ?? 0}</Typography>
                                                             <Typography variant='body1'>Total score: {clanData.stats.total_score ?? 0}</Typography> */}
@@ -451,45 +465,102 @@ function Clan(props) {
                                                             : <></>
                                                     }
                                                     <Box sx={{ mt: 2 }}>
-                                                        <Typography variant='h6'>Owner</Typography>
-                                                        {
-                                                            clanData.owner ?
-                                                                <PlayerCard onClick={() => { navigate(`/user/${clanData.owner.user.osu.id}`); }} user={clanData.owner.user} />
-                                                                : <Alert severity='error'>Owner not found, this might be a bug.</Alert>
-                                                        }
-                                                        <Divider sx={{ mt: 1, mb: 1 }} />
-                                                        <Typography variant='h6'>Members</Typography>
-                                                        {
-                                                            //map clan members except owner
-                                                            clanData.members.length > 1 ? clanData.members.filter((member) => member.user && member?.user?.osu?.id !== clanData?.owner?.user?.osu?.id).map((member) => {
-                                                                return (
-                                                                    <>
-                                                                        <Grid sx={{ height: '80px' }}>
-                                                                            <PlayerCard onClick={() => { navigate(`/user/${member.user.osu.id}`); }} user={member.user} />
-                                                                        </Grid>
-                                                                        <Typography variant='body2' sx={{ fontStyle: 'italic', }}>Joined {moment(member.join_date).fromNow()}{
-                                                                            loggedInUser && loggedInUser?.clan_member?.clan && loggedInUser?.clan_member?.clan?.id === clanData.clan.id
-                                                                                && clanData.clan.owner === loggedInUser?.osu_id ?
-                                                                                <Button
-                                                                                    onClick={() => { eventRemoveMember(member.user.osu.id) }}
-                                                                                    variant='contained'
-                                                                                    color='error'
-                                                                                    sx={{ ml: 1 }}
-                                                                                    size='small'
-                                                                                >
-                                                                                    Remove
-                                                                                </Button>
-                                                                                : <></>
-                                                                        }</Typography>
-                                                                        {
-                                                                            //if not last member, show divider
-                                                                            member !== clanData.members[clanData.members.length - 1] ? <Divider sx={{ mt: 1, mb: 1 }} /> : <></>
+                                                        <Box display='flex' sx={{mb: 1}}>
+                                                            <Typography variant='h6'>Members</Typography>
+                                                            {/* dropdown for sorter */}
+                                                            <FormControl sx={{
+                                                                ml: 1
+                                                            }}>
+                                                                <Select
+                                                                    variant='standard'
+                                                                    size="small"
+                                                                    value={currentClanSorter}
+                                                                    onChange={(e) => setCurrentClanSorter(e.target.value)}
+                                                                >
+                                                                    {
+                                                                        CLAN_STATS.filter((stat) => stat.user !== false).map((stat) => {
+                                                                            return (
+                                                                                <MenuItem value={stat.key}>{stat.name}</MenuItem>
+                                                                            )
+                                                                        })
+                                                                    }
+                                                                </Select>
+                                                            </FormControl>
+                                                        </Box>
+
+                                                        <Stack spacing={1}>
+                                                            {
+                                                                clanData.members.length > 0 ?
+                                                                    // clanData.members.map((member, index) => {
+
+                                                                    //sort then map
+                                                                    clanData.members.sort((a, b) => {
+                                                                        // b.clan_stats[currentClanSorter] - a.clan_stats[currentClanSorter]
+                                                                        const a_sorter = CLAN_STATS.find((stat) => stat.key === currentClanSorter).sort_value ? CLAN_STATS.find((stat) => stat.key === currentClanSorter).sort_value(a.user.extra) : a.user.extra[currentClanSorter];
+                                                                        const b_sorter = CLAN_STATS.find((stat) => stat.key === currentClanSorter).sort_value ? CLAN_STATS.find((stat) => stat.key === currentClanSorter).sort_value(b.user.extra) : b.user.extra[currentClanSorter];
+                                                                        if (CLAN_STATS.find((stat) => stat.key === currentClanSorter).dir === 'asc') {
+                                                                            return a_sorter - b_sorter;
                                                                         }
-                                                                    </>
-                                                                )
-                                                            }) :
-                                                                <Typography variant='subtitle2' sx={{ fontStyle: 'italic', }}>No other members</Typography>
-                                                        }
+                                                                        return b_sorter - a_sorter;
+                                                                    }).map((member, index) => {
+                                                                        return (
+                                                                            <>
+                                                                                <Box display='flex' alignItems='center'>
+                                                                                    <Box flexGrow={1}>
+                                                                                        <PlayerLeaderboardItem
+                                                                                            user={{
+                                                                                                osu_user: member.user.osu,
+                                                                                                username: member.user.osu.username,
+                                                                                                rank: index + 1,
+                                                                                                user_id: member.user.osu.id,
+                                                                                            }}
+                                                                                            values={[
+                                                                                                {
+                                                                                                    value: CLAN_STATS.find((stat) => stat.key === currentClanSorter).name, alignment: 'right', variant: 'body2',
+                                                                                                    color: grey[500]
+                                                                                                },
+                                                                                                {
+                                                                                                    value: CLAN_STATS.find((stat) => stat.key === currentClanSorter).format(member.user.extra), alignment: 'left', variant: 'body2'
+                                                                                                }
+                                                                                            ]}
+                                                                                        />
+                                                                                    </Box>
+                                                                                    {
+                                                                                        loggedInUser && loggedInUser?.clan_member?.clan && loggedInUser?.clan_member?.clan?.id === clanData.clan.id
+                                                                                            && clanData.clan.owner === loggedInUser?.osu_id ?
+                                                                                            <Box>
+                                                                                                <Button
+                                                                                                    onClick={() => { eventRemoveMember(member.user.osu.id) }}
+                                                                                                    variant='contained'
+                                                                                                    color='error'
+                                                                                                    sx={{
+                                                                                                        ml: 1,
+                                                                                                        opacity: member.user.osu.id !== clanData.clan.owner ? 1 : 0
+                                                                                                    }}
+                                                                                                    size='small'
+                                                                                                    disabled={member.user.osu.id === clanData.clan.owner}
+                                                                                                >
+                                                                                                    Remove
+                                                                                                </Button>
+                                                                                            </Box>
+                                                                                            : <></>
+                                                                                    }
+                                                                                </Box>
+                                                                                {/* <Grid sx={{ height: '80px' }}>
+                                                                                <PlayerCard onClick={() => { navigate(`/user/${member.user.osu.id}`); }} user={member.user} />
+                                                                            </Grid>
+                                                                            <Typography variant='body2' sx={{ fontStyle: 'italic', }}>Joined {moment(member.join_date).fromNow()}
+                                                                            </Typography>
+                                                                            {
+                                                                                //if not last member, show divider
+                                                                                member !== clanData.members[clanData.members.length - 1] ? <Divider sx={{ mt: 1, mb: 1 }} /> : <></>
+                                                                            } */}
+                                                                            </>
+                                                                        )
+                                                                    }) :
+                                                                    <Typography variant='subtitle2' sx={{ fontStyle: 'italic', }}>No other members</Typography>
+                                                            }
+                                                        </Stack>
                                                         {
                                                             //if owner, show member requests
                                                             clanData.clan.owner === loggedInUser?.osu_id ?
@@ -563,7 +634,7 @@ function Clan(props) {
                             </Box>
                             <Box sx={{ mt: 2 }}>
                                 {
-                                    CLAN_STATS.map((stat) => {
+                                    CLAN_STATS.filter((stat) => stat.clanlist !== false).map((stat) => {
                                         return (
                                             <Button
                                                 onClick={() => setCurrentClanSorter(stat.key)}
@@ -589,7 +660,7 @@ function Clan(props) {
                                             {
                                                 //sort by current sorter
                                                 clanList.sort((a, b) =>
-                                                    // b.clan_stats[currentClanSorter] - a.clan_stats[currentClanSorter]
+                                                // b.clan_stats[currentClanSorter] - a.clan_stats[currentClanSorter]
                                                 {
                                                     //check if theres a sort_value function, if not, use the value directly
                                                     const a_sorter = CLAN_STATS.find((stat) => stat.key === currentClanSorter).sort_value ? CLAN_STATS.find((stat) => stat.key === currentClanSorter).sort_value(a.clan_stats) : a.clan_stats[currentClanSorter];

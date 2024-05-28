@@ -24,7 +24,7 @@ function PlayerLeaderboardItem(props) {
 
     useEffect(() => {
         const _base_user = props.user;
-        const _osu_user = _base_user.osu_user;
+        const _osu_user = _base_user.osu_user ?? _base_user.osu;
 
         setOsuUser(_osu_user);
         setBaseUser(_base_user);
@@ -32,7 +32,7 @@ function PlayerLeaderboardItem(props) {
         setShowRankGain(props.rankGain !== undefined);
 
         let _inspector_user = {
-            known_username: _base_user.username,
+            known_username: _base_user.username ?? _osu_user?.username ?? 'Unknown',
             osu_id: _osu_user?.id ?? _base_user?.id ?? 0,
             roles: [],
         };
