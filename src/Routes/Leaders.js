@@ -13,6 +13,7 @@ import { Helmet } from 'react-helmet';
 import config from "../config.json";
 import { grey } from '@mui/material/colors';
 import { countries } from 'countries-list';
+import { getDedicationLevel } from '../Helpers/Osu';
 momentDurationFormatSetup(moment);
 
 const GROUPED_STATS = {
@@ -267,8 +268,15 @@ const GROUPED_STATS = {
     ],
     'Experimental': [
         {
-            name: 'dedication_wither', title: 'Dedication Points',
-            description: 'A custom metric catered towards alternative farm players. Idea by WitherFlower, modified by boob enjoyer',
+            name: 'dedication_points', title: 'Dedication Points',
+            description: 'A custom metric catered towards alternative farm players.',
+            customFormat: (value) => (Math.round(value)).toLocaleString('en-US') + 'dp',
+        },
+        {
+            name: 'dedication_level', title: 'Dedication Level',
+            description: 'A custom metric catered towards alternative farm players.',
+            customFormat: (value) => (getDedicationLevel(5, 80, 225, -310, value * 1000)).toLocaleString('en-US'),
+            diffCheck: false
         },
     ]
 }
@@ -457,14 +465,20 @@ function Leaders() {
                                                             value: reformat(entry?.stat),
                                                             alignment: 'right'
                                                         },
-                                                        {
-                                                            value: entry?.diff !== undefined && entry?.diff != null ?
-                                                                (entry?.diff > 0 ? `+${reformat(entry?.diff)}` : `${reformat(entry?.diff)}`) :
-                                                                '',
-                                                            alignment: 'left',
-                                                            variant: 'body2',
-                                                            color: grey[500]
-                                                        },
+                                                        ...(statistic?.diffCheck !== false ?
+                                                            [{
+                                                                value: entry?.diff !== undefined && entry?.diff != null ?
+                                                                    (entry?.diff > 0 ? `+${reformat(entry?.diff)}` : `${reformat(entry?.diff)}`) :
+                                                                    '',
+                                                                alignment: 'left',
+                                                                variant: 'body2',
+                                                                color: grey[500]
+                                                            }]
+                                                            : [{
+                                                                value: '',
+                                                                alignment: 'left'
+                                                            },]
+                                                        ),
                                                         //only if extraFormatter is defined
                                                         ...(statistic?.extraFormatter !== undefined && statistic?.extraFormatter != null ?
                                                             [{

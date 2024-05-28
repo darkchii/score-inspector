@@ -95,6 +95,19 @@ function getLevel(score) {
     }
 }
 
+export function getDedicationLevel(a, b, c, d, xp) {
+    let l = 0;
+    let fl = a * l * l * l + b * l * l + c * l + d - xp;
+    let i = 0;
+    while (Math.abs(fl) > 0.001 && i < 50) {
+        let dfl = 3 * a * l * l + 2 * b * l + c;
+        l = l - fl / dfl;
+        fl = a * l * l * l + b * l * l + c * l + d - xp;
+        i++;
+    }
+    return l;
+}
+
 export async function getFullUser(user_ids = [], skipped = {}, force_array = false, signal = null) {
     let _ids = user_ids;
 
