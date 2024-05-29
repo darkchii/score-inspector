@@ -53,7 +53,7 @@ const CLAN_STATS = [
     }, {
         name: 'Level',
         format: (stats) => getLevelForScore(stats.total_score ?? 0).toLocaleString('en-US'),
-        ranking: true,
+        ranking: false,
         display: true,
         sort_value: (stats) => getLevelForScore(stats.total_score ?? 0),
         key: 'level',
