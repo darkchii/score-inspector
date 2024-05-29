@@ -8,6 +8,20 @@ import Marquee from "react-fast-marquee";
 function BestScoreCard(props) {
     const [modalData, setModalData] = useState({ active: false });
 
+    // If the score is undefined, return an empty grey card with text "No score found"
+    if(!props.score) return (
+        <>
+            <Card sx={{ height: '100%', borderRadius: '11px', backgroundPosition: 'center', backgroundSize: 'auto', backgroundColor: 'rgba(0,0,0,0.8)' }}>
+                <CardContent sx={{ height: '100%', backgroundColor: 'rgba(0,0,0,0.8)', borderRadius: '10px' }}>
+                    <Stack spacing={1}>
+                        <Typography variant='h6' sx={{ fontSize: '0.9em' }}>{props.valueTitle} play</Typography>
+                        <Typography variant='title' sx={{ fontSize: '1em' }}>No score found</Typography>
+                    </Stack>
+                </CardContent>
+            </Card>
+        </>
+    )
+
     return (
         <>
             <ScoreModal data={modalData} />
