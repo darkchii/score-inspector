@@ -34,7 +34,13 @@ export function GetFormattedName(inspector_user, settings = null) {
     //     }}>{`[${inspector_user.clan.tag}]`}</b> {name}</span>;
     // }
 
-    if(inspector_user.clan_member && inspector_user.clan_member.clan !== null && inspector_user.clan_member.clan !== undefined && inspector_user.clan_member.clan.tag !== null && inspector_user.clan_member.clan.tag !== undefined && inspector_user.clan_member.clan.tag !== ''){
+    if(inspector_user.clan_member && 
+        inspector_user.clan_member.clan !== null && 
+        inspector_user.clan_member.clan !== undefined && 
+        inspector_user.clan_member.clan.tag !== null && 
+        inspector_user.clan_member.clan.tag !== undefined && 
+        inspector_user.clan_member.clan.tag !== '' &&
+        !inspector_user.clan_member.pending){
         name = <span><b style={{
             color: `#${inspector_user.clan_member.clan.color ?? '000000'}`,
         }}>{`[${inspector_user.clan_member.clan.tag}]`}</b> {name}</span>;
