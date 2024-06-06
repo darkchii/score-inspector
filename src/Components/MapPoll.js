@@ -18,14 +18,16 @@ function MapPoll() {
     useEffect(() => {
         (async () => {
             const current_poll = await GetCurrentPoll();
-            const user = localStorage.getItem('auth_token');
-            if (current_poll.voted) {
-                setPreVote(current_poll.voted);
-                setSelectedMap(current_poll.voted);
+            if(current_poll && current_poll.maps){
+                const user = localStorage.getItem('auth_token');
+                if (current_poll.voted) {
+                    setPreVote(current_poll.voted);
+                    setSelectedMap(current_poll.voted);
+                }
+                setActivePoll(current_poll);
+                setUserData(user);
+                setCanVote(current_poll.scores?.length === current_poll.maps.length && !current_poll.voted)
             }
-            setActivePoll(current_poll);
-            setUserData(user);
-            setCanVote(current_poll.scores?.length === current_poll.maps.length && !current_poll.voted)
         })();
     }, []);
 
@@ -44,7 +46,7 @@ function MapPoll() {
         })();
     }
 
-    if (!activePoll) {
+    if (!activePoll || !activePoll.maps) {
         return <>
             <Loader />
         </>
