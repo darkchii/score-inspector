@@ -37,6 +37,7 @@ function getScoresPeriodicData(user, scores, dates, beatmaps, period = 'm') {
     for (let i = 0; i < dates.length; i++) {
         data[dates[i]] = getDateDefaults(dates[i], beatmaps, period);
     }
+    console.log(dates);
 
     data = processCurrentData(scores, data, period);
     data = processAverageData(scores, data, period);
@@ -72,6 +73,9 @@ function processCurrentData(scores, data, period = 'm') {
         let score = scores[i];
         let date_string = score.date_played_moment.format(PERIOD_FORMATS[period].format_str_num_only);
         let date = correctDate(date_string, period);
+        if(!data[date]){
+            console.log(`Missing date: ${date}`);
+        }
         data[date].scores.push(score);
         data[date][`gained_grade_${score.rank.toLowerCase()}`] += 1;
         data[date].gained_fc += score.is_fc ? 1 : 0;
@@ -1059,7 +1063,8 @@ function getDateDefaults(date, beatmaps, period = 'm') {
 }
 
 function getDates(user, period = 'm') {
-    const start_date = moment(user.osu.join_date);
+    //use utc dates
+    const start_date = moment(user.osu.join_date).utc();
     const end_date = moment();
     const dates = [];
     let current_date = start_date;
