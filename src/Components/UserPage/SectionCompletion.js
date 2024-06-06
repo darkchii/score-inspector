@@ -24,7 +24,7 @@ function SectionCompletion(props) {
         (async () => {
             if (!props.user.data.completion) {
                 setIsWorking(true);
-                props.user.data.completion = await getCompletionData(props.user.osu.id);
+                props.user.data.completion = await getCompletionData(props.user.osu.id, true);
             }
 
             const _graphs = {};
