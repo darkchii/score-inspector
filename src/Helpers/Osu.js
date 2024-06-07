@@ -647,7 +647,6 @@ export function FilterScores(full_scores, filter) {
     });
 
     //mods
-    console.log(`Filtering by mods: ${filter.enabledMods} ${filter.modsUsage} ${filter.enabledNomod}`); // eslint-disable-line no-console
     if (filter.enabled_mods > 0 || filter.enabledMods) {
         scores = scores.filter(score => {
             if (filter.modsUsage === 'any') {

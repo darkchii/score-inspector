@@ -20,7 +20,6 @@ function Scores(props) {
     const handleFilter = async (filter) => {
         if (filter !== null) {
             setIsWorking(true);
-            console.log(filter);
             //build url query
             let query = [];
             query.push(`approved=${filter.approved.join(',')}`);
@@ -64,7 +63,6 @@ function Scores(props) {
             if (filter.maxRank) { query.push(`max_rank=${filter.maxRank}`); }
 
             const url_query = query.join('&');
-            console.log(url_query);
             try {
                 const result = await axios.get(`${GetAPI()}scores/all?${url_query}&limit=1000`);
                 setScores(result.data);

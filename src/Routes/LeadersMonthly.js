@@ -121,8 +121,6 @@ function LeadersMonthly(props) {
                     return b.count - a.count;
                 });
 
-                console.log(_data);
-
                 setDataMostAppearances(_dataMostAppearances);
                 setData(_data);
             } else {

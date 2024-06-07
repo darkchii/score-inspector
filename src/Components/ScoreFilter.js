@@ -131,7 +131,6 @@ function ScoreFilter(props) {
     };
 
     const toggleMod = (mod, checked) => {
-        console.log(`Mod: ${mod} Checked: ${checked}`);
         if (mod === 'None') {
             setFilterValue('enabledNomod', checked);
         } else {

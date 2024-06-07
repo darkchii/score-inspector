@@ -195,8 +195,6 @@ export function prepareScores(user, scores, calculateOtherPP = true) {
         }
     });
 
-    console.log(scores);
-
     return scores;
 }
 

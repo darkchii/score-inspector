@@ -7,7 +7,6 @@ export async function GetCurrentPoll() {
         const user = await GetLoginIDUnsafe();
         const url = `${GetAPI()}poll/current/${user !== null ? user : ''}`;
         const res = await axios.get(url, { headers: { "Access-Control-Allow-Origin": "*" } });
-        console.log(res.data);
         return res.data;
     } catch (err) {
         console.error(err);

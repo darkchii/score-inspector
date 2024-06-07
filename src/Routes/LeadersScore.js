@@ -65,8 +65,6 @@ function LeadersScore(props) {
                     const diff = _data[0][i][1] - _data[0][i - 1][1];
                     _data[1].push([_data[0][i][0], diff]);
                 }
-                console.log(_data);
-
                 setScoreGraphData(_data);
             } catch (err) {
                 console.error(err);

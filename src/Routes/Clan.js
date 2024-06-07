@@ -241,7 +241,6 @@ function Clan(props) {
 
                 //without owner
                 const full_members = data.members?.filter((member) => member?.user?.osu?.id !== data?.owner?.user?.osu?.id);
-                console.log(full_members);
                 setClanData(data);
                 setCurrentClanSorter(CLAN_STATS[0].key);
             } catch (err) {
@@ -832,7 +831,6 @@ function ClanFormFields(props) {
     }, [clanTag, clanColor]);
 
     useEffect(() => {
-        console.log(props.clan);
         setIsWorking(false);
         onUpdate();
     }, []);

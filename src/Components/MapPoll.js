@@ -35,7 +35,6 @@ function MapPoll() {
         (async () => {
             setIsWorking(true);
             const response = await SubmitVote(selectedMap);
-            // console.log(response);
             if (!response || response?.error) {
                 // showNotification('error', response?.error || 'Failed to submit vote');
                 showNotification('Poll error', response?.error || 'Failed to submit vote', 'error');

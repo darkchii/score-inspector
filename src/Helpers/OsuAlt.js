@@ -49,7 +49,6 @@ export async function getUser(user_id) {
 export async function getUserScores(user_id, allowLoved, onScoreDownloadProgress) {
     let _scores = null;
     try {
-        console.warn("getUserScores was called!");
         const url = `${GetAPI()}scores/user/${user_id}${allowLoved ? "?approved=1,2,4" : ""}`;
         const config = {
             onDownloadProgress: (progressEvent) => {

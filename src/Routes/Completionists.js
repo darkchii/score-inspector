@@ -12,7 +12,6 @@ function Completionists(props) {
         (async () => {
             const { data } = await axios.get(`${GetAPI()}users/osu/completionists`);
             setCompletionists(data);
-            console.log(data);
         })();
     }, []);
     return (
