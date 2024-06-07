@@ -82,6 +82,7 @@ function PlayerCard(props) {
                                     <Stack>
                                         <Typography>
                                             <ReactCountryFlag
+                                                svg
                                                 style={{
                                                     fontSize: '1.4em',
                                                     borderRadius: '5px',

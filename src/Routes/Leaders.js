@@ -413,7 +413,7 @@ function Leaders() {
                                             return (
                                                 <MenuItem key={value.code} value={value.code}>
                                                     {
-                                                        value.code !== 'world' ? <ReactCountryFlag style={{ lineHeight: '1em', fontSize: '1.4em', borderRadius: '5px' }} cdnUrl="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/" countryCode={value.code} /> : <></>
+                                                        value.code !== 'world' ? <ReactCountryFlag svg style={{ lineHeight: '1em', fontSize: '1.4em', borderRadius: '5px' }} cdnUrl="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/" countryCode={value.code} /> : <></>
                                                     }
                                                     &nbsp;{value.name}
                                                 </MenuItem>
