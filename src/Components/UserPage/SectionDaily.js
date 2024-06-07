@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Box, Button, ButtonGroup, Card, CardContent, Grid, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography, useTheme, Tooltip as MUITooltip } from "@mui/material";
+import { Box, Button, ButtonGroup, Card, CardContent, Grid, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography, useTheme, Tooltip as MUITooltip, Alert } from "@mui/material";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { getGradeColor } from "../../Helpers/Osu";
@@ -35,7 +35,7 @@ const GRADE_INFO = {
 
 function SectionDaily(props) {
     const theme = useTheme();
-    const MIN_DATE = moment(props.user.osu.join_date);
+    const MIN_DATE = moment.utc(moment(props.user.osu.join_date));
     const [MAX_DATE] = useState(moment());
     const [selectedYear, setSelectedYear] = useState(moment(MAX_DATE).startOf('year').year());
     const [selectedDay, setSelectedDay] = useState(MAX_DATE.endOf('day').format("YYYY-MM-DD"));
@@ -101,7 +101,8 @@ function SectionDaily(props) {
                     }
 
                     data_by_grade[grade].data.push({
-                        x: moment(score.date_played).unix() * 1000,
+                        x: moment(score.date_played_moment).local().unix() * 1000,
+                        //return seconds since start, but in local time
                         y: nestedSearch(score, heightDefiner.nesting),
                         score: score,
                     });
@@ -377,8 +378,8 @@ function SectionDaily(props) {
                                                         datetimeUTC: false,
                                                         format: 'HH:mm',
                                                     },
-                                                    min: moment(selectedDay, 'YYYY-MM-DD').startOf('day').unix() * 1000,
-                                                    max: moment(selectedDay, 'YYYY-MM-DD').endOf('day').unix() * 1000,
+                                                    min: moment.utc(selectedDay, 'YYYY-MM-DD').startOf('day').unix() * 1000,
+                                                    max: moment.utc(selectedDay, 'YYYY-MM-DD').endOf('day').unix() * 1000,
                                                 },
                                                 tooltip: {
                                                     custom: function ({ series, seriesIndex, dataPointIndex, w }) {
@@ -386,7 +387,7 @@ function SectionDaily(props) {
 
                                                         return `<ul>
                                                                 <li>${heightDefiner.label}: ${data.y.toLocaleString('en-US')}</li>
-                                                                <li>${moment.unix(data.x).format("HH:mm")} • ${data.score.beatmap.artist} - ${data.score.beatmap.title} [${data.score.beatmap.diffname}] • ${data.score.accuracy}% ${data.score.rank} • ${data.score.score} score • ${data.score.pp.toFixed(2)}pp</li>
+                                                                <li>${data.score.beatmap.artist} - ${data.score.beatmap.title} [${data.score.beatmap.diffname}] • ${data.score.accuracy}% ${data.score.rank} • ${data.score.score} score • ${data.score.pp.toFixed(2)}pp</li>
                                                             </ul>
                                                             `
                                                     }
@@ -401,7 +402,7 @@ function SectionDaily(props) {
                                                 annotations: {
                                                     xaxis: [
                                                         {
-                                                            x: moment(selectedDay, 'YYYY-MM-DD').startOf('day').unix() * 1000,
+                                                            x: moment.utc(selectedDay, 'YYYY-MM-DD').startOf('day').unix() * 1000,
                                                             strokeDashArray: 0,
                                                             borderColor: '#775DD0',
                                                             label: {
@@ -413,7 +414,7 @@ function SectionDaily(props) {
                                                             }
                                                         },
                                                         {
-                                                            x: moment(selectedDay, 'YYYY-MM-DD').endOf('day').unix() * 1000,
+                                                            x: moment.utc(selectedDay, 'YYYY-MM-DD').endOf('day').unix() * 1000,
                                                             strokeDashArray: 0,
                                                             borderColor: '#775DD0',
                                                             label: {
@@ -549,6 +550,7 @@ function SectionDaily(props) {
                                         </Grid>
                                         <Grid item xs={0} md={2}></Grid>
                                     </Grid>
+                                    <Alert severity="info">Start and end times are UTC midnight.</Alert>
                                 </Stack>
                             </Grid>
                         </Grid>}

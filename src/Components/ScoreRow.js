@@ -43,7 +43,7 @@ function ScoreRow(props) {
                                             {score.beatmap.artist} - {score.beatmap.title}
                                         </Typography>
                                         <Typography sx={{ fontSize: '0.7rem', maxWidth: '100%', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
-                                            <span style={{ color: '#ea0' }}>{score.beatmap.diffname}</span> <span style={{ opacity: '0.7' }}>{moment(score.date_played_moment).fromNow()}</span>
+                                            <span style={{ color: '#ea0' }}>{score.beatmap.diffname}</span> <span style={{ opacity: '0.7' }}>{score.date_played_moment.fromNow()}</span>
                                         </Typography>
                                     </Tooltip>
                                 </Grid>

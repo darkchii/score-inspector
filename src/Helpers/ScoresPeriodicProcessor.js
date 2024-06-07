@@ -1056,7 +1056,7 @@ function getDateDefaults(date, beatmaps, period = 'm') {
 
 function getDates(user, period = 'm') {
     //use utc dates
-    const start_date = moment(user.osu.join_date).utc();
+    const start_date = moment(user.osu.join_date).utc().subtract(1, 'days');
     const end_date = moment();
     const dates = [];
     let current_date = start_date;
