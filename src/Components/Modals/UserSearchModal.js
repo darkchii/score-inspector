@@ -1,5 +1,5 @@
 import { Box, Card, CardContent, Container, Grid, Input, InputAdornment, Modal, Stack } from "@mui/material";
-import { useEffect, useImperativeHandle } from "react";
+import { useEffect, useImperativeHandle, useRef } from "react";
 import { forwardRef } from "react";
 import { useState } from "react";
 import { findUsers } from "../../Helpers/OsuAlt";
@@ -20,7 +20,12 @@ function UserSearchModal(props, ref) {
     const [resultList, setResultList] = useState([]);
     const [searchVal, setSearchVal] = useState('');
     const [isSearching, setIsSearching] = useState(false);
+    const searchInputRef = useRef(null);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        searchInputRef?.current?.focus();
+    }, [searchInputRef]);
 
     useEffect(() => {
         if (!isSearching) {
@@ -34,6 +39,7 @@ function UserSearchModal(props, ref) {
                     const res = await findUsers(searchVal);
                     setResultList(res ?? []);
                     setIsSearching(false);
+                    searchInputRef?.current?.focus();
                 })();
             }, 500);
 
@@ -58,6 +64,8 @@ function UserSearchModal(props, ref) {
                                 <Stack spacing={2} direction='column'>
                                     <Box sx={{ display: 'flex', height: '4rem' }}>
                                         <Input
+                                            autoFocus={true}
+                                            ref={searchInputRef}
                                             startAdornment={
                                                 <InputAdornment position="start">
                                                     <SearchIcon />
@@ -73,7 +81,7 @@ function UserSearchModal(props, ref) {
                                         <Grid container spacing={1}>
                                             {
                                                 resultList.map((user, index) => (
-                                                    <Grid item xs={12} md={6} lg={4} sx={{height: '160px'}}>
+                                                    <Grid item xs={12} md={6} lg={4} sx={{ height: '160px' }}>
                                                         <PlayerCard onClick={() => { navigate(`/user/${user.user_id}`); setOpen(false); }} user={user} />
                                                     </Grid>
                                                 ))
