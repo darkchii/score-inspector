@@ -199,9 +199,9 @@ export async function IsUserLoggedIn() {
                 }
             }
 
-            if (!body.valid && body.error) {
-                showNotification('Error', body.error, 'error');
-            }
+            // if (!body.valid && body.error) {
+            //     showNotification('Error', body.error, 'error');
+            // }
 
             return body !== undefined && body !== null && body.valid;
         } catch (e) {
