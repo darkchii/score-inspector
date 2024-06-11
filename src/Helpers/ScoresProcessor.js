@@ -89,6 +89,7 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
     data.sessions = getSessions(scores);
     data.totalSessionLength = 0;
     data.totalSessionLengthMoment = null;
+    data.longestSession = null;
     data.approximatePlaytime = 0;
     if (data.sessions !== undefined) {
         let pt = 0;
@@ -97,6 +98,7 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
         });
         data.totalSessionLength = pt;
         data.totalSessionLengthMoment = moment.duration(pt, 'seconds');
+        data.longestSession = data.sessions.reduce((acc, session) => { return session.length > acc.length ? session : acc; }, { length: 0 });
 
         let it = user.osu.statistics.play_time - data.total.length; // idle time in game
         let pcT = user.osu.statistics.play_count * (data.average.length * 0.5); // playtime based on playcount
@@ -195,6 +197,12 @@ export function prepareScores(user, scores, calculateOtherPP = true) {
         }
     });
 
+    //sort by time
+    scores.sort((a, b) => a.date_played_moment.valueOf() - b.date_played_moment.valueOf());
+    
+    console.log(`[SCORES] Latest score:`);
+    console.log(scores[scores.length-1]);
+
     return scores;
 }
 
@@ -207,7 +215,9 @@ export function prepareScore(score, user = null) {
     }
     score.accuracy = parseFloat(score.accuracy);
     score.pp = Math.max(0, parseFloat(score.pp));
-    score.date_played_moment = moment(score.date_played);
+    score.date_played_moment = moment(score.date_played).local();
+    //test string
+    score.date_played_moment_string = score.date_played_moment.format('YYYY-MM-DD HH:mm:ss');
     score.enabled_mods = parseInt(score.enabled_mods);
 
     score.beatmap = prepareBeatmap(score.beatmap, score.enabled_mods);

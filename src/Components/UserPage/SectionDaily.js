@@ -2,24 +2,26 @@
 import { Box, Button, ButtonGroup, Card, CardContent, Grid, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography, useTheme, Tooltip as MUITooltip, Alert } from "@mui/material";
 import moment from "moment";
 import { useEffect, useState } from "react";
-import { getGradeColor } from "../../Helpers/Osu";
+import { GRADE_ORDER, getGradeColor } from "../../Helpers/Osu";
 import { getSessions } from "../../Helpers/Session";
 import { IMG_SVG_GRADE_A, IMG_SVG_GRADE_B, IMG_SVG_GRADE_C, IMG_SVG_GRADE_D, IMG_SVG_GRADE_S, IMG_SVG_GRADE_SH, IMG_SVG_GRADE_X, IMG_SVG_GRADE_XH } from "../../Helpers/Assets";
-import { lerpColor, nestedSearch } from "../../Helpers/Misc";
+import { lerpColor, nestedSearch, showNotification } from "../../Helpers/Misc";
 import { ErrorBoundary } from "react-error-boundary";
 import ChartWrapper from "../../Helpers/ChartWrapper.js";
+import useLongPress from "../../Helpers/useLongPress.js";
+import { min } from "lodash";
 
 const heightDefiners = [
-    { value: 'pp', nesting: ['pp'], label: 'Performance' },
-    { value: 'score', nesting: ['score'], label: 'Score' },
-    { value: 'acc', nesting: ['accuracy'], label: 'Accuracy' },
-    { value: 'combo', nesting: ['combo'], label: 'Combo' },
-    { value: 'length', nesting: ['beatmap', 'length'], label: 'Length' },
-    { value: 'sr', nesting: ['beatmap', 'modded_sr', 'star_rating'], label: 'Stars' },
-    { value: 'cs', nesting: ['beatmap', 'modded_sr', 'modded_cs'], label: 'CS' },
-    { value: 'ar', nesting: ['beatmap', 'modded_sr', 'modded_ar'], label: 'AR' },
-    { value: 'od', nesting: ['beatmap', 'modded_sr', 'modded_od'], label: 'OD' },
-    { value: 'hp', nesting: ['beatmap', 'modded_sr', 'modded_hp'], label: 'HP' },
+    { value: 'pp', nesting: ['pp'], label: 'Performance', yFormat: (y) => y.toFixed(2) + 'pp'},
+    { value: 'score', nesting: ['score'], label: 'Score', yFormat: (y) => y.toLocaleString('en-US')},
+    { value: 'acc', nesting: ['accuracy'], label: 'Accuracy', yFormat: (y) => y.toFixed(2) + '%'},
+    { value: 'combo', nesting: ['combo'], label: 'Combo', yFormat: (y) => y.toLocaleString('en-US')+'x'},
+    { value: 'length', nesting: ['beatmap', 'length'], label: 'Length', yFormat: (y) => moment.utc(y * 1000).format('mm:ss')},
+    { value: 'sr', nesting: ['beatmap', 'modded_sr', 'star_rating'], label: 'Stars', yFormat: (y) => y.toFixed(2) + '★'},
+    { value: 'cs', nesting: ['beatmap', 'modded_sr', 'modded_cs'], label: 'CS', yFormat: (y) => y.toFixed(2)},
+    { value: 'ar', nesting: ['beatmap', 'modded_sr', 'modded_ar'], label: 'AR', yFormat: (y) => y.toFixed(2)},
+    { value: 'od', nesting: ['beatmap', 'modded_sr', 'modded_od'], label: 'OD', yFormat: (y) => y.toFixed(2)},
+    { value: 'hp', nesting: ['beatmap', 'modded_sr', 'modded_hp'], label: 'HP', yFormat: (y) => y.toFixed(2)},
 ]
 
 const GRADE_INFO = {
@@ -37,8 +39,8 @@ function SectionDaily(props) {
     const theme = useTheme();
     const MIN_DATE = moment.utc(moment(props.user.osu.join_date));
     const [MAX_DATE] = useState(moment());
-    const [selectedYear, setSelectedYear] = useState(moment(MAX_DATE).startOf('year').year());
-    const [selectedDay, setSelectedDay] = useState(MAX_DATE.endOf('day').format("YYYY-MM-DD"));
+    const [selectedYear, setSelectedYear] = useState(moment.utc(MAX_DATE).startOf('year').year());
+    const [selectedDayRange, setSelectedDayRange] = useState([MAX_DATE.endOf('day').format("YYYY-MM-DD"), null]);
     const [isWorking, setWorkingState] = useState(false);
     const [scores, setScores] = useState(null);
     const [graphData, setGraphData] = useState(null);
@@ -46,12 +48,49 @@ function SectionDaily(props) {
     const [yearGraphData, setYearGraphData] = useState(null);
     const [themeColor] = useState(theme.typography.title.color);
     const [dynamicRange, setDynamicRange] = useState(100);
-
     const [sessionCount, setSessionCount] = useState(0);
     const [totalSessionLength, setTotalSessionLength] = useState(0);
     const [sessionAnnotations, setSessionAnnotations] = useState([]);
-
     const [stats, setStats] = useState(null);
+
+    const onDateRangePressHold = (e) => {
+        console.log(e);
+    }
+
+    const dateRangePressHoldEvent = useLongPress((e) => {
+        if(selectedDayRange[1]){
+            showNotification('Warning', 'Please click the tick to reset it before setting a new range', 'warning');
+            return;
+        }
+
+        if (e.target.dataset.clears === '0') {
+            showNotification('Warning', 'No clears on this day.', 'warning');
+            return;
+        }
+
+        //if range becomes greater than 7 days, show a warning and do nothing
+        if (selectedDayRange[1] && moment.utc(selectedDayRange[1]).diff(moment.utc(selectedDayRange[0]), 'days') >= 7) {
+            showNotification('Warning', 'Cannot set a range greater than 7 days.', 'warning');
+            return;
+        }
+
+        if (moment.utc(e.target.dataset.date).isBefore(moment.utc(selectedDayRange[0]))) {
+            setSelectedDayRange([e.target.dataset.date, selectedDayRange[0]]);
+        } else if (moment.utc(e.target.dataset.date).isAfter(moment.utc(selectedDayRange[0]))) {
+            setSelectedDayRange([selectedDayRange[0], e.target.dataset.date]);
+        } else if (moment.utc(e.target.dataset.date).isSame(moment.utc(selectedDayRange[0]))) {
+            showNotification('Warning', 'Cannot set a range on the same day.', 'warning');
+            return;
+        }
+    }, (e) => {
+        if (e.target.dataset.clears === '0') {
+            showNotification('Warning', 'No clears on this day.', 'warning');
+            return;
+        }
+
+        setSelectedDayRange([e.target.dataset.date, null]);
+    }, { delay: 1000 });
+
 
     useEffect(() => {
         if (scores === null) {
@@ -64,7 +103,7 @@ function SectionDaily(props) {
                 setSessionAnnotations([]);
                 setTotalSessionLength(0);
                 setSessionCount(0);
-                let activities = getSessions(scores);
+                let activities = getSessions(scores, true);
                 if (activities.length > 0) {
                     let len = 0;
                     activities.forEach((activity, index) => {
@@ -87,6 +126,8 @@ function SectionDaily(props) {
             const data_by_grade = {};
 
             if (scores !== null) {
+                scores.sort((a, b) => GRADE_ORDER.indexOf(a.rank) - GRADE_ORDER.indexOf(b.rank));
+
                 scores.forEach((score) => {
                     const grade = score.rank;
 
@@ -101,7 +142,7 @@ function SectionDaily(props) {
                     }
 
                     data_by_grade[grade].data.push({
-                        x: moment(score.date_played_moment).local().unix() * 1000,
+                        x: moment.utc(score.date_played_moment).valueOf(),
                         //return seconds since start, but in local time
                         y: nestedSearch(score, heightDefiner.nesting),
                         score: score,
@@ -118,14 +159,19 @@ function SectionDaily(props) {
     }, [scores, props.user.scores, heightDefiner]);
 
     useEffect(() => {
+        console.log('selectedDayRange changed');
         if (isWorking) {
             return;
         }
 
-        const handleDayChange = async (date) => {
+        const handleDayChange = async () => {
             setWorkingState(true);
             setScores(null);
-            const sorted = props.user.scores.filter(score => score.date_played_moment.isSame(date, 'day'));
+            // const sorted = props.user.scores.filter(score => moment.utc(score.date_played_moment).isSame(moment.utc(date), 'day'));
+            const sorted = props.user.scores.filter(score =>
+                moment.utc(score.date_played_moment).isSame(moment.utc(selectedDayRange[0]), 'day') ||
+                (selectedDayRange[1] && moment.utc(score.date_played_moment).isBetween(moment.utc(selectedDayRange[0]), moment.utc(selectedDayRange[1]), 'day', '[]'))
+            );
 
             const _stats = {
                 gained_score: 0,
@@ -185,9 +231,9 @@ function SectionDaily(props) {
             setScores(sorted);
             setWorkingState(false);
         };
-        handleDayChange(selectedDay);
+        handleDayChange();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selectedDay, MAX_DATE]);
+    }, [selectedDayRange, MAX_DATE]);
 
     useEffect(() => {
         //loop from jan 1st to dec 31st
@@ -239,7 +285,7 @@ function SectionDaily(props) {
                                             key={year}
                                             disabled={isWorking}
                                             variant={selectedYear === y ? "contained" : "outlined"}
-                                            onClick={() => updateYear(moment().year(y))}>{y}</Button>
+                                            onClick={() => updateYear(moment.year(y))}>{y}</Button>
                                     }
                                     )
                                 }
@@ -283,6 +329,8 @@ function SectionDaily(props) {
                                             //const _progress = Math.min(_clears, 100) / 100;
                                             const _progress = Math.min(1, (dynamicRange > 0 ? ((100 / dynamicRange * _clears) / 100) : 0));
                                             const _color = lerpColor('#3c3c3c', themeColor, _progress);
+                                            //either selectedDayRange[0] or selectedDayRange[1], or between them
+                                            const isSelected = selectedDayRange[0] === day.date || (selectedDayRange[1] && selectedDayRange[1] === day.date) || (selectedDayRange[0] < day.date && selectedDayRange[1] > day.date);
 
                                             return (
                                                 <MUITooltip title={
@@ -291,7 +339,12 @@ function SectionDaily(props) {
                                                     </Typography>
                                                 } placement='top' disableInteractive={true}>
                                                     <Box
-                                                        onClick={() => { _clears > 0 && setSelectedDay(day.date); }}
+                                                        //store data in the element
+                                                        data-clears={_clears}
+                                                        data-date={day.date}
+                                                        // onClick={() => { _clears > 0 && setSelectedDay(day.date); }}
+                                                        // {...dateRangePressHoldEvent}
+                                                        {...dateRangePressHoldEvent}
                                                         sx={{
                                                             borderRadius: '3px',
                                                             height: '12px',
@@ -299,7 +352,7 @@ function SectionDaily(props) {
                                                             width: '12px',
                                                             backgroundColor: `${_color}`,
                                                             margin: '2px',
-                                                            boxShadow: `0 0 5px 5px ${themeColor}${selectedDay === day.date ? '40' : '00'}`,
+                                                            boxShadow: `0 0 7px 7px ${themeColor}${isSelected ? '50' : '00'}`,
                                                             '&:hover': {
                                                                 cursor: _clears > 0 ? 'pointer' : 'default',
                                                                 opacity: 0.5
@@ -314,7 +367,7 @@ function SectionDaily(props) {
                                 </Grid>
                             </Grid>
                         </Box>
-                        <Paper elevation={1} sx={{ pt: 1 }}>
+                        <Paper elevation={1} sx={{ pt: 1, pb: 1 }}>
                             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                                 <Box
                                     sx={{
@@ -337,7 +390,14 @@ function SectionDaily(props) {
                                     }}></Box><Typography variant="body2">{Math.min(dynamicRange, 100)}+ clears</Typography>
                             </Box>
                             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                <Typography variant="body2">Currently viewing {selectedDay}</Typography>
+                                <Typography variant="body2">Currently viewing {selectedDayRange[0]}
+                                    {selectedDayRange[1] ? ` to ${selectedDayRange[1]}` : ''}
+                                </Typography>
+                            </Box>
+                            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                <Typography variant="body2">
+                                    Hold a date tick to apply a range (max 7 days)
+                                </Typography>
                             </Box>
                         </Paper>
                     </Paper>
@@ -359,7 +419,7 @@ function SectionDaily(props) {
                     <Grid sx={{
                         minHeight: '700px',
                     }}>
-                        {(selectedDay && graphData && sessionAnnotations && sessionAnnotations.length > 0) && <Grid sx={{ mt: 1 }}>
+                        {(selectedDayRange[0] && graphData && sessionAnnotations && sessionAnnotations.length > 0) && <Grid sx={{ mt: 1 }}>
                             <ErrorBoundary fallback={<div>Something went wrong</div>}>
                                 <Grid sx={{
                                     position: 'relative',
@@ -375,19 +435,31 @@ function SectionDaily(props) {
                                                 xaxis: {
                                                     type: 'datetime',
                                                     labels: {
-                                                        datetimeUTC: false,
-                                                        format: 'HH:mm',
+                                                        datetimeUTC: true,
+                                                        format: selectedDayRange[1] ? 'dd/MM HH:mm' : 'HH:mm',
+                                                        formatter: (value) => {
+                                                            return selectedDayRange[1] ? moment.utc(value).local().format('DD/MM HH:mm') : moment.utc(value).local().format('HH:mm');
+                                                        },
                                                     },
-                                                    min: moment.utc(selectedDay, 'YYYY-MM-DD').startOf('day').unix() * 1000,
-                                                    max: moment.utc(selectedDay, 'YYYY-MM-DD').endOf('day').unix() * 1000,
+                                                    min: moment.utc(selectedDayRange[0]).startOf('day').valueOf(),
+                                                    max: selectedDayRange[1] ? moment.utc(selectedDayRange[1]).endOf('day').valueOf() : moment.utc(selectedDayRange[0]).endOf('day').valueOf(),
+                                                },
+                                                yaxis: {
+                                                    min: 0,
+                                                    labels: {
+                                                        formatter: (value) => {
+                                                            return heightDefiner.yFormat?.(value) ?? value;
+                                                        }
+                                                    }
                                                 },
                                                 tooltip: {
                                                     custom: function ({ series, seriesIndex, dataPointIndex, w }) {
                                                         var data = w.globals.initialSeries[seriesIndex].data[dataPointIndex];
 
-                                                        return `<ul>
-                                                                <li>${heightDefiner.label}: ${data.y.toLocaleString('en-US')}</li>
+                                                        return `<ul style='padding-right:10px'>
+                                                                <li>${heightDefiner.label}: ${heightDefiner.yFormat(data.y)}</li>
                                                                 <li>${data.score.beatmap.artist} - ${data.score.beatmap.title} [${data.score.beatmap.diffname}] • ${data.score.accuracy}% ${data.score.rank} • ${data.score.score} score • ${data.score.pp.toFixed(2)}pp</li>
+                                                                <li>${moment.unix(data.x / 1000).format('YYYY-MM-DD HH:mm:ss')}</li>
                                                             </ul>
                                                             `
                                                     }
@@ -402,7 +474,7 @@ function SectionDaily(props) {
                                                 annotations: {
                                                     xaxis: [
                                                         {
-                                                            x: moment.utc(selectedDay, 'YYYY-MM-DD').startOf('day').unix() * 1000,
+                                                            x: moment.utc(selectedDayRange[0]).startOf('day').valueOf(),
                                                             strokeDashArray: 0,
                                                             borderColor: '#775DD0',
                                                             label: {
@@ -414,7 +486,8 @@ function SectionDaily(props) {
                                                             }
                                                         },
                                                         {
-                                                            x: moment.utc(selectedDay, 'YYYY-MM-DD').endOf('day').unix() * 1000,
+                                                            // x: moment.utc(selectedDay).endOf('day').valueOf(),
+                                                            x: selectedDayRange[1] ? moment.utc(selectedDayRange[1]).endOf('day').valueOf() : moment.utc(selectedDayRange[0]).endOf('day').valueOf(),
                                                             strokeDashArray: 0,
                                                             borderColor: '#775DD0',
                                                             label: {
@@ -425,6 +498,24 @@ function SectionDaily(props) {
                                                                 text: 'End of day',
                                                             }
                                                         },
+                                                        ...(
+                                                            //show an annotation for every day between selectedDayRange[0] and selectedDayRange[1]
+                                                            selectedDayRange[1] ? Array.from(Array(moment.utc(selectedDayRange[1]).diff(moment.utc(selectedDayRange[0]), 'days')).keys()).map((day) => {
+                                                                return {
+                                                                    x: moment.utc(selectedDayRange[0]).add(day + 1, 'days').startOf('day').valueOf(),
+                                                                    strokeDashArray: 0,
+                                                                    borderColor: '#775DD0',
+                                                                    label: {
+                                                                        style: {
+                                                                            color: '#fff',
+                                                                            background: '#775DD0',
+                                                                        },
+                                                                        //show the date
+                                                                        text: moment.utc(selectedDayRange[0]).add(day + 1, 'days').format('YYYY-MM-DD'),
+                                                                    }
+                                                                }
+                                                            }) : []
+                                                        ),
                                                         ...(sessionAnnotations ?? [])
                                                     ]
                                                 }
@@ -501,7 +592,8 @@ function SectionDaily(props) {
                                                                     </TableRow>
                                                                     <TableRow>
                                                                         <TableCell sx={{ width: '50%' }}>Total session</TableCell>
-                                                                        <TableCell sx={{ width: '50%' }}>{`${moment.duration(totalSessionLength, 'seconds').format()}`}</TableCell>
+                                                                        {/* show up to hours, not days */}
+                                                                        <TableCell sx={{ width: '50%' }}>{`${moment.duration(totalSessionLength, 'seconds')}`}</TableCell>
                                                                     </TableRow>
                                                                 </TableBody>
                                                             </Table>

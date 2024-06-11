@@ -517,6 +517,8 @@ export async function getMedals() {
     return medals?.data;
 }
 
+export const GRADE_ORDER = ['XH', 'X', 'SH', 'S', 'A', 'B', 'C', 'D'];
+
 export function getGradeColor(grade) {
     switch (grade) {
         default:
@@ -532,11 +534,11 @@ export function getGradeColor(grade) {
         case 'A':
             return '#72B75D';
         case 'B':
-            return '#8B6996';
+            return '#384699';
         case 'C':
-            return '#8B6996';
+            return '#50367a';
         case 'D':
-            return '#8B6996';
+            return '#7a1f1f';
     }
 }
 
