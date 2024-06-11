@@ -1,4 +1,4 @@
-import { Box, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableRow, Typography, useTheme } from "@mui/material";
+import { Box, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableRow, Tooltip, Typography, useTheme } from "@mui/material";
 import moment from "moment";
 import BestScoreCard from "./BestScoreCard";
 import GlowBar from "../UI/GlowBar";
@@ -61,14 +61,19 @@ function SectionCards(props) {
             size: 1.25
         },
         {
-            title: 'Lazer Classic',
-            value: Math.round(props.user.data?.total.scoreLazerClassic)?.toLocaleString('en-US') ?? 0,
-            size: 1.25
+            title: 'Unique SS',
+            value: (props.user.alt.unique_ss?.length ?? 0).toLocaleString('en-US'),
+            size: 2.5 / 3
         },
         {
-            title: 'Lazer Standardised',
-            value: Math.round(props.user.data?.total.scoreLazerStandardised)?.toLocaleString('en-US') ?? 0,
-            size: 1.25
+            title: 'Unique FC',
+            value: (props.user.alt.unique_fc?.length ?? 0).toLocaleString('en-US'),
+            size: 2.5 / 3
+        },
+        {
+            title: 'Unique DT FC',
+            value: (props.user.alt.unique_dt_fc?.length ?? 0).toLocaleString('en-US'),
+            size: 2.5 / 3
         },
         {
             title: 'Score Length',
@@ -96,6 +101,12 @@ function SectionCards(props) {
             size: 1.2
         },
         {
+            title: "Longest session",
+            value: moment.duration(props.user.data.longestSession.length, 'seconds').format('h [hrs], m [min]'),
+            size: 1.2,
+            tooltip: 'Started at ' + moment.unix(props.user.data.longestSession.start).format('MMMM Do YYYY, h:mm:ss a') + ' and ended at ' + moment.unix(props.user.data.longestSession.end).format('MMMM Do YYYY, h:mm:ss a')
+        },
+        {
             title: 'Completion',
             value: (props.user.scores?.length > 0 ? Math.round((100 / props.user.data.beatmaps_count_total * props.user.scores?.length) * 100) / 100 : 0) + '%',
             size: 1
@@ -109,21 +120,6 @@ function SectionCards(props) {
             title: 'Highest Combo',
             value: (props.user.alt.maximum_combo ?? 0).toLocaleString('en-US') + 'x',
             size: 1.2
-        },
-        {
-            title: 'Unique SS',
-            value: (props.user.alt.unique_ss?.length ?? 0).toLocaleString('en-US'),
-            size: 1.2
-        },
-        {
-            title: 'Unique FC',
-            value: (props.user.alt.unique_fc?.length ?? 0).toLocaleString('en-US'),
-            size: 1.2
-        },
-        {
-            title: 'Unique DT FC',
-            value: (props.user.alt.unique_dt_fc?.length ?? 0).toLocaleString('en-US'),
-            size: 1.2
         }
     ];
 
@@ -135,17 +131,19 @@ function SectionCards(props) {
                         _cards.map((card) => {
                             return (
                                 <>
-                                    <Grid item xs={6} sm={3} md={1.5} lg={card.size}>
-                                        <Grid container sx={{ p: 0.2, position: 'relative' }}>
-                                            <GlowBar />
-                                            <Grid item xs={12} sx={{ textAlign: 'left' }}>
-                                                <Typography variant='title' sx={{ fontSize: '0.75em' }}>{card.title}</Typography>
-                                            </Grid>
-                                            <Grid item xs={12} sx={{ textAlign: 'left' }}>
-                                                <Typography variant='body1' sx={{ fontSize: '1.1em' }}>{card.value}</Typography>
+                                    <Tooltip title={card.tooltip ?? ''} placement='top-start'>
+                                        <Grid item xs={6} sm={3} md={1.5} lg={card.size}>
+                                            <Grid container sx={{ p: 0.2, position: 'relative' }}>
+                                                <GlowBar />
+                                                <Grid item xs={12} sx={{ textAlign: 'left' }}>
+                                                    <Typography variant='title' sx={{ fontSize: '0.75em' }}>{card.title}</Typography>
+                                                </Grid>
+                                                <Grid item xs={12} sx={{ textAlign: 'left' }}>
+                                                    <Typography variant='body1' sx={{ fontSize: '1.1em' }}>{card.value}</Typography>
+                                                </Grid>
                                             </Grid>
                                         </Grid>
-                                    </Grid>
+                                    </Tooltip>
                                     {/* <Divider orientation='vertical' variant='middle' flexItem sx={{ mr: "-1px" }} /> */}
                                 </>
                             )
