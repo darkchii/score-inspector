@@ -9,7 +9,8 @@ import { lerpColor, nestedSearch, showNotification } from "../../Helpers/Misc";
 import { ErrorBoundary } from "react-error-boundary";
 import ChartWrapper from "../../Helpers/ChartWrapper.js";
 import useLongPress from "../../Helpers/useLongPress.js";
-import { min } from "lodash";
+
+const MAX_DAYS_RANGE = 31;
 
 const heightDefiners = [
     { value: 'pp', nesting: ['pp'], label: 'Performance', yFormat: (y) => y.toFixed(2) + 'pp'},
@@ -44,7 +45,7 @@ function SectionDaily(props) {
     const [isWorking, setWorkingState] = useState(false);
     const [scores, setScores] = useState(null);
     const [graphData, setGraphData] = useState(null);
-    const [heightDefiner, setHeightDefiner] = useState(heightDefiners[0]);
+    const [heightDefiner, setHeightDefiner] = useState(heightDefiners[2]);
     const [yearGraphData, setYearGraphData] = useState(null);
     const [themeColor] = useState(theme.typography.title.color);
     const [dynamicRange, setDynamicRange] = useState(100);
@@ -69,8 +70,9 @@ function SectionDaily(props) {
         }
 
         //if range becomes greater than 7 days, show a warning and do nothing
-        if (selectedDayRange[1] && moment.utc(selectedDayRange[1]).diff(moment.utc(selectedDayRange[0]), 'days') >= 7) {
-            showNotification('Warning', 'Cannot set a range greater than 7 days.', 'warning');
+        const daysDiff = Math.abs(moment.utc(e.target.dataset.date).diff(moment.utc(selectedDayRange[0]), 'days'));
+        if (selectedDayRange[1] && daysDiff > MAX_DAYS_RANGE) {
+            showNotification('Warning', `Cannot set a range greater than ${MAX_DAYS_RANGE} days.`, 'warning');
             return;
         }
 
@@ -331,7 +333,15 @@ function SectionDaily(props) {
                                             const _color = lerpColor('#3c3c3c', themeColor, _progress);
                                             //either selectedDayRange[0] or selectedDayRange[1], or between them
                                             const isSelected = selectedDayRange[0] === day.date || (selectedDayRange[1] && selectedDayRange[1] === day.date) || (selectedDayRange[0] < day.date && selectedDayRange[1] > day.date);
+                                            //if the day is MAX_DAYS_RANGE days away from the first selected day, it can be selected
+                                            const daysDiff = Math.abs(moment.utc(day.date).diff(moment.utc(selectedDayRange[0]), 'days'));
+                                            const canBeSelectedForRange = selectedDayRange[0] && !selectedDayRange[1] && daysDiff <= MAX_DAYS_RANGE && _clears > 0;
 
+                                            let boxShadow = `0 0 7px 7px ${themeColor}00`;
+                                            if (isSelected) {
+                                                boxShadow = `0 0 7px 7px ${themeColor}36`;
+                                            }
+                                            //lets just do a border instead, but bit darker than the color
                                             return (
                                                 <MUITooltip title={
                                                     <Typography variant="body2">
@@ -352,7 +362,7 @@ function SectionDaily(props) {
                                                             width: '12px',
                                                             backgroundColor: `${_color}`,
                                                             margin: '2px',
-                                                            boxShadow: `0 0 7px 7px ${themeColor}${isSelected ? '50' : '00'}`,
+                                                            boxShadow: boxShadow,
                                                             '&:hover': {
                                                                 cursor: _clears > 0 ? 'pointer' : 'default',
                                                                 opacity: 0.5
@@ -396,7 +406,7 @@ function SectionDaily(props) {
                             </Box>
                             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                                 <Typography variant="body2">
-                                    Hold a date tick to apply a range (max 7 days)
+                                    Click a date to select only that one, hold a date tick to apply a range with the active one (max {MAX_DAYS_RANGE} days)
                                 </Typography>
                             </Box>
                         </Paper>
@@ -584,7 +594,7 @@ function SectionDaily(props) {
                                                                     </TableRow>
                                                                     <TableRow>
                                                                         <TableCell sx={{ width: '50%' }}>Playtime</TableCell>
-                                                                        <TableCell sx={{ width: '50%' }}>{`${moment.duration(stats.playtime, 'seconds').format()}`}</TableCell>
+                                                                        <TableCell sx={{ width: '50%' }}>{`${moment.duration(stats.playtime, 'seconds').format('h [hours] m [minutes]')}`}</TableCell>
                                                                     </TableRow>
                                                                     <TableRow>
                                                                         <TableCell sx={{ width: '50%' }}>Sessions</TableCell>
@@ -593,7 +603,7 @@ function SectionDaily(props) {
                                                                     <TableRow>
                                                                         <TableCell sx={{ width: '50%' }}>Total session</TableCell>
                                                                         {/* show up to hours, not days */}
-                                                                        <TableCell sx={{ width: '50%' }}>{`${moment.duration(totalSessionLength, 'seconds')}`}</TableCell>
+                                                                        <TableCell sx={{ width: '50%' }}>{`${moment.duration(totalSessionLength, 'seconds').format('h [hours] m [minutes]')}`}</TableCell>
                                                                     </TableRow>
                                                                 </TableBody>
                                                             </Table>

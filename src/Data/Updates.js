@@ -12,6 +12,19 @@ const PLATFORMTYPES = {
 
 const updates = [
     {
+        version: '3.0.1',
+        date: '2024-06-11',
+        changes: [
+            [PLATFORMTYPES.WEB | PLATFORMTYPES.API, CHANGETYPES.FIX, 'Fixed timezone issues for user profiles', '8e4d5ef9b5af6a69a6b7ad0f0c7db23f63159966'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.FIX, 'Fixed clan tags showing on pending users', 'cb89f7787becc3c55211347f537db68b3d299959'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.FIX, 'Fixed country flags not showing in some browsers', '03956ae3aa4d45d7cacfbd2059300cc956734a1c'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.MISC, 'Added search bar autofocus when opening modal and after search', 'c813cd4eb2d96ea443563313054af43790b22c5e'],
+            [PLATFORMTYPES.API, CHANGETYPES.MISC, 'Added stricter string input validation to clans'],
+            [PLATFORMTYPES.API, CHANGETYPES.FIX, 'Fixed completion leaderboard not including loved beatmaps in calculation'],
+            [PLATFORMTYPES.API, CHANGETYPES.FIX, 'Fixed some authentication issues'],
+        ]
+    },
+    {
         version: '3.0.0',
         date: '2024-05-27',
         changes: [
