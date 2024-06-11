@@ -25,16 +25,6 @@ const value_types = {
         dataType: 'pp',
         format: (value) => `${parseInt(value).toLocaleString('en-US')}pp`,
     },
-    clears: {
-        name: 'Clears',
-        dataType: 'clears',
-        format: (value) => parseInt(value).toLocaleString('en-US'),
-    },
-    fcclears: {
-        name: 'Full Combos',
-        dataType: 'fcclears',
-        format: (value) => parseInt(value).toLocaleString('en-US'),
-    }
 }
 
 const VirtuosoTableComponents = {
