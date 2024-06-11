@@ -161,7 +161,6 @@ function SectionDaily(props) {
     }, [scores, props.user.scores, heightDefiner]);
 
     useEffect(() => {
-        console.log('selectedDayRange changed');
         if (isWorking) {
             return;
         }
@@ -287,7 +286,7 @@ function SectionDaily(props) {
                                             key={year}
                                             disabled={isWorking}
                                             variant={selectedYear === y ? "contained" : "outlined"}
-                                            onClick={() => updateYear(moment.year(y))}>{y}</Button>
+                                            onClick={() => updateYear(moment.utc(y, 'YYYY'))}>{y}</Button>
                                     }
                                     )
                                 }
