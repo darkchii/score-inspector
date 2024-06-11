@@ -32,10 +32,13 @@ function Milestones() {
                 const { data: _milestones } = await axios.get(`${GetAPI()}scores/milestones?limit=${MILESTONES_PER_PAGE}&page=${page}`);
                 const { data: _stats } = await axios.get(`${GetAPI()}scores/milestones/stats`);
 
+                //filter out milestones that have no inspector user
+                const milestones = _milestones.filter(m => m.inspector_user);
+
                 setPageCount(Math.ceil(_stats.recorded_milestones / MILESTONES_PER_PAGE));
 
                 setMilestoneCount(_stats);
-                setMilestones(_milestones);
+                setMilestones(milestones);
             } catch (err) {
                 console.error(err);
             }
