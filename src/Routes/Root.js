@@ -19,7 +19,6 @@ import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
 import BadgeIcon from '@mui/icons-material/Badge';
 import TodayTopPlayers from '../Components/TodayTopPlayers.js';
 import BetterAlert from '../Components/UI/BetterAlert.js';
-import MapPoll from '../Components/MapPoll.js';
 
 momentDurationFormatSetup(moment);
 

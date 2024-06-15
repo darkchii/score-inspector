@@ -12,6 +12,16 @@ const PLATFORMTYPES = {
 
 const updates = [
     {
+        version: '3.0.2',
+        date: '2024-06-15',
+        changes: [
+            [PLATFORMTYPES.WEB, CHANGETYPES.REMOVE, 'Removed poll, small web adjustments', 'c70220c6f2a6dc828b8544b47475ce24de07f333'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Added 5-minute breaks display to user daily graph', '538ed5d04bc2759b9da1dd2455ee70bf411f99f0'],
+            [PLATFORMTYPES.API, CHANGETYPES.MISC, 'Temporarily disabled monthly farmers updater', 'c70220c6f2a6dc828b8544b47475ce24de07f333'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.FIX, 'Fixed year buttons on daily graph not working', 'ab17be093d87d4a595fb589a72625f9bcdc08fdc'],
+        ]
+    },
+    {
         version: '3.0.1',
         date: '2024-06-11',
         changes: [
