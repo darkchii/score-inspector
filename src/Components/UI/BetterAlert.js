@@ -8,6 +8,7 @@ function BetterAlert(props) {
                 sx={{
                     borderRadius: '10px',
                     padding: '5px',
+                    ...props.sx ?? {}
                 }}>
                 {props.children}
             </Alert>

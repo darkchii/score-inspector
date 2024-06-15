@@ -154,24 +154,10 @@ function Root() {
                     Lazer scores are currently <b>not</b> supported. Support will be added once osu!alternative is updated.
                 </Alert>
             </Grid>
-            <Grid container spacing={2} sx={{ pb: 1 }}>
-                <Grid item xs={12} md={12 / 5}>
-                    <StatCard stats={<>
-                        <Button variant='contained' component='a' href='https://discord.gg/VZWRZZXcW4' target='_blank'>Join</Button>
-                    </>} title={`Join the osu!alt discord`} color={indigo} icon={<PersonIcon />} />
-                </Grid>
-                <Grid item xs={12} md={12 / 5}>
-                    <StatCard stats={serverInfo?.database?.alt?.user_count ? (parseInt(serverInfo?.database?.alt?.user_count ?? 0)).toLocaleString('en-US') : null} title={`Players (${(parseInt(serverInfo?.database?.alt?.priority_user_count ?? 0)).toLocaleString('en-US')} live)`} color={blue} icon={<PersonIcon />} />
-                </Grid>
-                <Grid item xs={12} md={12 / 5}>
-                    <StatCard stats={serverInfo?.database?.alt?.score_count ? formatNumberAsSize(parseInt(serverInfo?.database?.alt?.score_count ?? 0)) : null} title={'Scores'} color={red} icon={<WorkspacePremiumIcon />} />
-                </Grid>
-                <Grid item xs={12} md={12 / 5}>
-                    <StatCard stats={serverInfo?.database?.inspector?.total_visits ? (parseInt(serverInfo?.database?.inspector?.total_visits ?? 0)).toLocaleString('en-US') : null} title={'Profile visits'} color={green} icon={<BadgeIcon />} />
-                </Grid>
-                <Grid item xs={12} md={12 / 5}>
-                    <StatCard stats={serverInfo?.database?.inspector?.unique_visits ? (parseInt(serverInfo?.database?.inspector?.unique_visits ?? 0)).toLocaleString('en-US') : null} title={'Unique users visited'} color={blueGrey} icon={<BadgeIcon />} />
-                </Grid>
+            <Grid sx={{ pb: 1 }}>
+                <Alert severity="info">
+                    Try out the new <Link href='https://github.com/darkchii/score-inspector-extension' target='_blank'>browser extension</Link> to integrate more statistics into the official osu! website! It's in very early development, so things might break.
+                </Alert>
             </Grid>
             <Grid container spacing={2}>
                 <Grid item xs={12} md={9}>
@@ -181,24 +167,47 @@ function Root() {
                                 <CardContent>
                                     <Grid container spacing={1}>
                                         <Grid item xs={12} md={6}>
+                                            <Grid container spacing={2} sx={{ pb: 1 }}>
+                                                {/* <Grid item xs={12} md={12 / 5}>
+                                                    <StatCard stats={<>
+                                                        <Button variant='contained' component='a' href='https://discord.gg/VZWRZZXcW4' target='_blank'>Join</Button>
+                                                    </>} title={`Join the osu!alt discord`} color={indigo} icon={<PersonIcon />} />
+                                                </Grid> */}
+                                                <Grid item xs={12} md={12 / 2}>
+                                                    <StatCard stats={serverInfo?.database?.alt?.user_count ? (parseInt(serverInfo?.database?.alt?.user_count ?? 0)).toLocaleString('en-US') : null} title={`Players (${(parseInt(serverInfo?.database?.alt?.priority_user_count ?? 0)).toLocaleString('en-US')} live)`} color={blue} icon={<PersonIcon />} />
+                                                </Grid>
+                                                <Grid item xs={12} md={12 / 2}>
+                                                    <StatCard stats={serverInfo?.database?.alt?.score_count ? formatNumberAsSize(parseInt(serverInfo?.database?.alt?.score_count ?? 0)) : null} title={'Scores'} color={red} icon={<WorkspacePremiumIcon />} />
+                                                </Grid>
+                                                <Grid item xs={12} md={12 / 2}>
+                                                    <StatCard stats={serverInfo?.database?.inspector?.total_visits ? (parseInt(serverInfo?.database?.inspector?.total_visits ?? 0)).toLocaleString('en-US') : null} title={'Profile visits'} color={green} icon={<BadgeIcon />} />
+                                                </Grid>
+                                                <Grid item xs={12} md={12 / 2}>
+                                                    <StatCard stats={serverInfo?.database?.inspector?.unique_visits ? (parseInt(serverInfo?.database?.inspector?.unique_visits ?? 0)).toLocaleString('en-US') : null} title={'Unique users visited'} color={blueGrey} icon={<BadgeIcon />} />
+                                                </Grid>
+                                                <Grid item xs={12} md={12}>
+                                                    <Alert severity='info'>
+                                                        <Typography variant='body2'>Join the <Link href='https://discord.gg/VZWRZZXcW4' target='_blank'>osu!alternative discord</Link>!</Typography>
+                                                    </Alert>
+                                                </Grid>
+                                            </Grid>
+                                        </Grid>
+                                        <Grid item xs={12} md={6}>
                                             <Typography variant='title'>For new users</Typography>
                                             <Stack spacing={0.5}>
                                                 {
                                                     GUIDE_NEW_USERS.map((note, index) => {
                                                         return (
-                                                            <BetterAlert severity='primary'>
+                                                            <BetterAlert sx={{
+                                                                pt: 1.15,
+                                                                pb: 1.15,
+                                                            }} severity='primary'>
                                                                 <Typography>{note}</Typography>
                                                             </BetterAlert>
                                                         );
                                                     })
                                                 }
                                             </Stack>
-                                        </Grid>
-                                        <Grid item xs={12} md={6}>
-                                            <Typography variant='title'>Map Poll</Typography>
-                                            <Box sx={{ width: '100%' }}>
-                                                <MapPoll />
-                                            </Box>
                                         </Grid>
                                     </Grid>
                                 </CardContent>
