@@ -32,7 +32,7 @@ function PlayerLeaderboardItem(props) {
         setShowRankGain(props.rankGain !== undefined);
 
         let _inspector_user = {
-            known_username: _base_user.username ?? _osu_user?.username ?? 'Unknown',
+            known_username: _base_user.username ?? _osu_user?.username ?? props.user?.username ?? 'Unknown',
             osu_id: _osu_user?.id ?? _base_user?.id ?? 0,
             roles: [],
         };

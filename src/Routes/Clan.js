@@ -512,7 +512,7 @@ function Clan(props) {
                                                                                         <PlayerLeaderboardItem
                                                                                             user={{
                                                                                                 osu_user: member.user.osu,
-                                                                                                username: member.user.osu.username,
+                                                                                                username: member.user.osu?.username ?? member.user.inspector_user?.known_username,
                                                                                                 rank: index + 1,
                                                                                                 user_id: member.user.osu.id,
                                                                                             }}
@@ -575,7 +575,7 @@ function Clan(props) {
                                                                                                     <PlayerLeaderboardItem
                                                                                                         user={{
                                                                                                             osu_user: request.user.osu,
-                                                                                                            username: request.user.osu.username,
+                                                                                                            username: request.user.osu?.username ?? request.user.inspector_user?.known_username,
                                                                                                             rank: index + 1,
                                                                                                             user_id: request.user.osu.id,
                                                                                                         }}
