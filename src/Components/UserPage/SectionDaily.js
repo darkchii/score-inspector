@@ -13,16 +13,16 @@ import useLongPress from "../../Helpers/useLongPress.js";
 const MAX_DAYS_RANGE = 31;
 
 const heightDefiners = [
-    { value: 'pp', nesting: ['pp'], label: 'Performance', yFormat: (y) => y.toFixed(2) + 'pp'},
-    { value: 'score', nesting: ['score'], label: 'Score', yFormat: (y) => y.toLocaleString('en-US')},
-    { value: 'acc', nesting: ['accuracy'], label: 'Accuracy', yFormat: (y) => y.toFixed(2) + '%'},
-    { value: 'combo', nesting: ['combo'], label: 'Combo', yFormat: (y) => y.toLocaleString('en-US')+'x'},
-    { value: 'length', nesting: ['beatmap', 'length'], label: 'Length', yFormat: (y) => moment.utc(y * 1000).format('mm:ss')},
-    { value: 'sr', nesting: ['beatmap', 'modded_sr', 'star_rating'], label: 'Stars', yFormat: (y) => y.toFixed(2) + '★'},
-    { value: 'cs', nesting: ['beatmap', 'modded_sr', 'modded_cs'], label: 'CS', yFormat: (y) => y.toFixed(2)},
-    { value: 'ar', nesting: ['beatmap', 'modded_sr', 'modded_ar'], label: 'AR', yFormat: (y) => y.toFixed(2)},
-    { value: 'od', nesting: ['beatmap', 'modded_sr', 'modded_od'], label: 'OD', yFormat: (y) => y.toFixed(2)},
-    { value: 'hp', nesting: ['beatmap', 'modded_sr', 'modded_hp'], label: 'HP', yFormat: (y) => y.toFixed(2)},
+    { value: 'pp', nesting: ['pp'], label: 'Performance', yFormat: (y) => y.toFixed(2) + 'pp' },
+    { value: 'score', nesting: ['score'], label: 'Score', yFormat: (y) => y.toLocaleString('en-US') },
+    { value: 'acc', nesting: ['accuracy'], label: 'Accuracy', yFormat: (y) => y.toFixed(2) + '%' },
+    { value: 'combo', nesting: ['combo'], label: 'Combo', yFormat: (y) => y.toLocaleString('en-US') + 'x' },
+    { value: 'length', nesting: ['beatmap', 'length'], label: 'Length', yFormat: (y) => moment.utc(y * 1000).format('mm:ss') },
+    { value: 'sr', nesting: ['beatmap', 'modded_sr', 'star_rating'], label: 'Stars', yFormat: (y) => y.toFixed(2) + '★' },
+    { value: 'cs', nesting: ['beatmap', 'modded_sr', 'modded_cs'], label: 'CS', yFormat: (y) => y.toFixed(2) },
+    { value: 'ar', nesting: ['beatmap', 'modded_sr', 'modded_ar'], label: 'AR', yFormat: (y) => y.toFixed(2) },
+    { value: 'od', nesting: ['beatmap', 'modded_sr', 'modded_od'], label: 'OD', yFormat: (y) => y.toFixed(2) },
+    { value: 'hp', nesting: ['beatmap', 'modded_sr', 'modded_hp'], label: 'HP', yFormat: (y) => y.toFixed(2) },
 ]
 
 const GRADE_INFO = {
@@ -59,7 +59,7 @@ function SectionDaily(props) {
     }
 
     const dateRangePressHoldEvent = useLongPress((e) => {
-        if(selectedDayRange[1]){
+        if (selectedDayRange[1]) {
             showNotification('Warning', 'Please click the tick to reset it before setting a new range', 'warning');
             return;
         }
@@ -117,7 +117,20 @@ function SectionDaily(props) {
                         })
 
                         len += (activity.end - activity.start);
+
+                        //breaks
+                        if (activity.breaks.length > 0) {
+                            activity.breaks.forEach((brk) => {
+                                annotations.push({
+                                    type: 'box',
+                                    x: brk.start * 1000,
+                                    x2: brk.end * 1000,
+                                    fillColor: 'rgba(255, 255, 255, 0.25)',
+                                })
+                            })
+                        }
                     });
+
                     setTotalSessionLength(len);
                 }
 

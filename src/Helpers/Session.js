@@ -1,4 +1,5 @@
-const ACTIVITY_THRESHOLD = 60 * 60 * 1.5; //this value dictates a new activity region
+const SESSION_ACTIVITY_THRESHOLD = 60 * 60 * 1.5; //this value dictates a new activity region
+const SESSION_BREAK_THRESHOLD = 60 * 5; //this value dictates a break region
 export function getSessions(scores) {
     scores.sort((a, b) => a.date_played_moment.valueOf() - b.date_played_moment.valueOf());
 
@@ -6,7 +7,8 @@ export function getSessions(scores) {
     let currentActivity = {
         start: null,
         end: null,
-        done: false
+        done: false,
+        breaks: []
     }
     scores.forEach((score, index) => {
         const currentUnix = score.date_played_moment.valueOf() * 0.001;
@@ -19,9 +21,15 @@ export function getSessions(scores) {
         if (index < scores.length - 1) {
             const diff = Math.abs((currentUnix) - (scores[index + 1].date_played_moment.valueOf() * 0.001));
 
-            if (diff >= ACTIVITY_THRESHOLD) {
+            if (diff >= SESSION_ACTIVITY_THRESHOLD) {
                 currentActivity.end = currentUnix;
                 currentActivity.done = true;
+            }else if( diff >= SESSION_BREAK_THRESHOLD){
+                currentActivity.breaks.push({
+                    start: currentUnix,
+                    end: scores[index + 1].date_played_moment.valueOf() * 0.001,
+                    length: diff,
+                });
             }
         } else if (index === scores.length - 1) {
             currentActivity.end = currentUnix;
@@ -36,10 +44,12 @@ export function getSessions(scores) {
                     start: scores[index + 1].date_played_moment.valueOf() * 0.001 - score.beatmap.modded_length,
                     end: null,
                     length: null,
-                    done: false
+                    done: false,
+                    breaks: []
                 }
             }
         }
     });
+
     return activities;
 }
