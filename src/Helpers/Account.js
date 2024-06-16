@@ -262,6 +262,7 @@ export async function UpdateVisitor(target_id) {
     let res = null;
     try {
         const visitor_id = await GetLoginID();
+        const login_token = await GetLoginToken();
         res = await fetch(`${GetAPI()}login/update_visitor`, {
             method: 'POST',
             headers: {
@@ -269,11 +270,13 @@ export async function UpdateVisitor(target_id) {
             },
             body: JSON.stringify({
                 visitor: visitor_id,
-                target: target_id
+                target: target_id,
+                token: login_token
             })
         });
     } catch (e) { }
-    return res;
+    const body = await parseReadableStreamToJson(res.body);
+    return body;
 }
 
 export async function GetVisitors(osu_id) {
