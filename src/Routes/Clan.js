@@ -653,11 +653,14 @@ function Clan(props) {
                                             variant='contained' color='primary' sx={{
                                                 marginLeft: 'auto',
                                             }}>Go to {loggedInUser.clan_member.clan.name}</Button> :
-                                        <Button
-                                            onClick={() => setClanCreatorModalOpen(true)}
-                                            variant='contained' color='primary' sx={{
-                                                marginLeft: 'auto',
-                                            }}>Create a clan</Button>
+                                        (
+                                            loggedInUser ? <Button
+                                                onClick={() => setClanCreatorModalOpen(true)}
+                                                variant='contained' color='primary' sx={{
+                                                    marginLeft: 'auto',
+                                                }}>Create a clan</Button> :
+                                                <></>
+                                        )
                                 }
                             </Box>
                             <Box sx={{ mt: 2 }}>
