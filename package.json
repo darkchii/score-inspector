@@ -2,7 +2,7 @@
   "name": "score-inspector",
   "version": "2.0.0",
   "private": true,
-  "homepage": "http://darkchii.github.io/score",
+  "homepage": "http://darkchii.github.io/score-inspector",
   "dependencies": {
     "@ckeditor/ckeditor5-build-classic": "^41.4.2",
     "@ckeditor/ckeditor5-react": "^7.0.0",
