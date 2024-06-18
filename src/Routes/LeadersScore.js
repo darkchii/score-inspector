@@ -26,6 +26,7 @@ function LeadersScore(props) {
     const params = useParams();
     const navigate = useNavigate();
 
+    const [mode, setMode] = useState(params.mode ? parseInt(params.mode) : 0);
     const [page, setPage] = useState(params.page ? parseInt(params.page) : 1);
     // 2023-08-15
     const [date, setDate] = useState(params.date ? params.date : null);
@@ -41,7 +42,7 @@ function LeadersScore(props) {
     useEffect(() => {
         (async () => {
             try {
-                const data = await axios.get(`${GetAPI()}scores/ranking/stats`);
+                const data = await axios.get(`${GetAPI()}scores/ranking/stats?mode=${mode}`);
 
                 // const _data = {
                 //     labels: [],
@@ -70,7 +71,7 @@ function LeadersScore(props) {
                 console.error(err);
             }
         })()
-    }, []);
+    }, [mode]);
 
     useEffect(() => {
         if (allDates.length === 0) {
@@ -78,7 +79,7 @@ function LeadersScore(props) {
                 setIsLoadingDates(true);
                 let _allDates = [];
                 try {
-                    const data = await axios.get(`${GetAPI()}scores/ranking/dates`);
+                    const data = await axios.get(`${GetAPI()}scores/ranking/dates?mode=${mode}`);
                     //order by date
                     data?.data.sort((a, b) => {
                         return moment(a).isBefore(moment(b)) ? -1 : 1;
@@ -96,14 +97,14 @@ function LeadersScore(props) {
                 }
             })();
         }
-    }, []);
+    }, [mode]);
 
     useEffect(() => {
         if (!date || !page) return;
         (async () => {
             setIsLoadingLeaderboard(true);
             try {
-                const data = await axios.get(`${GetAPI()}scores/ranking?date=${date}&limit=${USERS_PER_PAGE}&page=${page}&sort=${sorting}`);
+                const data = await axios.get(`${GetAPI()}scores/ranking?date=${date}&limit=${USERS_PER_PAGE}&page=${page}&sort=${sorting}&mode=${mode}`);
                 //check if previous day is recorded (if any old_rank is NOT null, then it is recorded)
                 let _isPreviousDayRecorded = data?.data?.filter((item) => { return item.old_rank !== null; }).length > 0;
                 setIsPreviousDayRecorded(_isPreviousDayRecorded);
@@ -114,7 +115,7 @@ function LeadersScore(props) {
                 setIsLoadingLeaderboard(false);
             }
         })();
-    }, [page, date, sorting]);
+    }, [mode, page, date, sorting]);
 
     const disableDate = (date) => {
         const dateStr = moment(date).format("YYYY-MM-DD");
@@ -132,7 +133,16 @@ function LeadersScore(props) {
                 ) : (
                     <>
                         <Box>
-                            <Alert variant='outlined' severity="info">Tracking started on August 14 2023. Data before that does not exist. The difference indication is compared to the day before</Alert>
+                            <Alert variant='outlined' severity="info">Tracking started on August 14 2023. Data before that does not exist. The difference indication is compared to the day before. (Non-standard modes started on June 17 2024)</Alert>
+                            <Box sx={{ py: 2, justifyContent: 'center', display: 'flex' }}>
+                                {/* mode buttons */}
+                                <ButtonGroup size='small'>
+                                    <Button onClick={() => { setMode(0); navigate(`/score/page/${page}/date/${date}/sort/${sorting}/mode/0`) }} variant={mode === 0 ? 'contained' : 'outlined'}>osu!</Button>
+                                    <Button onClick={() => { setMode(1); navigate(`/score/page/${page}/date/${date}/sort/${sorting}/mode/1`) }} variant={mode === 1 ? 'contained' : 'outlined'}>Taiko</Button>
+                                    <Button onClick={() => { setMode(2); navigate(`/score/page/${page}/date/${date}/sort/${sorting}/mode/2`) }} variant={mode === 2 ? 'contained' : 'outlined'}>Catch</Button>
+                                    <Button onClick={() => { setMode(3); navigate(`/score/page/${page}/date/${date}/sort/${sorting}/mode/3`) }} variant={mode === 3 ? 'contained' : 'outlined'}>Mania</Button>
+                                </ButtonGroup>
+                            </Box>
                             <Box sx={{ py: 2, justifyContent: 'center', display: 'flex' }}>
                                 <LocalizationProvider dateAdapter={AdapterMoment}>
                                     <DatePicker defaultValue={moment(date, "YYYY-MM-DD")} shouldDisableDate={
@@ -140,16 +150,16 @@ function LeadersScore(props) {
                                     } onChange={
                                         (newDate) => {
                                             setDate(newDate.format("YYYY-MM-DD"));
-                                            navigate(`/score/page/${page}/date/${newDate.format("YYYY-MM-DD")}/sort/${sorting}`);
+                                            navigate(`/score/page/${page}/date/${newDate.format("YYYY-MM-DD")}/sort/${sorting}/mode/${mode}`);
                                         }
                                     }></DatePicker>
                                 </LocalizationProvider>
                             </Box>
                             <Box sx={{ pb: 2, justifyContent: 'center', display: 'flex' }}>
                                 <ButtonGroup size='small'>
-                                    <Button onClick={() => { setSorting('rank'); navigate(`/score/page/${page}/date/${date}/sort/rank`) }} variant={sorting === 'rank' ? 'contained' : 'outlined'}>Rank</Button>
-                                    <Button onClick={() => { setSorting('rank_gain'); navigate(`/score/page/${page}/date/${date}/sort/rank_gain`) }} variant={sorting === 'rank_gain' ? 'contained' : 'outlined'}>Gained ranks</Button>
-                                    <Button onClick={() => { setSorting('score_gain'); navigate(`/score/page/${page}/date/${date}/sort/score_gain`) }} variant={sorting === 'score_gain' ? 'contained' : 'outlined'}>Gained score</Button>
+                                    <Button onClick={() => { setSorting('rank'); navigate(`/score/page/${page}/date/${date}/sort/rank/mode/${mode}`) }} variant={sorting === 'rank' ? 'contained' : 'outlined'}>Rank</Button>
+                                    <Button onClick={() => { setSorting('rank_gain'); navigate(`/score/page/${page}/date/${date}/sort/rank_gain/mode/${mode}`) }} variant={sorting === 'rank_gain' ? 'contained' : 'outlined'}>Gained ranks</Button>
+                                    <Button onClick={() => { setSorting('score_gain'); navigate(`/score/page/${page}/date/${date}/sort/score_gain/mode/${mode}`) }} variant={sorting === 'score_gain' ? 'contained' : 'outlined'}>Gained score</Button>
                                 </ButtonGroup>
                             </Box>
                             <Box>
@@ -201,6 +211,7 @@ function LeadersScore(props) {
                                                             }
                                                         ]
                                                     }
+                                                    mode={mode}
                                                     user={item} />
                                             )
                                         })

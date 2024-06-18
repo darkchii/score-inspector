@@ -19,7 +19,7 @@ function PlayerLeaderboardItem(props) {
     const [inspector_user, setInspectorUser] = useState({});
     const [base_user, setBaseUser] = useState({});
     const [showRankGain, setShowRankGain] = useState(false);
-    const [level, setLevel] = useState([0,0]);
+    const [level, setLevel] = useState([0, 0]);
     const theme = useTheme();
     const navigate = useNavigate();
 
@@ -43,9 +43,9 @@ function PlayerLeaderboardItem(props) {
         }
 
         let level = 0;
-        if(_osu_user?.statistics_rulesets?.osu?.level) {
+        if (_osu_user?.statistics_rulesets?.osu?.level) {
             level = _osu_user.statistics_rulesets.osu.level.current + (_osu_user.statistics_rulesets.osu.level.progress * 0.01);
-        }else if(_osu_user?.level) {
+        } else if (_osu_user?.level) {
             level = parseFloat(_osu_user.level);
         }
 

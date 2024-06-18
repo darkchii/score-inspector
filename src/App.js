@@ -145,7 +145,10 @@ function App() {
                     <Route index element={<LeadersScore />} />
                     <Route path="date/:date" element={<LeadersScore />}>
                       <Route index element={<LeadersScore />} />
-                      <Route path="sort/:sort" element={<LeadersScore />} />
+                      <Route path="sort/:sort" element={<LeadersScore />}>
+                        <Route index element={<LeadersScore />} />
+                        <Route path="mode/:mode" element={<LeadersScore />} />
+                      </Route>
                     </Route>
                   </Route>
                 </Route>

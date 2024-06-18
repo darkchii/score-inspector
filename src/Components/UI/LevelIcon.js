@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, Tooltip } from "@mui/material";
 import { PNG_LEVEL_BADGE } from "../../Helpers/Assets";
 import ScaleText from "react-scale-text";
 
@@ -47,11 +47,13 @@ function LevelIcon(props) {
                 alignContent: 'center',
                 justifyContent: 'center',
             }}>
-                <Box sx={{ width: '100%', height:'80%' }}>
-                    <ScaleText>
-                        {_props.level}
-                    </ScaleText>
-                </Box>
+                <Tooltip title='Due to limitations, only osu!standard level can be shown'>
+                    <Box sx={{ width: '100%', height: '80%' }}>
+                        <ScaleText>
+                            {_props.level}
+                        </ScaleText>
+                    </Box>
+                </Tooltip>
             </Box>
         </Box>
     )
