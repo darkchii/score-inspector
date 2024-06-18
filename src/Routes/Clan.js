@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Helmet } from "react-helmet";
 import config from "../config.json";
-import { Alert, Box, Button, Card, CardContent, Container, Divider, FormControl, Grid, InputLabel, MenuItem, Modal, Select, Stack, Table, TableBody, TableCell, TableContainer, TableRow, TextField, Tooltip, Typography, tableCellClasses } from "@mui/material";
+import { Alert, Box, Button, Card, CardContent, Container, Divider, FormControl, Grid, MenuItem, Modal, Select, Stack, Table, TableBody, TableCell, TableContainer, TableRow, TextField, Typography, tableCellClasses } from "@mui/material";
 import { useState } from "react";
 import { MODAL_STYLE, showNotification } from "../Helpers/Misc";
 import { useEffect } from "react";
@@ -9,7 +9,6 @@ import { GetFormattedName, GetLoginID, GetLoginToken, GetUser } from "../Helpers
 import { AcceptJoinRequestClan, CreateClan, DeleteClan, GetClan, GetClanList, JoinRequestClan, LeaveClan, RejectJoinRequestClan, RemoveClanMember, UpdateClan } from "../Helpers/Clan";
 import { useNavigate, useParams } from "react-router-dom";
 import Loader from "../Components/UI/Loader";
-import PlayerCard from "../Components/PlayerCard";
 import moment from "moment";
 import ClanLeaderboardItem from "../Components/Leaderboards/ClanLeaderboardItem";
 import { grey } from "@mui/material/colors";
@@ -238,9 +237,6 @@ function Clan(props) {
             try {
                 const _user = await loadUser(force_reload_user);
                 const data = await GetClan(id, _user?.osu_id ?? null, (await GetLoginToken()) ?? null);
-
-                //without owner
-                const full_members = data.members?.filter((member) => member?.user?.osu?.id !== data?.owner?.user?.osu?.id);
                 setClanData(data);
                 setCurrentClanSorter(CLAN_STATS[0].key);
             } catch (err) {
@@ -252,6 +248,8 @@ function Clan(props) {
     }
 
     const loadClanList = () => {
+        if (isLoading) return;
+        if (clanList && clanList.length > 0) return;
         setIsLoading(true);
         setClanList([]);
 
@@ -267,14 +265,20 @@ function Clan(props) {
                 let clans = data.clans;
                 setClanList(clans ?? []);
                 setCurrentClanSorter(CLAN_STATS[0].key);
+                setIsLoading(false);
             } catch (err) {
                 showNotification('Error', 'An error occurred while fetching the clan list.', 'error');
                 showNotification('Error', err.message, 'error');
+                setIsLoading(false);
             }
         })();
-
-        setIsLoading(false);
     }
+
+    useEffect(() => {
+        if (currentClanSorter && clanData && clanData.length > 1) {
+            setClanData(clanData.sort((a, b) => b.clan_stats[currentClanSorter] - a.clan_stats[currentClanSorter]));
+        }
+    }, [currentClanSorter]);
 
     useEffect(() => {
         if (params.id) {
@@ -282,16 +286,16 @@ function Clan(props) {
         }
     }, [params.id]);
 
-    useEffect(() => {
-        if (!params.id) {
-            loadClanList();
-        }
-    }, []);
+    // useEffect(() => {
+    //     if (!params.id) {
+    //         loadClanList();
+    //     }
+    // }, []);
 
     useEffect(() => {
         (async () => {
             await loadUser();
-            if (!params.id) {
+            if (!params.id && clanList.length === 0) {
                 loadClanList();
             }
         })()
@@ -496,25 +500,26 @@ function Clan(props) {
                                                                     // clanData.members.map((member, index) => {
 
                                                                     //sort then map
-                                                                    clanData.members.sort((a, b) => {
-                                                                        // b.clan_stats[currentClanSorter] - a.clan_stats[currentClanSorter]
-                                                                        const a_sorter = CLAN_STATS.find((stat) => stat.key === currentClanSorter).sort_value ? CLAN_STATS.find((stat) => stat.key === currentClanSorter).sort_value(a.user.extra) : a.user.extra[currentClanSorter];
-                                                                        const b_sorter = CLAN_STATS.find((stat) => stat.key === currentClanSorter).sort_value ? CLAN_STATS.find((stat) => stat.key === currentClanSorter).sort_value(b.user.extra) : b.user.extra[currentClanSorter];
-                                                                        if (CLAN_STATS.find((stat) => stat.key === currentClanSorter).dir === 'asc') {
-                                                                            return a_sorter - b_sorter;
+                                                                    clanData.members.sort(
+                                                                        (a, b) => {
+                                                                            const a_sorter = CLAN_STATS.find((stat) => stat.key === currentClanSorter).sort_value ? CLAN_STATS.find((stat) => stat.key === currentClanSorter).sort_value(a.user.extra) : a.user.extra[currentClanSorter];
+                                                                            const b_sorter = CLAN_STATS.find((stat) => stat.key === currentClanSorter).sort_value ? CLAN_STATS.find((stat) => stat.key === currentClanSorter).sort_value(b.user.extra) : b.user.extra[currentClanSorter];
+                                                                            return b_sorter - a_sorter;
                                                                         }
-                                                                        return b_sorter - a_sorter;
-                                                                    }).map((member, index) => {
+                                                                    ).map((member, index) => {
+                                                                        const _member = member.user.osu ?? member.user.alt;
+                                                                        const _username = _member?.username ?? member.user.inspector_user?.known_username;
+                                                                        const _user_id = _member?.id ?? member.user.inspector_user?.osu_id;
                                                                         return (
                                                                             <>
                                                                                 <Box display='flex' alignItems='center'>
                                                                                     <Box flexGrow={1}>
                                                                                         <PlayerLeaderboardItem
                                                                                             user={{
-                                                                                                osu_user: member.user.osu,
-                                                                                                username: member.user.osu?.username ?? member.user.inspector_user?.known_username,
+                                                                                                osu_user: _member,
+                                                                                                username: _username,
                                                                                                 rank: index + 1,
-                                                                                                user_id: member.user.osu.id,
+                                                                                                user_id: _user_id,
                                                                                             }}
                                                                                             values={[
                                                                                                 {
@@ -532,15 +537,15 @@ function Clan(props) {
                                                                                             && clanData.clan.owner === loggedInUser?.osu_id ?
                                                                                             <Box>
                                                                                                 <Button
-                                                                                                    onClick={() => { eventRemoveMember(member.user.osu.id) }}
+                                                                                                    onClick={() => { eventRemoveMember(_user_id) }}
                                                                                                     variant='contained'
                                                                                                     color='error'
                                                                                                     sx={{
                                                                                                         ml: 1,
-                                                                                                        opacity: member.user.osu.id !== clanData.clan.owner ? 1 : 0
+                                                                                                        opacity: _user_id !== clanData.clan.owner ? 1 : 0
                                                                                                     }}
                                                                                                     size='small'
-                                                                                                    disabled={member.user.osu.id === clanData.clan.owner}
+                                                                                                    disabled={_user_id === clanData.clan.owner}
                                                                                                 >
                                                                                                     Remove
                                                                                                 </Button>
@@ -569,15 +574,18 @@ function Clan(props) {
                                                                                 clanData.pending_members?.length > 0 ?
                                                                                     //for testing, duplicate the requests multiple times
                                                                                     clanData.pending_members.map((request, index) => {
+                                                                                        const _member = request.user.osu ?? request.user.alt;
+                                                                                        const _username = _member?.username ?? request.user.inspector_user?.known_username;
+                                                                                        const _user_id = _member?.id ?? request.user.inspector_user?.osu_id;
                                                                                         return (
                                                                                             <Box display='flex' alignItems='center'>
                                                                                                 <Box flexGrow={1}>
                                                                                                     <PlayerLeaderboardItem
                                                                                                         user={{
-                                                                                                            osu_user: request.user.osu,
-                                                                                                            username: request.user.osu?.username ?? request.user.inspector_user?.known_username,
+                                                                                                            osu_user: _member,
+                                                                                                            username: _username,
                                                                                                             rank: index + 1,
-                                                                                                            user_id: request.user.osu.id,
+                                                                                                            user_id: _user_id,
                                                                                                         }}
                                                                                                     />
                                                                                                 </Box>
@@ -603,26 +611,6 @@ function Clan(props) {
                                                                                                         : <></>
                                                                                                 }
                                                                                             </Box>
-                                                                                            // <Grid sx={{ height: '80px', mb: 10 }}>
-                                                                                            //     {/* playercard but with extra buttons for accept/reject */}
-                                                                                            //     <PlayerCard onClick={() => { navigate(`/user/${request.user.osu.id}`); }} user={request.user} />
-                                                                                            //     <Grid>
-                                                                                            //         <Button
-                                                                                            //             onClick={() => { eventAcceptJoinRequest(request) }}
-                                                                                            //             variant='contained'
-                                                                                            //             color='primary'
-                                                                                            //             sx={{ mr: 1 }}>
-                                                                                            //             Accept
-                                                                                            //         </Button>
-                                                                                            //         <Button
-                                                                                            //             onClick={() => { eventRejectJoinRequest(request) }}
-                                                                                            //             variant='contained'
-                                                                                            //             color='error'
-                                                                                            //             sx={{ mr: 1 }}>
-                                                                                            //             Reject
-                                                                                            //         </Button>
-                                                                                            //     </Grid>
-                                                                                            // </Grid>
                                                                                         )
                                                                                     }) :
                                                                                     <Typography variant='subtitle2' sx={{ fontStyle: 'italic', }}>No requests</Typography>

@@ -19,6 +19,7 @@ function PlayerLeaderboardItem(props) {
     const [inspector_user, setInspectorUser] = useState({});
     const [base_user, setBaseUser] = useState({});
     const [showRankGain, setShowRankGain] = useState(false);
+    const [level, setLevel] = useState([0,0]);
     const theme = useTheme();
     const navigate = useNavigate();
 
@@ -40,6 +41,18 @@ function PlayerLeaderboardItem(props) {
         if (_base_user?.inspector_user) {
             _inspector_user = _base_user.inspector_user;
         }
+
+        let level = 0;
+        if(_osu_user?.statistics_rulesets?.osu?.level) {
+            level = _osu_user.statistics_rulesets.osu.level.current + (_osu_user.statistics_rulesets.osu.level.progress * 0.01);
+        }else if(_osu_user?.level) {
+            level = parseFloat(_osu_user.level);
+        }
+
+        const levelBeforeDecimal = Math.floor(level) ?? 0;
+        const levelAfterDecimal = level - levelBeforeDecimal ?? 0;
+        setLevel([levelBeforeDecimal, levelAfterDecimal]);
+
         setInspectorUser(_inspector_user);
     }, [props]);
 
@@ -121,8 +134,8 @@ function PlayerLeaderboardItem(props) {
                     </Box>
                     <LevelIcon
                         size={LEADERBOARD_ITEM_HEIGHT}
-                        level={osu_user?.statistics_rulesets?.osu?.level?.current ?? 0}
-                        levelProgress={osu_user?.statistics_rulesets?.osu?.level?.progress ?? 0}
+                        level={level[0]}
+                        levelProgress={level[1]}
                         showLevelProgress={false}
                     />
                 </Box>
