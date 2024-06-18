@@ -9,9 +9,12 @@ import "@fontsource/comfortaa";
 import App from './App';
 import { BrowserRouter } from 'react-router-dom';
 import 'react-virtualized/styles.css';
+import config from "./config.json";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
+  //use basename /score-inspector/ only when not using gh-pages
+  //otherwise use basename '/'
   <BrowserRouter basename='/'>
     <App />
   </BrowserRouter>
