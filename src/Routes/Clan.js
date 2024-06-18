@@ -175,8 +175,9 @@ function Clan(props) {
 
     const eventAcceptJoinRequest = async (request) => {
         try {
-            if (!request.user?.osu?.id) return showNotification('Error', 'No user data found...', 'error');
-            const response = await AcceptJoinRequestClan(loggedInUser.osu_id, request.user?.osu?.id, await GetLoginToken(), clanData.clan.id);
+            const user_id = request.user?.osu?.id ?? request.user?.alt?.id;
+            if (!user_id) return showNotification('Error', 'No user data found...', 'error');
+            const response = await AcceptJoinRequestClan(loggedInUser.osu_id, user_id, await GetLoginToken(), clanData.clan.id);
             if (response.error) {
                 showNotification('Error', response.error, 'error');
             } else {
@@ -191,8 +192,9 @@ function Clan(props) {
 
     const eventRejectJoinRequest = async (request) => {
         try {
-            if (!request.user?.osu?.id) return showNotification('Error', 'No user data found...', 'error');
-            const response = await RejectJoinRequestClan(loggedInUser.osu_id, request.user?.osu?.id, await GetLoginToken(), clanData.clan.id);
+            const user_id = request.user?.osu?.id ?? request.user?.alt?.id;
+            if (!user_id) return showNotification('Error', 'No user data found...', 'error');
+            const response = await RejectJoinRequestClan(loggedInUser.osu_id, user_id, await GetLoginToken(), clanData.clan.id);
             if (response.error) {
                 showNotification('Error', response.error, 'error');
             } else {
