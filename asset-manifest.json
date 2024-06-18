@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/score-inspector/static/css/main.a6f522ea.css",
-    "main.js": "/score-inspector/static/js/main.57712fc2.js",
+    "main.js": "/score-inspector/static/js/main.211cd858.js",
     "static/media/comfortaa-latin-400-normal.woff": "/score-inspector/static/media/comfortaa-latin-400-normal.cd0a3fbb7381a2544cfd.woff",
     "static/media/roboto-latin-500-normal.woff2": "/score-inspector/static/media/roboto-latin-500-normal.f25d774ecfe0996f8eb5.woff2",
     "static/media/roboto-latin-700-normal.woff2": "/score-inspector/static/media/roboto-latin-700-normal.227c93190fe7f82de3f8.woff2",
@@ -82,10 +82,10 @@
     "static/media/Grade-D.svg": "/score-inspector/static/media/Grade-D.9f93a926024bdc34105f57bad4d197f5.svg",
     "static/media/index.cjs": "/score-inspector/static/media/index.cd351d7c31d0d3fccf96.cjs",
     "main.a6f522ea.css.map": "/score-inspector/static/css/main.a6f522ea.css.map",
-    "main.57712fc2.js.map": "/score-inspector/static/js/main.57712fc2.js.map"
+    "main.211cd858.js.map": "/score-inspector/static/js/main.211cd858.js.map"
   },
   "entrypoints": [
     "static/css/main.a6f522ea.css",
-    "static/js/main.57712fc2.js"
+    "static/js/main.211cd858.js"
   ]
 }
