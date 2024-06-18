@@ -2,7 +2,7 @@
   "name": "score-inspector",
   "version": "2.0.0",
   "private": true,
-  "homepage": "https://score.kirino.sh",
+  "homepage": "http://darkchii.github.io/score",
   "dependencies": {
     "@ckeditor/ckeditor5-build-classic": "^41.4.2",
     "@ckeditor/ckeditor5-react": "^7.0.0",
@@ -23,6 +23,7 @@
     "chartjs-plugin-zoom": "^2.0.1",
     "countries-list": "^3.1.0",
     "dayjs": "^1.11.11",
+    "gh-pages": "^6.1.1",
     "lodash": "^4.17.21",
     "moment": "^2.30.1",
     "moment-duration-format": "^2.3.2",
@@ -49,6 +50,8 @@
   "scripts": {
     "start": "set PORT=3006 && react-scripts start",
     "build": "react-scripts build",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
