@@ -11,7 +11,7 @@ import { Helmet } from 'react-helmet';
 import UserDataContainer from '../Components/UserPage/UserDataContainer';
 import config from '../config.json';
 import { GetVisitors, UpdateVisitor } from '../Helpers/Account';
-import { GetAPI, formatBytes, showNotification } from '../Helpers/Misc';
+import { GetAPI, formatBytes } from '../Helpers/Misc';
 import axios from 'axios';
 
 function User() {
@@ -138,10 +138,7 @@ function User() {
                 setLoadingState('Server side stuff');
 
                 if (!config.USE_DEV_API) {
-                    const update_visitor = await UpdateVisitor(user_out.osu.id);
-                    // if(update_visitor.error !== undefined) {
-                    //     showNotification('Error', update_visitor.error, 'error');
-                    // }
+                    await UpdateVisitor(user_out.osu.id);
                 }
 
                 const visitors = await GetVisitors(user_out.osu.id);
