@@ -16,8 +16,6 @@ import SectionDaily from "./SectionDaily";
 import styled from "@emotion/styled";
 import SectionCompletion from "./SectionCompletion";
 import SectionPacks from "./SectionPacks";
-import GroupIcon from '@mui/icons-material/Group';
-import SectionFriends from "./SectionFriends";
 import { useParams } from "react-router-dom";
 import _ from "lodash";
 
@@ -36,9 +34,7 @@ function UserDataContainer(props) {
         'graphs': '2',
         'scores': '3',
         'completion': '4',
-        // 'comments': '5',
-        'packs': '7',
-        'friends': '8'
+        'packs': '5',
     }
 
     useEffect(()=>{
@@ -68,7 +64,6 @@ function UserDataContainer(props) {
                         <StyledTab icon={<GradingIcon />} iconPosition='start' label='Completion' value={_IDs['completion']} />
                         {/* <StyledTab icon={<InsertCommentIcon />} iconPosition='start' label='Comments' value={_IDs['comments']} /> */}
                         <StyledTab icon={<LayersIcon />} iconPosition='start' label='Packs' value={_IDs['packs']} />
-                        <StyledTab disabled={!props.user.inspector_user.is_friends_public} icon={<GroupIcon />} iconPosition='start' label='Friends' value={_IDs['friends']} />
                     </TabList>
                 </Box>
                 <TabPanel sx={{ p: 0 }} value={_IDs['profile']}>
@@ -91,9 +86,6 @@ function UserDataContainer(props) {
                 </TabPanel>
                 <TabPanel sx={{ p: 0 }} value={_IDs['packs']}>
                     <SectionPacks user={props.user} />
-                </TabPanel>
-                <TabPanel sx={{ p: 0 }} value={_IDs['friends']}>
-                    <SectionFriends user={props.user} />
                 </TabPanel>
             </TabContext>
         </>

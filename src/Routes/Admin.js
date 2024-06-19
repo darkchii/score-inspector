@@ -8,7 +8,6 @@ import HideImageIcon from '@mui/icons-material/HideImage';
 import { green, red } from "@mui/material/colors";
 import { Helmet } from "react-helmet";
 import config from "../config.json";
-import PeopleIcon from '@mui/icons-material/People';
 import { AutoSizer, Column, Table as VTable } from 'react-virtualized';
 import BlockIcon from '@mui/icons-material/Block';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
@@ -178,12 +177,6 @@ function AdminUsers(props) {
                                                             <ImageIcon sx={{ color: green[400] }} />
                                                             :
                                                             <HideImageIcon sx={{ color: red[400] }} />
-                                                    }
-                                                    {
-                                                        rowData.is_friends_public ?
-                                                            <PeopleIcon sx={{ color: green[400] }} />
-                                                            :
-                                                            <PeopleIcon sx={{ color: red[400] }} />
                                                     }
                                                     {
                                                         rowData.is_banned ?
