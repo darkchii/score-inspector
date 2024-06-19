@@ -20,6 +20,7 @@ function User() {
     const [loadingState, setLoadingState] = useState('Test message');
     const [registered, setRegistered] = useState(false);
     const [errorMessage, setErrorMessage] = useState(null);
+    const [extraErrorMessages, setExtraErrorMessages] = useState(null);
     const params = useParams();
     const location = useLocation();
 
@@ -39,6 +40,28 @@ function User() {
                 const user_in = params.id;
                 setLoadingState('Fetching user data');
                 const user_out = await getFullUser(user_in);
+
+                if (user_out === null || user_out.error !== undefined) {
+                    setUser(null);
+                    setIsLoading(false);
+                    setErrorMessage("There was an error fetching user data. Please try again later.");
+                    return;
+                }
+
+                if (!user_out.alt || !user_out.alt.username) {
+                    setUser(null);
+                    setIsLoading(false);
+                    setErrorMessage("User is probably not in the osu!alt database.");
+                    setExtraErrorMessages("If you are this user, please join the osu!alt discord and read #info channel.");
+                    return;
+                }
+
+                if (!user_out.osu) {
+                    setUser(null);
+                    setIsLoading(false);
+                    setErrorMessage("User is probably restricted from osu! or the osu! api is having issues.");
+                    return;
+                }
 
                 const onScoreDownloadProgress = (progress) => {
                     setLoadingState(`Fetching user scores (${formatBytes(progress.loaded)})`);
@@ -154,14 +177,7 @@ function User() {
                         <Typography variant='h4'>Whoops, couldn't show profile</Typography>
                         <Typography variant='subtitle1'>What went wrong: {errorMessage}</Typography>
                         {/* if errorMessage contains 'user_out.alt is undefined' */}
-                        {
-                            errorMessage?.includes('user_out.alt is undefined') ? <Alert severity='warning'>
-                                You likely registered with the bot very recently or haven't yet. If not, do so.
-                                Please wait for up to an hour to update your profile.
-                                You can check using the !clears command until your user is visible.
-                            </Alert>
-                                : <></>
-                        }
+                        {extraErrorMessages !== null ? <Alert severity='warning'>{extraErrorMessages}</Alert> : <></>}
                         <Link sx={{ textDecoration: 'none' }} href={`https://osu.ppy.sh/users/${params.id}`} target='_blank'>
                             <Typography variant='title' sx={{ fontSize: '1em' }}>Try osu! profile ....</Typography>
                         </Link>
