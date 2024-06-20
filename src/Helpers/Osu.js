@@ -448,17 +448,6 @@ export function getBonusPerformance(clears) {
     return 416.6667 * (1 - Math.pow(0.995, Math.min(1000, clears)));
 }
 
-export async function getBeatmapCount(loved = true) {
-    let bmCount;
-    try {
-        bmCount = await axios.get(`${GetAPI()}beatmaps/monthly?include_loved=${loved ? 'true' : 'false'}`, { headers: { "Access-Control-Allow-Origin": "*" } });
-    } catch (err) {
-        return null;
-    }
-
-    return bmCount;
-}
-
 export async function getBeatmaps(urlCfg = {}) {
     let beatmaps;
     try {
@@ -503,18 +492,6 @@ export async function getBeatmapPackDetails() {
     }
 
     return beatmapPackDetails?.data;
-}
-
-export async function getMedals() {
-    let medals;
-    try {
-        medals = await axios.get(`${GetAPI()}medals/get/`, { headers: { "Access-Control-Allow-Origin": "*" } });
-    }
-    catch (err) {
-        return null;
-    }
-
-    return medals?.data;
 }
 
 export const GRADE_ORDER = ['XH', 'X', 'SH', 'S', 'A', 'B', 'C', 'D'];

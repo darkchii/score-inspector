@@ -33,7 +33,6 @@ function Root() {
     const [isModalOpen, setIsModalOpen] = useState(true);
     const [osuAuthCode, setOsuAuthCode] = useState(null);
     const [searchParams] = useSearchParams();
-    const [serverStatus, setServerStatus] = useState(null);
     const [serverInfo, setServerInfo] = useState(null);
     const [todayData, setTodayData] = useState(null);
     const [visitorStats, setVisitorStats] = useState(null);
@@ -91,18 +90,11 @@ function Root() {
         try {
             Promise.all([
                 axios.get(`${GetAPI()}system`),
-                axios.get(`${GetAPI()}system/status`),
                 axios.get(`${GetAPI()}scores/today?user_id=${GetLoginIDUnsafe()}`)
-            ]).then(([system, status, today_data]) => {
+            ]).then(([system, today_data]) => {
                 system.data !== null && system.data !== undefined ? setServerInfo({ ...system.data }) : setServerInfo(null);
-                status.data !== null && status.data !== undefined ? setServerStatus({ ...status.data, inspector: true }) : setServerStatus({
-                    inspector: false
-                });
                 today_data.data !== null && today_data.data !== undefined ? setTodayData({ ...today_data.data }) : setTodayData(null);
             }).catch((err) => {
-                setServerStatus({
-                    inspector: false
-                });
                 console.error(err);
             });
         } catch (_err) {
@@ -111,22 +103,6 @@ function Root() {
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-
-    useEffect(() => {
-        if (serverStatus === null)
-            return;
-        if (!serverStatus.inspector) {
-            showNotification('Server down', 'The inspector server is currently down, please try again later.', 'error');
-        } else {
-            if (!serverStatus.osuv2) {
-                showNotification('Server down', 'The osu!api v2 server is currently down, please try again later.', 'error');
-            }
-
-            if (!serverStatus.osualt) {
-                showNotification('Server down', 'The osu!alternative server is currently down, please try again later.', 'error');
-            }
-        }
-    }, [serverStatus]);
 
     return (
         <>

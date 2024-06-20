@@ -23,49 +23,50 @@ const sorters = [
             let a_pp = a.pp > 0 ? a.pp : a.estimated_pp;
             let b_pp = b.pp > 0 ? b.pp : b.estimated_pp;
             return b_pp - a_pp;
-        }
+        },
+        internalName: 'pp'
     },
     {
         name: 'Score',
         sort: (a, b) => {
             return b.score - a.score;
-        }
-    },
-    {
-        name: 'Lazer Score',
-        sort: (a, b) => {
-            return b.scoreLazerClassic - a.scoreLazerClassic;
-        }
+        },
+        internalName: 'score'
     },
     {
         name: 'Date Played',
         sort: (a, b) => {
             return moment(b.date_played).unix() - moment(a.date_played).unix();
-        }
+        },
+        internalName: 'date_played'
     },
     {
         name: 'Date Ranked',
         sort: (a, b) => {
             return moment(b.beatmap.approved_date).unix() - moment(a.beatmap.approved_date).unix();
-        }
+        },
+        internalName: 'approved_date'
     },
     {
         name: 'Accuracy',
         sort: (a, b) => {
             return b.accuracy - a.accuracy;
-        }
+        },
+        internalName: 'accuracy'
     },
     {
         name: 'Combo',
         sort: (a, b) => {
             return b.combo - a.combo;
-        }
+        },
+        internalName: 'combo'
     },
     {
         name: 'Stars',
         sort: (a, b) => {
             return b.beatmap.modded_sr.star_rating - a.beatmap.modded_sr.star_rating;
-        }
+        },
+        internalName: 'star_rating'
     }
 ]
 
@@ -213,7 +214,7 @@ function ScoreFilter(props) {
         query += `-played-start ${moment(filterData.minPlayedDate).format('YYYY-MM-DD')} `;
         query += `-played-end ${moment(filterData.maxPlayedDate).format('YYYY-MM-DD')} `;
 
-        query += `-order ${filterData._sorter.name.toLowerCase()} -dir ${filterData._sorter.reverse ? 'asc' : 'desc'} `;
+        query += `-order ${filterData._sorter.internalName.toLowerCase()} -dir ${filterData._sorter.reverse ? 'asc' : 'desc'} `;
 
         query += '-modded true';
         return query;
@@ -244,7 +245,7 @@ function ScoreFilter(props) {
 
     const onApply = () => {
         let _filterData = { ...filterData };
-        _filterData.order = filterData._sorter.name.toLowerCase();
+        _filterData.order = filterData._sorter.internalName.toLowerCase();
         _filterData.query = generateQuery();
         props.onApply(_filterData);
     }

@@ -17,7 +17,7 @@ import Stats from './Routes/Stats';
 import { IsUserLoggedIn } from './Helpers/Account';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { showNotification } from './Helpers/Misc';
+import { GetAPI, showNotification } from './Helpers/Misc';
 import Logout from './Routes/Logout';
 import config from './config';
 import Tools from './Routes/Tools';
@@ -34,13 +34,27 @@ import LeadersMonthly from './Routes/LeadersMonthly.js';
 import Scores from './Routes/Scores.js';
 import Completionists from './Routes/Completionists.js';
 import Clan from './Routes/Clan.js';
+import Loader from './Components/UI/Loader.js';
 
 function App() {
   const [loginData, setLoginData] = useState(null);
   const [, setRefresher] = useState(0);
+  const [isServerAccessible, setIsServerAccessible] = useState(null);
 
   useEffect(() => {
     (async () => {
+      //ping the server to see if it's accessible
+      try {
+        const res = await fetch(`${GetAPI()}ping`);
+        if (res && res.status) {
+          setIsServerAccessible(true);
+        }
+      } catch (e) {
+        console.error(e);
+        setIsServerAccessible(false);
+        return;
+      }
+
       if (await IsUserLoggedIn()) {
         let loginData = {
           token: localStorage.getItem('auth_token'),
@@ -74,6 +88,77 @@ function App() {
     return () => { window.removeEventListener('settings', onSettings); };
   }, []);
 
+  const basePage = (
+    <>
+
+      <Box sx={{ pb: 2 }}>
+        <Header account={loginData} />
+      </Box>
+      <Box sx={{ pl: 2, pr: 2 }}></Box>
+      <Card sx={{
+        backgroundColor: `${Theme.palette.background.paper}dd`,
+      }}>
+        <CardContent>
+          <Routes>
+            <Route path="/" element={<Root />} />
+            <Route path="update/:id" element={<Update />} />
+            <Route path="*" element={<Error />} />
+            <Route path="user/:id/:page?" element={<User />} />
+            <Route path="dev" element={<CompDev />} />
+            <Route path="top" element={<Top />} />
+            <Route path="stats" element={<Stats />} />
+            <Route path="staff" element={<Staff />} />
+            <Route path="population" element={<Population />} />
+            <Route path="scores" element={<Scores />} />
+            <Route path="docs" element={<Docs />} />
+            <Route path="completionists" element={<Completionists />} />
+            <Route path="logout" element={<Logout />} />
+            <Route path="clan/:id?" element={<Clan />} />
+            <Route path="milestones" element={<Milestones />}>
+              <Route index element={<Milestones />} />
+              <Route path="page/:page" element={<Milestones />} />
+            </Route>
+            <Route path="admin" element={<Admin />}>
+              <Route index element={<Admin />} />
+              <Route path=":tool" element={<Admin />} />
+            </Route>
+            <Route path="tools" element={<Tools />}>
+              <Route index element={<Tools />} />
+              <Route path=":tool" element={<Tools />} />
+            </Route>
+            <Route path="month_score" element={<LeadersMonthly />} />
+            <Route path="score" element={<LeadersScore />}>
+              <Route index element={<LeadersScore />} />
+              <Route path="page/:page" element={<LeadersScore />}>
+                <Route index element={<LeadersScore />} />
+                <Route path="date/:date" element={<LeadersScore />}>
+                  <Route index element={<LeadersScore />} />
+                  <Route path="sort/:sort" element={<LeadersScore />}>
+                    <Route index element={<LeadersScore />} />
+                    <Route path="mode/:mode" element={<LeadersScore />} />
+                  </Route>
+                </Route>
+              </Route>
+            </Route>
+            <Route path="leaderboard" element={<Leaders />}>
+              <Route index element={<Leaders />} />
+              <Route path="stat/:stat" element={<Leaders />}>
+                <Route index element={<Leaders />} />
+                <Route path="page/:page" element={<Leaders />}>
+                  <Route index element={<Leaders />} />
+                  <Route path="country/:country" element={<Leaders />} />
+                </Route>
+              </Route>
+            </Route>
+          </Routes>
+        </CardContent>
+      </Card>
+      <Box sx={{ pt: 2, pb: 2 }}>
+        <Footer />
+      </Box>
+    </>
+  );
+
   return (
     <>
       <ThemeProvider theme={Theme}>
@@ -101,74 +186,30 @@ function App() {
             </Alert>
           </>
         }
-        <Box sx={{ pb: 2 }}>
-          <Header account={loginData} />
-        </Box>
-        <Box sx={{ pl: 2, pr: 2 }}>
-          <ToastContainer hideProgressBar />
-          <Card sx={{
-            backgroundColor: `${Theme.palette.background.paper}dd`,
-          }}>
-            <CardContent>
-              {/* <RouterProvider router={router} /> */}
-              <Routes>
-                <Route path="/" element={<Root />} />
-                <Route path="update/:id" element={<Update />} />
-                <Route path="*" element={<Error />} />
-                <Route path="user/:id/:page?" element={<User />} />
-                <Route path="dev" element={<CompDev />} />
-                <Route path="top" element={<Top />} />
-                <Route path="stats" element={<Stats />} />
-                <Route path="staff" element={<Staff />} />
-                <Route path="population" element={<Population />} />
-                <Route path="scores" element={<Scores />} />
-                <Route path="docs" element={<Docs />} />
-                <Route path="completionists" element={<Completionists />} />
-                <Route path="logout" element={<Logout />} />
-                <Route path="clan/:id?" element={<Clan />} />
-                <Route path="milestones" element={<Milestones />}>
-                  <Route index element={<Milestones />} />
-                  <Route path="page/:page" element={<Milestones />} />
-                </Route>
-                <Route path="admin" element={<Admin />}>
-                  <Route index element={<Admin />} />
-                  <Route path=":tool" element={<Admin />} />
-                </Route>
-                <Route path="tools" element={<Tools />}>
-                  <Route index element={<Tools />} />
-                  <Route path=":tool" element={<Tools />} />
-                </Route>
-                <Route path="month_score" element={<LeadersMonthly />} />
-                <Route path="score" element={<LeadersScore />}>
-                  <Route index element={<LeadersScore />} />
-                  <Route path="page/:page" element={<LeadersScore />}>
-                    <Route index element={<LeadersScore />} />
-                    <Route path="date/:date" element={<LeadersScore />}>
-                      <Route index element={<LeadersScore />} />
-                      <Route path="sort/:sort" element={<LeadersScore />}>
-                        <Route index element={<LeadersScore />} />
-                        <Route path="mode/:mode" element={<LeadersScore />} />
-                      </Route>
-                    </Route>
-                  </Route>
-                </Route>
-                <Route path="leaderboard" element={<Leaders />}>
-                  <Route index element={<Leaders />} />
-                  <Route path="stat/:stat" element={<Leaders />}>
-                    <Route index element={<Leaders />} />
-                    <Route path="page/:page" element={<Leaders />}>
-                      <Route index element={<Leaders />} />
-                      <Route path="country/:country" element={<Leaders />} />
-                    </Route>
-                  </Route>
-                </Route>
-              </Routes>
-            </CardContent>
-          </Card>
-          <Box sx={{ pt: 2, pb: 2 }}>
-            <Footer />
-          </Box>
-        </Box>
+        <ToastContainer hideProgressBar />
+        {/* <RouterProvider router={router} /> */}
+        {
+          isServerAccessible === null ?
+            <Box sx={{
+              //expand height to fill the screen
+              height: '100vh',
+              display: 'flex',
+            }}>
+              <Loader />
+            </Box> : (
+              isServerAccessible === false ? (
+                <Box sx={{ p: 2 }}>
+                  <Alert severity="error">
+                    <Typography variant="h6" component="div">
+                      <Box fontWeight="fontWeightBold">
+                        The server is currently not accessible. Please try again later.
+                      </Box>
+                    </Typography>
+                  </Alert>
+                </Box>
+              ) : basePage
+            )
+        }
       </ThemeProvider>
     </>
   );

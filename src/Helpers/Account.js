@@ -354,26 +354,6 @@ export async function GetRemoteRoles() {
     return res?.data;
 }
 
-export async function SendComment(sender, recipient, reply_to, content) {
-    if (!await IsUserLoggedIn()) return null;
-
-    const res = await fetch(`${GetAPI()}login/comments/send`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            token: localStorage.getItem('auth_token'),
-            sender: sender,
-            recipient: recipient,
-            reply_to: reply_to,
-            comment: content
-        })
-    });
-
-    return res;
-}
-
 export async function AdminValidate(osu_id, session_token) {
     if (!osu_id || !session_token) {
         osu_id = localStorage.getItem('auth_osu_id');
