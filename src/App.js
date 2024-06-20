@@ -203,6 +203,8 @@ function App() {
                     <Typography variant="h6" component="div">
                       <Box fontWeight="fontWeightBold">
                         The server is currently not accessible. Please try again later.
+                        <br />
+                        osu!alternative Discord: <a href="https://discord.gg/VZWRZZXcW4" target="_blank" rel="noreferrer">https://discord.gg/VZWRZZXcW4</a>
                       </Box>
                     </Typography>
                   </Alert>
