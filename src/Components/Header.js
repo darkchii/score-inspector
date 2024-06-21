@@ -19,7 +19,6 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 import HistoryIcon from '@mui/icons-material/History';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
-import ListIcon from '@mui/icons-material/List';
 import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
 import GroupIcon from '@mui/icons-material/Group';
 
@@ -97,7 +96,6 @@ function Header(props) {
         { name: 'Stats', icon: <DataUsageIcon />, onClick: () => { }, linkTo: '/stats' },
         { name: 'Tools', icon: <BuildIcon />, onClick: () => { }, linkTo: '/tools' },
         { name: 'Milestones', icon: <EmojiEventsIcon />, onClick: () => { }, linkTo: '/milestones' },
-        { name: 'Scores', icon: <ListIcon />, onClick: () => { }, linkTo: '/scores' },
         { name: 'Clans', icon: <GroupIcon />, onClick: () => { }, linkTo: '/clan' },
     ];
 

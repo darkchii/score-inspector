@@ -31,7 +31,6 @@ import LeadersScore from './Routes/LeadersScore';
 import Milestones from './Routes/Milestones';
 import Docs from './Routes/Docs';
 import LeadersMonthly from './Routes/LeadersMonthly.js';
-import Scores from './Routes/Scores.js';
 import Completionists from './Routes/Completionists.js';
 import Clan from './Routes/Clan.js';
 import Loader from './Components/UI/Loader.js';
@@ -109,7 +108,6 @@ function App() {
             <Route path="stats" element={<Stats />} />
             <Route path="staff" element={<Staff />} />
             <Route path="population" element={<Population />} />
-            <Route path="scores" element={<Scores />} />
             <Route path="docs" element={<Docs />} />
             <Route path="completionists" element={<Completionists />} />
             <Route path="logout" element={<Logout />} />

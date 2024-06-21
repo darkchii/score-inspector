@@ -261,9 +261,6 @@ function Clan(props) {
 
                 //this is only ever used for sorting, so api doesnt do this
                 //add member count to stats
-                data.clans.forEach((clan) => {
-                    clan.clan_stats.members = clan.clan_members.length;
-                });
                 let clans = data.clans;
                 setClanList(clans ?? []);
                 setCurrentClanSorter(CLAN_STATS[0].key);
@@ -287,12 +284,6 @@ function Clan(props) {
             loadClan(params.id);
         }
     }, [params.id]);
-
-    // useEffect(() => {
-    //     if (!params.id) {
-    //         loadClanList();
-    //     }
-    // }, []);
 
     useEffect(() => {
         (async () => {
