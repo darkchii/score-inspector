@@ -55,16 +55,22 @@ function CustomizeModal(props, ref) {
                 return;
             }
 
-            const res = await UpdateProfile({
-                background_image: optionBackgroundUrl,
-            });
-
-            if (res !== null && res.status === 200) {
-                showNotification('Success', 'Profile updated', 'success');
-                setOpen(false);
-            } else {
+            try{
+                const res = await UpdateProfile({
+                    background_image: optionBackgroundUrl,
+                });
+    
+                console.log(res);
+                if (res !== null && res.status === 200) {
+                    showNotification('Success', 'Profile updated', 'success');
+                    // setOpen(false);
+                } else {
+                    showNotification('Error', 'Failed to update profile', 'error');
+                }
+            }catch(err){
                 showNotification('Error', 'Failed to update profile', 'error');
             }
+
             setIsWorking(false);
         })();
     }
