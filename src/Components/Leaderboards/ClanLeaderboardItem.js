@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Tooltip, Typography } from "@mui/material";
 import GlowBar from "../UI/GlowBar";
 import { LeaderboardItem } from "./LeaderboardItem";
 import { useNavigate } from "react-router-dom";
@@ -72,24 +72,26 @@ function ClanLeaderboardItem(props) {
                     {
                         props.values?.map((value, index) => {
                             return (
-                                <Box sx={{
-                                    display: 'flex',
-                                    justifyContent: value.alignment,
-                                    alignItems: 'center',
-                                    width: `${100 / props.values.length}%`,
-                                    pl: 1,
-                                    pr: 1,
-                                }}>
-                                    <Typography
-                                        sx={{
-                                            color: value.color ?? 'inherit',
-                                        }}
-                                        variant={value.variant ?? 'h6'}
-                                        textAlign={value.alignment}
-                                        noWrap>
-                                        {value.value}
-                                    </Typography>
-                                </Box>
+                                <Tooltip key={index} title={value.tooltip ?? ''}>
+                                    <Box sx={{
+                                        display: 'flex',
+                                        justifyContent: value.alignment,
+                                        alignItems: 'center',
+                                        width: `${100 / props.values.length}%`,
+                                        pl: 1,
+                                        pr: 1,
+                                    }}>
+                                        <Typography
+                                            sx={{
+                                                color: value.color ?? 'inherit',
+                                            }}
+                                            variant={value.variant ?? 'h6'}
+                                            textAlign={value.alignment}
+                                            noWrap>
+                                            {value.value}
+                                        </Typography>
+                                    </Box>
+                                </Tooltip>
                             )
                         })
                     }

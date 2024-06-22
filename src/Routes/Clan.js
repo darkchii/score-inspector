@@ -15,6 +15,8 @@ import { grey } from "@mui/material/colors";
 import sanitize from "sanitize-html";
 import { getLevelForScore } from "../Helpers/Osu";
 import PlayerLeaderboardItem from '../Components/Leaderboards/PlayerLeaderboardItem';
+import LockIcon from '@mui/icons-material/Lock';
+import LockOpenIcon from '@mui/icons-material/LockOpen';
 
 //always round to 2 decimal places, and toLocaleString for commas
 const CLAN_STATS = [
@@ -779,6 +781,7 @@ function Clan(props) {
                                                                 [
                                                                     //empty
                                                                     { value: '', alignment: 'left', variant: 'body2' },
+                                                                    { value: '', alignment: 'left', variant: 'body2' },
                                                                     //select stat name from clan_stats entry
                                                                     {
                                                                         value: CLAN_STATS.find((stat) => stat.key === currentClanSorter).name, alignment: 'right', variant: 'body2',
@@ -786,6 +789,7 @@ function Clan(props) {
                                                                     },
                                                                     //select clan_stat entry from sorter, then use format function
                                                                     { value: CLAN_STATS.find((stat) => stat.key === currentClanSorter).format(clan.clan_stats), alignment: 'left', variant: 'body2' },
+                                                                    { value: clan.disable_requests ? <LockIcon color='error' /> : <LockOpenIcon color='success' />, alignment: 'right', variant: 'body2', tooltip: clan.disable_requests ? 'Join requests disabled' : 'Join requests enabled' }
                                                                 ]
                                                             }
                                                         />
