@@ -188,13 +188,8 @@ function ProcessBestDays(scores) {
 }
 
 export function prepareScores(user, scores, calculateOtherPP = true) {
-    let debugged = false;
     scores.forEach((score, index) => {
         score = prepareScore(score, user);
-
-        if (score.top_score && score.top_score.user_id && !debugged) {
-            debugged = true;
-        }
     });
 
     //sort by time
