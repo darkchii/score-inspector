@@ -329,6 +329,16 @@ function Clan(props) {
         <>
             <Helmet>
                 <title>Clans - {config.APP_NAME}</title>
+
+                {/* Meta tags */}
+                <meta name="description" content="osu! clans" />
+                <meta property="og:title" content={`Clans - ${config.APP_NAME}`} />
+                <meta property="og:description" content="osu! clans" />
+                <meta property="og:image" content={config.APP_LOGO} />
+
+                <meta name="twitter:title" content={`Clans - ${config.APP_NAME}`} />
+                <meta name="twitter:description" content="osu! clans" />
+                <meta name="twitter:image" content={config.APP_LOGO} />
             </Helmet>
             <Modal
                 open={clanCreatorModalOpen}
@@ -344,6 +354,18 @@ function Clan(props) {
                                 (
                                     !clanData ? <Typography variant='body1'>Something went wrong... Try later please!</Typography> :
                                         <>
+                                        <Helmet>
+                                            <title>{clanData.clan.name} - {config.APP_NAME}</title>
+                                            {/* Meta tags */}
+                                            <meta name="description" content={sanitize(clanData.clan.description)} />
+                                            <meta property="og:title" content={`${clanData.clan.name} - ${config.APP_NAME}`} />
+                                            <meta property="og:description" content={sanitize(clanData.clan.description)} />
+                                            <meta property="og:image" content={clanData.clan.header_image_url} />
+
+                                            <meta name="twitter:title" content={`${clanData.clan.name} - ${config.APP_NAME}`} />
+                                            <meta name="twitter:description" content={sanitize(clanData.clan.description)} />
+                                            <meta name="twitter:image" content={clanData.clan.header_image_url} />
+                                        </Helmet>
                                             <Modal
                                                 open={clanEditModalOpen}
                                                 onClose={() => setClanEditModalOpen(false)}
