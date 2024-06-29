@@ -6,6 +6,7 @@ import { GetFormattedName, GetRoleIcon, GetRoles } from "../../Helpers/Account";
 import TwitterIcon from '@mui/icons-material/Twitter';
 import { DiscordIcon } from "../../Helpers/Icons";
 import { getBonusPerformance } from "../../Helpers/Osu";
+import { Link as VLink } from 'react-router-dom';
 
 const MAX_VISITORS = 5;
 function SectionHeader(props) {
@@ -59,7 +60,16 @@ function SectionHeader(props) {
                                     <Typography variant='h4'>
                                         {
                                             props.user.inspector_user?.clan_member && !props.user.inspector_user?.clan_member.pending ?
-                                                <span><b style={{ color: `#${props.user.inspector_user?.clan_member.clan.color}` }}>{`[${props.user.inspector_user?.clan_member.clan.tag}] `}</b></span>
+                                                <span><VLink
+                                                    // href={`/clan/${props.user.inspector_user?.clan_member.clan.tag}`}
+                                                    to={`/clan/${props.user.inspector_user?.clan_member.clan.id}`}
+                                                    style={{
+                                                        color: `#${props.user.inspector_user?.clan_member.clan.color}`,
+                                                        fontWeight: 'bold',
+                                                        textDecoration: 'none'
+                                                    }}>
+                                                    {`[${props.user.inspector_user?.clan_member.clan.tag}] `}
+                                                </VLink></span>
                                                 : null
                                         }
                                         {props.user.osu.username}{
