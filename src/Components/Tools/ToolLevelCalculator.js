@@ -37,7 +37,7 @@ function ToolLevelCalculator() {
                 const scoreNeeded = requiredScore - userScore;
                 setUserCalcResult(scoreNeeded);
             } catch (err) {
-                showNotification('Error', 'An unknown error occured while calculating', 'error');
+                showNotification('Error', 'An unknown error occurred while calculating', 'error');
             }
             setWorking(false);
         })();
