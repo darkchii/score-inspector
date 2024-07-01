@@ -354,18 +354,18 @@ function Clan(props) {
                                 (
                                     !clanData ? <Typography variant='body1'>Something went wrong... Try later please!</Typography> :
                                         <>
-                                        <Helmet>
-                                            <title>{clanData.clan.name} - {config.APP_NAME}</title>
-                                            {/* Meta tags */}
-                                            <meta name="description" content={sanitize(clanData.clan.description)} />
-                                            <meta property="og:title" content={`${clanData.clan.name} - ${config.APP_NAME}`} />
-                                            <meta property="og:description" content={sanitize(clanData.clan.description)} />
-                                            <meta property="og:image" content={clanData.clan.header_image_url} />
+                                            <Helmet>
+                                                <title>{clanData.clan.name} - {config.APP_NAME}</title>
+                                                {/* Meta tags */}
+                                                <meta name="description" content={sanitize(clanData.clan.description)} />
+                                                <meta property="og:title" content={`${clanData.clan.name} - ${config.APP_NAME}`} />
+                                                <meta property="og:description" content={sanitize(clanData.clan.description)} />
+                                                <meta property="og:image" content={clanData.clan.header_image_url} />
 
-                                            <meta name="twitter:title" content={`${clanData.clan.name} - ${config.APP_NAME}`} />
-                                            <meta name="twitter:description" content={sanitize(clanData.clan.description)} />
-                                            <meta name="twitter:image" content={clanData.clan.header_image_url} />
-                                        </Helmet>
+                                                <meta name="twitter:title" content={`${clanData.clan.name} - ${config.APP_NAME}`} />
+                                                <meta name="twitter:description" content={sanitize(clanData.clan.description)} />
+                                                <meta name="twitter:image" content={clanData.clan.header_image_url} />
+                                            </Helmet>
                                             <Modal
                                                 open={clanEditModalOpen}
                                                 onClose={() => setClanEditModalOpen(false)}
@@ -920,7 +920,8 @@ function ClanFormFields(props) {
 
     const onUpdate = () => {
         let user = { ...props.user };
-        user.clan = {
+        user.clan_member = {};
+        user.clan_member.clan = {
             tag: clanTag,
             color: clanColor,
         }
@@ -1047,6 +1048,19 @@ function ClanFormFields(props) {
                                     >
                                         {isEditMode ? 'Update' : 'Create'}
                                     </Button>
+                                    <Alert severity='info' sx={{ mt: 1 }}>
+                                        Header image must be a direct link to an image. (e.g. https://i.imgur.com/LqGgC4a.jpeg)
+                                    </Alert>
+                                    {/* add header image preview */}
+                                    {
+                                        clanHeaderUrl ? <img src={clanHeaderUrl} alt="Header Preview" style={{
+                                            width: '100%',
+                                            height: '200px',
+                                            objectFit: 'cover',
+                                            borderRadius: '10px',
+                                            marginTop: '5px',
+                                        }} /> : <></>
+                                    }
                                 </Stack>
                             </Container>
                         </Box>
