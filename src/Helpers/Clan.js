@@ -96,7 +96,7 @@ export async function LeaveClan(user_id, token, clan_id) {
     return response.data;
 }
 
-export async function GetClanList() {
-    const response = await axios.get(`${GetAPI()}clans/list`);
+export async function GetClanList(page, sort, dir, limit, search = null) {
+    const response = await axios.get(`${GetAPI()}clans/list?page=${page}&sort=${sort}&dir=${dir}&limit=${limit}&search=${search}`);
     return response.data;
 }
