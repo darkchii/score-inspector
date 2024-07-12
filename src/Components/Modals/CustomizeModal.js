@@ -6,11 +6,13 @@ import { GetUser as GetInspectorUser, UpdateProfile } from "../../Helpers/Accoun
 import { showNotification, validateImage } from "../../Helpers/Misc";
 import SaveIcon from '@mui/icons-material/Save';
 import { LoadingButton } from "@mui/lab";
+
 const style = {
     position: 'absolute',
     top: '50%',
-    width: '100%',
-    transform: 'translate(0, -50%)',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: '80%',
 };
 
 function CustomizeModal(props, ref) {
@@ -55,11 +57,11 @@ function CustomizeModal(props, ref) {
                 return;
             }
 
-            try{
+            try {
                 const res = await UpdateProfile({
                     background_image: optionBackgroundUrl,
                 });
-    
+
                 console.log(res);
                 if (res !== null && res.status === 200) {
                     showNotification('Success', 'Profile updated', 'success');
@@ -67,7 +69,7 @@ function CustomizeModal(props, ref) {
                 } else {
                     showNotification('Error', 'Failed to update profile', 'error');
                 }
-            }catch(err){
+            } catch (err) {
                 showNotification('Error', 'Failed to update profile', 'error');
             }
 
@@ -79,53 +81,51 @@ function CustomizeModal(props, ref) {
         <>
             <Modal open={open} onClose={() => setOpen(false)}>
                 <Box sx={style}>
-                    <Container>
-                        <Card sx={{ borderRadius: '10px' }}>
-                            <CardContent>
-                                <Typography variant='h4'>Edit profile</Typography>
-                                <Stack spacing={2} direction='column' sx={{ pt: 1 }}>
-                                    <Grid container spacing={2}>
-                                        <Grid item xs={3} sx={{height: '200px'}}>
-                                            <Box sx={{
-                                                backgroundColor: 'rgba(0, 0, 0, 0.1)',
-                                                height: '100%',
-                                                //align center
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                justifyContent: 'center',
-                                                borderRadius: '10px'
-                                            }}>
-                                                {
-                                                    optionBackgroundUrl !== '' && <>
-                                                        <img
-                                                            src={optionBackgroundUrl}
-                                                            alt="Background"
-                                                            style={{
-                                                                maxWidth: '100%',
-                                                                maxHeight: '100%',
-                                                                borderRadius: '10px'
-                                                            }} />
-                                                    </>
-                                                }
-                                            </Box>
-                                        </Grid>
-                                        <Grid item xs={9}>
-                                            <Stack spacing={2} direction='column' sx={{ pt: 1 }}>
-                                                <TextField
-                                                    disabled={isWorking}
-                                                    onChange={(e) => setOptionBackgroundUrl(e.target.value)}
-                                                    value={optionBackgroundUrl}
-                                                    label="Background Image (URL)"
-                                                    variant="standard" />
-                                                <Typography variant='caption'>Feel free to use suggestive content, just don't go over the top with full on naked anime girls.</Typography>
-                                            </Stack>
-                                        </Grid>
+                    <Card sx={{ borderRadius: '10px' }}>
+                        <CardContent>
+                            <Typography variant='h4'>Edit profile</Typography>
+                            <Stack spacing={2} direction='column' sx={{ pt: 1 }}>
+                                <Grid container spacing={2}>
+                                    <Grid item xs={3} sx={{ height: '200px' }}>
+                                        <Box sx={{
+                                            backgroundColor: 'rgba(0, 0, 0, 0.1)',
+                                            height: '100%',
+                                            //align center
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            borderRadius: '10px'
+                                        }}>
+                                            {
+                                                optionBackgroundUrl !== '' && <>
+                                                    <img
+                                                        src={optionBackgroundUrl}
+                                                        alt="Background"
+                                                        style={{
+                                                            maxWidth: '100%',
+                                                            maxHeight: '100%',
+                                                            borderRadius: '10px'
+                                                        }} />
+                                                </>
+                                            }
+                                        </Box>
                                     </Grid>
-                                    <LoadingButton disabled={isWorking} loading={isWorking} onClick={save} startIcon={<SaveIcon />}>Save</LoadingButton>
-                                </Stack>
-                            </CardContent>
-                        </Card>
-                    </Container>
+                                    <Grid item xs={9}>
+                                        <Stack spacing={2} direction='column' sx={{ pt: 1 }}>
+                                            <TextField
+                                                disabled={isWorking}
+                                                onChange={(e) => setOptionBackgroundUrl(e.target.value)}
+                                                value={optionBackgroundUrl}
+                                                label="Background Image (URL)"
+                                                variant="standard" />
+                                            <Typography variant='caption'>Feel free to use suggestive content, just don't go over the top with full on naked anime girls.</Typography>
+                                        </Stack>
+                                    </Grid>
+                                </Grid>
+                                <LoadingButton disabled={isWorking} loading={isWorking} onClick={save} startIcon={<SaveIcon />}>Save</LoadingButton>
+                            </Stack>
+                        </CardContent>
+                    </Card>
                 </Box>
             </Modal>
         </>

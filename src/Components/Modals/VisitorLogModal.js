@@ -10,8 +10,9 @@ import { arr_sum } from "../../Helpers/Misc";
 const style = {
     position: 'absolute',
     top: '50%',
-    width: '100%',
-    transform: 'translate(0, -50%)',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: '80%',
 };
 
 function VisitorLogModal(props, ref) {
@@ -25,7 +26,7 @@ function VisitorLogModal(props, ref) {
     }));
 
     useEffect(() => {
-        if(!open) return;
+        if (!open) return;
         (async () => {
             const data = await GetVisited();
             setVisitedList(data ?? []);
@@ -37,44 +38,42 @@ function VisitorLogModal(props, ref) {
         <>
             <Modal open={open} onClose={() => setOpen(false)}>
                 <Box sx={style}>
-                    <Container>
-                        <Card sx={{ borderRadius: '10px' }}>
-                            <CardContent>
-                                <Typography variant='h6'>Users visited</Typography>
-                                <Box sx={{ maxHeight: '600px', overflowY: 'auto' }}>
-                                    <TableContainer>
-                                        <Table size='small'>
-                                            <TableHead>
-                                                <TableRow>
-                                                    <TableCell>User</TableCell>
-                                                    <TableCell>Last visit</TableCell>
-                                                    <TableCell>Visits (Total: {visitedList ? arr_sum(visitedList, 'count') : '-'})</TableCell>
-                                                </TableRow>
-                                            </TableHead>
-                                            <TableBody>
-                                                {
-                                                    visitedList && visitedList.map((item, index) => {
-                                                        return (
-                                                            <TableRow>
-                                                                <TableCell>
+                    <Card sx={{ borderRadius: '10px' }}>
+                        <CardContent>
+                            <Typography variant='h6'>Users visited</Typography>
+                            <Box sx={{ maxHeight: '600px', overflowY: 'auto' }}>
+                                <TableContainer>
+                                    <Table size='small'>
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell>User</TableCell>
+                                                <TableCell>Last visit</TableCell>
+                                                <TableCell>Visits (Total: {visitedList ? arr_sum(visitedList, 'count') : '-'})</TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            {
+                                                visitedList && visitedList.map((item, index) => {
+                                                    return (
+                                                        <TableRow>
+                                                            <TableCell>
                                                                 <RouterLink to={`user/${item.target_user.inspector_user.osu_id}`}>
                                                                     {GetFormattedName(item.target_user.inspector_user, {
                                                                         is_link: true
                                                                     })}
                                                                 </RouterLink></TableCell>
-                                                                <TableCell>{moment(item.last_visit).fromNow()}</TableCell>
-                                                                <TableCell>{item.count}</TableCell>
-                                                            </TableRow>
-                                                        )
-                                                    })
-                                                }
-                                            </TableBody>
-                                        </Table>
-                                    </TableContainer>
-                                </Box>
-                            </CardContent>
-                        </Card>
-                    </Container>
+                                                            <TableCell>{moment(item.last_visit).fromNow()}</TableCell>
+                                                            <TableCell>{item.count}</TableCell>
+                                                        </TableRow>
+                                                    )
+                                                })
+                                            }
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                            </Box>
+                        </CardContent>
+                    </Card>
                 </Box>
             </Modal>
         </>
