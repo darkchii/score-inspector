@@ -66,14 +66,14 @@ const CLAN_STATS = [
         key: 'clears',
     }, {
         name: 'Total SS',
-        format: (stats) => ((stats.total_ss ?? 0) + (stats.total_ssh ?? 0) ).toLocaleString('en-US'),
+        format: (stats) => (stats.total_ss_both ?? 0).toLocaleString('en-US'),
         ranking: true,
-        key: 'total_ss',
+        key: 'total_ss_both',
     }, {
         name: 'Total S',
-        format: (stats) => ((stats.total_s ?? 0) + (stats.total_sh ?? 0) ).toLocaleString('en-US'),
+        format: (stats) => (stats.total_s_both ?? 0).toLocaleString('en-US'),
         ranking: true,
-        key: 'total_s',
+        key: 'total_s_both',
     }, {
         name: 'Total A',
         format: (stats) => (stats.total_a ?? 0).toLocaleString('en-US'),
