@@ -17,7 +17,10 @@ function AccountDropdown(props) {
         <Box sx={{ p: 2 }}>
             {
                 props.account.osu_user ? <>
-                    <PlayerCard user={props.account.osu_user} />
+                    <PlayerCard 
+                        user={props.account.osu_user}
+                        onClick={() => { navigate(`/user/${props.account.user_id}`); closeMenu(); }}
+                        />
                 </> : <>
                     <Alert severity="info">Welcome, {props.account.username}</Alert>
                 </>
