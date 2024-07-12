@@ -35,6 +35,8 @@ const defaultProps = {
             zoom: {
                 enabled: false,
             },
+            //transparent background
+            background: 'transparent',
         },
         plotOptions: {
             bar: {
