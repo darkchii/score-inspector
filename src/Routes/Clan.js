@@ -740,7 +740,7 @@ function ClanList(props) {
                                     onClick={() => setSorter(stat.key)}
                                     variant={sorter === stat.key ? 'contained' : 'outlined'}
                                     size='small'
-                                    sx={{ mr: 1, mb: 1 }}
+                                    sx={{ mr: 0.4, mb: 0.4 }}
                                 >
                                     {stat.name}
                                 </Button>
@@ -947,11 +947,11 @@ function ClanFormFields(props) {
                 // clanDescription,
                 // clanColor,
                 // clanHeaderUrl,
-                clanName: sanitize(clanName),
-                clanTag: sanitize(clanTag),
-                clanDescription: sanitize(clanDescription),
-                clanColor: sanitize(clanColor),
-                clanHeaderUrl: sanitize(clanHeaderUrl),
+                clanName: clanName,
+                clanTag: clanTag,
+                clanDescription: clanDescription,
+                clanColor: clanColor,
+                clanHeaderUrl: clanHeaderUrl,
                 clanDisableRequests,
             });
 
