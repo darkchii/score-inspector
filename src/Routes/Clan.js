@@ -535,6 +535,7 @@ function ClanPage(props) {
                                                 <Box display='flex' alignItems='center'>
                                                     <Box flexGrow={1}>
                                                         <PlayerLeaderboardItem
+                                                            remote_profile={true}
                                                             user={{
                                                                 osu_user: _member,
                                                                 username: _username,
@@ -601,6 +602,7 @@ function ClanPage(props) {
                                                             <Box display='flex' alignItems='center'>
                                                                 <Box flexGrow={1}>
                                                                     <PlayerLeaderboardItem
+                                                                        remote_profile={true}
                                                                         user={{
                                                                             osu_user: _member,
                                                                             username: _username,

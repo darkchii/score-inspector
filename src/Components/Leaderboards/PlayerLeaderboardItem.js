@@ -61,7 +61,11 @@ function PlayerLeaderboardItem(props) {
             <LeaderboardItem
                 background={osu_user?.cover?.custom_url}
                 onClick={() => {
-                    navigate(`/user/${base_user?.user_id ?? base_user?.osu_id}`);
+                    if(props.remote_profile){
+                        window.open(`https://osu.ppy.sh/users/${base_user?.user_id ?? base_user?.osu_id}`, '_blank');
+                    }else{
+                        navigate(`/user/${base_user?.user_id ?? base_user?.osu_id}`);
+                    }
                 }}>
                 <img
                     src={`https://a.ppy.sh/${base_user?.user_id ?? base_user?.osu_id}`}
