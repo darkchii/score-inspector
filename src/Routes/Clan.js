@@ -115,6 +115,16 @@ const CLAN_STATS = [
         ranking: true,
         key: 'total_hits',
     }, {
+        name: 'Badges',
+        format: (stats) => (stats.badges ?? 0).toLocaleString('en-US'),
+        ranking: false,
+        key: 'badges'
+    }, {
+        name: 'Medals',
+        format: (stats) => (stats.medals ?? 0).toLocaleString('en-US'),
+        ranking: false,
+        key: 'medals'
+    }, {
         name: 'Members',
         format: (stats) => (stats.members ?? 0).toLocaleString('en-US'),
         ranking: false,
