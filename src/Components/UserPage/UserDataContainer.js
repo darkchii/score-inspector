@@ -8,6 +8,7 @@ import AutoGraphIcon from '@mui/icons-material/AutoGraph';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import GradingIcon from '@mui/icons-material/Grading';
 import LayersIcon from '@mui/icons-material/Layers';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import SectionCards from "./SectionCards";
 import SectionGrades from "./SectionGrades";
 import SectionGraphs from "./SectionGraphs";
@@ -18,6 +19,7 @@ import SectionCompletion from "./SectionCompletion";
 import SectionPacks from "./SectionPacks";
 import { useParams } from "react-router-dom";
 import _ from "lodash";
+import SectionSessions from "./SectionSessions";
 
 const StyledTab = styled(Tab)({
     minHeight: 'auto',
@@ -31,10 +33,11 @@ function UserDataContainer(props) {
     const _IDs = {
         'profile': '0',
         'daily': '1',
-        'graphs': '2',
-        'scores': '3',
-        'completion': '4',
-        'packs': '5',
+        'sessions': '2',
+        'graphs': '3',
+        'scores': '4',
+        'completion': '5',
+        'packs': '6',
     }
 
     useEffect(()=>{
@@ -59,6 +62,7 @@ function UserDataContainer(props) {
                     }} centered>
                         <StyledTab icon={<PersonIcon />} iconPosition='start' label='Profile' value={_IDs['profile']} />
                         <StyledTab icon={<TodayIcon />} iconPosition='start' label='Daily' value={_IDs['daily']} />
+                        <StyledTab icon={<AccessTimeIcon />} iconPosition='start' label='Sessions' value={_IDs['sessions']} />
                         <StyledTab icon={<AutoGraphIcon />} iconPosition='start' label='Graphs' value={_IDs['graphs']} />
                         <StyledTab icon={<FormatListBulletedIcon />} iconPosition='start' label='Scores' value={_IDs['scores']} />
                         <StyledTab icon={<GradingIcon />} iconPosition='start' label='Completion' value={_IDs['completion']} />
@@ -73,6 +77,9 @@ function UserDataContainer(props) {
                 </TabPanel>
                 <TabPanel sx={{ p: 0 }} value={_IDs['daily']}>
                     <SectionDaily user={props.user} />
+                </TabPanel>
+                <TabPanel sx={{ p: 0 }} value={_IDs['sessions']}>
+                    <SectionSessions user={props.user} />
                 </TabPanel>
                 <TabPanel sx={{ p: 0 }} value={_IDs['graphs']}>
                     <SectionGraphs user={props.user} dataset={props.user.data.periodic} />

@@ -5,6 +5,7 @@ export function getSessions(scores) {
 
     let activities = [];
     let currentActivity = {
+        scores: [],
         start: null,
         end: null,
         done: false,
@@ -41,6 +42,7 @@ export function getSessions(scores) {
             activities.push(currentActivity);
             if (index < scores.length - 1) {
                 currentActivity = {
+                    scores: [],
                     start: scores[index + 1].date_played_moment.valueOf() * 0.001 - score.beatmap.modded_length,
                     end: null,
                     length: null,
@@ -48,6 +50,8 @@ export function getSessions(scores) {
                     breaks: []
                 }
             }
+        }else{
+            currentActivity.scores.push(score);
         }
     });
 
