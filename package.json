@@ -40,7 +40,7 @@
     "react-scripts": "^5.0.1",
     "react-toastify": "^10.0.5",
     "react-virtualized": "^9.22.5",
-    "react-virtuoso": "^4.7.11",
+    "react-virtuoso": "^4.7.12",
     "sanitize-html": "^2.13.0"
   },
   "devDependencies": {
