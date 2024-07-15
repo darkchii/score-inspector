@@ -10,7 +10,7 @@
     "@emotion/styled": "^11.11.5",
     "@fontsource/comfortaa": "^5.0.20",
     "@fontsource/roboto": "^5.0.13",
-    "@mui/icons-material": "^5.15.20",
+    "@mui/icons-material": "^5.16.1",
     "@mui/lab": "^5.0.0-alpha.172",
     "@mui/material": "^5.16.1",
     "@mui/x-date-pickers": "^7.10.0",
