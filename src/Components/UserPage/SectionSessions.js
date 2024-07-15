@@ -41,6 +41,9 @@ function SectionSessions(props) {
             countmiss: 0,
             total_hits: 0,
             average_hits: 0,
+            total_pp: 0,
+            average_pp: 0,
+            highest_pp: 0,
         };
 
         session.scores.forEach((score) => {
@@ -59,10 +62,21 @@ function SectionSessions(props) {
             stats.count50 += score.count50;
             stats.countmiss += score.countmiss;
             stats.total_hits += score.totalhits;
+
+            stats.total_pp += score.pp;
+            if (score.pp > stats.highest_pp) {
+                stats.highest_pp = score.pp;
+            }
         });
         stats.average_score = Math.floor(stats.score / session.scores.length);
         stats.average_length = moment.duration(stats.total_length.asSeconds() / session.scores.length, 'seconds');
         stats.average_hits = Math.floor(stats.total_hits / session.scores.length);
+        stats.average_pp = Math.floor(stats.total_pp / session.scores.length);
+
+        //round pp to 2 decimal places
+        stats.total_pp = Math.round(stats.total_pp * 100) / 100;
+        stats.average_pp = Math.round(stats.average_pp * 100) / 100;
+        stats.highest_pp = Math.round(stats.highest_pp * 100) / 100;
 
         if (session.breaks.length > 0) {
             session.breaks.forEach((brk) => {
@@ -201,6 +215,19 @@ function SectionSessions(props) {
                                                 <TableRow>
                                                     <TableCell colSpan={2} sx={{ fontWeight: 'bold' }}>Highest Score</TableCell>
                                                     <TableCell colSpan={2}>{selectedSession.highest_score.toLocaleString('en-US')}</TableCell>
+                                                </TableRow>
+                                                <Grid sx={{ mt: theme.spacing(4), }} />
+                                                <TableRow>
+                                                    <TableCell colSpan={2} sx={{ fontWeight: 'bold' }}>Total PP</TableCell>
+                                                    <TableCell colSpan={2}>{selectedSession.total_pp.toLocaleString('en-US')}pp</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell colSpan={2} sx={{ fontWeight: 'bold' }}>Average PP</TableCell>
+                                                    <TableCell colSpan={2}>{selectedSession.average_pp.toLocaleString('en-US')}pp</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell colSpan={2} sx={{ fontWeight: 'bold' }}>Highest PP</TableCell>
+                                                    <TableCell colSpan={2}>{selectedSession.highest_pp.toLocaleString('en-US')}pp</TableCell>
                                                 </TableRow>
                                                 <Grid sx={{ mt: theme.spacing(4), }} />
                                                 <TableRow>
