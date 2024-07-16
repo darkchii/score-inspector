@@ -17,6 +17,7 @@ import { getLevelForScore } from "../Helpers/Osu";
 import PlayerLeaderboardItem from '../Components/Leaderboards/PlayerLeaderboardItem';
 import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
+import { matchIsValidColor, MuiColorInput } from "mui-color-input";
 
 //always round to 2 decimal places, and toLocaleString for commas
 const CLAN_STATS = [
@@ -909,7 +910,7 @@ function ClanFormFields(props) {
     const [clanName, setClanName] = useState(props.clan?.clan.name ?? '');
     const [clanTag, setClanTag] = useState(props.clan?.clan.tag ?? '');
     const [clanDescription, setClanDescription] = useState(props.clan?.clan.description ?? '');
-    const [clanColor, setClanColor] = useState(props.clan?.clan.color ?? 'ffffff');
+    const [clanColor, setClanColor] = useState(('#'+props.clan?.clan.color) ?? '#ffffff');
     const [clanHeaderUrl, setClanHeaderUrl] = useState(props.clan?.clan.header_image_url ?? '');
     const [clanDisableRequests, setClanDisableRequests] = useState(props.clan?.clan.disable_requests ?? false);
     const [isEditMode] = useState(props.clan ? true : false);
@@ -921,7 +922,8 @@ function ClanFormFields(props) {
         user.clan_member = {};
         user.clan_member.clan = {
             tag: clanTag,
-            color: clanColor,
+            //without hashtag
+            color: clanColor.substring(1),
         }
         setExampleUser(user);
     }
@@ -942,17 +944,17 @@ function ClanFormFields(props) {
         setIsWorking(true);
         //submit the clan
         (async () => {
+            if(!matchIsValidColor(clanColor)) {
+                showNotification('Error', 'Invalid color code.', 'error');
+                setIsWorking(false);
+                return;
+            }
 
             await props.onSubmit({
-                // clanName,
-                // clanTag,
-                // clanDescription,
-                // clanColor,
-                // clanHeaderUrl,
                 clanName: clanName,
                 clanTag: clanTag,
                 clanDescription: clanDescription,
-                clanColor: clanColor,
+                clanColor: clanColor.substring(1),
                 clanHeaderUrl: clanHeaderUrl,
                 clanDisableRequests,
             });
@@ -1004,7 +1006,7 @@ function ClanFormFields(props) {
                                             maxLength: 100,
                                         }}
                                     />
-                                    <TextField
+                                    {/* <TextField
                                         label='Clan color'
                                         variant='standard'
                                         value={clanColor}
@@ -1013,6 +1015,14 @@ function ClanFormFields(props) {
                                         inputProps={{
                                             maxLength: 6,
                                         }}
+                                    /> */}
+                                    <MuiColorInput
+                                        label='Clan color'
+                                        format='hex'
+                                        value={clanColor}
+                                        isAlphaHidden={true}
+                                        onChange={(color) => setClanColor(color)}
+                                        variant="standard"
                                     />
                                     {
                                         isEditMode ? <>
