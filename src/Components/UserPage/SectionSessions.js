@@ -27,6 +27,7 @@ function SectionSessions(props) {
             average_score: 0,
             start: session.start,
             end: session.end,
+            duration: session.duration,
             guid: session.guid,
             total_length: moment.duration(0, 'seconds'),
             average_length: moment.duration(0, 'seconds'),
@@ -169,8 +170,10 @@ function SectionSessions(props) {
                         selectedSession && <>
                             <Card>
                                 <CardContent>
-                                    <Typography variant="h6">Showing session: {selectedSession.start} - {selectedSession.end}</Typography>
-                                    <Stack direction="column" spacing={2}>
+                                    <Stack direction="column" spacing={2} sx={{
+                                        mt: theme.spacing(2),
+                                        mb: theme.spacing(2),
+                                    }}>
                                         <Grid>
                                             <Stack direction="row" sx={{ justifyContent: 'center', alignItems: 'center' }}>
                                                 <Grid sx={{ mr: 3, ml: 3 }}>
@@ -204,6 +207,19 @@ function SectionSessions(props) {
                                     <TableContainer>
                                         <Table size="small">
                                             <TableBody>
+                                                <TableRow>
+                                                    <TableCell colSpan={2} sx={{ fontWeight: 'bold' }}>Start</TableCell>
+                                                    <TableCell colSpan={2}>{selectedSession.start}</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell colSpan={2} sx={{ fontWeight: 'bold' }}>End</TableCell>
+                                                    <TableCell colSpan={2}>{selectedSession.end}</TableCell>
+                                                </TableRow>
+                                                <TableRow>
+                                                    <TableCell colSpan={2} sx={{ fontWeight: 'bold' }}>Duration</TableCell>
+                                                    <TableCell colSpan={2}>{selectedSession.duration.format('H[h] m[m] s[s]')}</TableCell>
+                                                </TableRow>
+                                                <Grid sx={{ mt: theme.spacing(4), }} />
                                                 <TableRow>
                                                     <TableCell colSpan={2} sx={{ fontWeight: 'bold' }}>Score</TableCell>
                                                     <TableCell colSpan={2}>{selectedSession.score.toLocaleString('en-US')}</TableCell>
@@ -249,7 +265,7 @@ function SectionSessions(props) {
                                                     <TableCell>{selectedSession.total_hits.toLocaleString('en-US')}</TableCell>
                                                     <TableCell sx={{ fontWeight: 'bold' }}>Average Hits</TableCell>
                                                     <TableCell>{selectedSession.average_hits.toLocaleString('en-US')}</TableCell>
-                                                    </TableRow>
+                                                </TableRow>
                                                 <TableRow>
                                                     <TableCell sx={{ fontWeight: 'bold' }}>300s</TableCell>
                                                     <TableCell>{selectedSession.count300.toLocaleString('en-US')}</TableCell>

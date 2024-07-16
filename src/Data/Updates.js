@@ -12,6 +12,17 @@ const PLATFORMTYPES = {
 
 const updates = [
     {
+        version: '3.1.0',
+        date: '2024-07-16',
+        changes: [
+            [PLATFORMTYPES.WEB, CHANGETYPES.FIX, 'User profile clan tags link to tag now', 'e087d504c0b3624a12e868ad984e116d2f278b44'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.MISC, 'Added pagination and search to clans listing', '698160b9551364a7aebd9f9da8cfb7cbcda632aa'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.FIX, 'Fixed SS and S ranking on clans page', '72d13dc70304f46f43bd87c5485bafe411227ce5'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Added sessions user tab', '3a7f571b6a83f1a02d9af3475b080402a707e453'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.MISC, 'Added color picker to clan editor form', '7833f16aefb7b7ae3490800df13a539c1280f87e'],
+        ]
+    },
+    {
         version: '3.0.2',
         date: '2024-06-15',
         changes: [

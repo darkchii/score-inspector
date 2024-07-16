@@ -23,10 +23,9 @@ import BetterAlert from '../Components/UI/BetterAlert.js';
 momentDurationFormatSetup(moment);
 
 const GUIDE_NEW_USERS = [
-    'Join the osu!alt discord',
-    'Follow the guide to fetch your scores (#info channel)',
-    'Wait a few hours. When done, you generally don\'t need to run it anymore',
-    'Enter your username above and fetch'
+    'Join the osu!alternative discord',
+    'Follow the guide to fetch your scores (#info channel, please read it)',
+    'Wait for a couple hours. When done, you generally don\'t need to run it anymore, the live tracker takes over',
 ];
 
 function Root() {
@@ -141,7 +140,7 @@ function Root() {
                             <Card elevation={2}>
                                 <CardContent>
                                     <Grid container spacing={1}>
-                                        <Grid item xs={12} md={6}>
+                                        <Grid item xs={12} md={4}>
                                             <Grid container spacing={2} sx={{ pb: 1 }}>
                                                 {/* <Grid item xs={12} md={12 / 5}>
                                                     <StatCard stats={<>
@@ -167,9 +166,15 @@ function Root() {
                                                 </Grid>
                                             </Grid>
                                         </Grid>
-                                        <Grid item xs={12} md={6}>
+                                        <Grid item xs={12} md={8}>
                                             <Typography variant='title'>For new users</Typography>
                                             <Stack spacing={0.5}>
+                                                <BetterAlert sx={{
+                                                    pt: 1.15,
+                                                    pb: 1.15,
+                                                }} severity='warning'>
+                                                    <Typography>If you are new, carefully read and follow this!</Typography>
+                                                </BetterAlert>
                                                 {
                                                     GUIDE_NEW_USERS.map((note, index) => {
                                                         return (
