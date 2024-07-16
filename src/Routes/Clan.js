@@ -662,14 +662,15 @@ function ClanList(props) {
     const [searchQuery, setSearchQuery] = useState('');
     const navigate = useNavigate();
 
-    const fetchData = async () => {
+    const fetchData = async (reset_page = false) => {
         try {
+            if (reset_page) setPage(1);
+            const _page = reset_page ? 1 : page;
             setClanListData(null);
-            const response = await GetClanList(page, sorter, 'desc', CLANS_PER_PAGE, searchQuery);
-            console.log(response);
+            const response = await GetClanList(_page, sorter, 'desc', CLANS_PER_PAGE, searchQuery);
             if (response?.total_clans) {
                 response.total_pages = Math.ceil(response.query_clans / CLANS_PER_PAGE);
-                response.current_page = page;
+                response.current_page = _page;
                 setClanListData(response);
             }
         } catch (err) {
@@ -772,7 +773,7 @@ function ClanList(props) {
                                 variant='contained'
                                 color='primary'
                                 size='small'
-                                onClick={fetchData}
+                                onClick={() => fetchData(true)}
                                 sx={{
                                     ml: 1
                                 }}
@@ -822,6 +823,18 @@ function ClanList(props) {
                                 })
                             }
                         </Stack>
+                        <Pagination
+                            color="primary"
+                            count={clanListData.total_pages}
+                            page={clanListData.current_page}
+                            // onChange={(e, page) => fetchData(page, sorter, sortDir)}
+                            onChange={(e, page) => setPage(page)}
+                            sx={{
+                                mt: 1,
+                                display: 'flex',
+                                justifyContent: 'center',
+                            }}
+                        />
                     </> : <Loader />
             }
         </>
@@ -1006,16 +1019,6 @@ function ClanFormFields(props) {
                                             maxLength: 100,
                                         }}
                                     />
-                                    {/* <TextField
-                                        label='Clan color'
-                                        variant='standard'
-                                        value={clanColor}
-                                        onChange={(e) => setClanColor(e.target.value)}
-                                        disabled={isWorking}
-                                        inputProps={{
-                                            maxLength: 6,
-                                        }}
-                                    /> */}
                                     <MuiColorInput
                                         label='Clan color'
                                         format='hex'
