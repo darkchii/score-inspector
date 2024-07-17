@@ -146,6 +146,7 @@ const CLAN_STATS = [
 
 function Clan(props) {
     const [loggedInUser, setLoggedInUser] = useState(null);
+    const [isLoadingUser, setIsLoadingUser] = useState(true);
     const params = useParams();
 
     const loadUser = async (force_reload_user = false) => {
@@ -154,8 +155,10 @@ function Clan(props) {
         if (_user) {
             const __user = await GetUser(_user);
             setLoggedInUser(__user || null);
+            setIsLoadingUser(false);
             return __user;
         }
+        setLoggedInUser(false);
         return null;
     }
 
@@ -164,6 +167,8 @@ function Clan(props) {
             await loadUser();
         })()
     }, [params]);
+
+    if (isLoadingUser) return <Loader />
 
     return (
         <>
