@@ -150,7 +150,10 @@ function Clan(props) {
     const params = useParams();
 
     const loadUser = async (force_reload_user = false) => {
-        if (loggedInUser && !force_reload_user) return loggedInUser;
+        if (loggedInUser && !force_reload_user) {
+            setIsLoadingUser(false);
+            return loggedInUser;
+        }
         const _user = await GetLoginID();
         if (_user) {
             const __user = await GetUser(_user);
