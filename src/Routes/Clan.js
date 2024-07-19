@@ -161,6 +161,7 @@ function Clan(props) {
             setIsLoadingUser(false);
             return __user;
         }
+        setIsLoadingUser(false);
         setLoggedInUser(false);
         return null;
     }
