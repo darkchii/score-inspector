@@ -21,6 +21,7 @@ import HistoryIcon from '@mui/icons-material/History';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
 import GroupIcon from '@mui/icons-material/Group';
+import CompareArrowsIcon from '@mui/icons-material/CompareArrows';
 
 const HeaderButtonMenu = styled((props) => (
     <Menu
@@ -90,6 +91,7 @@ function Header(props) {
                 { name: 'Top Score Per Month', icon: <EmojiEventsIcon />, onClick: () => { }, linkTo: '/month_score' },
                 { name: 'Historic Score Rank', icon: <HistoryIcon />, onClick: () => { }, linkTo: '/score' },
                 { name: 'Countries', icon: <PublicIcon />, onClick: () => { }, linkTo: '/population' },
+                { name: 'Compare Players', icon: <CompareArrowsIcon />, onClick: () => { }, linkTo: '/player_compare' },
             ]
         },
         { name: 'Top Scores', icon: <StarIcon />, onClick: () => { }, linkTo: '/top' },

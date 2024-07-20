@@ -108,7 +108,7 @@ export function getDedicationLevel(a, b, c, d, xp) {
     return l;
 }
 
-export async function getFullUser(user_ids = [], skipped = {}, force_array = false, signal = null) {
+export async function getFullUser(user_ids = [], skipped = {}, force_array = false, signal = null, force_alt_data = false) {
     let _ids = user_ids;
 
     if (!Array.isArray(user_ids)) {
@@ -122,7 +122,7 @@ export async function getFullUser(user_ids = [], skipped = {}, force_array = fal
     const skipQuery = Object.keys(skipped).map(key => `${key}=${skipped[key]}`).join('&');
     let user = null;
     try {
-        const _user = await axios.get(`${GetAPI()}users/full/${id_string}?force_array=${force_array}&${skipQuery}`, { signal: signal });
+        const _user = await axios.get(`${GetAPI()}users/full/${id_string}?force_array=${force_array}&${skipQuery}&force_alt_data=${force_alt_data ? 'true' : 'false'}`, { signal: signal });
         user = _user.data;
     } catch (e) { }
 
