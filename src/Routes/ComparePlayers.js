@@ -387,8 +387,6 @@ function ComparePlayers() {
                     setProcessedData(data);
                 }
 
-                console.log(_users);
-
                 setUserData(_users);
                 setIsWorking(false);
             } catch (err) {
