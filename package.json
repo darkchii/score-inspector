@@ -14,7 +14,7 @@
     "@mui/lab": "^5.0.0-alpha.172",
     "@mui/material": "^5.16.4",
     "@mui/x-date-pickers": "^7.10.0",
-    "apexcharts": "^3.50.0",
+    "apexcharts": "^3.51.0",
     "axios": "^1.7.2",
     "buffer": "^6.0.3",
     "chart.js": "^4.4.3",
