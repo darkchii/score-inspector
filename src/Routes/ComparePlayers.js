@@ -298,7 +298,7 @@ const getGraphData = (paired_data, data_type, user_a, user_b) => {
             series[0] = {
                 name: user_a.osu.username,
                 data: [],
-                color: GRAPH_COLORS[0]
+                color: GRAPH_COLORS[0],
             }
         }
 
@@ -314,7 +314,7 @@ const getGraphData = (paired_data, data_type, user_a, user_b) => {
             series[2] = {
                 name: 'Difference',
                 data: [],
-                color: GRAPH_COLORS[2]
+                color: GRAPH_COLORS[2],
             }
         }
 
@@ -384,7 +384,7 @@ function ComparePlayers() {
 
                 console.log(_users);
 
-                if (_users[0].daily && 
+                if (_users[0].daily &&
                     _users[0].daily.modes[0]?.lines?.length > 0 &&
                     _users[1].daily &&
                     _users[1].daily.modes[0]?.lines?.length > 0) {
@@ -462,7 +462,8 @@ function ComparePlayers() {
                                                                 },
                                                                 yaxis: [
                                                                     {
-                                                                        seriesName: data_type.display_name,
+                                                                        //get them from processedData, first 2 names
+                                                                        seriesName: [processedData[i][0].name, processedData[i][1].name],
                                                                         labels: {
                                                                             formatter: (value) => {
                                                                                 return data_type.formatter ? data_type.formatter(value) : value.toLocaleString();
@@ -470,17 +471,9 @@ function ComparePlayers() {
                                                                         },
                                                                         title: {
                                                                             text: data_type.display_name
-                                                                        }
+                                                                        },
                                                                     },
                                                                     {
-                                                                        seriesName: 'b',
-                                                                        labels: {
-                                                                            formatter: (value) => {
-                                                                                return data_type.formatter ? data_type.formatter(value) : value.toLocaleString();
-                                                                            }
-                                                                        },
-                                                                        show: false
-                                                                    }, {
                                                                         seriesName: 'Difference',
                                                                         opposite: true,
                                                                         labels: {
@@ -490,7 +483,7 @@ function ComparePlayers() {
                                                                         },
                                                                         title: {
                                                                             text: 'Difference'
-                                                                        }
+                                                                        },
                                                                     }
                                                                 ],
                                                             }}
