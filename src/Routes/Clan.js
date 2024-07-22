@@ -1,6 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Helmet } from "react-helmet";
-import config from "../config.json";
 import { Alert, Box, Button, Card, CardContent, Chip, Container, Divider, FormControl, Grid, MenuItem, Modal, Pagination, Paper, Select, Stack, Switch, Table, TableBody, TableCell, TableContainer, TableRow, TextField, Typography, tableCellClasses } from "@mui/material";
 import { useState } from "react";
 import { MODAL_STYLE, showNotification } from "../Helpers/Misc";
@@ -12,7 +10,6 @@ import Loader from "../Components/UI/Loader";
 import moment from "moment";
 import ClanLeaderboardItem from "../Components/Leaderboards/ClanLeaderboardItem";
 import { grey } from "@mui/material/colors";
-import sanitize from "sanitize-html";
 import { getLevelForScore } from "../Helpers/Osu";
 import PlayerLeaderboardItem from '../Components/Leaderboards/PlayerLeaderboardItem';
 import LockIcon from '@mui/icons-material/Lock';
