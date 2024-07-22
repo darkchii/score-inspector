@@ -382,7 +382,12 @@ function ComparePlayers() {
                     return;
                 }
 
-                if (_users[0].daily && _users[1].daily) {
+                console.log(_users);
+
+                if (_users[0].daily && 
+                    _users[0].daily.modes[0]?.lines?.length > 0 &&
+                    _users[1].daily &&
+                    _users[1].daily.modes[0]?.lines?.length > 0) {
                     const data = processData(_users[0], _users[1]);
                     setProcessedData(data);
                 }
