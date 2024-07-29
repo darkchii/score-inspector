@@ -7,7 +7,7 @@
     "@ckeditor/ckeditor5-build-classic": "^42.0.1",
     "@ckeditor/ckeditor5-react": "^8.0.0",
     "@emotion/react": "^11.13.0",
-    "@emotion/styled": "^11.11.5",
+    "@emotion/styled": "^11.13.0",
     "@fontsource/comfortaa": "^5.0.20",
     "@fontsource/roboto": "^5.0.13",
     "@mui/icons-material": "^5.16.1",
