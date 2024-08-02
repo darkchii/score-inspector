@@ -19,6 +19,7 @@ import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
 import BadgeIcon from '@mui/icons-material/Badge';
 import TodayTopPlayers from '../Components/TodayTopPlayers.js';
 import BetterAlert from '../Components/UI/BetterAlert.js';
+import Error from '../Components/UI/Error.js';
 
 momentDurationFormatSetup(moment);
 
@@ -92,8 +93,9 @@ function Root() {
                 axios.get(`${GetAPI()}scores/today?user_id=${GetLoginIDUnsafe()}`)
             ]).then(([system, today_data]) => {
                 system.data !== null && system.data !== undefined ? setServerInfo({ ...system.data }) : setServerInfo(null);
-                today_data.data !== null && today_data.data !== undefined ? setTodayData({ ...today_data.data }) : setTodayData(null);
+                today_data.data !== null && today_data.data !== undefined ? setTodayData({ ...today_data.data }) : setTodayData({ error: true });
             }).catch((err) => {
+                setTodayData({ error: true });
                 console.error(err);
             });
         } catch (_err) {
@@ -242,7 +244,7 @@ function Root() {
                                     <Typography variant='title'>Most visited</Typography>
                                     <Stack spacing={0.5} sx={{ pl: 1 }}>
                                         {
-                                            visitorStats ? visitorStats.most_visited?.map((v, i) => {
+                                            visitorStats ? (visitorStats.most_visited?.error ? <Error /> : visitorStats.most_visited?.map((v, i) => {
                                                 return (
                                                     <>
                                                         <Grid container>
@@ -263,14 +265,14 @@ function Root() {
                                                         </Grid>
                                                     </>
                                                 )
-                                            }) : <Loader />
+                                            })) : <Loader />
                                         }
                                     </Stack>
                                     <Divider style={{ margin: '10px 0' }} />
                                     <Typography variant='title'>Recent visited</Typography>
                                     <Stack spacing={0.5} sx={{ pl: 1 }}>
                                         {
-                                            visitorStats ? visitorStats.last_visited?.map((v, i) => {
+                                            visitorStats ? (visitorStats.last_visited?.error ? <Error /> : visitorStats.last_visited?.map((v, i) => {
                                                 return (
                                                     <>
                                                         <Grid container>
@@ -291,7 +293,7 @@ function Root() {
                                                         </Grid>
                                                     </>
                                                 )
-                                            }) : <Loader />
+                                            })) : <Loader />
                                         }
                                     </Stack>
                                 </CardContent>

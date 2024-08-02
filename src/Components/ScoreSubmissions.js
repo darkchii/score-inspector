@@ -6,6 +6,7 @@ import moment from "moment";
 import Loader from "./UI/Loader";
 import ChartWrapper from "../Helpers/ChartWrapper.js";
 import { amber, blue, green, grey, purple, red } from "@mui/material/colors";
+import Error from "./UI/Error.js";
 
 const chart_period_data = {
     'h': {
@@ -42,6 +43,7 @@ function ScoreSubmissions(props) {
     const [isWorking, setIsWorking] = useState(false);
 
     const [data, setData] = useState(null);
+    const [error, setError] = useState(false);
 
     useEffect(() => {
         setInterval(chart_period_data[period].intervals[0]);
@@ -50,49 +52,56 @@ function ScoreSubmissions(props) {
     useEffect(() => {
         //get the raw data from api
         (async () => {
-            setIsWorking(true);
-            let data = await getScoreActivity(interval, period);
-            if (data === null) {
+            try {
+                setIsWorking(true);
+                let data = await getScoreActivity(interval, period);
+                console.log(data);
+                if (data === null) {
+                    setIsWorking(false);
+                    setError(true);
+                    return;
+                }
+
+                var newData = {};
+
+                for (let i = 0; i < data.time_entries.length; i++) {
+                    let timestamp = moment.utc(data.time_entries[i].timestamp).local();
+                    let count = data.time_entries[i].entry_count;
+                    let count_ss = data.time_entries[i].entry_count_SS;
+                    let count_s = data.time_entries[i].entry_count_S;
+                    let count_a = data.time_entries[i].entry_count_A;
+                    let count_b = data.time_entries[i].entry_count_B;
+                    let count_c = data.time_entries[i].entry_count_C;
+                    let count_d = data.time_entries[i].entry_count_D;
+                    let sum_score = data.time_entries[i].entry_count_score;
+                    const _time = timestamp.toDate().getTime();
+                    // newData.push([timestamp.toDate().getTime(), count]);
+                    if (newData.count === undefined) { newData.count = []; }
+                    if (newData.count_ss === undefined) { newData.count_ss = []; }
+                    if (newData.count_s === undefined) { newData.count_s = []; }
+                    if (newData.count_a === undefined) { newData.count_a = []; }
+                    if (newData.count_b === undefined) { newData.count_b = []; }
+                    if (newData.count_c === undefined) { newData.count_c = []; }
+                    if (newData.count_d === undefined) { newData.count_d = []; }
+                    if (newData.entry_count_score === undefined) { newData.entry_count_score = []; }
+                    newData.count.push([_time, count]);
+                    newData.count_ss.push([_time, count_ss]);
+                    newData.count_s.push([_time, count_s]);
+                    newData.count_a.push([_time, count_a]);
+                    newData.count_b.push([_time, count_b]);
+                    newData.count_c.push([_time, count_c]);
+                    newData.count_d.push([_time, count_d]);
+                    newData.entry_count_score.push([_time, sum_score]);
+                }
+
+                setData(newData);
                 setIsWorking(false);
-                return;
+            } catch (err) {
+                setError(true);
+                setIsWorking(false);
             }
-
-            var newData = {};
-
-            for (let i = 0; i < data.time_entries.length; i++) {
-                let timestamp = moment.utc(data.time_entries[i].timestamp).local();
-                let count = data.time_entries[i].entry_count;
-                let count_ss = data.time_entries[i].entry_count_SS;
-                let count_s = data.time_entries[i].entry_count_S;
-                let count_a = data.time_entries[i].entry_count_A;
-                let count_b = data.time_entries[i].entry_count_B;
-                let count_c = data.time_entries[i].entry_count_C;
-                let count_d = data.time_entries[i].entry_count_D;
-                let sum_score = data.time_entries[i].entry_count_score;
-                const _time = timestamp.toDate().getTime();
-                // newData.push([timestamp.toDate().getTime(), count]);
-                if (newData.count === undefined) { newData.count = []; }
-                if (newData.count_ss === undefined) { newData.count_ss = []; }
-                if (newData.count_s === undefined) { newData.count_s = []; }
-                if (newData.count_a === undefined) { newData.count_a = []; }
-                if (newData.count_b === undefined) { newData.count_b = []; }
-                if (newData.count_c === undefined) { newData.count_c = []; }
-                if (newData.count_d === undefined) { newData.count_d = []; }
-                if (newData.entry_count_score === undefined) { newData.entry_count_score = []; }
-                newData.count.push([_time, count]);
-                newData.count_ss.push([_time, count_ss]);
-                newData.count_s.push([_time, count_s]);
-                newData.count_a.push([_time, count_a]);
-                newData.count_b.push([_time, count_b]);
-                newData.count_c.push([_time, count_c]);
-                newData.count_d.push([_time, count_d]);
-                newData.entry_count_score.push([_time, sum_score]);
-            }
-
-            setData(newData);
-            setIsWorking(false);
-            // eslint-disable-next-line react-hooks/exhaustive-deps
         })();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [interval]);
 
     return (
@@ -134,7 +143,7 @@ function ScoreSubmissions(props) {
             <Grid sx={{ height: 280, position: "relative" }}>
                 {
                     isWorking || !data ?
-                        <Loader /> : <>
+                        (error ? <Error /> : <Loader />) : <>
                             <ChartWrapper
                                 options={{
                                     chart: {

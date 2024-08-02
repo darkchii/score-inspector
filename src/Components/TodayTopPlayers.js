@@ -2,11 +2,16 @@ import { Divider, Grid, Paper, Stack, Typography } from "@mui/material";
 import { GetFormattedName } from "../Helpers/Account.js";
 import { Link as RouterLink } from 'react-router-dom';
 import Loader from "./UI/Loader.js";
+import Error from "./UI/Error.js";
 
 function TodayTopPlayers(props) {
     if (!props.data) return <>
         <Loader />
     </>;
+
+    if(props.data.error) return <>
+        <Error />
+    </>
 
     return <>
         <Grid container spacing={2} sx={{ pt: 1 }}>
