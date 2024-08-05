@@ -4,7 +4,7 @@
   "private": true,
   "homepage": "https://score.kirino.sh",
   "dependencies": {
-    "@ckeditor/ckeditor5-build-classic": "^42.0.1",
+    "@ckeditor/ckeditor5-build-classic": "^42.0.2",
     "@ckeditor/ckeditor5-react": "^8.0.0",
     "@emotion/react": "^11.13.0",
     "@emotion/styled": "^11.13.0",
