@@ -36,7 +36,7 @@
     "react-fast-marquee": "^1.6.5",
     "react-helmet": "^6.1.0",
     "react-number-format": "^5.4.0",
-    "react-router-dom": "^6.25.1",
+    "react-router-dom": "^6.26.0",
     "react-scale-text": "^1.2.2",
     "react-scripts": "^5.0.1",
     "react-toastify": "^10.0.5",
