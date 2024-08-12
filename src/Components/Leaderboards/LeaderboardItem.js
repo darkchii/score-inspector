@@ -9,7 +9,9 @@ export function LeaderboardItem(props) {
             height: LEADERBOARD_ITEM_HEIGHT,
             maxHeight: LEADERBOARD_ITEM_HEIGHT,
             width: "100%",
-            backgroundImage: `url(${props.background})`,
+            // backgroundImage: `url(${props.background})`,
+            // make it safe, no xss, remove closing brackets from url
+            backgroundImage: `url(${props.background?.replace(/\)/g, '')})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
