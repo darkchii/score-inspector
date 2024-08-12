@@ -1,4 +1,5 @@
 import { Box } from "@mui/material";
+import { fixedEncodeURIComponent } from "../../Helpers/Misc";
 
 export const LEADERBOARD_ITEM_HEIGHT = 50;
 export const LEADERBOARD_BORDER_RADIUS = '8px';
@@ -11,7 +12,7 @@ export function LeaderboardItem(props) {
             width: "100%",
             // backgroundImage: `url(${props.background})`,
             // make it safe, no xss, remove closing brackets from url
-            backgroundImage: `url(${props.background?.replace(/\)/g, '')})`,
+            backgroundImage: `url(${fixedEncodeURIComponent(props.background)})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',

@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Alert, Box, Button, Card, CardContent, Chip, Container, Divider, FormControl, Grid, MenuItem, Modal, Pagination, Paper, Select, Stack, Switch, Table, TableBody, TableCell, TableContainer, TableRow, TextField, Typography, tableCellClasses } from "@mui/material";
 import { useState } from "react";
-import { MODAL_STYLE, showNotification } from "../Helpers/Misc";
+import { fixedEncodeURIComponent, MODAL_STYLE, showNotification } from "../Helpers/Misc";
 import { useEffect } from "react";
 import { GetFormattedName, GetLoginID, GetLoginToken, GetUser } from "../Helpers/Account";
 import { AcceptJoinRequestClan, CreateClan, DeleteClan, GetClan, GetClanList, JoinRequestClan, LeaveClan, RejectJoinRequestClan, RemoveClanMember, UpdateClan } from "../Helpers/Clan";
@@ -341,7 +341,7 @@ function ClanPage(props) {
                     //object-fit top of the image
                     <img 
                         // src={clanData.clan.header_image_url} 
-                        src={clanData.clan?.header_image_url ? `${encodeURI(clanData.clan.header_image_url)}` : ''}
+                        src={clanData.clan?.header_image_url ? `${fixedEncodeURIComponent(clanData.clan.header_image_url)}` : ''}
                         alt='Clan header' style={{
                         width: '100%',
                         height: '200px',

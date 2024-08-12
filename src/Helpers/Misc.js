@@ -19,6 +19,12 @@ export const MODAL_STYLE = {
     },
 }
 
+export function fixedEncodeURIComponent(str) {
+    let res = encodeURI(str);
+    res = res.replace(/\(/g, '%28').replace(/\)/g, '%29');
+    return res;
+}
+
 export function formatBytes(bytes, decimals = 2) {
     if (!+bytes) return '0 Bytes'
 
