@@ -339,7 +339,10 @@ function ClanPage(props) {
             {
                 clanData.clan.header_image_url ?
                     //object-fit top of the image
-                    <img src={clanData.clan.header_image_url} alt='Clan header' style={{
+                    <img 
+                        // src={clanData.clan.header_image_url} 
+                        src={clanData.clan?.header_image_url ? `${encodeURI(clanData.clan.header_image_url)}` : ''}
+                        alt='Clan header' style={{
                         width: '100%',
                         height: '200px',
                         objectFit: 'cover',

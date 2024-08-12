@@ -8,7 +8,7 @@ function ClanLeaderboardItem(props) {
     return (
         <>
             <LeaderboardItem
-                background={props.clan.header_image_url ?? ''}
+                background={props.clan?.header_image_url ? `${encodeURI(props.clan.header_image_url)}` : ''}
                 onClick={() => {
                     navigate(`/clan/${props.clan?.id}`);
                 }}

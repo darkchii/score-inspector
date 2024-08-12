@@ -34,13 +34,13 @@ export function GetFormattedName(inspector_user, settings = null) {
     //     }}>{`[${inspector_user.clan.tag}]`}</b> {name}</span>;
     // }
 
-    if(inspector_user.clan_member && 
-        inspector_user.clan_member.clan !== null && 
-        inspector_user.clan_member.clan !== undefined && 
-        inspector_user.clan_member.clan.tag !== null && 
-        inspector_user.clan_member.clan.tag !== undefined && 
+    if (inspector_user.clan_member &&
+        inspector_user.clan_member.clan !== null &&
+        inspector_user.clan_member.clan !== undefined &&
+        inspector_user.clan_member.clan.tag !== null &&
+        inspector_user.clan_member.clan.tag !== undefined &&
         inspector_user.clan_member.clan.tag !== '' &&
-        !inspector_user.clan_member.pending){
+        !inspector_user.clan_member.pending) {
         name = <span><b style={{
             color: `#${inspector_user.clan_member.clan.color ?? '000000'}`,
         }}>{`[${inspector_user.clan_member.clan.tag}]`}</b> {name}</span>;
@@ -175,18 +175,16 @@ export async function IsUserLoggedIn() {
 
     if (token && user_id) {
         try {
-            const res = await fetch(`${GetAPI()}login/validate_token`, {
-                method: 'POST',
+            const res = await axios.post(`${GetAPI()}login/validate_token`, {
+                token: token,
+                user_id: user_id
+            }, {
                 headers: {
                     'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    token: token,
-                    user_id: user_id
-                })
+                }
             });
-            const body = await parseReadableStreamToJson(res.body);
 
+            const body = res.data;
 
             if (body.data && body.data.osu_id && body.data.access_token) {
                 const old_token = localStorage.getItem('auth_token');
@@ -216,7 +214,7 @@ export async function IsUserLoggedIn() {
 export async function GetUser(osu_id, session_token = null) {
     try {
         const res = await axios.get(`${GetAPI()}login/get/${osu_id}`);
-        if(res.data !== null && res.data?.osu_id?.toString() === osu_id.toString()){
+        if (res.data !== null && res.data?.osu_id?.toString() === osu_id.toString()) {
             return res.data;
         }
         return null;
@@ -235,7 +233,7 @@ export async function GetLoginID() {
 }
 
 export function GetLoginIDUnsafe() {
-    if(IsUserLoggedInUnsafe()){
+    if (IsUserLoggedInUnsafe()) {
         return localStorage.getItem('auth_osu_id');
     }
 
@@ -251,7 +249,7 @@ export async function GetLoginToken() {
 }
 
 export function GetLoginTokenUnsafe() {
-    if(IsUserLoggedInUnsafe()){
+    if (IsUserLoggedInUnsafe()) {
         return localStorage.getItem('auth_token');
     }
 
