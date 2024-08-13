@@ -22,6 +22,11 @@ export const MODAL_STYLE = {
 export function fixedEncodeURIComponent(str) {
     let res = encodeURI(str);
     res = res.replace(/\(/g, '%28').replace(/\)/g, '%29');
+    res = res.replace(/'/g, '%27');
+    res = res.replace(/\*/g, '%2A');
+    res = res.replace(/!/g, '%21');
+    res = res.replace(/~/g, '%7E');
+    res = res.replace(/"/g, '%22');
     return res;
 }
 
