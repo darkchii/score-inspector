@@ -195,12 +195,15 @@ function Header(props) {
                                         headerNavItems.map((item, index) => {
                                             return (
                                                 <Stack direction="row">
-                                                    {
-                                                        item.linkTo ?
-                                                            <Button key={index} size='small' startIcon={item.icon} component={Link} to={item.linkTo}>{item.name}</Button>
-                                                            :
-                                                            <Button key={index} size='small' startIcon={item.icon} onClick={item.onClick}>{item.name}</Button>
-                                                    }
+                                                    <Button
+                                                        key={index}
+                                                        size='small'
+                                                        startIcon={item.icon}
+                                                        component={item.linkTo ? Link : null}
+                                                        to={item.linkTo ?? null}
+                                                        onClick={item.onClick}>
+                                                        {item.name}
+                                                    </Button>
 
                                                     {
                                                         item.dropDown ?
