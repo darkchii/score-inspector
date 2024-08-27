@@ -1,10 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Alert, Avatar, Box, Button, Card, CardContent, Chip, Container, Divider, FormControl, Grid, IconButton, Menu, MenuItem, Modal, Pagination, Paper, Select, Stack, Switch, Table, TableBody, TableCell, TableContainer, TableRow, TextField, Typography, tableCellClasses, useTheme } from "@mui/material";
+import { Alert, Avatar, Box, Button, Card, CardContent, Chip, Container, Divider, FormControl, Grid, IconButton, Menu, MenuItem, Modal, Pagination, Paper, Select, Stack, Switch, Table, TableBody, TableCell, TableContainer, TableRow, TextField, Tooltip, Typography, tableCellClasses, useTheme } from "@mui/material";
 import { useState } from "react";
 import { fixedEncodeURIComponent, MODAL_STYLE, showNotification } from "../Helpers/Misc";
 import { useEffect } from "react";
 import { GetFormattedName, GetLoginID, GetLoginToken, GetUser } from "../Helpers/Account";
-import { AcceptJoinRequestClan, CreateClan, DeleteClan, GetClan, GetClanList, JoinRequestClan, LeaveClan, RejectJoinRequestClan, RemoveClanMember, TransferClanOwnership, UpdateClan } from "../Helpers/Clan";
+import { AcceptJoinRequestClan, CreateClan, DeleteClan, FormatClanLog, GetClan, GetClanList, JoinRequestClan, LeaveClan, RejectJoinRequestClan, RemoveClanMember, TransferClanOwnership, UpdateClan } from "../Helpers/Clan";
 import { useNavigate, useParams } from "react-router-dom";
 import Loader from "../Components/UI/Loader";
 import moment from "moment";
@@ -716,6 +716,51 @@ function ClanPage(props) {
                     </Box >
                 </Grid >
             </Grid >
+            {/* clan logs, scrollable div of ~250 height */}
+            <Card elevation={3} sx={{
+                mt: 2,
+            }}>
+                <CardContent>
+                    <Box sx={{
+                        maxHeight: '250px',
+                        overflowY: 'auto',
+                    }}>
+                        <Typography variant='h6'>Clan history</Typography>
+                        {/* <Stack spacing={1}>
+                            {
+                                clanData.logs.map((log, index) => {
+                                    return <Typography>
+                                        {FormatClanLog(clanData, log)}
+                                    </Typography>
+                                })
+                            }
+                        </Stack> */}
+                        <TableContainer>
+                            <Table size='small'>
+                                <TableBody>
+                                    {
+                                        clanData.logs.map((log, index) => {
+                                            if (FormatClanLog(clanData, log) === null) return <></>;
+                                            return <TableRow key={index}>
+                                                <TableCell>
+                                                    <Tooltip title={moment(log.created_at).format('MMMM Do YYYY, h:mm:ss a')}>
+                                                        {moment(log.created_at).fromNow()}
+                                                    </Tooltip>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <Typography variant='body2'>
+                                                        {FormatClanLog(clanData, log)}
+                                                    </Typography>
+                                                </TableCell>
+                                            </TableRow>
+                                        })
+                                    }
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    </Box>
+                </CardContent>
+            </Card>
             <Alert severity='info' sx={{ mt: 2 }}>
                 <Typography variant='body1'>Members not registered on the osu!alternative Discord may be missing stats.</Typography>
             </Alert>
