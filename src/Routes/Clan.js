@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Alert, Avatar, Box, Button, Card, CardContent, Chip, Container, Divider, FormControl, Grid, IconButton, Menu, MenuItem, Modal, Pagination, Paper, Select, Stack, Switch, Table, TableBody, TableCell, TableContainer, TableRow, TextField, Tooltip, Typography, tableCellClasses, useTheme } from "@mui/material";
+import { Alert, Avatar, Box, Button, ButtonGroup, Card, CardContent, Chip, Container, Divider, FormControl, Grid, IconButton, InputAdornment, InputLabel, Menu, MenuItem, Modal, OutlinedInput, Pagination, Paper, Select, Stack, Switch, Table, TableBody, TableCell, TableContainer, TableRow, TextField, Tooltip, Typography, tableCellClasses, useTheme } from "@mui/material";
 import { useState } from "react";
 import { fixedEncodeURIComponent, MODAL_STYLE, showNotification } from "../Helpers/Misc";
 import { useEffect } from "react";
@@ -9,7 +9,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import Loader from "../Components/UI/Loader";
 import moment from "moment";
 import ClanLeaderboardItem from "../Components/Leaderboards/ClanLeaderboardItem";
-import { grey } from "@mui/material/colors";
+import { blue, green, grey } from "@mui/material/colors";
 import { getLevelForScore } from "../Helpers/Osu";
 import PlayerLeaderboardItem from '../Components/Leaderboards/PlayerLeaderboardItem';
 import LockIcon from '@mui/icons-material/Lock';
@@ -19,7 +19,9 @@ import { matchIsValidColor, MuiColorInput } from "mui-color-input";
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 import CancelIcon from '@mui/icons-material/Cancel';
 import SyncIcon from '@mui/icons-material/Sync';
-
+import SearchIcon from '@mui/icons-material/Search';
+import StatCard from "../Components/UI/StatCard";
+import GroupsIcon from '@mui/icons-material/Groups';
 //always round to 2 decimal places, and toLocaleString for commas
 const CLAN_STATS = [
     {
@@ -177,13 +179,11 @@ function Clan(props) {
 
     return (
         <>
-            <Container>
-                {
-                    params.id ?
-                        <ClanPage id={params.id} me={loggedInUser} /> :
-                        <ClanList me={loggedInUser} />
-                }
-            </Container>
+            {
+                params.id ?
+                    <ClanPage id={params.id} me={loggedInUser} /> :
+                    <ClanList me={loggedInUser} />
+            }
         </>
     )
 }
@@ -367,240 +367,241 @@ function ClanPage(props) {
                     </CardContent>
                 </Card>
             </Modal>
-            {
-                clanData.clan.header_image_url ?
-                    //object-fit top of the image
-                    <img
-                        // src={clanData.clan.header_image_url} 
-                        src={clanData.clan?.header_image_url ? `${fixedEncodeURIComponent(clanData.clan.header_image_url)}` : ''}
-                        alt='Clan header' style={{
-                            width: '100%',
-                            height: '200px',
-                            objectFit: 'cover',
-                            borderRadius: '10px',
-                            marginBottom: '5px'
-                        }} /> : <></>
-            }
-            <Grid container spacing={2}>
-                <Grid item xs={12} md={4}>
-                    <Card elevation={3}>
-                        <CardContent>
-                            <Typography variant='h6'><span style={{ color: `#${clanData.clan.color}` }}>[{clanData.clan.tag}]</span> {clanData.clan.name}</Typography>
-                            <Typography variant='body1'>{clanData.clan.description}</Typography>
-                            {
-                                props.me
-                                    && props.me.clan_member?.clan?.owner !== props.me?.osu_id
-                                    ? (
-                                        props.me.clan_member && props.me.clan_member.clan.id === clanData.clan.id ? <>
-                                            <Button
-                                                onClick={eventLeaveClan}
-                                                size='small'
-                                                variant='contained'
-                                                color='error'
-                                                sx={{
-                                                    mt: 2
-                                                }}>
-                                                Leave
-                                            </Button>
-                                        </> : <>
-                                            <Button
-                                                onClick={eventRequestJoinClan}
-                                                size='small'
-                                                variant='contained'
-                                                disabled={clanData.clan.disable_requests}
-                                                sx={{
-                                                    mt: 2
-                                                }}>
-                                                Request to join
-                                            </Button>
-                                            {
-                                                clanData.clan.disable_requests ? <>
-                                                    <Alert severity='info' sx={{ mt: 2 }}>
-                                                        <Typography variant='subtitle2'>This clan disabled new requests.</Typography>
-                                                    </Alert>
-                                                </> : <></>
-                                            }
-                                        </>
-                                    ) : <></>
-                            }
-                        </CardContent>
-                    </Card>
-                    <Box sx={{ mt: 2 }} />
-                    <Card elevation={3}>
-                        <CardContent>
-                            <Typography variant='h6'>Statistics</Typography>
-                            <Typography variant='body1'>Members: {clanData.members.length}</Typography>
-                            <Typography variant='body1'>Created: {moment(clanData.clan.creation_date).fromNow()}</Typography>
-                            <Box sx={{
-                                display: 'flex'
-                            }}>
-                                <Typography variant='body1'>Owner:</Typography>
-                                <Box sx={{ ml: 1 }}> {GetFormattedName(clanData.owner?.user?.inspector_user ?? {})} </Box>
-                            </Box>
-                            <Divider sx={{ mt: 1, mb: 1 }} />
-                            {/* <Typography variant='body1'>Ranked score: {clanData.stats.ranked_score ?? 0}</Typography>
-                                                            <Typography variant='body1'>Total score: {clanData.stats.total_score ?? 0}</Typography> */}
-                            <TableContainer>
-                                <Table size='small' sx={{
-                                    [`& .${tableCellClasses.root}`]: {
-                                        borderBottom: "none",
-                                        height: '20px',
-                                    }
-                                }}>
-                                    <TableBody>
-                                        {
-                                            //remove where display is false
-                                            CLAN_STATS.filter((stat) => stat.display !== false).map((stat) => {
-                                                let ranking = clanData.ranking[stat.key] ?? 0;
-                                                if (stat.key === 'level') {
-                                                    ranking = clanData.ranking['total_score'] ?? 0;
+            <Container>
+                {
+                    clanData.clan.header_image_url ?
+                        //object-fit top of the image
+                        <img
+                            // src={clanData.clan.header_image_url} 
+                            src={clanData.clan?.header_image_url ? `${fixedEncodeURIComponent(clanData.clan.header_image_url)}` : ''}
+                            alt='Clan header' style={{
+                                width: '100%',
+                                height: '200px',
+                                objectFit: 'cover',
+                                borderRadius: '10px',
+                                marginBottom: '5px'
+                            }} /> : <></>
+                }
+                <Grid container spacing={2}>
+                    <Grid item xs={12} md={4}>
+                        <Card elevation={3}>
+                            <CardContent>
+                                <Typography variant='h6'><span style={{ color: `#${clanData.clan.color}` }}>[{clanData.clan.tag}]</span> {clanData.clan.name}</Typography>
+                                <Typography variant='body1'>{clanData.clan.description}</Typography>
+                                {
+                                    props.me
+                                        && props.me.clan_member?.clan?.owner !== props.me?.osu_id
+                                        ? (
+                                            props.me.clan_member && props.me.clan_member.clan.id === clanData.clan.id ? <>
+                                                <Button
+                                                    onClick={eventLeaveClan}
+                                                    size='small'
+                                                    variant='contained'
+                                                    color='error'
+                                                    sx={{
+                                                        mt: 2
+                                                    }}>
+                                                    Leave
+                                                </Button>
+                                            </> : <>
+                                                <Button
+                                                    onClick={eventRequestJoinClan}
+                                                    size='small'
+                                                    variant='contained'
+                                                    disabled={clanData.clan.disable_requests}
+                                                    sx={{
+                                                        mt: 2
+                                                    }}>
+                                                    Request to join
+                                                </Button>
+                                                {
+                                                    clanData.clan.disable_requests ? <>
+                                                        <Alert severity='info' sx={{ mt: 2 }}>
+                                                            <Typography variant='subtitle2'>This clan disabled new requests.</Typography>
+                                                        </Alert>
+                                                    </> : <></>
                                                 }
-                                                let rank_color = null;
+                                            </>
+                                        ) : <></>
+                                }
+                            </CardContent>
+                        </Card>
+                        <Box sx={{ mt: 2 }} />
+                        <Card elevation={3}>
+                            <CardContent>
+                                <Typography variant='h6'>Statistics</Typography>
+                                <Typography variant='body1'>Members: {clanData.members.length}</Typography>
+                                <Typography variant='body1'>Created: {moment(clanData.clan.creation_date).fromNow()}</Typography>
+                                <Box sx={{
+                                    display: 'flex'
+                                }}>
+                                    <Typography variant='body1'>Owner:</Typography>
+                                    <Box sx={{ ml: 1 }}> {GetFormattedName(clanData.owner?.user?.inspector_user ?? {})} </Box>
+                                </Box>
+                                <Divider sx={{ mt: 1, mb: 1 }} />
+                                {/* <Typography variant='body1'>Ranked score: {clanData.stats.ranked_score ?? 0}</Typography>
+                                                            <Typography variant='body1'>Total score: {clanData.stats.total_score ?? 0}</Typography> */}
+                                <TableContainer>
+                                    <Table size='small' sx={{
+                                        [`& .${tableCellClasses.root}`]: {
+                                            borderBottom: "none",
+                                            height: '20px',
+                                        }
+                                    }}>
+                                        <TableBody>
+                                            {
+                                                //remove where display is false
+                                                CLAN_STATS.filter((stat) => stat.display !== false).map((stat) => {
+                                                    let ranking = clanData.ranking[stat.key] ?? 0;
+                                                    if (stat.key === 'level') {
+                                                        ranking = clanData.ranking['total_score'] ?? 0;
+                                                    }
+                                                    let rank_color = null;
 
-                                                //bright colors
-                                                if (ranking === 1) rank_color = '#ffd700';
-                                                if (ranking === 2) rank_color = '#e5e4e2';
-                                                if (ranking === 3) rank_color = '#cd7f32';
+                                                    //bright colors
+                                                    if (ranking === 1) rank_color = '#ffd700';
+                                                    if (ranking === 2) rank_color = '#e5e4e2';
+                                                    if (ranking === 3) rank_color = '#cd7f32';
 
-                                                //up to 10 also has a color
-                                                if (ranking > 3 && ranking <= 10) rank_color = '#C0C0C0';
+                                                    //up to 10 also has a color
+                                                    if (ranking > 3 && ranking <= 10) rank_color = '#C0C0C0';
+                                                    return (
+                                                        <TableRow key={stat.key}>
+                                                            <TableCell>
+                                                                <Typography sx={{
+                                                                    fontSize: '0.7rem',
+                                                                }}>
+                                                                    {stat.name}
+                                                                </Typography>
+                                                            </TableCell>
+                                                            <TableCell>{stat.format(clanData.stats)}</TableCell>
+                                                            {/* <TableCell>{ranking > 0 ? `#${ranking.toLocaleString()}` : ''}</TableCell> */}
+                                                            {/* make this a nice chip */}
+                                                            <TableCell>
+                                                                <Chip label={ranking > 0 ? `#${ranking.toLocaleString()}` : ''} size='small' style={{
+                                                                    // backgroundColor: rank_color,
+                                                                    // color: 'black',
+                                                                    color: rank_color ?? '#C0C0C0',
+                                                                    fontWeight: rank_color ? 'bold' : 'normal',
+                                                                }} />
+                                                            </TableCell>
+                                                        </TableRow>
+                                                    )
+                                                })
+                                            }
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                            </CardContent>
+                        </Card>
+                    </Grid>
+                    <Grid item xs={12} md={8}>
+                        {
+                            props.me && props.me.clan_member?.clan?.id === clanData.clan.id && props.me.clan_member?.pending ? <>
+                                <Alert severity='info' sx={{
+                                    mb: 1
+                                }}>
+                                    Your join request is still pending.
+                                </Alert>
+                            </> : <></>
+                        }
+                        {
+                            //if owner, show Edit button
+                            props.me && props.me?.clan_member?.clan && props.me?.clan_member?.clan?.id === clanData.clan.id
+                                && clanData.clan.owner === props.me?.osu_id
+                                ?
+                                <>
+                                    <Alert severity={clanData.clan.disable_requests ? 'warning' : 'success'}>
+                                        Join requests are {clanData.clan.disable_requests ? 'disabled' : 'enabled'}.
+                                    </Alert>
+                                    <Box sx={{ pt: 1 }}>
+                                        <Button
+                                            variant='contained'
+                                            color='primary'
+                                            size='small'
+                                            onClick={() => setClanEditModalOpen(true)}
+                                        >Edit</Button>
+                                        <Button
+                                            sx={{ ml: 1 }}
+                                            variant='contained'
+                                            color='error'
+                                            size='small'
+                                            onClick={() => setClanRemoveModalOpen(true)}
+                                        >Delete</Button>
+                                    </Box>
+                                </>
+                                : <></>
+                        }
+                        <Box sx={{ mt: 2 }}>
+                            <Box display='flex' sx={{ mb: 1 }}>
+                                <Typography variant='h6'>Members</Typography>
+                                {/* dropdown for sorter */}
+                                <FormControl sx={{
+                                    ml: 1
+                                }}>
+                                    <Select
+                                        variant='standard'
+                                        size="small"
+                                        value={sorter}
+                                        onChange={(e) => setSorter(e.target.value)}
+                                    >
+                                        {
+                                            CLAN_STATS.filter((stat) => stat.user !== false).map((stat) => {
                                                 return (
-                                                    <TableRow key={stat.key}>
-                                                        <TableCell>
-                                                            <Typography sx={{
-                                                                fontSize: '0.7rem',
-                                                            }}>
-                                                                {stat.name}
-                                                            </Typography>
-                                                        </TableCell>
-                                                        <TableCell>{stat.format(clanData.stats)}</TableCell>
-                                                        {/* <TableCell>{ranking > 0 ? `#${ranking.toLocaleString()}` : ''}</TableCell> */}
-                                                        {/* make this a nice chip */}
-                                                        <TableCell>
-                                                            <Chip label={ranking > 0 ? `#${ranking.toLocaleString()}` : ''} size='small' style={{
-                                                                // backgroundColor: rank_color,
-                                                                // color: 'black',
-                                                                color: rank_color ?? '#C0C0C0',
-                                                                fontWeight: rank_color ? 'bold' : 'normal',
-                                                            }} />
-                                                        </TableCell>
-                                                    </TableRow>
+                                                    <MenuItem value={stat.key}>{stat.name}</MenuItem>
                                                 )
                                             })
                                         }
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
-                        </CardContent>
-                    </Card>
-                </Grid>
-                <Grid item xs={12} md={8}>
-                    {
-                        props.me && props.me.clan_member?.clan?.id === clanData.clan.id && props.me.clan_member?.pending ? <>
-                            <Alert severity='info' sx={{
-                                mb: 1
-                            }}>
-                                Your join request is still pending.
-                            </Alert>
-                        </> : <></>
-                    }
-                    {
-                        //if owner, show Edit button
-                        props.me && props.me?.clan_member?.clan && props.me?.clan_member?.clan?.id === clanData.clan.id
-                            && clanData.clan.owner === props.me?.osu_id
-                            ?
-                            <>
-                                <Alert severity={clanData.clan.disable_requests ? 'warning' : 'success'}>
-                                    Join requests are {clanData.clan.disable_requests ? 'disabled' : 'enabled'}.
-                                </Alert>
-                                <Box sx={{ pt: 1 }}>
-                                    <Button
-                                        variant='contained'
-                                        color='primary'
-                                        size='small'
-                                        onClick={() => setClanEditModalOpen(true)}
-                                    >Edit</Button>
-                                    <Button
-                                        sx={{ ml: 1 }}
-                                        variant='contained'
-                                        color='error'
-                                        size='small'
-                                        onClick={() => setClanRemoveModalOpen(true)}
-                                    >Delete</Button>
-                                </Box>
-                            </>
-                            : <></>
-                    }
-                    <Box sx={{ mt: 2 }}>
-                        <Box display='flex' sx={{ mb: 1 }}>
-                            <Typography variant='h6'>Members</Typography>
-                            {/* dropdown for sorter */}
-                            <FormControl sx={{
-                                ml: 1
-                            }}>
-                                <Select
-                                    variant='standard'
-                                    size="small"
-                                    value={sorter}
-                                    onChange={(e) => setSorter(e.target.value)}
-                                >
-                                    {
-                                        CLAN_STATS.filter((stat) => stat.user !== false).map((stat) => {
+                                    </Select>
+                                </FormControl>
+                            </Box>
+
+                            <Stack spacing={1}>
+                                {
+                                    clanData.members.length > 0 ?
+                                        // clanData.members.map((member, index) => {
+
+                                        //sort then map
+                                        clanData.members.sort(
+                                            (a, b) => {
+                                                const a_sorter = CLAN_STATS.find((stat) => stat.key === sorter).sort_value ? CLAN_STATS.find((stat) => stat.key === sorter).sort_value(a.user.extra) : a.user.extra[sorter];
+                                                const b_sorter = CLAN_STATS.find((stat) => stat.key === sorter).sort_value ? CLAN_STATS.find((stat) => stat.key === sorter).sort_value(b.user.extra) : b.user.extra[sorter];
+                                                return b_sorter - a_sorter;
+                                            }
+                                        ).map((member, index) => {
+                                            const _member = member.user.osu ?? member.user.alt;
+                                            const _username = _member?.username ?? member.user.inspector_user?.known_username;
+                                            const _user_id = _member?.id ?? member.user.inspector_user?.osu_id;
                                             return (
-                                                <MenuItem value={stat.key}>{stat.name}</MenuItem>
-                                            )
-                                        })
-                                    }
-                                </Select>
-                            </FormControl>
-                        </Box>
-
-                        <Stack spacing={1}>
-                            {
-                                clanData.members.length > 0 ?
-                                    // clanData.members.map((member, index) => {
-
-                                    //sort then map
-                                    clanData.members.sort(
-                                        (a, b) => {
-                                            const a_sorter = CLAN_STATS.find((stat) => stat.key === sorter).sort_value ? CLAN_STATS.find((stat) => stat.key === sorter).sort_value(a.user.extra) : a.user.extra[sorter];
-                                            const b_sorter = CLAN_STATS.find((stat) => stat.key === sorter).sort_value ? CLAN_STATS.find((stat) => stat.key === sorter).sort_value(b.user.extra) : b.user.extra[sorter];
-                                            return b_sorter - a_sorter;
-                                        }
-                                    ).map((member, index) => {
-                                        const _member = member.user.osu ?? member.user.alt;
-                                        const _username = _member?.username ?? member.user.inspector_user?.known_username;
-                                        const _user_id = _member?.id ?? member.user.inspector_user?.osu_id;
-                                        return (
-                                            <>
-                                                <Box display='flex' alignItems='center'>
-                                                    <Box flexGrow={1}>
-                                                        <PlayerLeaderboardItem
-                                                            remote_profile={true}
-                                                            user={{
-                                                                osu_user: _member,
-                                                                username: _username,
-                                                                rank: index + 1,
-                                                                user_id: _user_id,
-                                                            }}
-                                                            values={[
-                                                                {
-                                                                    value: CLAN_STATS.find((stat) => stat.key === sorter).name, alignment: 'right', variant: 'body2',
-                                                                    color: grey[500]
-                                                                },
-                                                                {
-                                                                    value: CLAN_STATS.find((stat) => stat.key === sorter).format(member.user.extra), alignment: 'left', variant: 'body2'
-                                                                }
-                                                            ]}
-                                                        />
-                                                    </Box>
-                                                    {
-                                                        props.me && props.me?.clan_member?.clan && props.me?.clan_member?.clan?.id === clanData.clan.id
-                                                            && clanData.clan.owner === props.me?.osu_id ?
-                                                            <Box sx={{
-                                                                ml: 1
-                                                            }}>
-                                                                {/* <Button
+                                                <>
+                                                    <Box display='flex' alignItems='center'>
+                                                        <Box flexGrow={1}>
+                                                            <PlayerLeaderboardItem
+                                                                remote_profile={true}
+                                                                user={{
+                                                                    osu_user: _member,
+                                                                    username: _username,
+                                                                    rank: index + 1,
+                                                                    user_id: _user_id,
+                                                                }}
+                                                                values={[
+                                                                    {
+                                                                        value: CLAN_STATS.find((stat) => stat.key === sorter).name, alignment: 'right', variant: 'body2',
+                                                                        color: grey[500]
+                                                                    },
+                                                                    {
+                                                                        value: CLAN_STATS.find((stat) => stat.key === sorter).format(member.user.extra), alignment: 'left', variant: 'body2'
+                                                                    }
+                                                                ]}
+                                                            />
+                                                        </Box>
+                                                        {
+                                                            props.me && props.me?.clan_member?.clan && props.me?.clan_member?.clan?.id === clanData.clan.id
+                                                                && clanData.clan.owner === props.me?.osu_id ?
+                                                                <Box sx={{
+                                                                    ml: 1
+                                                                }}>
+                                                                    {/* <Button
                                                                     onClick={() => { eventRemoveMember(_user_id) }}
                                                                     variant='contained'
                                                                     color='error'
@@ -613,120 +614,120 @@ function ClanPage(props) {
                                                                 >
                                                                     Remove
                                                                 </Button> */}
-                                                                {/* show a button with 3 dots to open a dropdown */}
-                                                                <IconButton
-                                                                    disabled={_user_id === clanData.clan.owner}
-                                                                    onClick={(e) => handleDropdownClick(e, _user_id)}
-                                                                >
-                                                                    <MoreHorizIcon fontSize="inherit" />
-                                                                </IconButton>
-                                                                {/* dropdown */}
-                                                                <Menu
-                                                                    open={Boolean(anchorEl)}
-                                                                    onClose={handleDropdownClose}
-                                                                    keepMounted
-                                                                    anchorEl={anchorEl}
-                                                                >
-                                                                    <MenuItem
-                                                                        onClick={() => { eventRemoveMember(anchorData) }}
+                                                                    {/* show a button with 3 dots to open a dropdown */}
+                                                                    <IconButton
+                                                                        disabled={_user_id === clanData.clan.owner}
+                                                                        onClick={(e) => handleDropdownClick(e, _user_id)}
                                                                     >
-                                                                        <CancelIcon sx={{ mr: 1.75 }} /> Kick
-                                                                    </MenuItem>
-                                                                    <MenuItem
-                                                                        onClick={() => { eventTransferOwnership(anchorData) }}
+                                                                        <MoreHorizIcon fontSize="inherit" />
+                                                                    </IconButton>
+                                                                    {/* dropdown */}
+                                                                    <Menu
+                                                                        open={Boolean(anchorEl)}
+                                                                        onClose={handleDropdownClose}
+                                                                        keepMounted
+                                                                        anchorEl={anchorEl}
                                                                     >
-                                                                        <SyncIcon sx={{ mr: 1.75 }} /> Transfer ownership
-                                                                    </MenuItem>
-                                                                    <Divider />
-                                                                    <MenuItem disabled={true}>
-                                                                        Be careful. These changes are permanent.
-                                                                    </MenuItem>
-                                                                </Menu>
-                                                            </Box>
-                                                            : <></>
-                                                    }
-                                                </Box>
-                                            </>
-                                        )
-                                    }) :
-                                    <Typography variant='subtitle2' sx={{ fontStyle: 'italic', }}>No other members</Typography>
-                            }
-                        </Stack>
-                        {
-                            //if owner, show member requests
-                            clanData.clan.owner === props.me?.osu_id ?
-                                <>
-                                    <Divider sx={{ mt: 1, mb: 1 }} />
-                                    <Typography variant='h6'>Member requests</Typography>
-                                    <Grid sx={{
-                                        maxHeight: '60vh',
-                                        overflowY: 'auto',
-                                    }}>
-                                        <Stack spacing={1}>
-                                            {
-                                                clanData.pending_members?.length > 0 ?
-                                                    //for testing, duplicate the requests multiple times
-                                                    clanData.pending_members.map((request, index) => {
-                                                        const _member = request.user.osu ?? request.user.alt;
-                                                        const _username = _member?.username ?? request.user.inspector_user?.known_username;
-                                                        const _user_id = _member?.id ?? request.user.inspector_user?.osu_id;
-                                                        return (
-                                                            <Box display='flex' alignItems='center'>
-                                                                <Box flexGrow={1}>
-                                                                    <PlayerLeaderboardItem
-                                                                        remote_profile={true}
-                                                                        user={{
-                                                                            osu_user: _member,
-                                                                            username: _username,
-                                                                            rank: index + 1,
-                                                                            user_id: _user_id,
-                                                                        }}
-                                                                    />
+                                                                        <MenuItem
+                                                                            onClick={() => { eventRemoveMember(anchorData) }}
+                                                                        >
+                                                                            <CancelIcon sx={{ mr: 1.75 }} /> Kick
+                                                                        </MenuItem>
+                                                                        <MenuItem
+                                                                            onClick={() => { eventTransferOwnership(anchorData) }}
+                                                                        >
+                                                                            <SyncIcon sx={{ mr: 1.75 }} /> Transfer ownership
+                                                                        </MenuItem>
+                                                                        <Divider />
+                                                                        <MenuItem disabled={true}>
+                                                                            Be careful. These changes are permanent.
+                                                                        </MenuItem>
+                                                                    </Menu>
                                                                 </Box>
-                                                                {
-                                                                    props.me && props.me?.clan_member?.clan && props.me?.clan_member?.clan?.id === clanData.clan.id
-                                                                        && clanData.clan.owner === props.me?.osu_id ?
-                                                                        <Box>
-                                                                            <Button
-                                                                                onClick={() => { eventAcceptJoinRequest(request) }}
-                                                                                variant='contained'
-                                                                                color='primary'
-                                                                                sx={{ mr: 1, ml: 1 }}>
-                                                                                Accept
-                                                                            </Button>
-                                                                            <Button
-                                                                                onClick={() => { eventRejectJoinRequest(request) }}
-                                                                                variant='contained'
-                                                                                color='error'
-                                                                                sx={{ mr: 1 }}>
-                                                                                Reject
-                                                                            </Button>
-                                                                        </Box>
-                                                                        : <></>
-                                                                }
-                                                            </Box>
-                                                        )
-                                                    }) :
-                                                    <Typography variant='subtitle2' sx={{ fontStyle: 'italic', }}>No requests</Typography>
-                                            }
-                                        </Stack>
-                                    </Grid>
-                                </> : <></>
-                        }
-                    </Box >
+                                                                : <></>
+                                                        }
+                                                    </Box>
+                                                </>
+                                            )
+                                        }) :
+                                        <Typography variant='subtitle2' sx={{ fontStyle: 'italic', }}>No other members</Typography>
+                                }
+                            </Stack>
+                            {
+                                //if owner, show member requests
+                                clanData.clan.owner === props.me?.osu_id ?
+                                    <>
+                                        <Divider sx={{ mt: 1, mb: 1 }} />
+                                        <Typography variant='h6'>Member requests</Typography>
+                                        <Grid sx={{
+                                            maxHeight: '60vh',
+                                            overflowY: 'auto',
+                                        }}>
+                                            <Stack spacing={1}>
+                                                {
+                                                    clanData.pending_members?.length > 0 ?
+                                                        //for testing, duplicate the requests multiple times
+                                                        clanData.pending_members.map((request, index) => {
+                                                            const _member = request.user.osu ?? request.user.alt;
+                                                            const _username = _member?.username ?? request.user.inspector_user?.known_username;
+                                                            const _user_id = _member?.id ?? request.user.inspector_user?.osu_id;
+                                                            return (
+                                                                <Box display='flex' alignItems='center'>
+                                                                    <Box flexGrow={1}>
+                                                                        <PlayerLeaderboardItem
+                                                                            remote_profile={true}
+                                                                            user={{
+                                                                                osu_user: _member,
+                                                                                username: _username,
+                                                                                rank: index + 1,
+                                                                                user_id: _user_id,
+                                                                            }}
+                                                                        />
+                                                                    </Box>
+                                                                    {
+                                                                        props.me && props.me?.clan_member?.clan && props.me?.clan_member?.clan?.id === clanData.clan.id
+                                                                            && clanData.clan.owner === props.me?.osu_id ?
+                                                                            <Box>
+                                                                                <Button
+                                                                                    onClick={() => { eventAcceptJoinRequest(request) }}
+                                                                                    variant='contained'
+                                                                                    color='primary'
+                                                                                    sx={{ mr: 1, ml: 1 }}>
+                                                                                    Accept
+                                                                                </Button>
+                                                                                <Button
+                                                                                    onClick={() => { eventRejectJoinRequest(request) }}
+                                                                                    variant='contained'
+                                                                                    color='error'
+                                                                                    sx={{ mr: 1 }}>
+                                                                                    Reject
+                                                                                </Button>
+                                                                            </Box>
+                                                                            : <></>
+                                                                    }
+                                                                </Box>
+                                                            )
+                                                        }) :
+                                                        <Typography variant='subtitle2' sx={{ fontStyle: 'italic', }}>No requests</Typography>
+                                                }
+                                            </Stack>
+                                        </Grid>
+                                    </> : <></>
+                            }
+                        </Box >
+                    </Grid >
                 </Grid >
-            </Grid >
-            {/* clan logs, scrollable div of ~250 height */}
-            <Card elevation={3} sx={{
-                mt: 2,
-            }}>
-                <CardContent>
-                    <Box sx={{
-                        maxHeight: '250px',
-                        overflowY: 'auto',
-                    }}>
-                        <Typography variant='h6'>Clan history</Typography>
-                        {/* <Stack spacing={1}>
+                {/* clan logs, scrollable div of ~250 height */}
+                <Card elevation={3} sx={{
+                    mt: 2,
+                }}>
+                    <CardContent>
+                        <Box sx={{
+                            maxHeight: '250px',
+                            overflowY: 'auto',
+                        }}>
+                            <Typography variant='h6'>Clan history</Typography>
+                            {/* <Stack spacing={1}>
                             {
                                 clanData.logs.map((log, index) => {
                                     return <Typography>
@@ -735,35 +736,36 @@ function ClanPage(props) {
                                 })
                             }
                         </Stack> */}
-                        <TableContainer>
-                            <Table size='small'>
-                                <TableBody>
-                                    {
-                                        clanData.logs.map((log, index) => {
-                                            if (FormatClanLog(clanData, log) === null) return <></>;
-                                            return <TableRow key={index}>
-                                                <TableCell>
-                                                    <Tooltip title={moment(log.created_at).format('MMMM Do YYYY, h:mm:ss a')}>
-                                                        {moment(log.created_at).fromNow()}
-                                                    </Tooltip>
-                                                </TableCell>
-                                                <TableCell>
-                                                    <Typography variant='body2'>
-                                                        {FormatClanLog(clanData, log)}
-                                                    </Typography>
-                                                </TableCell>
-                                            </TableRow>
-                                        })
-                                    }
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                    </Box>
-                </CardContent>
-            </Card>
-            <Alert severity='info' sx={{ mt: 2 }}>
-                <Typography variant='body1'>Members not registered on the osu!alternative Discord may be missing stats.</Typography>
-            </Alert>
+                            <TableContainer>
+                                <Table size='small'>
+                                    <TableBody>
+                                        {
+                                            clanData.logs.map((log, index) => {
+                                                if (FormatClanLog(clanData, log) === null) return <></>;
+                                                return <TableRow key={index}>
+                                                    <TableCell>
+                                                        <Tooltip title={moment(log.created_at).format('MMMM Do YYYY, h:mm:ss a')}>
+                                                            {moment(log.created_at).fromNow()}
+                                                        </Tooltip>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <Typography variant='body2'>
+                                                            {FormatClanLog(clanData, log)}
+                                                        </Typography>
+                                                    </TableCell>
+                                                </TableRow>
+                                            })
+                                        }
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </Box>
+                    </CardContent>
+                </Card>
+                <Alert severity='info' sx={{ mt: 2 }}>
+                    <Typography variant='body1'>Members not registered on the osu!alternative Discord may be missing stats.</Typography>
+                </Alert>
+            </Container>
         </>
     )
 }
@@ -809,148 +811,160 @@ function ClanList(props) {
             >
                 <ClanCreate user={props.me} />
             </Modal>
-            <Box style={{
-                display: 'flex',
-            }}>
-                <Typography variant='h6'>Clans</Typography>
-                {
-                    props.me && props.me.clan_member?.clan && props.me.clan_member?.clan ?
-                        <Button
-                            onClick={() => navigate(`/clan/${props.me.clan_member.clan.id}`)}
-                            variant='contained' color='primary' sx={{
-                                marginLeft: 'auto',
-                            }}>Go to {props.me.clan_member.clan.name}</Button> :
-                        (
-                            props.me ? <Button
-                                onClick={() => setClanCreatorModalOpen(true)}
-                                variant='contained' color='primary' sx={{
-                                    marginLeft: 'auto',
-                                }}>Create a clan</Button> :
-                                <></>
-                        )
-                }
-
-            </Box>
-            <Box sx={{ mt: 2, display: 'flex' }}>
-                <Paper
-                    elevation={3}
-                    sx={{
-                        p: 1,
-                        mr: 2,
-                        width: '300px',
-                        //center vertically
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                    }}>
-                    <Box>
-                        <Typography variant='body'>Clans {clanListData?.total_clans ?? 0}</Typography>
-                    </Box>
-                    <Box>
-                        <Typography variant='body'>Members {clanListData?.total_members ?? 0}</Typography>
-                    </Box>
-                </Paper>
-                <Box sx={{
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                }}>
-                    {
-                        CLAN_STATS.filter((stat) => stat.clanlist !== false).map((stat) => {
-                            return (
-                                <Button
-                                    onClick={() => setSorter(stat.key)}
-                                    variant={sorter === stat.key ? 'contained' : 'outlined'}
-                                    size='small'
-                                    sx={{ mr: 0.4, mb: 0.4 }}
-                                >
-                                    {stat.name}
-                                </Button>
-                            )
-                        })
-                    }
-                </Box>
-            </Box>
             {
                 clanListData ?
                     <>
-                        {/* search field with button right */}
-                        <Box sx={{
-                            display: 'flex',
-                            justifyContent: 'flex-end',
-                            mt: 1,
-                        }}>
-                            <TextField
-                                label='Search'
-                                variant='outlined'
-                                size='small'
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                            />
-                            <Button
-                                variant='contained'
-                                color='primary'
-                                size='small'
-                                onClick={() => fetchData(true)}
-                                sx={{
-                                    ml: 1
-                                }}
-                            >
-                                Search
-                            </Button>
-                        </Box>
-                        <Pagination
-                            color="primary"
-                            count={clanListData.total_pages}
-                            page={clanListData.current_page}
-                            // onChange={(e, page) => fetchData(page, sorter, sortDir)}
-                            onChange={(e, page) => setPage(page)}
-                            sx={{
-                                mt: 1,
-                                display: 'flex',
-                                justifyContent: 'center',
-                            }}
-                        />
-                        <Stack direction='column' spacing={0.6} sx={{
-                            mt: 1
-                        }}>
-                            {
-                                clanListData.clans.map((clan, index) => {
-                                    return (
-                                        <ClanLeaderboardItem
-                                            index={index + 1 + (clanListData.current_page - 1) * CLANS_PER_PAGE}
-                                            clan={clan}
-                                            onClick={() => navigate(`/clan/${clan.id}`)}
-                                            values={
-                                                [
-                                                    //empty
-                                                    { value: '', alignment: 'left', variant: 'body2' },
-                                                    { value: '', alignment: 'left', variant: 'body2' },
-                                                    //select stat name from clan_stats entry
-                                                    {
-                                                        value: CLAN_STATS.find((stat) => stat.key === sorter).name, alignment: 'right', variant: 'body2',
-                                                        color: grey[500]
-                                                    },
-                                                    //select clan_stat entry from sorter, then use format function
-                                                    { value: CLAN_STATS.find((stat) => stat.key === sorter).format(clan.clan_stats), alignment: 'left', variant: 'body2' },
-                                                    { value: clan.disable_requests ? <LockIcon color='error' /> : <LockOpenIcon color='success' />, alignment: 'right', variant: 'body2', tooltip: clan.disable_requests ? 'Join requests disabled' : 'Join requests enabled' }
-                                                ]
+                        <Grid container spacing={1}>
+                            <Grid item xs={12} md={2}>
+                                <Box style={{
+                                    display: 'flex',
+                                }}>
+                                    {
+                                        props.me && props.me.clan_member?.clan && props.me.clan_member?.clan ?
+                                            <Button
+                                                onClick={() => navigate(`/clan/${props.me.clan_member.clan.id}`)}
+                                                variant='contained' color='primary' fullWidth>Go to {props.me.clan_member.clan.name}</Button> :
+                                            (
+                                                props.me ? <Button
+                                                    onClick={() => setClanCreatorModalOpen(true)}
+                                                    variant='contained' color='primary' fullWidth>Create a clan</Button> :
+                                                    <></>
+                                            )
+                                    }
+
+                                </Box>
+                                <Box sx={{ mt: 1, display: 'flex' }}>
+                                    {/* <Paper
+                                        elevation={3}
+                                        sx={{
+                                            p: 1,
+                                            width: '100%',
+                                        }} fullWidth>
+                                        <Box>
+                                            <Typography variant='body'>Clans {clanListData?.total_clans ?? 0}</Typography>
+                                        </Box>
+                                        <Box>
+                                            <Typography variant='body'>Members {clanListData?.total_members ?? 0}</Typography>
+                                        </Box>
+                                    </Paper> */}
+                                    <Grid container spacing={1}>
+                                        <Grid item xs={6}>
+                                            <StatCard stats={clanListData?.total_clans ?? 0} title='Clans' color={green} brightness={600} icon={<GroupsIcon />} />
+                                        </Grid>
+                                        <Grid item xs={6}>
+                                            <StatCard stats={clanListData?.total_members ?? 0} title='Members' color={blue} brightness={600} icon={<GroupsIcon />} />
+                                        </Grid>
+                                    </Grid>
+
+                                </Box>
+                                {/* search field with button right */}
+                                <Box sx={{
+                                    display: 'flex',
+                                    mt: 1,
+                                }}>
+                                    <FormControl fullWidth size="small">
+                                        <InputLabel
+                                            htmlFor='clan-search'
+                                        >Search</InputLabel>
+                                        <OutlinedInput
+                                            id='clan-search'
+                                            type='text'
+                                            value={searchQuery}
+                                            onChange={(e) => setSearchQuery(e.target.value)}
+                                            endAdornment={
+                                                <InputAdornment position="end">
+                                                    <IconButton
+                                                        onClick={() => fetchData(true)}
+                                                    >
+                                                        <SearchIcon />
+                                                    </IconButton>
+                                                </InputAdornment>
                                             }
+                                            label='Search clan'
                                         />
-                                    )
-                                })
-                            }
-                        </Stack>
-                        <Pagination
-                            color="primary"
-                            count={clanListData.total_pages}
-                            page={clanListData.current_page}
-                            // onChange={(e, page) => fetchData(page, sorter, sortDir)}
-                            onChange={(e, page) => setPage(page)}
-                            sx={{
-                                mt: 1,
-                                display: 'flex',
-                                justifyContent: 'center',
-                            }}
-                        />
+                                    </FormControl>
+                                </Box>
+                                <Divider sx={{ mt: 1, mb: 1 }} />
+                                <ButtonGroup sx={{ mt: 1 }} orientation="vertical" color='primary' fullWidth>
+                                    {
+                                        CLAN_STATS.filter((stat) => stat.clanlist !== false).map((stat) => {
+                                            return (
+                                                <Button
+                                                    onClick={() => setSorter(stat.key)}
+                                                    variant={sorter === stat.key ? 'contained' : 'outlined'}
+                                                >
+                                                    {stat.name}
+                                                </Button>
+                                            )
+                                        })
+                                    }
+                                </ButtonGroup>
+                            </Grid>
+                            <Grid item xs={12} md={10}>
+                                <Pagination
+                                    color="primary"
+                                    count={clanListData.total_pages}
+                                    page={clanListData.current_page}
+                                    showFirstButton 
+                                    showLastButton
+                                    siblingCount={1} 
+                                    boundaryCount={1}
+                                    // onChange={(e, page) => fetchData(page, sorter, sortDir)}
+                                    onChange={(e, page) => setPage(page)}
+                                    sx={{
+                                        mt: 1,
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                    }}
+                                />
+                                <Stack direction='column' spacing={0.6} sx={{
+                                    mt: 1
+                                }}>
+                                    {
+                                        clanListData.clans.map((clan, index) => {
+                                            return (
+                                                <ClanLeaderboardItem
+                                                    index={index + 1 + (clanListData.current_page - 1) * CLANS_PER_PAGE}
+                                                    clan={clan}
+                                                    onClick={() => navigate(`/clan/${clan.id}`)}
+                                                    values={
+                                                        [
+                                                            //empty
+                                                            { value: '', alignment: 'left', variant: 'body2' },
+                                                            { value: '', alignment: 'left', variant: 'body2' },
+                                                            //select stat name from clan_stats entry
+                                                            {
+                                                                value: CLAN_STATS.find((stat) => stat.key === sorter).name, alignment: 'right', variant: 'body2',
+                                                                color: grey[500]
+                                                            },
+                                                            //select clan_stat entry from sorter, then use format function
+                                                            { value: CLAN_STATS.find((stat) => stat.key === sorter).format(clan.clan_stats), alignment: 'left', variant: 'body2' },
+                                                            { value: clan.disable_requests ? <LockIcon color='error' /> : <LockOpenIcon color='success' />, alignment: 'right', variant: 'body2', tooltip: clan.disable_requests ? 'Join requests disabled' : 'Join requests enabled' }
+                                                        ]
+                                                    }
+                                                />
+                                            )
+                                        })
+                                    }
+                                </Stack>
+                                <Pagination
+                                    color="primary"
+                                    count={clanListData.total_pages}
+                                    page={clanListData.current_page}
+                                    showFirstButton 
+                                    showLastButton
+                                    siblingCount={1} 
+                                    boundaryCount={1}
+                                    // onChange={(e, page) => fetchData(page, sorter, sortDir)}
+                                    onChange={(e, page) => setPage(page)}
+                                    sx={{
+                                        mt: 1,
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                    }}
+                                />
+                            </Grid>
+                        </Grid>
                     </> : <Loader />
             }
         </>
