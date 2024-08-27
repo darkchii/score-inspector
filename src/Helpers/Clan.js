@@ -84,7 +84,16 @@ export async function RemoveClanMember(owner_id, member_id, token, clan_id) {
         clan_id: clan_id
     });
     return response.data;
+}
 
+export async function TransferClanOwnership(owner_id, new_owner_id, token, clan_id) {
+    const response = await axios.post(`${GetAPI()}clans/transfer_owner`, {
+        owner_id: owner_id,
+        member_id: new_owner_id,
+        token: token,
+        clan_id: clan_id
+    });
+    return response.data;
 }
 
 export async function LeaveClan(user_id, token, clan_id) {

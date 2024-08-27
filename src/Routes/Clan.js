@@ -1,10 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Alert, Box, Button, Card, CardContent, Chip, Container, Divider, FormControl, Grid, MenuItem, Modal, Pagination, Paper, Select, Stack, Switch, Table, TableBody, TableCell, TableContainer, TableRow, TextField, Typography, tableCellClasses } from "@mui/material";
+import { Alert, Avatar, Box, Button, Card, CardContent, Chip, Container, Divider, FormControl, Grid, IconButton, Menu, MenuItem, Modal, Pagination, Paper, Select, Stack, Switch, Table, TableBody, TableCell, TableContainer, TableRow, TextField, Typography, tableCellClasses, useTheme } from "@mui/material";
 import { useState } from "react";
 import { fixedEncodeURIComponent, MODAL_STYLE, showNotification } from "../Helpers/Misc";
 import { useEffect } from "react";
 import { GetFormattedName, GetLoginID, GetLoginToken, GetUser } from "../Helpers/Account";
-import { AcceptJoinRequestClan, CreateClan, DeleteClan, GetClan, GetClanList, JoinRequestClan, LeaveClan, RejectJoinRequestClan, RemoveClanMember, UpdateClan } from "../Helpers/Clan";
+import { AcceptJoinRequestClan, CreateClan, DeleteClan, GetClan, GetClanList, JoinRequestClan, LeaveClan, RejectJoinRequestClan, RemoveClanMember, TransferClanOwnership, UpdateClan } from "../Helpers/Clan";
 import { useNavigate, useParams } from "react-router-dom";
 import Loader from "../Components/UI/Loader";
 import moment from "moment";
@@ -14,7 +14,11 @@ import { getLevelForScore } from "../Helpers/Osu";
 import PlayerLeaderboardItem from '../Components/Leaderboards/PlayerLeaderboardItem';
 import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { matchIsValidColor, MuiColorInput } from "mui-color-input";
+import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
+import CancelIcon from '@mui/icons-material/Cancel';
+import SyncIcon from '@mui/icons-material/Sync';
 
 //always round to 2 decimal places, and toLocaleString for commas
 const CLAN_STATS = [
@@ -189,7 +193,19 @@ function ClanPage(props) {
     const [clanRemoveModalOpen, setClanRemoveModalOpen] = useState(false);
     const [clanData, setClanData] = useState(null);
     const [sorter, setSorter] = useState('average_pp');
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [anchorData, setAnchorData] = useState(null);
     const navigate = useNavigate();
+    const theme = useTheme();
+
+    const handleDropdownClick = (event, data) => {
+        setAnchorEl(event.currentTarget);
+        setAnchorData(data);
+    };
+
+    const handleDropdownClose = () => {
+        setAnchorEl(null);
+    };
 
     const loadClan = (id, force_reload_user = false) => {
         setClanData(null);
@@ -299,6 +315,21 @@ function ClanPage(props) {
         }
     }
 
+    const eventTransferOwnership = async (user_id) => {
+        try {
+            const response = await TransferClanOwnership(props.me.osu_id, user_id, await GetLoginToken(), clanData.clan.id);
+            if (response.error) {
+                showNotification('Error', response.error, 'error');
+            } else {
+                showNotification('Success', 'Clan ownership has been transferred! There is a cooldown of 30 days before this clan can change owner again.', 'success');
+                await loadClan(props.id, true);
+            }
+        } catch (err) {
+            showNotification('Error', 'An error occurred while transferring ownership.', 'error');
+            showNotification('Error', err.message, 'error');
+        }
+    }
+
     useEffect(() => {
         if (!props.id) return;
         if (isNaN(props.id)) return;
@@ -339,16 +370,16 @@ function ClanPage(props) {
             {
                 clanData.clan.header_image_url ?
                     //object-fit top of the image
-                    <img 
+                    <img
                         // src={clanData.clan.header_image_url} 
                         src={clanData.clan?.header_image_url ? `${fixedEncodeURIComponent(clanData.clan.header_image_url)}` : ''}
                         alt='Clan header' style={{
-                        width: '100%',
-                        height: '200px',
-                        objectFit: 'cover',
-                        borderRadius: '10px',
-                        marginBottom: '5px'
-                    }} /> : <></>
+                            width: '100%',
+                            height: '200px',
+                            objectFit: 'cover',
+                            borderRadius: '10px',
+                            marginBottom: '5px'
+                        }} /> : <></>
             }
             <Grid container spacing={2}>
                 <Grid item xs={12} md={4}>
@@ -566,8 +597,10 @@ function ClanPage(props) {
                                                     {
                                                         props.me && props.me?.clan_member?.clan && props.me?.clan_member?.clan?.id === clanData.clan.id
                                                             && clanData.clan.owner === props.me?.osu_id ?
-                                                            <Box>
-                                                                <Button
+                                                            <Box sx={{
+                                                                ml: 1
+                                                            }}>
+                                                                {/* <Button
                                                                     onClick={() => { eventRemoveMember(_user_id) }}
                                                                     variant='contained'
                                                                     color='error'
@@ -579,7 +612,36 @@ function ClanPage(props) {
                                                                     disabled={_user_id === clanData.clan.owner}
                                                                 >
                                                                     Remove
-                                                                </Button>
+                                                                </Button> */}
+                                                                {/* show a button with 3 dots to open a dropdown */}
+                                                                <IconButton
+                                                                    disabled={_user_id === clanData.clan.owner}
+                                                                    onClick={(e) => handleDropdownClick(e, _user_id)}
+                                                                >
+                                                                    <MoreHorizIcon fontSize="inherit" />
+                                                                </IconButton>
+                                                                {/* dropdown */}
+                                                                <Menu
+                                                                    open={Boolean(anchorEl)}
+                                                                    onClose={handleDropdownClose}
+                                                                    keepMounted
+                                                                    anchorEl={anchorEl}
+                                                                >
+                                                                    <MenuItem
+                                                                        onClick={() => { eventRemoveMember(anchorData) }}
+                                                                    >
+                                                                        <CancelIcon sx={{ mr: 1.75 }} /> Kick
+                                                                    </MenuItem>
+                                                                    <MenuItem
+                                                                        onClick={() => { eventTransferOwnership(anchorData) }}
+                                                                    >
+                                                                        <SyncIcon sx={{ mr: 1.75 }} /> Transfer ownership
+                                                                    </MenuItem>
+                                                                    <Divider />
+                                                                    <MenuItem disabled={true}>
+                                                                        Be careful. These changes are permanent.
+                                                                    </MenuItem>
+                                                                </Menu>
                                                             </Box>
                                                             : <></>
                                                     }
@@ -932,7 +994,7 @@ function ClanFormFields(props) {
     const [clanName, setClanName] = useState(props.clan?.clan.name ?? '');
     const [clanTag, setClanTag] = useState(props.clan?.clan.tag ?? '');
     const [clanDescription, setClanDescription] = useState(props.clan?.clan.description ?? '');
-    const [clanColor, setClanColor] = useState(('#'+props.clan?.clan.color) ?? '#ffffff');
+    const [clanColor, setClanColor] = useState(('#' + props.clan?.clan.color) ?? '#ffffff');
     const [clanHeaderUrl, setClanHeaderUrl] = useState(props.clan?.clan.header_image_url ?? '');
     const [clanDisableRequests, setClanDisableRequests] = useState(props.clan?.clan.disable_requests ?? false);
     const [isEditMode] = useState(props.clan ? true : false);
@@ -966,7 +1028,7 @@ function ClanFormFields(props) {
         setIsWorking(true);
         //submit the clan
         (async () => {
-            if(!matchIsValidColor(clanColor)) {
+            if (!matchIsValidColor(clanColor)) {
                 showNotification('Error', 'Invalid color code.', 'error');
                 setIsWorking(false);
                 return;
