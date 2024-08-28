@@ -11,7 +11,7 @@ import {
     Title,
     Legend
 } from "chart.js";
-import WorldAtlas from '../Assets/countries-110m.json';
+import WorldAtlas from '../Assets/world-110m.json';
 import Countries from '../Assets/countries.json';
 import { lerpColor, linearToLogarithmic } from "../Helpers/Misc";
 import { Box, Button, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableRow, Tooltip as MUITooltip, Typography, TableHead, Container, useTheme } from "@mui/material";
@@ -52,7 +52,7 @@ function Population() {
 
     const updateChart = (valueType = "active_users") => {
         if (!population || !Array.isArray(population)) return;
-        const countries = ChartGeo.topojson.feature(WorldAtlas, WorldAtlas.objects["map.geo"]).features.filter((f) => f.properties["A3"] !== 'ATA');
+        const countries = ChartGeo.topojson.feature(WorldAtlas, WorldAtlas.objects["countries"]).features.filter((f) => f.properties["a3"] !== 'ATA');
 
         //set all features to value 0
         countries.forEach((c) => {
@@ -80,7 +80,7 @@ function Population() {
 
         countries.forEach((c) => {
             let _c = JSON.parse(JSON.stringify(c));
-            let cc = c.properties["A3"].toLowerCase();
+            let cc = c.properties["a3"].toLowerCase();
             let country = Countries.find((c) => c["alpha-3"].toLowerCase() === cc.toLowerCase());
             if (country) {
                 _c.code = country["alpha-2"].toLowerCase();
@@ -88,7 +88,7 @@ function Population() {
                 _c.value = 0;
                 _c.valuePercent = 0;
             } else {
-                console.warn(c.properties["A3"] + ' not found');
+                console.warn(c.properties["a3"] + ' not found');
             }
             fixed_countries.push(_c);
         });
@@ -159,10 +159,6 @@ function Population() {
                         axis: 'x',
                         // interpolate: (v) => (v < 0.5 ? 'green' : 'red'),
                         interpolate: (v) => lerpColor('#ffffff', theme.palette.primary.main, linearToLogarithmic(v), 0.2, 1),
-                        legend: {
-                            position: 'bottom-right',
-                            align: 'right',
-                        },
                     }
                 }
             }
@@ -330,6 +326,8 @@ function Population() {
                                     type={chartData.type}
                                     data={chartData.data}
                                     options={chartData.options}
+                                    width={100}
+                                    height={40}
                                 ></Chart>
                             </Container>
                         </Box>
