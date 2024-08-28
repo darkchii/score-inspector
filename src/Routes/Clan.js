@@ -22,6 +22,9 @@ import SyncIcon from '@mui/icons-material/Sync';
 import SearchIcon from '@mui/icons-material/Search';
 import StatCard from "../Components/UI/StatCard";
 import GroupsIcon from '@mui/icons-material/Groups';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+
 //always round to 2 decimal places, and toLocaleString for commas
 const CLAN_STATS = [
     {
@@ -595,6 +598,21 @@ function ClanPage(props) {
                                                                 ]}
                                                             />
                                                         </Box>
+                                                        <Box sx={{
+                                                            ml: 1,
+                                                            //center vertically
+                                                            display: 'flex',
+                                                            alignItems: 'center',
+                                                        }}>
+                                                            <Tooltip title={clanData.clan.owner === _user_id ? 'Owner' : 'Member'}>
+                                                                {
+                                                                    clanData.clan.owner === _user_id ?
+                                                                        <AdminPanelSettingsIcon />
+                                                                        :
+                                                                        <AccountCircleIcon />
+                                                                }
+                                                            </Tooltip>
+                                                        </Box>
                                                         {
                                                             props.me && props.me?.clan_member?.clan && props.me?.clan_member?.clan?.id === clanData.clan.id
                                                                 && clanData.clan.owner === props.me?.osu_id ?
@@ -905,9 +923,9 @@ function ClanList(props) {
                                     color="primary"
                                     count={clanListData.total_pages}
                                     page={clanListData.current_page}
-                                    showFirstButton 
+                                    showFirstButton
                                     showLastButton
-                                    siblingCount={1} 
+                                    siblingCount={1}
                                     boundaryCount={1}
                                     // onChange={(e, page) => fetchData(page, sorter, sortDir)}
                                     onChange={(e, page) => setPage(page)}
@@ -951,9 +969,9 @@ function ClanList(props) {
                                     color="primary"
                                     count={clanListData.total_pages}
                                     page={clanListData.current_page}
-                                    showFirstButton 
+                                    showFirstButton
                                     showLastButton
-                                    siblingCount={1} 
+                                    siblingCount={1}
                                     boundaryCount={1}
                                     // onChange={(e, page) => fetchData(page, sorter, sortDir)}
                                     onChange={(e, page) => setPage(page)}
