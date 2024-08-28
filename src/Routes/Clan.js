@@ -24,6 +24,8 @@ import StatCard from "../Components/UI/StatCard";
 import GroupsIcon from '@mui/icons-material/Groups';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import DoneIcon from '@mui/icons-material/Done';
+import ClearIcon from '@mui/icons-material/Clear';
 
 //always round to 2 decimal places, and toLocaleString for commas
 const CLAN_STATS = [
@@ -706,7 +708,39 @@ function ClanPage(props) {
                                                                         props.me && props.me?.clan_member?.clan && props.me?.clan_member?.clan?.id === clanData.clan.id
                                                                             && clanData.clan.owner === props.me?.osu_id ?
                                                                             <Box>
-                                                                                <Button
+                                                                                <Tooltip title='Accept'>
+                                                                                    <IconButton
+                                                                                        onClick={(e) => eventAcceptJoinRequest(request)}
+                                                                                        color='primary'
+                                                                                        size="small"
+                                                                                        sx={{
+                                                                                            backgroundColor: theme.palette.success.main,
+                                                                                            color: theme.palette.success.contrastText,
+                                                                                            "&:hover": { backgroundColor: `${theme.palette.success.main}90` },
+                                                                                            m: 1,
+                                                                                            p: 1
+                                                                                        }}
+                                                                                    >
+                                                                                        <DoneIcon fontSize="inherit" />
+                                                                                    </IconButton>
+                                                                                </Tooltip>
+                                                                                <Tooltip title='Reject'>
+                                                                                    <IconButton
+                                                                                        onClick={(e) => eventRejectJoinRequest(request)}
+                                                                                        color='error'
+                                                                                        size="small"
+                                                                                        sx={{
+                                                                                            backgroundColor: theme.palette.error.main,
+                                                                                            color: theme.palette.error.contrastText,
+                                                                                            "&:hover": { backgroundColor: `${theme.palette.error.main}90` },
+                                                                                            m: 1,
+                                                                                            p: 1
+                                                                                        }}
+                                                                                    >
+                                                                                        <ClearIcon fontSize="inherit" />
+                                                                                    </IconButton>
+                                                                                </Tooltip>
+                                                                                {/* <Button
                                                                                     onClick={() => { eventAcceptJoinRequest(request) }}
                                                                                     variant='contained'
                                                                                     color='primary'
@@ -719,7 +753,7 @@ function ClanPage(props) {
                                                                                     color='error'
                                                                                     sx={{ mr: 1 }}>
                                                                                     Reject
-                                                                                </Button>
+                                                                                </Button> */}
                                                                             </Box>
                                                                             : <></>
                                                                     }
