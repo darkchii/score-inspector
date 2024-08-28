@@ -97,7 +97,7 @@ function SectionHeader(props) {
                                         }</Typography>
                                 </Stack>
                                 <Stack alignItems='center' direction='row' spacing={1}>
-                                    <ReactCountryFlag svg style={{ lineHeight: '1em', fontSize: '1.4em', borderRadius: '5px' }} cdnUrl="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/" countryCode={props.user.osu.country.code} />
+                                    <ReactCountryFlag svg style={{ lineHeight: '1em', fontSize: '1.4em', borderRadius: '5px' }} cdnUrl="https://flagicons.lipis.dev/flags/4x3/" countryCode={props.user.osu.country.code} />
                                     <Typography variant='h6'>{props.user.osu.country.name}</Typography>
                                     {
                                         props.user.osu.groups.length > 0 ? <>

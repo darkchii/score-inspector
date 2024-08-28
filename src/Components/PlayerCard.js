@@ -88,7 +88,7 @@ function PlayerCard(props) {
                                                     borderRadius: '5px',
                                                     paddingRight: '0.4em'
                                                 }}
-                                                cdnUrl="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/"
+                                                cdnUrl="https://flagicons.lipis.dev/flags/4x3/"
                                                 countryCode={props.user.osu?.country_code}
                                             />
                                             {

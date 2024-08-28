@@ -153,7 +153,7 @@ function PlayerLeaderboardItem(props) {
                     <Box>
                         <ReactCountryFlag svg
                             style={{ lineHeight: '1em', fontSize: '1.8em', borderRadius: '5px' }}
-                            cdnUrl="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/"
+                            cdnUrl="https://flagicons.lipis.dev/flags/4x3/"
                             countryCode={osu_user?.country_code ?? ''}
                         />
                     </Box>

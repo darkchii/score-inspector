@@ -379,11 +379,10 @@ function Population() {
                                                     <ReactCountryFlag
                                                         svg
                                                         style={{
-                                                            fontSize: '1.4em',
+                                                            fontSize: '1.6em',
                                                             borderRadius: '5px',
-                                                            paddingRight: '0.4em'
                                                         }}
-                                                        cdnUrl="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/6.6.6/flags/4x3/"
+                                                        cdnUrl="https://flagicons.lipis.dev/flags/4x3/"
                                                         countryCode={c.code ?? 'xx'}
                                                     />
                                                 </TableCell>
