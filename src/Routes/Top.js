@@ -8,6 +8,7 @@ import { prepareScores } from "../Helpers/ScoresProcessor";
 import { Helmet } from "react-helmet";
 import config from "../config.json";
 import { MassCalculatePerformance } from "../Helpers/Osu.js";
+import { grey } from "@mui/material/colors";
 
 const SCORES_TO_FETCH = 10;
 const PERIODS = [
@@ -18,7 +19,7 @@ const PERIODS = [
     { value: "all", label: "Alltime" },
 ];
 
-const SCORE_CARD_HEIGHT = '6em';
+const SCORE_CARD_HEIGHT = '8em';
 const SCORE_TYPES = 2;
 const SCORE_TYPE_NAMES = ['Performance', 'Score'];
 
@@ -102,7 +103,7 @@ function Top(props) {
                         return (
                             <Grid item xs={12} md={6}>
                                 <Paper elevation={2}>
-                                    <Stack sx={{ p: 1 }} direction='column' spacing={2}>
+                                    <Stack sx={{ p: 1 }} direction='column' spacing={1}>
                                         <Typography variant='title'>{SCORE_TYPE_NAMES[i]}</Typography>
                                         {
                                             Array.from(Array(SCORES_TO_FETCH).keys()).map((j) => {
@@ -150,6 +151,15 @@ function Top(props) {
                                                                                 {score.modString} {score.is_fc ? 'FC' : ''} {Math.round(score.accuracy * 100) / 100}% {Math.round((score.beatmap.modded_sr?.star_rating ?? 0) * 10) / 10}*
                                                                             </Typography>
                                                                         </Box>
+                                                                    </Box>
+                                                                    <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                                                                        {
+                                                                            score.beatmap.modded_sr ? <>
+                                                                                <Typography variant='body1' sx={{color: grey[500]}}>Aim: {score.beatmap.modded_sr.aim_diff.toFixed(2)}* | Speed: {score.beatmap.modded_sr.speed_diff.toFixed(2)}* | {score.beatmap.modded_sr.fl_diff > 0 ? `Flashlight: ${score.beatmap.modded_sr.fl_diff.toFixed(2)}* |` : ''} Speed Notes: {score.beatmap.modded_sr.speed_note_count.toFixed(2)}</Typography>
+                                                                                <Typography variant='body1' sx={{color: grey[500]}}>OD{score.beatmap.modded_sr.modded_od.toFixed(2)} AR{score.beatmap.modded_sr.modded_ar.toFixed(2)} CS{score.beatmap.modded_sr.modded_cs.toFixed(2)} HP{score.beatmap.modded_sr.modded_hp.toFixed(2)}</Typography>
+                                                                            </> :
+                                                                                <Typography variant='body1' color='error'>Star ratings currently not available.</Typography>
+                                                                        }
                                                                     </Box>
                                                                 </Stack>
                                                             </Box>
