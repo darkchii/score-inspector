@@ -96,7 +96,9 @@ function PlayerChip(props) {
             placement="top">
             <Box sx={{
                 display: 'flex',
-                borderRadius: '5px',
+                // borderRadius: '5px',
+                //borderRadius half of the height
+                borderRadius: '1em',
                 // bgcolor: '#ffffff22',
                 bgcolor: `${matchesLoggedInUser ? theme.palette.primary.main : '#ffffff'}22`,
                 textDecoration: 'none',
