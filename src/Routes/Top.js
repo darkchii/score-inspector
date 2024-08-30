@@ -1,4 +1,4 @@
-import { Alert, Box, Button, ButtonGroup, Card, CardActionArea, CardContent, Chip, Grid, Paper, Skeleton, Stack, Tooltip, Typography } from "@mui/material";
+import { Alert, Box, Button, ButtonGroup, Card, CardActionArea, CardContent, Chip, Grid, Paper, Skeleton, Stack, Tab, Tabs, Tooltip, Typography } from "@mui/material";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -92,11 +92,21 @@ function Top(props) {
             </Helmet>
             <ScoreModal data={modalData} />
             <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", width: "100%" }}>
-                <ButtonGroup disabled={isWorking}>
+                {/* <ButtonGroup disabled={isWorking}>
                     {PERIODS.map((period) => (
                         <Button variant={period.value === selected_period.value ? 'contained' : 'outlined'} onClick={() => setSelectedPeriod(period)}>{period.label}</Button>
                     ))}
-                </ButtonGroup>
+                </ButtonGroup> */}
+                <Tabs value={selected_period.value} onChange={(e, v) => setSelectedPeriod(PERIODS.find(p => p.value === v))}>
+                    {/* <Tab label="Rankings" {...a11yProps(0)} />
+                    <Tab label="Listing" {...a11yProps(1)} />
+                    <Tab label="History" {...a11yProps(2)} /> */}
+                    {
+                        PERIODS.map((period) => (
+                            <Tab disabled={isWorking} value={period.value} label={period.label} />
+                        ))
+                    }
+                </Tabs>
             </Box>
             <Grid sx={{ pt: 1 }} container spacing={2}>
                 {
@@ -160,7 +170,7 @@ function Top(props) {
                                                                                         <Typography sx={{ pl: 1 }} variant='body1'>{score.combo}/{score.beatmap.maxcombo}x</Typography>
                                                                                         {
                                                                                             score.countmiss > 0 ? <>
-                                                                                                <Typography sx={{ pl: 1 }} variant='body1'> | {score.countmiss} miss{score.countmiss>1?'es':''}</Typography>
+                                                                                                <Typography sx={{ pl: 1 }} variant='body1'> | {score.countmiss} miss{score.countmiss > 1 ? 'es' : ''}</Typography>
                                                                                             </> : <></>
                                                                                         }
                                                                                         <Typography sx={{ pl: 1 }} variant='body1'>
@@ -169,9 +179,9 @@ function Top(props) {
                                                                                                 // {(scores[i].significantStat === 'pp' && !score.is_fc && score.recalc['fc']) ? `(${Math.round(score.recalc['fc']?.total).toLocaleString('en-US')}pp if FC)` : ''} {Math.round(score[scores[i].significantStat]).toLocaleString('en-US')}{scores[i].significantStat === 'pp' ? `pp` : ''}
                                                                                             }
                                                                                             {
-                                                                                                scores[i].significantStat === 'pp' ? 
+                                                                                                scores[i].significantStat === 'pp' ?
                                                                                                     Math.round(score.score).toLocaleString('en-US')
-                                                                                                 : `${Math.round(score.pp).toLocaleString('en-US')}pp ${(!score.is_fc && score.recalc['fc']) ? `(${Math.round(score.recalc['fc']?.total).toLocaleString('en-US')}pp if FC)` : ''}`
+                                                                                                    : `${Math.round(score.pp).toLocaleString('en-US')}pp ${(!score.is_fc && score.recalc['fc']) ? `(${Math.round(score.recalc['fc']?.total).toLocaleString('en-US')}pp if FC)` : ''}`
                                                                                             }
 
                                                                                         </Typography>
