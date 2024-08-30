@@ -1,4 +1,4 @@
-import { Alert, Box, Button, ButtonGroup, Chip, Grid, Paper, Skeleton, Stack, Tooltip, Typography } from "@mui/material";
+import { Alert, Box, Button, ButtonGroup, Card, CardActionArea, CardContent, Chip, Grid, Paper, Skeleton, Stack, Tooltip, Typography } from "@mui/material";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -9,6 +9,7 @@ import { Helmet } from "react-helmet";
 import config from "../config.json";
 import { MassCalculatePerformance } from "../Helpers/Osu.js";
 import { grey } from "@mui/material/colors";
+import { getGradeIcon } from "../Helpers/Assets.js";
 
 const SCORES_TO_FETCH = 10;
 const PERIODS = [
@@ -103,7 +104,7 @@ function Top(props) {
                         return (
                             <Grid item xs={12} md={6}>
                                 <Paper elevation={2}>
-                                    <Stack sx={{ p: 1 }} direction='column' spacing={1}>
+                                    <Stack sx={{ p: 1, mx: 'auto' }} direction='column' spacing={1}>
                                         <Typography variant='title'>{SCORE_TYPE_NAMES[i]}</Typography>
                                         {
                                             Array.from(Array(SCORES_TO_FETCH).keys()).map((j) => {
@@ -113,57 +114,93 @@ function Top(props) {
                                                         <Skeleton animation='wave' variant='rectangular' height={SCORE_CARD_HEIGHT} />
                                                     </>);
                                                     return (
-                                                        <Box
+                                                        <Card
                                                             sx={{
                                                                 backgroundImage: `url(https://assets.ppy.sh/beatmaps/${score.beatmap.set_id}/covers/cover.jpg)`,
                                                                 backgroundSize: 'cover',
                                                                 backgroundPosition: 'center',
-                                                                borderRadius: '10px'
-                                                            }}>
-                                                            <Box sx={{
-                                                                display: 'flex',
-                                                                flexDirection: 'row',
-                                                                alignItems: 'center',
-                                                                justifyContent: 'space-between',
+                                                                borderRadius: '10px',
                                                                 height: SCORE_CARD_HEIGHT,
-                                                                backgroundColor: 'rgba(0, 0, 0, 0.7)',
-                                                                p: 1,
-                                                                borderRadius: '10px'
                                                             }}>
-                                                                <Stack direction='column' spacing={0} sx={{ width: '100%' }}>
-                                                                    {/* <Marquee pauseOnHover={true} speed={40} gradient={false}> */}
-                                                                    <Tooltip title={`${score.beatmap.artist} - ${score.beatmap.title} [${score.beatmap.diffname}]`}>
-                                                                        <Typography textOverflow='ellipsis' noWrap variant='h6' sx={{ fontSize: '1em' }}>{score.beatmap.artist} - {score.beatmap.title} [{score.beatmap.diffname}]</Typography>
-                                                                    </Tooltip>
-                                                                    {/* </Marquee> */}
-                                                                    <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                                                                        <Box>
-                                                                            <Typography variant='body1'>
-                                                                                By <Typography component={Link} variant='body1' sx={{ textDecoration: 'none' }} color='primary' to={`/user/${score.user_id}`}>{score.user.username}</Typography> <Tooltip title={moment(score.date_played).format('HH:mm MMMM Do, YYYY')}><Chip label={moment(score.date_played).fromNow()} color='primary' size='small' /></Tooltip>
-                                                                            </Typography>
-                                                                            <Button onClick={() => { setModalData({ active: true, score: score }) }} size='small' variant='contained'>View</Button>
-                                                                        </Box>
-                                                                        <Box sx={{ float: 'right' }}>
-                                                                            <Typography sx={{ textAlign: 'right' }} variant='h6'>
-                                                                                {(scores[i].significantStat === 'pp' && !score.is_fc && score.recalc['fc']) ? `(${Math.round(score.recalc['fc']?.total).toLocaleString('en-US')}pp if FC)` : ''} {Math.round(score[scores[i].significantStat]).toLocaleString('en-US')}{scores[i].significantStat === 'pp' ? `pp` : ''}
-                                                                            </Typography>
-                                                                            <Typography sx={{ textAlign: 'right' }} variant='body1'>
-                                                                                {score.modString} {score.is_fc ? 'FC' : ''} {Math.round(score.accuracy * 100) / 100}% {Math.round((score.beatmap.modded_sr?.star_rating ?? 0) * 10) / 10}*
-                                                                            </Typography>
-                                                                        </Box>
+                                                            <CardActionArea onClick={() => { setModalData({ active: true, score: score }) }} sx={{
+                                                                height: '100%',
+                                                                backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                                                                borderRadius: '10px',
+                                                            }}>
+                                                                <CardContent sx={{
+                                                                    height: '100%',
+                                                                    p: 1
+                                                                }}>
+                                                                    <Box sx={{
+                                                                        display: 'flex',
+                                                                        flexDirection: 'row',
+                                                                        alignItems: 'center',
+                                                                        justifyContent: 'space-between',
+                                                                        width: '100%',
+                                                                    }}>
+                                                                        <Stack direction='column' spacing={0} sx={{ width: '100%' }}>
+                                                                            {/* <Marquee pauseOnHover={true} speed={40} gradient={false}> */}
+                                                                            <Tooltip title={`${score.beatmap.artist} - ${score.beatmap.title} [${score.beatmap.diffname}]`}>
+                                                                                <Typography textOverflow='ellipsis' noWrap variant='h6' sx={{ fontSize: '1em' }}>{score.beatmap.artist} - {score.beatmap.title} [{score.beatmap.diffname}]</Typography>
+                                                                            </Tooltip>
+                                                                            {/* </Marquee> */}
+                                                                            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                                                                                <Box>
+                                                                                    <Typography variant='body1'>
+                                                                                        By <Typography component={Link} variant='body1' sx={{ textDecoration: 'none' }} color='primary' to={`/user/${score.user_id}`}>{score.user.username}</Typography> <Tooltip title={moment(score.date_played).format('HH:mm MMMM Do, YYYY')}><Chip label={moment(score.date_played).fromNow()} color='primary' size='small' /></Tooltip>
+                                                                                    </Typography>
+                                                                                    <Box sx={{
+                                                                                        display: 'flex',
+                                                                                        //center vertically
+                                                                                        alignItems: 'center',
+                                                                                        justifyContent: 'left',
+                                                                                        pt: 0.5
+                                                                                    }}>
+                                                                                        <img style={{ height: '1.3em', mr: 1 }} alt={score.rank} src={getGradeIcon(score.rank)} />
+                                                                                        <Typography sx={{ pl: 1 }} variant='body1'>{score.combo}/{score.beatmap.maxcombo}x</Typography>
+                                                                                        {
+                                                                                            score.countmiss > 0 ? <>
+                                                                                                <Typography sx={{ pl: 1 }} variant='body1'> | {score.countmiss} miss{score.countmiss>1?'es':''}</Typography>
+                                                                                            </> : <></>
+                                                                                        }
+                                                                                        <Typography sx={{ pl: 1 }} variant='body1'>
+                                                                                            {' | '}
+                                                                                            {
+                                                                                                // {(scores[i].significantStat === 'pp' && !score.is_fc && score.recalc['fc']) ? `(${Math.round(score.recalc['fc']?.total).toLocaleString('en-US')}pp if FC)` : ''} {Math.round(score[scores[i].significantStat]).toLocaleString('en-US')}{scores[i].significantStat === 'pp' ? `pp` : ''}
+                                                                                            }
+                                                                                            {
+                                                                                                scores[i].significantStat === 'pp' ? 
+                                                                                                    Math.round(score.score).toLocaleString('en-US')
+                                                                                                 : `${Math.round(score.pp).toLocaleString('en-US')}pp ${(!score.is_fc && score.recalc['fc']) ? `(${Math.round(score.recalc['fc']?.total).toLocaleString('en-US')}pp if FC)` : ''}`
+                                                                                            }
+
+                                                                                        </Typography>
+                                                                                    </Box>
+                                                                                    {/* <Button onClick={() => { setModalData({ active: true, score: score }) }} size='small' variant='contained'>View</Button> */}
+                                                                                </Box>
+                                                                                <Box sx={{ float: 'right' }}>
+                                                                                    <Typography sx={{ textAlign: 'right' }} variant='h6'>
+                                                                                        {(scores[i].significantStat === 'pp' && !score.is_fc && score.recalc['fc']) ? `(${Math.round(score.recalc['fc']?.total).toLocaleString('en-US')}pp if FC)` : ''} {Math.round(score[scores[i].significantStat]).toLocaleString('en-US')}{scores[i].significantStat === 'pp' ? `pp` : ''}
+                                                                                    </Typography>
+                                                                                    <Typography sx={{ textAlign: 'right' }} variant='body1'>
+                                                                                        {score.modString} {score.is_fc ? 'FC' : ''} {Math.round(score.accuracy * 100) / 100}% {Math.round((score.beatmap.modded_sr?.star_rating ?? 0) * 10) / 10}*
+                                                                                    </Typography>
+                                                                                </Box>
+                                                                            </Box>
+                                                                            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                                                                                {
+                                                                                    score.beatmap.modded_sr ? <>
+                                                                                        <Typography variant='body1' sx={{ color: grey[500] }}>Aim: {score.beatmap.modded_sr.aim_diff.toFixed(2)}* | Speed: {score.beatmap.modded_sr.speed_diff.toFixed(2)}* | {score.beatmap.modded_sr.fl_diff > 0 ? `Flashlight: ${score.beatmap.modded_sr.fl_diff.toFixed(2)}* |` : ''} Speed Notes: {score.beatmap.modded_sr.speed_note_count.toFixed(2)}</Typography>
+                                                                                        <Typography variant='body1' sx={{ color: grey[500] }}>OD{score.beatmap.modded_sr.modded_od.toFixed(2)} AR{score.beatmap.modded_sr.modded_ar.toFixed(2)} CS{score.beatmap.modded_sr.modded_cs.toFixed(2)} HP{score.beatmap.modded_sr.modded_hp.toFixed(2)}</Typography>
+                                                                                    </> :
+                                                                                        <Typography variant='body1' color='error'>Star ratings currently not available.</Typography>
+                                                                                }
+                                                                            </Box>
+                                                                        </Stack>
                                                                     </Box>
-                                                                    <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                                                                        {
-                                                                            score.beatmap.modded_sr ? <>
-                                                                                <Typography variant='body1' sx={{color: grey[500]}}>Aim: {score.beatmap.modded_sr.aim_diff.toFixed(2)}* | Speed: {score.beatmap.modded_sr.speed_diff.toFixed(2)}* | {score.beatmap.modded_sr.fl_diff > 0 ? `Flashlight: ${score.beatmap.modded_sr.fl_diff.toFixed(2)}* |` : ''} Speed Notes: {score.beatmap.modded_sr.speed_note_count.toFixed(2)}</Typography>
-                                                                                <Typography variant='body1' sx={{color: grey[500]}}>OD{score.beatmap.modded_sr.modded_od.toFixed(2)} AR{score.beatmap.modded_sr.modded_ar.toFixed(2)} CS{score.beatmap.modded_sr.modded_cs.toFixed(2)} HP{score.beatmap.modded_sr.modded_hp.toFixed(2)}</Typography>
-                                                                            </> :
-                                                                                <Typography variant='body1' color='error'>Star ratings currently not available.</Typography>
-                                                                        }
-                                                                    </Box>
-                                                                </Stack>
-                                                            </Box>
-                                                        </Box>
+                                                                </CardContent>
+                                                            </CardActionArea>
+                                                        </Card>
 
                                                     )
                                                 } else {
