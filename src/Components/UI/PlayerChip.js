@@ -93,7 +93,8 @@ function PlayerChip(props) {
                         </>
                     }
                 </>}
-            placement="top">
+            placement="top"
+            >
             <Box sx={{
                 display: 'flex',
                 // borderRadius: '5px',
@@ -108,6 +109,14 @@ function PlayerChip(props) {
                 width: 'fit-content',
                 alignItems: 'center',
                 justifyContent: 'center',
+                //hover effect
+                '&:hover': {
+                    bgcolor: `${matchesLoggedInUser ? theme.palette.primary.main : '#ffffff'}44`,
+                    cursor: 'pointer',
+                    //animate
+                    transition: 'background-color 0.2s',
+                },
+                transition: 'background-color 0.2s',
             }}>
                 {AvatarClone}
                 <Typography variant={props.variant}>
