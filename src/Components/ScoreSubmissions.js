@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
-import { Alert, Button, ButtonGroup, Grid, useTheme } from "@mui/material";
+import { Alert, Box, Grid, Tab, Tabs, useTheme } from "@mui/material";
 import { getScoreActivity } from "../Helpers/OsuAlt";
 import moment from "moment";
 import Loader from "./UI/Loader";
@@ -35,18 +35,34 @@ const chart_period_data = {
     }
 }
 
+const chart_types = [
+    'grades', 'score', 'clears'
+]
+
 function ScoreSubmissions(props) {
     const theme = useTheme();
-    const [interval, setInterval] = useState(72);
-    const [period, setPeriod] = useState('h'); //h for hours, d for days
-    const [display, setDisplay] = useState('grades'); //count, count_ss, count_s, count_a, count_b, count_c, count_d
+
+    //period are INDICES,
+    //period is the index of chart_period_data
+    const [period, setPeriod] = useState(0); //h for hours, d for days
+    //interval is the index of the intervals array in the selected chart_period_data index
+    const [interval, setInterval] = useState(0);
+    const [random, setRandom] = useState(0);
+
+    const [activePeriodObject, setActivePeriodObject] = useState(chart_period_data[Object.keys(chart_period_data)[period]]);
+
+    const [display, setDisplay] = useState(0); //count, count_ss, count_s, count_a, count_b, count_c, count_d
     const [isWorking, setIsWorking] = useState(false);
 
     const [data, setData] = useState(null);
     const [error, setError] = useState(false);
 
     useEffect(() => {
-        setInterval(chart_period_data[period].intervals[0]);
+        const _period = Object.keys(chart_period_data)[period];
+        setInterval(0);
+
+        //reset the random number to trigger useEffect
+        setRandom(Math.random());
     }, [period]);
 
     useEffect(() => {
@@ -54,8 +70,13 @@ function ScoreSubmissions(props) {
         (async () => {
             try {
                 setIsWorking(true);
-                let data = await getScoreActivity(interval, period);
-                console.log(data);
+
+                //get the key based on period index
+                console.log(period);
+                const _period = Object.keys(chart_period_data)[period];
+                const _interval = chart_period_data[_period].intervals[interval];
+                setActivePeriodObject(chart_period_data[_period]);
+                let data = await getScoreActivity(_interval, _period);
                 if (data === null) {
                     setIsWorking(false);
                     setError(true);
@@ -102,43 +123,48 @@ function ScoreSubmissions(props) {
             }
         })();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [interval]);
+    }, [interval, random]);
 
     return (
         <>
             <Grid>
-                <ButtonGroup variant='outlined' size='small' color="primary">
-                    {
-                        chart_period_data[period].intervals.map((int, i) => {
-                            return <Button
-                                variant={interval === int ? 'contained' : 'outlined'}
-                                onClick={() => setInterval(int)} key={i}>
-                                {
-                                    int === -1 ? 'All' : `
-                                    ${int}
-                                    ${{
-                                            'h': 'Hours',
-                                            'd': 'Days',
-                                            'm': 'Months',
-                                            'y': 'Years'
-                                        }[period]}
-                                    `
-                                }
-                            </Button>
-                        })
-                    }
-                </ButtonGroup>
-                <ButtonGroup variant='outlined' size='small' color="primary">
-                    <Button variant={period === 'h' ? 'contained' : 'outlined'} onClick={() => setPeriod('h')}>Hours</Button>
-                    <Button variant={period === 'd' ? 'contained' : 'outlined'} onClick={() => setPeriod('d')}>Days</Button>
-                    <Button variant={period === 'm' ? 'contained' : 'outlined'} onClick={() => setPeriod('m')}>Months</Button>
-                    <Button variant={period === 'y' ? 'contained' : 'outlined'} onClick={() => setPeriod('y')}>Years</Button>
-                </ButtonGroup>
-                <ButtonGroup variant='outlined' size='small' color="primary">
-                    <Button variant={display === 'score' ? 'contained' : 'outlined'} onClick={() => setDisplay('score')}>Score</Button>
-                    <Button variant={display === 'grades' ? 'contained' : 'outlined'} onClick={() => setDisplay('grades')}>Grades</Button>
-                    <Button variant={display === 'clears' ? 'contained' : 'outlined'} onClick={() => setDisplay('clears')}>Clears</Button>
-                </ButtonGroup>
+                <Box sx={{
+                    borderBottom: 1,
+                    borderColor: 'divider',
+                    display: 'flex',
+                }}>
+                    <Tabs value={interval} onChange={(e, v) => setInterval(v)} variant='scrollable' sx={{
+                        borderRight: 1,
+                        borderColor: 'divider',
+                    }}>
+                        {
+                            activePeriodObject.intervals.map((int, i) => {
+                                return <Tab disabled={isWorking} label={int === -1 ? 'All' : `${int} ${{
+                                    'h': 'Hours',
+                                    'd': 'Days',
+                                    'm': 'Months',
+                                    'y': 'Years'
+                                }[Object.keys(chart_period_data)[period]]}`} key={i} />
+                            })
+                        }
+                    </Tabs>
+                    <Tabs value={period} onChange={(e, v) => setPeriod(v)} variant='scrollable' sx={{
+                        borderRight: 1,
+                        borderColor: 'divider',
+                    }}>
+                        <Tab disabled={isWorking} label='Hours' key={0} />
+                        <Tab disabled={isWorking} label='Days' key={1} />
+                        <Tab disabled={isWorking} label='Months' key={2} />
+                        <Tab disabled={isWorking} label='Years' key={3} />
+                    </Tabs>
+                    <Tabs disabled={isWorking} value={display} onChange={(e, v) => setDisplay(v)} variant='scrollable'>
+                        {
+                            chart_types.map((type, i) => {
+                                return <Tab label={type} key={i} />
+                            })
+                        }
+                    </Tabs>
+                </Box>
             </Grid>
             <Grid sx={{ height: 280, position: "relative" }}>
                 {
@@ -154,7 +180,7 @@ function ScoreSubmissions(props) {
                                         type: 'datetime',
                                         labels: {
                                             datetimeUTC: false,
-                                            format: chart_period_data[period].format,
+                                            format: activePeriodObject.format,
                                         },
                                     },
                                     yaxis: {
@@ -166,7 +192,7 @@ function ScoreSubmissions(props) {
                                     },
                                     tooltip: {
                                         x: {
-                                            format: chart_period_data[period].format,
+                                            format: activePeriodObject.format,
                                         },
                                     },
                                     stroke: {
@@ -191,7 +217,7 @@ function ScoreSubmissions(props) {
                                     // { name: 'A', data: data.count_a, color: green[500] },
                                     // { name: 'S', data: data.count_s, color: amber[500] },
                                     // { name: 'SS', data: data.count_ss, color: grey[100] },
-                                    ...(display === 'grades' ? [
+                                    ...(chart_types[display] === 'grades' ? [
                                         { name: 'D', data: data.count_d, color: red[500] },
                                         { name: 'C', data: data.count_c, color: purple[300] },
                                         { name: 'B', data: data.count_b, color: blue[500] },
@@ -199,10 +225,10 @@ function ScoreSubmissions(props) {
                                         { name: 'S', data: data.count_s, color: amber[500] },
                                         { name: 'SS', data: data.count_ss, color: grey[100] },
                                     ] : []),
-                                    ...(display === 'score' ? [
+                                    ...(chart_types[display] === 'score' ? [
                                         { name: 'Score', data: data.entry_count_score, color: theme.palette.primary.main },
                                     ] : []),
-                                    ...(display === 'clears' ? [
+                                    ...(chart_types[display] === 'clears' ? [
                                         { name: 'Clears', data: data.count, color: theme.palette.primary.main },
                                     ] : []),
                                 ]}
