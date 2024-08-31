@@ -1,12 +1,22 @@
 import { Box, Grid, Paper, Skeleton, Typography, useTheme } from "@mui/material";
 import { grey } from "@mui/material/colors";
+import { useEffect, useState } from "react";
 
 function StatCard(props) {
     const theme = useTheme();
+    const [opacity, setOpacity] = useState('ff');
+
+    useEffect(() => {
+        if(props?.opacity){
+            //convert 0-1 to hex
+            const hex = Math.round(255 * props.opacity).toString(16);
+            setOpacity(hex);
+        }
+    }, [props]);
 
     return <>
         <Paper sx={{
-            backgroundColor: props.color[props.brightness ?? 600],
+            backgroundColor: `${props.color[props.brightness ?? 600]}${opacity}`,
             overflow: 'hidden',
             position: 'relative',
         }}>
@@ -40,7 +50,7 @@ function StatCard(props) {
                         borderBottom: '173.2px solid white', // You can adjust the color and size here
                         top: -85,
                         right: -95,
-                        opacity: 0.1
+                        opacity: 0.1 * (props?.opacity ?? 1),
                     },
                     '&:before': {
                         content: '""',
@@ -52,7 +62,7 @@ function StatCard(props) {
                         borderBottom: '173.2px solid white', // You can adjust the color and size here
                         top: -125,
                         right: -15,
-                        opacity: 0.1,
+                        opacity: 0.1 * (props?.opacity ?? 1),
                     }
                 }} />
                 <Grid container direction="column" sx={{ position: 'relative', zIndex: 500 }}>
