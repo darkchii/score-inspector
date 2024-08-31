@@ -158,12 +158,16 @@ export function FormatClanLog(clan, log) {
                 return acc;
             }, {});
 
-            console.log(diff);
-
             //if diff is empty, return null
             if (Object.keys(diff).length === 0) {
                 return null;
             }
+
+            //convert boolean values to string (on old_data and new_data)
+            Object.keys(diff).forEach(key => {
+                if(typeof old_data[key] === 'boolean'){ old_data[key] = old_data[key] ? 'true' : 'false'; }
+                if(typeof new_data[key] === 'boolean'){ new_data[key] = new_data[key] ? 'true' : 'false'; }
+            });
 
             //return `Clan updated:\n{list of changes in table fashion}`, no need to show the values
             // return `Clan updated:\n\n${Object.keys(diff).map(key => `${key}: ${old_data[key]} > ${new_data[key]}`).join('\n')}`;
@@ -171,4 +175,9 @@ export function FormatClanLog(clan, log) {
         default:
             return `Unknown log type: ${log.type}, please contact the developer`;
     }
+}
+
+export async function GetTopClans(){
+    const response = await axios.get(`${GetAPI()}clans/rankings`);
+    return response.data;
 }
