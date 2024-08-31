@@ -14,7 +14,7 @@ function AccountDropdown(props) {
     }
 
     return (
-        <Box sx={{ p: 2 }}>
+        <Box>
             {
                 props.account.osu_user ? <>
                     <PlayerCard 
