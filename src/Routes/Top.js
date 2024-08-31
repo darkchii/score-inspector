@@ -13,10 +13,10 @@ import { getGradeIcon } from "../Helpers/Assets.js";
 
 const SCORES_TO_FETCH = 10;
 const PERIODS = [
-    { value: "day", label: "Past Day" },
-    { value: "week", label: "Past Week" },
-    { value: "month", label: "Past Month" },
-    { value: "year", label: "Past Year" },
+    { value: "day", label: "Today" },
+    { value: "week", label: "This week" },
+    { value: "month", label: "This month" },
+    { value: "year", label: "This year" },
     { value: "all", label: "Alltime" },
 ];
 
