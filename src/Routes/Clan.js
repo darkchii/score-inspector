@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Alert, Avatar, Box, Button, ButtonGroup, Card, CardActionArea, CardContent, Chip, Container, Divider, FormControl, Grid, IconButton, InputAdornment, InputLabel, Menu, MenuItem, Modal, OutlinedInput, Pagination, Paper, Select, Stack, Switch, Tab, Table, TableBody, TableCell, TableContainer, TableRow, Tabs, TextField, Tooltip, Typography, tableCellClasses, useTheme } from "@mui/material";
+import { Alert, Avatar, Box, Button, ButtonGroup, Card, CardActionArea, CardContent, Chip, Container, Divider, FormControl, Grid, IconButton, InputAdornment, InputLabel, Menu, MenuItem, Modal, OutlinedInput, Pagination, Paper, Select, Stack, Switch, Tab, Table, TableBody, TableCell, TableContainer, TableRow, Tabs, TextField, Tooltip, Typography, styled, tableCellClasses, useTheme } from "@mui/material";
 import { useState } from "react";
 import { fixedEncodeURIComponent, MODAL_STYLE, showNotification } from "../Helpers/Misc";
 import { useEffect } from "react";
@@ -10,7 +10,7 @@ import Loader from "../Components/UI/Loader";
 import moment from "moment";
 import ClanLeaderboardItem from "../Components/Leaderboards/ClanLeaderboardItem";
 import { blue, grey } from "@mui/material/colors";
-import { getLevelForScore } from "../Helpers/Osu";
+import { getLevelForScore, getModString } from "../Helpers/Osu";
 import PlayerLeaderboardItem from '../Components/Leaderboards/PlayerLeaderboardItem';
 import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
@@ -234,7 +234,6 @@ function Clan(props) {
                             <Tabs value={tabValue} onChange={handleTabChange}>
                                 <Tab label="Rankings" {...a11yProps(0)} />
                                 <Tab label="Listing" {...a11yProps(1)} />
-                                <Tab label="History" {...a11yProps(2)} />
                             </Tabs>
 
                             <Box>
@@ -258,8 +257,6 @@ function Clan(props) {
                         </CustomTabPanel>
                         <CustomTabPanel value={tabValue} index={1}>
                             <ClanList me={loggedInUser} />
-                        </CustomTabPanel>
-                        <CustomTabPanel value={tabValue} index={2}>
                         </CustomTabPanel>
                     </>
             }
@@ -1094,6 +1091,12 @@ const TOP_CLAN_HEIGHT = 140;
 const GOLD_HEIGHT_EXTRA = 30;
 const TOP_CLAN_HEIGHT_OFFSET = 50;
 const TOP_CLAN_COLORS = ['#ffd700', '#C0C0C0', '#cd7f32'];
+const ClanPlayTooltip = styled(({ className, ...props }) => (
+    <Tooltip {...props} componentsProps={{ tooltip: { className: className } }} />
+))(`
+    background-color: transparent;
+    max-width: none;
+`);
 const CLAN_RANKING_STATS = {
     'weighted_pp': {
         name: 'Weighted PP',
@@ -1118,10 +1121,50 @@ const CLAN_RANKING_STATS = {
     'top_play': {
         name: 'Top PP play',
         formatter: (clan) => `${(Math.round((clan.ranking_prepared?.top_play?.pp ?? 0) * 100) / 100).toLocaleString('en-US')}pp`,
+        tooltip: (clan) => (
+            <Paper elevation={3} sx={{
+                p: 1,
+            }}>
+                {
+                    clan.ranking_prepared?.top_play ?
+                        <>
+                            <Typography variant='body1'>{clan.ranking_prepared?.top_play?.beatmap?.artist} - {clan.ranking_prepared?.top_play?.beatmap?.title} [{clan.ranking_prepared?.top_play?.beatmap?.diffname}]</Typography>
+                            <Typography variant='body2'>{clan.ranking_prepared?.top_play?.beatmap?.version}</Typography>
+                            <Typography variant='body2'>{clan.ranking_prepared?.top_play?.pp.toLocaleString('en-US')}pp</Typography>
+                            <Typography variant='body2'>{clan.ranking_prepared?.top_play?.score.toLocaleString('en-US')} score</Typography>
+                            <Typography variant='body2'>{clan.ranking_prepared?.top_play?.accuracy}%</Typography>
+                            <Typography variant='body2'>{clan.ranking_prepared?.top_play?.enabled_mods !== '0' ? getModString(clan.ranking_prepared?.top_play?.enabled_mods) : 'No mods'}</Typography>
+                            <Divider />
+                            <Typography variant='body1'>{GetFormattedName(clan.ranking_prepared?.top_play?.user)}</Typography>
+                        </>
+                        : <Typography variant='body1'>Score data unavailable somehow</Typography>
+                }
+            </Paper>
+        )
     },
     'top_score': {
         name: 'Top Score play',
         formatter: (clan) => `${(clan.ranking_prepared?.top_score?.score ?? 0).toLocaleString('en-US')}`,
+        tooltip: (clan) => (
+            <Paper elevation={3} sx={{
+                p: 1,
+            }}>
+                {
+                    clan.ranking_prepared?.top_score ?
+                        <>
+                            <Typography variant='body1'>{clan.ranking_prepared?.top_score?.beatmap?.artist} - {clan.ranking_prepared?.top_score?.beatmap?.title} [{clan.ranking_prepared?.top_score?.beatmap?.diffname}]</Typography>
+                            <Typography variant='body2'>{clan.ranking_prepared?.top_score?.beatmap?.version}</Typography>
+                            <Typography variant='body2'>{clan.ranking_prepared?.top_score?.pp.toLocaleString('en-US')}pp</Typography>
+                            <Typography variant='body2'>{clan.ranking_prepared?.top_score?.score.toLocaleString('en-US')} score</Typography>
+                            <Typography variant='body2'>{clan.ranking_prepared?.top_score?.accuracy}%</Typography>
+                            <Typography variant='body2'>{clan.ranking_prepared?.top_score?.enabled_mods !== '0' ? getModString(clan.ranking_prepared?.top_score?.enabled_mods) : 'No mods'}</Typography>
+                            <Divider />
+                            <Typography variant='body1'>{GetFormattedName(clan.ranking_prepared?.top_score?.user)}</Typography>
+                        </>
+                        : <Typography variant='body1'>Score data unavailable somehow</Typography>
+                }
+            </Paper>
+        )
     }
 }
 
@@ -1166,77 +1209,79 @@ function ClanTop(props) {
 
     //inline component for the top 3 clan card
     const TopClanCard = (props) => {
-        return <Box sx={{
-            height: TOP_CLAN_HEIGHT + (GOLD_HEIGHT_EXTRA * (2-props.pos)),
-            position: 'relative',
-            mt: `${GOLD_HEIGHT_EXTRA * props.pos}px`,
-        }}>
-            <Card
-                elevation={3}
-                sx={{
-                    width: '100%',
-                    height: '100%',
-
-                    //background color fade from props.data.color to alpha 0
-                    background: `linear-gradient(#${props.data.color}77, #${props.data.color}00)`,
-                }}>
-                <CardActionArea
-                    onClick={() => navigate(`/clan/${props.data.id}`)}
+        return <ClanPlayTooltip title={CLAN_RANKING_STATS[activeStat].tooltip ? CLAN_RANKING_STATS[activeStat].tooltip(props.data) : ''}>
+            <Box sx={{
+                height: TOP_CLAN_HEIGHT + (GOLD_HEIGHT_EXTRA * (2 - props.pos)),
+                position: 'relative',
+                mt: `${GOLD_HEIGHT_EXTRA * props.pos}px`,
+            }}>
+                <Card
+                    elevation={3}
                     sx={{
+                        width: '100%',
                         height: '100%',
+
+                        //background color fade from props.data.color to alpha 0
+                        background: `linear-gradient(#${props.data.color}77, #${props.data.color}00)`,
+                    }}>
+                    <CardActionArea
+                        onClick={() => navigate(`/clan/${props.data.id}`)}
+                        sx={{
+                            height: '100%',
+                        }}
+                    >
+                        <CardContent sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                            height: '100%',
+                            alignItems: 'center',
+                            mt: '2em',
+                        }}>
+                            <Typography sx={{
+                                color: '#' + props.data.color
+                            }} variant='h6'>[{props.data.tag}]</Typography>
+                            <Typography variant='body2'>{props.data.name}</Typography>
+                            <Typography variant='body1'>{CLAN_RANKING_STATS[activeStat].formatter(props.data)}</Typography>
+                        </CardContent>
+                    </CardActionArea>
+                </Card>
+                <Avatar
+                    sx={{
+                        position: 'absolute',
+                        top: `${-TOP_CLAN_HEIGHT_OFFSET}px`,
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        width: `${TOP_CLAN_HEIGHT_OFFSET * 2}px`,
+                        height: `${TOP_CLAN_HEIGHT_OFFSET * 2}px`,
+                        border: `5px solid ${TOP_CLAN_COLORS[props.pos]}`,
+                        backgroundImage: `url(${props.data.header_image_url})`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                        backgroundRepeat: 'no-repeat',
                     }}
                 >
-                    <CardContent sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        height: '100%',
-                        alignItems: 'center',
-                        mt: '2em',
-                    }}>
-                        <Typography sx={{
-                            color: '#' + props.data.color
-                        }} variant='h6'>[{props.data.tag}]</Typography>
-                        <Typography variant='body2'>{props.data.name}</Typography>
-                        <Typography variant='body1'>{CLAN_RANKING_STATS[activeStat].formatter(props.data)}</Typography>
-                    </CardContent>
-                </CardActionArea>
-            </Card>
-            <Avatar
-                sx={{
+                    <img src='broken-image.jpg' alt='icon' style={{
+                        opacity: 0
+                    }} />
+                </Avatar>
+                {/* add to the bottom of avatar, show a small box with the position */}
+                <Box sx={{
                     position: 'absolute',
-                    top: `${-TOP_CLAN_HEIGHT_OFFSET}px`,
+                    top: `${TOP_CLAN_HEIGHT_OFFSET - 25 / 2}px`,
                     left: '50%',
                     transform: 'translateX(-50%)',
-                    width: `${TOP_CLAN_HEIGHT_OFFSET * 2}px`,
-                    height: `${TOP_CLAN_HEIGHT_OFFSET * 2}px`,
-                    border: `5px solid ${TOP_CLAN_COLORS[props.pos]}`,
-                    backgroundImage: `url(${props.data.header_image_url})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    backgroundRepeat: 'no-repeat',
-                }}
-            >
-                <img src='broken-image.jpg' alt='icon' style={{
-                    opacity: 0
-                }} />
-            </Avatar>
-            {/* add to the bottom of avatar, show a small box with the position */}
-            <Box sx={{
-                position: 'absolute',
-                top: `${TOP_CLAN_HEIGHT_OFFSET - 25 / 2}px`,
-                left: '50%',
-                transform: 'translateX(-50%)',
-                display: 'flex',
-                width: '25px',
-                height: '25px',
-                borderRadius: '50%',
-                justifyContent: 'center',
-                backgroundColor: TOP_CLAN_COLORS[props.pos],
-            }}>
-                <Typography variant='body1'>{props.pos + 1}</Typography>
+                    display: 'flex',
+                    width: '25px',
+                    height: '25px',
+                    borderRadius: '50%',
+                    justifyContent: 'center',
+                    backgroundColor: TOP_CLAN_COLORS[props.pos],
+                }}>
+                    <Typography variant='body1'>{props.pos + 1}</Typography>
+                </Box>
             </Box>
-        </Box>
+        </ClanPlayTooltip>
     }
 
     return <>
@@ -1261,20 +1306,6 @@ function ClanTop(props) {
                         })
                     }
                 </Tabs>
-                {/* <ButtonGroup sx={{ mt: 1 }} color='primary' size='small'>
-                    {
-                        Object.keys(CLAN_RANKING_STATS).map((stat) => {
-                            return (
-                                <Button
-                                    onClick={() => setActiveStat(stat)}
-                                    variant={activeStat === stat ? 'contained' : 'outlined'}
-                                >
-                                    {CLAN_RANKING_STATS[stat].name}
-                                </Button>
-                            )
-                        })
-                    }
-                </ButtonGroup> */}
             </Box>
             <Box>
                 <Grid container sx={{
@@ -1297,25 +1328,29 @@ function ClanTop(props) {
                     {
                         data.data[activeStat].slice(3).map((clan, index) => {
                             return (
-                                <ClanLeaderboardItem
-                                    index={index + 4}
-                                    clan={clan}
-                                    values={[
-                                        {
-                                            value: '', alignment: 'left', variant: 'body2'
-                                        },
-                                        {
-                                            value: CLAN_RANKING_STATS[activeStat].name, alignment: 'right', variant: 'body2',
-                                            color: grey[500]
-                                        },
-                                        {
-                                            value: CLAN_RANKING_STATS[activeStat].formatter(clan), alignment: 'left', variant: 'body2'
-                                        },
-                                        {
-                                            value: '', alignment: 'right', variant: 'body2'
-                                        }
-                                    ]}
-                                />
+                                <ClanPlayTooltip title={CLAN_RANKING_STATS[activeStat].tooltip ? CLAN_RANKING_STATS[activeStat].tooltip(clan) : ''}>
+                                    <Grid>
+                                        <ClanLeaderboardItem
+                                            index={index + 4}
+                                            clan={clan}
+                                            values={[
+                                                {
+                                                    value: '', alignment: 'left', variant: 'body2'
+                                                },
+                                                {
+                                                    value: CLAN_RANKING_STATS[activeStat].name, alignment: 'right', variant: 'body2',
+                                                    color: grey[500]
+                                                },
+                                                {
+                                                    value: CLAN_RANKING_STATS[activeStat].formatter(clan), alignment: 'left', variant: 'body2'
+                                                },
+                                                {
+                                                    value: '', alignment: 'right', variant: 'body2'
+                                                }
+                                            ]}
+                                        />
+                                    </Grid>
+                                </ClanPlayTooltip>
                             )
                         })
                     }
@@ -1326,6 +1361,35 @@ function ClanTop(props) {
                         color: grey[500],
                         mt: 1
                     }}>Last updated: {moment(data.data.update_date).fromNow()}</Typography>
+                </Box>
+                <Box sx={{
+                    mt: 1,
+                }}>
+                    <Card elevation={3}>
+                        <CardContent>
+                            <Typography variant='h6'>Overall statistics</Typography>
+                            <TableContainer>
+                                <Table size='small'>
+                                    <TableBody>
+                                        <TableRow>
+                                            <TableCell><Typography sx={{ fontSize: '0.7rem', }}>Weighted PP</Typography></TableCell>
+                                            <TableCell><Typography sx={{ fontSize: '0.7rem', }}>Total PP</Typography></TableCell>
+                                            <TableCell><Typography sx={{ fontSize: '0.7rem', }}>Clears</Typography></TableCell>
+                                            <TableCell><Typography sx={{ fontSize: '0.7rem', }}>Total Score</Typography></TableCell>
+                                            <TableCell><Typography sx={{ fontSize: '0.7rem', }}>Total SS Score</Typography></TableCell>
+                                        </TableRow>
+                                        <TableRow>
+                                            <TableCell>{(Math.round(data.data.global_stats.weighted_pp * 100) / 100).toLocaleString('en-US')}pp</TableCell>
+                                            <TableCell>{(Math.round(data.data.global_stats.total_pp * 100) / 100).toLocaleString('en-US')}pp</TableCell>
+                                            <TableCell>{data.data.global_stats.total_scores.toLocaleString('en-US')}</TableCell>
+                                            <TableCell>{data.data.global_stats.total_score.toLocaleString('en-US')}</TableCell>
+                                            <TableCell>{data.data.global_stats.total_ss_score.toLocaleString('en-US')}</TableCell>
+                                        </TableRow>
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </CardContent>
+                    </Card>
                 </Box>
             </Box>
         </Container>

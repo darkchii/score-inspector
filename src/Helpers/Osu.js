@@ -184,6 +184,12 @@ export function getHitsFromAccuracy(acc, nobjects, nmiss = 0) {
 export function getModString(value) {
     var data = [];
 
+    if(isNaN(value)) {
+        return data;
+    }
+
+    value = parseInt(value);
+
     if (value & mods.NC) {
         value &= ~mods.DT;
     }
