@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Alert, Avatar, Box, Button, ButtonGroup, Card, CardActionArea, CardContent, Chip, Container, Divider, FormControl, Grid, IconButton, InputAdornment, InputLabel, Menu, MenuItem, Modal, OutlinedInput, Pagination, Paper, Select, Stack, Switch, Tab, Table, TableBody, TableCell, TableContainer, TableRow, Tabs, TextField, Tooltip, Typography, styled, tableCellClasses, useTheme } from "@mui/material";
+import { Alert, Avatar, Box, Button, ButtonGroup, Card, CardActionArea, CardContent, CardMedia, Chip, Container, Divider, FormControl, Grid, IconButton, InputAdornment, InputLabel, Menu, MenuItem, Modal, OutlinedInput, Pagination, Paper, Select, Stack, Switch, Tab, Table, TableBody, TableCell, TableContainer, TableRow, Tabs, TextField, Tooltip, Typography, styled, tableCellClasses, useTheme } from "@mui/material";
 import { useState } from "react";
 import { fixedEncodeURIComponent, MODAL_STYLE, showNotification } from "../Helpers/Misc";
 import { useEffect } from "react";
@@ -1122,48 +1122,58 @@ const CLAN_RANKING_STATS = {
         name: 'Top PP play',
         formatter: (clan) => `${(Math.round((clan.ranking_prepared?.top_play?.pp ?? 0) * 100) / 100).toLocaleString('en-US')}pp`,
         tooltip: (clan) => (
-            <Paper elevation={3} sx={{
-                p: 1,
-            }}>
-                {
-                    clan.ranking_prepared?.top_play ?
-                        <>
-                            <Typography variant='body1'>{clan.ranking_prepared?.top_play?.beatmap?.artist} - {clan.ranking_prepared?.top_play?.beatmap?.title} [{clan.ranking_prepared?.top_play?.beatmap?.diffname}]</Typography>
-                            <Typography variant='body2'>{clan.ranking_prepared?.top_play?.beatmap?.version}</Typography>
-                            <Typography variant='body2'>{clan.ranking_prepared?.top_play?.pp.toLocaleString('en-US')}pp</Typography>
-                            <Typography variant='body2'>{clan.ranking_prepared?.top_play?.score.toLocaleString('en-US')} score</Typography>
-                            <Typography variant='body2'>{clan.ranking_prepared?.top_play?.accuracy}%</Typography>
-                            <Typography variant='body2'>{clan.ranking_prepared?.top_play?.enabled_mods !== '0' ? getModString(clan.ranking_prepared?.top_play?.enabled_mods) : 'No mods'}</Typography>
-                            <Divider />
-                            <Typography variant='body1'>{GetFormattedName(clan.ranking_prepared?.top_play?.user)}</Typography>
-                        </>
-                        : <Typography variant='body1'>Score data unavailable somehow</Typography>
-                }
-            </Paper>
+            <Card>
+                <CardMedia
+                    component="img"
+                    height="140"
+                    image={`https://assets.ppy.sh/beatmaps/${clan.ranking_prepared?.top_play?.beatmap?.set_id}/covers/cover.jpg`}
+                />
+                <CardContent>
+                    {
+                        clan.ranking_prepared?.top_play ?
+                            <>
+                                <Typography variant='body1'>{clan.ranking_prepared?.top_play?.beatmap?.artist} - {clan.ranking_prepared?.top_play?.beatmap?.title} [{clan.ranking_prepared?.top_play?.beatmap?.diffname}]</Typography>
+                                <Typography variant='body2'>{clan.ranking_prepared?.top_play?.beatmap?.version}</Typography>
+                                <Typography variant='body2'>{clan.ranking_prepared?.top_play?.pp.toLocaleString('en-US')}pp</Typography>
+                                <Typography variant='body2'>{clan.ranking_prepared?.top_play?.score.toLocaleString('en-US')} score</Typography>
+                                <Typography variant='body2'>{clan.ranking_prepared?.top_play?.accuracy}%</Typography>
+                                <Typography variant='body2'>{clan.ranking_prepared?.top_play?.enabled_mods !== '0' ? getModString(clan.ranking_prepared?.top_play?.enabled_mods) : 'No mods'}</Typography>
+                                <Divider />
+                                <Typography variant='body1'>{GetFormattedName(clan.ranking_prepared?.top_play?.user)}</Typography>
+                            </>
+                            : <Typography variant='body1'>Score data unavailable somehow</Typography>
+                    }
+                </CardContent>
+            </Card>
         )
     },
     'top_score': {
         name: 'Top Score play',
         formatter: (clan) => `${(clan.ranking_prepared?.top_score?.score ?? 0).toLocaleString('en-US')}`,
         tooltip: (clan) => (
-            <Paper elevation={3} sx={{
-                p: 1,
-            }}>
-                {
-                    clan.ranking_prepared?.top_score ?
-                        <>
-                            <Typography variant='body1'>{clan.ranking_prepared?.top_score?.beatmap?.artist} - {clan.ranking_prepared?.top_score?.beatmap?.title} [{clan.ranking_prepared?.top_score?.beatmap?.diffname}]</Typography>
-                            <Typography variant='body2'>{clan.ranking_prepared?.top_score?.beatmap?.version}</Typography>
-                            <Typography variant='body2'>{clan.ranking_prepared?.top_score?.pp.toLocaleString('en-US')}pp</Typography>
-                            <Typography variant='body2'>{clan.ranking_prepared?.top_score?.score.toLocaleString('en-US')} score</Typography>
-                            <Typography variant='body2'>{clan.ranking_prepared?.top_score?.accuracy}%</Typography>
-                            <Typography variant='body2'>{clan.ranking_prepared?.top_score?.enabled_mods !== '0' ? getModString(clan.ranking_prepared?.top_score?.enabled_mods) : 'No mods'}</Typography>
-                            <Divider />
-                            <Typography variant='body1'>{GetFormattedName(clan.ranking_prepared?.top_score?.user)}</Typography>
-                        </>
-                        : <Typography variant='body1'>Score data unavailable somehow</Typography>
-                }
-            </Paper>
+            <Card>
+                <CardMedia
+                    component="img"
+                    height="140"
+                    image={`https://assets.ppy.sh/beatmaps/${clan.ranking_prepared?.top_score?.beatmap?.set_id}/covers/cover.jpg`}
+                />
+                <CardContent>
+                    {
+                        clan.ranking_prepared?.top_score ?
+                            <>
+                                <Typography variant='body1'>{clan.ranking_prepared?.top_score?.beatmap?.artist} - {clan.ranking_prepared?.top_score?.beatmap?.title} [{clan.ranking_prepared?.top_score?.beatmap?.diffname}]</Typography>
+                                <Typography variant='body2'>{clan.ranking_prepared?.top_score?.beatmap?.version}</Typography>
+                                <Typography variant='body2'>{clan.ranking_prepared?.top_score?.pp.toLocaleString('en-US')}pp</Typography>
+                                <Typography variant='body2'>{clan.ranking_prepared?.top_score?.score.toLocaleString('en-US')} score</Typography>
+                                <Typography variant='body2'>{clan.ranking_prepared?.top_score?.accuracy}%</Typography>
+                                <Typography variant='body2'>{clan.ranking_prepared?.top_score?.enabled_mods !== '0' ? getModString(clan.ranking_prepared?.top_score?.enabled_mods) : 'No mods'}</Typography>
+                                <Divider />
+                                <Typography variant='body1'>{GetFormattedName(clan.ranking_prepared?.top_score?.user)}</Typography>
+                            </>
+                            : <Typography variant='body1'>Score data unavailable somehow</Typography>
+                    }
+                </CardContent>
+            </Card>
         )
     }
 }
