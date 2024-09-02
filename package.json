@@ -4,8 +4,6 @@
   "private": true,
   "homepage": "https://score.kirino.sh",
   "dependencies": {
-    "@ckeditor/ckeditor5-build-classic": "^43.0.0",
-    "@ckeditor/ckeditor5-react": "^9.0.0",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
     "@fontsource/comfortaa": "^5.0.21",
@@ -22,7 +20,6 @@
     "chartjs-chart-geo": "^4.3.1",
     "chartjs-plugin-zoom": "^2.0.1",
     "countries-list": "^3.1.1",
-    "dayjs": "^1.11.13",
     "lodash": "^4.17.21",
     "moment": "^2.30.1",
     "moment-duration-format": "^2.3.2",
@@ -34,13 +31,11 @@
     "react-error-boundary": "^4.0.13",
     "react-fast-marquee": "^1.6.5",
     "react-helmet": "^6.1.0",
-    "react-number-format": "^5.4.1",
     "react-router-dom": "^6.26.1",
     "react-scale-text": "^1.2.2",
     "react-scripts": "^5.0.1",
     "react-toastify": "^10.0.5",
     "react-virtualized": "^9.22.5",
-    "react-virtuoso": "^4.10.2",
     "sanitize-html": "^2.13.0"
   },
   "devDependencies": {
