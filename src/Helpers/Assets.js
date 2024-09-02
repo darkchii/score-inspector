@@ -165,5 +165,5 @@ export {
     SVG_TRIANGLES,
     PNG_GUEST,
     PNG_LEVEL_BADGE,
-    IMG_CLANS_BG
+    IMG_CLANS_BG,
 };

@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Alert, Avatar, Box, Button, ButtonGroup, Card, CardActionArea, CardContent, CardMedia, Chip, Container, Divider, FormControl, Grid, IconButton, InputAdornment, InputLabel, Menu, MenuItem, Modal, OutlinedInput, Pagination, Paper, Select, Stack, Switch, Tab, Table, TableBody, TableCell, TableContainer, TableRow, Tabs, TextField, Tooltip, Typography, styled, tableCellClasses, useTheme } from "@mui/material";
+import { Alert, Avatar, Box, Button, ButtonGroup, Card, CardActionArea, CardContent, CardMedia, Chip, Container, Divider, FormControl, Grid, IconButton, InputAdornment, InputLabel, Menu, MenuItem, Modal, OutlinedInput, Pagination, Select, Stack, Switch, Tab, Table, TableBody, TableCell, TableContainer, TableRow, Tabs, TextField, Tooltip, Typography, styled, tableCellClasses, useTheme } from "@mui/material";
 import { useState } from "react";
 import { fixedEncodeURIComponent, MODAL_STYLE, showNotification } from "../Helpers/Misc";
 import { useEffect } from "react";
@@ -25,6 +25,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import DoneIcon from '@mui/icons-material/Done';
 import ClearIcon from '@mui/icons-material/Clear';
+import { IMG_TRIANGLES } from "../Helpers/Assets";
 
 //always round to 2 decimal places, and toLocaleString for commas
 const CLAN_STATS = [
@@ -1086,7 +1087,6 @@ function ClanList(props) {
     )
 }
 
-const TOP_CLAN_WIDTH = 250;
 const TOP_CLAN_HEIGHT = 140;
 const GOLD_HEIGHT_EXTRA = 30;
 const TOP_CLAN_HEIGHT_OFFSET = 50;
@@ -1225,13 +1225,27 @@ function ClanTop(props) {
                 position: 'relative',
                 mt: `${GOLD_HEIGHT_EXTRA * props.pos}px`,
             }}>
+                <Box sx={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                    borderRadius: '10px',
+                    overflow: 'hidden',
+                    backgroundImage: `url(${IMG_TRIANGLES})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                    filter: 'brightness(0.5)',
+                }}>
+
+                </Box>
                 <Card
                     elevation={3}
                     sx={{
                         width: '100%',
                         height: '100%',
-
-                        //background color fade from props.data.color to alpha 0
                         background: `linear-gradient(#${props.data.color}77, #${props.data.color}00)`,
                     }}>
                     <CardActionArea
@@ -1294,9 +1308,11 @@ function ClanTop(props) {
         </ClanPlayTooltip>
     }
 
-    return <>
+    return <Box>
         <Container maxWidth='lg'>
-            <Box>
+            <Box sx={{
+                zIndex: 2
+            }}>
                 <Typography variant='body1'>Best clans of</Typography>
                 <Typography variant='h5' sx={{
                     fontStyle: 'italic',
@@ -1320,7 +1336,9 @@ function ClanTop(props) {
             <Box>
                 <Grid container sx={{
                     mt: `${TOP_CLAN_HEIGHT_OFFSET + 10}px`
-                }}>
+                }}
+                spacing={1}
+                >
                     <Grid item xs={4} md={4}>
                         <TopClanCard pos={1} data={data.data[activeStat][1]} />
                     </Grid>
@@ -1403,7 +1421,7 @@ function ClanTop(props) {
                 </Box>
             </Box>
         </Container>
-    </>
+    </Box>
 }
 
 function ClanEdit(props) {
