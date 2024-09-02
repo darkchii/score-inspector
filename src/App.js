@@ -1,4 +1,4 @@
-import { Alert, Box, Card, CardContent, CssBaseline, Paper, Typography } from '@mui/material';
+import { Alert, Box, CardContent, CssBaseline, Paper, Typography } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import React, { useEffect, useState } from 'react';
 import './App.css';

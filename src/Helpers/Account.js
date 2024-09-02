@@ -1,4 +1,4 @@
-import { GetAPI, GetOsuApiRedirect, parseReadableStreamToJson, showNotification } from "./Misc";
+import { GetAPI, GetOsuApiRedirect, parseReadableStreamToJson } from "./Misc";
 import config from '../config.json';
 import axios from "axios";
 import { Avatar, Box, Tooltip } from "@mui/material";

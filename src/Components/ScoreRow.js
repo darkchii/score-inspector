@@ -1,7 +1,6 @@
 import { Box, Grid, Tooltip, Typography, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
 import { getGradeIcon, getModIcon } from "../Helpers/Assets.js";
-import moment from "moment";
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { red } from "@mui/material/colors";
 import { getModString, mod_strings_long, mods } from "../Helpers/Osu.js";

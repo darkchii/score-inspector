@@ -54,10 +54,6 @@ function SectionDaily(props) {
     const [sessionAnnotations, setSessionAnnotations] = useState([]);
     const [stats, setStats] = useState(null);
 
-    const onDateRangePressHold = (e) => {
-        console.log(e);
-    }
-
     const dateRangePressHoldEvent = useLongPress((e) => {
         if (selectedDayRange[1]) {
             showNotification('Warning', 'Please click the tick to reset it before setting a new range', 'warning');
@@ -345,8 +341,6 @@ function SectionDaily(props) {
                                         //either selectedDayRange[0] or selectedDayRange[1], or between them
                                         const isSelected = selectedDayRange[0] === day.date || (selectedDayRange[1] && selectedDayRange[1] === day.date) || (selectedDayRange[0] < day.date && selectedDayRange[1] > day.date);
                                         //if the day is MAX_DAYS_RANGE days away from the first selected day, it can be selected
-                                        const daysDiff = Math.abs(moment.utc(day.date).diff(moment.utc(selectedDayRange[0]), 'days'));
-                                        const canBeSelectedForRange = selectedDayRange[0] && !selectedDayRange[1] && daysDiff <= MAX_DAYS_RANGE && _clears > 0;
 
                                         let boxShadow = `0 0 7px 7px ${themeColor}00`;
                                         if (isSelected) {

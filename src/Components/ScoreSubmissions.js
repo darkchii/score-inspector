@@ -58,9 +58,7 @@ function ScoreSubmissions(props) {
     const [error, setError] = useState(false);
 
     useEffect(() => {
-        const _period = Object.keys(chart_period_data)[period];
         setInterval(0);
-
         //reset the random number to trigger useEffect
         setRandom(Math.random());
     }, [period]);

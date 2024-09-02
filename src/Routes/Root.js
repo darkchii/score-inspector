@@ -1,4 +1,4 @@
-import { Alert, Box, Button, Card, CardActionArea, CardContent, CircularProgress, Divider, Grid, Link, Modal, Paper, Skeleton, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Tooltip, Typography } from '@mui/material';
+import { Alert, Box, Button, Card, CardActionArea, CardContent, CircularProgress, Divider, Grid, Link, Modal, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from '@mui/material';
 import { Link as RouterLink, useSearchParams } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import { formatNumberAsSize, GetAPI, MODAL_STYLE, parseReadableStreamToJson, showNotification } from '../Helpers/Misc';
@@ -7,11 +7,10 @@ import axios from 'axios';
 import moment from 'moment';
 import momentDurationFormatSetup from "moment-duration-format";
 import ScoreSubmissions from '../Components/ScoreSubmissions';
-import { blue, blueGrey, green, grey, indigo, pink, red, yellow } from '@mui/material/colors';
+import { blue, blueGrey, green, pink, red } from '@mui/material/colors';
 import GlowBar from '../Components/UI/GlowBar';
 import Loader from '../Components/UI/Loader';
 import config from "../config.json";
-import { useTheme } from '@emotion/react';
 import { Helmet } from 'react-helmet';
 import info from '../Data/Info';
 import PersonIcon from '@mui/icons-material/Person';
