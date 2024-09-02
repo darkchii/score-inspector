@@ -284,395 +284,393 @@ function SectionDaily(props) {
         setSelectedYear(year);
     }
 
-    return (
-        <>
-            <Card>
-                <CardContent>
-                    <Paper elevation={3} sx={{ p: 2 }}>
-                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                            <ButtonGroup size="small">
-                                {
-                                    //button for each year between min and max
-                                    Array.from(Array(moment().year() - MIN_DATE.year() + 1).keys()).map((year) => {
-                                        const y = MIN_DATE.year() + year;
-                                        return <Button
-                                            key={year}
-                                            disabled={isWorking}
-                                            variant={selectedYear === y ? "contained" : "outlined"}
-                                            onClick={() => updateYear(moment.utc(y, 'YYYY'))}>{y}</Button>
-                                    }
-                                    )
-                                }
-                            </ButtonGroup>
-                        </Box>
-                        <Box sx={{ pt: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                            <Grid className="graph">
-                                <Grid className="months">
-                                    <li>Jan</li>
-                                    <li>Feb</li>
-                                    <li>Mar</li>
-                                    <li>Apr</li>
-                                    <li>May</li>
-                                    <li>Jun</li>
-                                    <li>Jul</li>
-                                    <li>Aug</li>
-                                    <li>Sep</li>
-                                    <li>Oct</li>
-                                    <li>Nov</li>
-                                    <li>Dec</li>
-                                </Grid>
-                                <Grid className="days">
-                                    <li>Sun</li>
-                                    <li>Mon</li>
-                                    <li>Tue</li>
-                                    <li>Wed</li>
-                                    <li>Thu</li>
-                                    <li>Fri</li>
-                                    <li>Sat</li>
-                                </Grid>
-                                <Grid className="squares">
-                                    {
-                                        //add empty spots if first day is not sunday
-                                        yearGraphData && Array.from(Array(moment(yearGraphData[0].date).day()).keys()).map((day) => {
-                                            return <Box></Box>
-                                        })
-                                    }
-                                    {
-                                        yearGraphData && yearGraphData.map((day, index) => {
-                                            const _clears = day.clears;
-                                            //const _progress = Math.min(_clears, 100) / 100;
-                                            const _progress = Math.min(1, (dynamicRange > 0 ? ((100 / dynamicRange * _clears) / 100) : 0));
-                                            const _color = lerpColor('#3c3c3c', themeColor, _progress);
-                                            //either selectedDayRange[0] or selectedDayRange[1], or between them
-                                            const isSelected = selectedDayRange[0] === day.date || (selectedDayRange[1] && selectedDayRange[1] === day.date) || (selectedDayRange[0] < day.date && selectedDayRange[1] > day.date);
-                                            //if the day is MAX_DAYS_RANGE days away from the first selected day, it can be selected
-                                            const daysDiff = Math.abs(moment.utc(day.date).diff(moment.utc(selectedDayRange[0]), 'days'));
-                                            const canBeSelectedForRange = selectedDayRange[0] && !selectedDayRange[1] && daysDiff <= MAX_DAYS_RANGE && _clears > 0;
-
-                                            let boxShadow = `0 0 7px 7px ${themeColor}00`;
-                                            if (isSelected) {
-                                                boxShadow = `0 0 7px 7px ${themeColor}36`;
-                                            }
-                                            //lets just do a border instead, but bit darker than the color
-                                            return (
-                                                <MUITooltip title={
-                                                    <Typography variant="body2">
-                                                        {`${day.date}: ${_clears} clears`}
-                                                    </Typography>
-                                                } placement='top' disableInteractive={true}>
-                                                    <Box
-                                                        //store data in the element
-                                                        data-clears={_clears}
-                                                        data-date={day.date}
-                                                        // onClick={() => { _clears > 0 && setSelectedDay(day.date); }}
-                                                        // {...dateRangePressHoldEvent}
-                                                        {...dateRangePressHoldEvent}
-                                                        sx={{
-                                                            borderRadius: '3px',
-                                                            height: '12px',
-                                                            position: 'relative',
-                                                            width: '12px',
-                                                            backgroundColor: `${_color}`,
-                                                            margin: '2px',
-                                                            boxShadow: boxShadow,
-                                                            '&:hover': {
-                                                                cursor: _clears > 0 ? 'pointer' : 'default',
-                                                                opacity: 0.5
-                                                            }
-                                                        }}>
-
-                                                    </Box>
-                                                </MUITooltip>
-                                            )
-                                        })
-                                    }
-                                </Grid>
-                            </Grid>
-                        </Box>
-                        <Paper elevation={1} sx={{ pt: 1, pb: 1 }}>
-                            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                <Box
-                                    sx={{
-                                        borderRadius: '3px',
-                                        height: '12px',
-                                        position: 'relative',
-                                        width: '12px',
-                                        backgroundColor: '#3c3c3c',
-                                        margin: '2px',
-                                    }}></Box><Typography variant="body2">0 clears</Typography>
-                                <Box sx={{ width: '30px' }}></Box>
-                                <Box
-                                    sx={{
-                                        borderRadius: '3px',
-                                        height: '12px',
-                                        position: 'relative',
-                                        width: '12px',
-                                        backgroundColor: themeColor,
-                                        margin: '2px',
-                                    }}></Box><Typography variant="body2">{Math.min(dynamicRange, 100)}+ clears</Typography>
-                            </Box>
-                            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                <Typography variant="body2">Currently viewing {selectedDayRange[0]}
-                                    {selectedDayRange[1] ? ` to ${selectedDayRange[1]}` : ''}
-                                </Typography>
-                            </Box>
-                            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                <Typography variant="body2">
-                                    Click a date to select only that one, hold a date tick to apply a range with the active one (max {MAX_DAYS_RANGE} days)
-                                </Typography>
-                            </Box>
-                        </Paper>
-                    </Paper>
-
+    return (<>
+        <Card>
+            <CardContent>
+                <Paper elevation={3} sx={{ p: 2 }}>
                     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                        <Grid sx={{ my: 2 }}>
-                            <ButtonGroup size='small'>
-                                {heightDefiners.map((definer) => (
-                                    <Button onClick={() => setHeightDefiner(definer)} variant={heightDefiner.value === definer.value ? 'contained' : 'outlined'}>
-                                        {definer.label}
-                                    </Button>
-                                ))
+                        <ButtonGroup size="small">
+                            {
+                                //button for each year between min and max
+                                Array.from(Array(moment().year() - MIN_DATE.year() + 1).keys()).map((year) => {
+                                    const y = MIN_DATE.year() + year;
+                                    return <Button
+                                        key={year}
+                                        disabled={isWorking}
+                                        variant={selectedYear === y ? "contained" : "outlined"}
+                                        onClick={() => updateYear(moment.utc(y, 'YYYY'))}>{y}</Button>
                                 }
-                            </ButtonGroup>
+                                )
+                            }
+                        </ButtonGroup>
+                    </Box>
+                    <Box sx={{ pt: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        <Grid className="graph">
+                            <Grid className="months">
+                                <li>Jan</li>
+                                <li>Feb</li>
+                                <li>Mar</li>
+                                <li>Apr</li>
+                                <li>May</li>
+                                <li>Jun</li>
+                                <li>Jul</li>
+                                <li>Aug</li>
+                                <li>Sep</li>
+                                <li>Oct</li>
+                                <li>Nov</li>
+                                <li>Dec</li>
+                            </Grid>
+                            <Grid className="days">
+                                <li>Sun</li>
+                                <li>Mon</li>
+                                <li>Tue</li>
+                                <li>Wed</li>
+                                <li>Thu</li>
+                                <li>Fri</li>
+                                <li>Sat</li>
+                            </Grid>
+                            <Grid className="squares">
+                                {
+                                    //add empty spots if first day is not sunday
+                                    yearGraphData && Array.from(Array(moment(yearGraphData[0].date).day()).keys()).map((day) => {
+                                        return <Box></Box>
+                                    })
+                                }
+                                {
+                                    yearGraphData && yearGraphData.map((day, index) => {
+                                        const _clears = day.clears;
+                                        //const _progress = Math.min(_clears, 100) / 100;
+                                        const _progress = Math.min(1, (dynamicRange > 0 ? ((100 / dynamicRange * _clears) / 100) : 0));
+                                        const _color = lerpColor('#3c3c3c', themeColor, _progress);
+                                        //either selectedDayRange[0] or selectedDayRange[1], or between them
+                                        const isSelected = selectedDayRange[0] === day.date || (selectedDayRange[1] && selectedDayRange[1] === day.date) || (selectedDayRange[0] < day.date && selectedDayRange[1] > day.date);
+                                        //if the day is MAX_DAYS_RANGE days away from the first selected day, it can be selected
+                                        const daysDiff = Math.abs(moment.utc(day.date).diff(moment.utc(selectedDayRange[0]), 'days'));
+                                        const canBeSelectedForRange = selectedDayRange[0] && !selectedDayRange[1] && daysDiff <= MAX_DAYS_RANGE && _clears > 0;
+
+                                        let boxShadow = `0 0 7px 7px ${themeColor}00`;
+                                        if (isSelected) {
+                                            boxShadow = `0 0 7px 7px ${themeColor}36`;
+                                        }
+                                        //lets just do a border instead, but bit darker than the color
+                                        return (
+                                            <MUITooltip title={
+                                                <Typography variant="body2">
+                                                    {`${day.date}: ${_clears} clears`}
+                                                </Typography>
+                                            } placement='top' disableInteractive={true}>
+                                                <Box
+                                                    //store data in the element
+                                                    data-clears={_clears}
+                                                    data-date={day.date}
+                                                    // onClick={() => { _clears > 0 && setSelectedDay(day.date); }}
+                                                    // {...dateRangePressHoldEvent}
+                                                    {...dateRangePressHoldEvent}
+                                                    sx={{
+                                                        borderRadius: '3px',
+                                                        height: '12px',
+                                                        position: 'relative',
+                                                        width: '12px',
+                                                        backgroundColor: `${_color}`,
+                                                        margin: '2px',
+                                                        boxShadow: boxShadow,
+                                                        '&:hover': {
+                                                            cursor: _clears > 0 ? 'pointer' : 'default',
+                                                            opacity: 0.5
+                                                        }
+                                                    }}>
+
+                                                </Box>
+                                            </MUITooltip>
+                                        )
+                                    })
+                                }
+                            </Grid>
                         </Grid>
                     </Box>
-
-
-                    <Grid sx={{
-                        minHeight: '700px',
-                    }}>
-                        {(selectedDayRange[0] && graphData && sessionAnnotations && sessionAnnotations.length > 0) && <Grid sx={{ mt: 1 }}>
-                            <ErrorBoundary fallback={<div>Something went wrong</div>}>
-                                <Grid sx={{
+                    <Paper elevation={1} sx={{ pt: 1, pb: 1 }}>
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                            <Box
+                                sx={{
+                                    borderRadius: '3px',
+                                    height: '12px',
                                     position: 'relative',
-                                    height: '400px',
-                                }}>
-                                    <Grid sx={{
-                                        position: 'absolute',
-                                        height: '400px',
-                                        width: '100%',
-                                    }}>
-                                        <ChartWrapper
-                                            options={{
-                                                xaxis: {
-                                                    type: 'datetime',
-                                                    labels: {
-                                                        datetimeUTC: true,
-                                                        format: selectedDayRange[1] ? 'dd/MM HH:mm' : 'HH:mm',
-                                                        formatter: (value) => {
-                                                            return selectedDayRange[1] ? moment.utc(value).local().format('DD/MM HH:mm') : moment.utc(value).local().format('HH:mm');
-                                                        },
-                                                    },
-                                                    min: moment.utc(selectedDayRange[0]).startOf('day').valueOf(),
-                                                    max: selectedDayRange[1] ? moment.utc(selectedDayRange[1]).endOf('day').valueOf() : moment.utc(selectedDayRange[0]).endOf('day').valueOf(),
-                                                },
-                                                yaxis: {
-                                                    min: 0,
-                                                    labels: {
-                                                        formatter: (value) => {
-                                                            return heightDefiner.yFormat?.(value) ?? value;
-                                                        }
-                                                    }
-                                                },
-                                                tooltip: {
-                                                    custom: function ({ series, seriesIndex, dataPointIndex, w }) {
-                                                        var data = w.globals.initialSeries[seriesIndex].data[dataPointIndex];
+                                    width: '12px',
+                                    backgroundColor: '#3c3c3c',
+                                    margin: '2px',
+                                }}></Box><Typography variant="body2">0 clears</Typography>
+                            <Box sx={{ width: '30px' }}></Box>
+                            <Box
+                                sx={{
+                                    borderRadius: '3px',
+                                    height: '12px',
+                                    position: 'relative',
+                                    width: '12px',
+                                    backgroundColor: themeColor,
+                                    margin: '2px',
+                                }}></Box><Typography variant="body2">{Math.min(dynamicRange, 100)}+ clears</Typography>
+                        </Box>
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                            <Typography variant="body2">Currently viewing {selectedDayRange[0]}
+                                {selectedDayRange[1] ? ` to ${selectedDayRange[1]}` : ''}
+                            </Typography>
+                        </Box>
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                            <Typography variant="body2">
+                                Click a date to select only that one, hold a date tick to apply a range with the active one (max {MAX_DAYS_RANGE} days)
+                            </Typography>
+                        </Box>
+                    </Paper>
+                </Paper>
 
-                                                        return `<ul style='padding-right:10px'>
-                                                                <li>${heightDefiner.label}: ${heightDefiner.yFormat(data.y)}</li>
-                                                                <li>${data.score.beatmap.artist} - ${data.score.beatmap.title} [${data.score.beatmap.diffname}] • ${data.score.accuracy}% ${data.score.rank} • ${data.score.score} score • ${data.score.pp.toFixed(2)}pp</li>
-                                                                <li>${moment.unix(data.x / 1000).format('YYYY-MM-DD HH:mm:ss')}</li>
-                                                            </ul>
-                                                            `
-                                                    }
-                                                },
-                                                dataLabels: {
-                                                    enabled: false
-                                                },
-                                                markers: {
-                                                    size: graphData.map((data) => { return data.size }),
-                                                    shape: graphData.map((data) => { return data.shape }),
-                                                },
-                                                annotations: {
-                                                    xaxis: [
-                                                        {
-                                                            x: moment.utc(selectedDayRange[0]).startOf('day').valueOf(),
-                                                            strokeDashArray: 0,
-                                                            borderColor: '#775DD0',
-                                                            label: {
-                                                                style: {
-                                                                    color: '#fff',
-                                                                    background: '#775DD0',
-                                                                },
-                                                                text: 'Start of day',
-                                                            }
-                                                        },
-                                                        {
-                                                            // x: moment.utc(selectedDay).endOf('day').valueOf(),
-                                                            x: selectedDayRange[1] ? moment.utc(selectedDayRange[1]).endOf('day').valueOf() : moment.utc(selectedDayRange[0]).endOf('day').valueOf(),
-                                                            strokeDashArray: 0,
-                                                            borderColor: '#775DD0',
-                                                            label: {
-                                                                style: {
-                                                                    color: '#fff',
-                                                                    background: '#775DD0',
-                                                                },
-                                                                text: 'End of day',
-                                                            }
-                                                        },
-                                                        ...(
-                                                            //show an annotation for every day between selectedDayRange[0] and selectedDayRange[1]
-                                                            selectedDayRange[1] ? Array.from(Array(moment.utc(selectedDayRange[1]).diff(moment.utc(selectedDayRange[0]), 'days')).keys()).map((day) => {
-                                                                return {
-                                                                    x: moment.utc(selectedDayRange[0]).add(day + 1, 'days').startOf('day').valueOf(),
-                                                                    strokeDashArray: 0,
-                                                                    borderColor: '#775DD0',
-                                                                    label: {
-                                                                        style: {
-                                                                            color: '#fff',
-                                                                            background: '#775DD0',
-                                                                        },
-                                                                        //show the date
-                                                                        text: moment.utc(selectedDayRange[0]).add(day + 1, 'days').format('YYYY-MM-DD'),
-                                                                    }
-                                                                }
-                                                            }) : []
-                                                        ),
-                                                        ...(sessionAnnotations ?? [])
-                                                    ]
-                                                }
-                                            }}
-                                            series={graphData}
-                                            type={'scatter'}
-                                        />
-                                    </Grid>
-                                </Grid>
-                            </ErrorBoundary>
-                            <Typography variant='caption'>The pink area designates sessions</Typography>
-                            <Grid sx={{ mt: 1, pl: 2 }}>
-                                <Stack direction="column" spacing={2}>
-                                    <Grid>
-                                        {
-                                            stats && <>
-                                                <Stack direction="row" sx={{ justifyContent: 'center', alignItems: 'center' }}>
-                                                    <Grid sx={{ mr: 3, ml: 3 }}>
-                                                        <img src={IMG_SVG_GRADE_XH} alt='XH' /> {stats.grade_ssh.toLocaleString('en-US')}
-                                                    </Grid>
-                                                    <Grid sx={{ mr: 3, ml: 3 }}>
-                                                        <img src={IMG_SVG_GRADE_X} alt='X' /> {stats.grade_ss.toLocaleString('en-US')}
-                                                    </Grid>
-                                                    <Grid sx={{ mr: 3, ml: 3 }}>
-                                                        <img src={IMG_SVG_GRADE_SH} alt='SH' /> {stats.grade_sh.toLocaleString('en-US')}
-                                                    </Grid>
-                                                    <Grid sx={{ mr: 3, ml: 3 }}>
-                                                        <img src={IMG_SVG_GRADE_S} alt='S' /> {stats.grade_s.toLocaleString('en-US')}
-                                                    </Grid>
-                                                    <Grid sx={{ mr: 3, ml: 3 }}>
-                                                        <img src={IMG_SVG_GRADE_A} alt='A' /> {stats.grade_a.toLocaleString('en-US')}
-                                                    </Grid>
-                                                    <Grid sx={{ mr: 3, ml: 3 }}>
-                                                        <img src={IMG_SVG_GRADE_B} alt='B' /> {stats.grade_b.toLocaleString('en-US')}
-                                                    </Grid>
-                                                    <Grid sx={{ mr: 3, ml: 3 }}>
-                                                        <img src={IMG_SVG_GRADE_C} alt='C' /> {stats.grade_c.toLocaleString('en-US')}
-                                                    </Grid>
-                                                    <Grid sx={{ mr: 3, ml: 3 }}>
-                                                        <img src={IMG_SVG_GRADE_D} alt='D' /> {stats.grade_d.toLocaleString('en-US')}
-                                                    </Grid>
-                                                </Stack>
-                                            </>
-                                        }
-                                    </Grid>
-                                    <Grid container>
-                                        <Grid item xs={0} md={2}></Grid>
-                                        <Grid item xs={12} md={4}>
-                                            <Paper sx={{ p: 1, m: 1 }} elevation={3}>
-                                                {
-                                                    stats && <>
-                                                        <TableContainer>
-                                                            <Table size="small">
-                                                                <TableBody>
-                                                                    <TableRow>
-                                                                        <TableCell sx={{ width: '50%' }}>Score gained</TableCell>
-                                                                        <TableCell sx={{ width: '50%' }}>{stats.gained_score.toLocaleString('en-US')}</TableCell>
-                                                                    </TableRow>
-                                                                    <TableRow>
-                                                                        <TableCell sx={{ width: '50%' }}>Clears gained</TableCell>
-                                                                        <TableCell sx={{ width: '50%' }}>{stats.clears.toLocaleString('en-US')}</TableCell>
-                                                                    </TableRow>
-                                                                    <TableRow>
-                                                                        <TableCell sx={{ width: '50%' }}>Total PP gained</TableCell>
-                                                                        <TableCell sx={{ width: '50%' }}>{Math.round(stats.pp).toLocaleString('en-US')}pp</TableCell>
-                                                                    </TableRow>
-                                                                    <TableRow>
-                                                                        <TableCell sx={{ width: '50%' }}>Playtime</TableCell>
-                                                                        <TableCell sx={{ width: '50%' }}>{`${moment.duration(stats.playtime, 'seconds').format('h [hours] m [minutes]')}`}</TableCell>
-                                                                    </TableRow>
-                                                                    <TableRow>
-                                                                        <TableCell sx={{ width: '50%' }}>Sessions</TableCell>
-                                                                        <TableCell sx={{ width: '50%' }}>{`${sessionCount.toLocaleString('en-US')}`}</TableCell>
-                                                                    </TableRow>
-                                                                    <TableRow>
-                                                                        <TableCell sx={{ width: '50%' }}>Total session</TableCell>
-                                                                        {/* show up to hours, not days */}
-                                                                        <TableCell sx={{ width: '50%' }}>{`${moment.duration(totalSessionLength, 'seconds').format('h [hours] m [minutes]')}`}</TableCell>
-                                                                    </TableRow>
-                                                                </TableBody>
-                                                            </Table>
-                                                        </TableContainer>
-                                                    </>
-                                                }
-                                            </Paper>
-                                        </Grid>
-                                        <Grid item xs={12} md={4}>
-                                            <Paper sx={{ p: 1, m: 1 }} elevation={3}>
-                                                {
-                                                    stats && <>
-                                                        <TableContainer>
-                                                            <Table size="small">
-                                                                <TableBody>
-                                                                    <TableRow>
-                                                                        <TableCell sx={{ width: '50%' }}>Average score</TableCell>
-                                                                        <TableCell sx={{ width: '50%' }}>{Math.round(stats.clears > 0 ? (stats.gained_score / stats.clears) : 0).toLocaleString('en-US')}</TableCell>
-                                                                    </TableRow>
-                                                                    <TableRow>
-                                                                        <TableCell sx={{ width: '50%' }}>Average stars</TableCell>
-                                                                        <TableCell sx={{ width: '50%' }}>{stats.average_sr.toLocaleString('en-US')}*</TableCell>
-                                                                    </TableRow>
-                                                                    <TableRow>
-                                                                        <TableCell sx={{ width: '50%' }}>Average PP</TableCell>
-                                                                        <TableCell sx={{ width: '50%' }}>{stats.average_pp.toLocaleString('en-US')}pp</TableCell>
-                                                                    </TableRow>
-                                                                    <TableRow>
-                                                                        <TableCell sx={{ width: '50%' }}>Average accuracy</TableCell>
-                                                                        <TableCell sx={{ width: '50%' }}>{stats.average_acc.toLocaleString('en-US')}%</TableCell>
-                                                                    </TableRow>
-                                                                    <TableRow>
-                                                                        <TableCell sx={{ width: '50%' }}>Average length</TableCell>
-                                                                        <TableCell sx={{ width: '50%' }}>{`${moment.duration(stats.average_length, 'seconds').format()}`}</TableCell>
-                                                                    </TableRow>
-                                                                    <TableRow>
-                                                                        <TableCell sx={{ width: '50%' }}>Average session</TableCell>
-                                                                        <TableCell sx={{ width: '50%' }}>{`${moment.duration(totalSessionLength / sessionCount, 'seconds').format()}`}</TableCell>
-                                                                    </TableRow>
-                                                                </TableBody>
-                                                            </Table>
-                                                        </TableContainer>
-                                                    </>
-                                                }
-                                            </Paper>
-                                        </Grid>
-                                        <Grid item xs={0} md={2}></Grid>
-                                    </Grid>
-                                    <Alert severity="info">Start and end times are UTC midnight.</Alert>
-                                </Stack>
-                            </Grid>
-                        </Grid>}
+                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <Grid sx={{ my: 2 }}>
+                        <ButtonGroup size='small'>
+                            {heightDefiners.map((definer) => (
+                                <Button onClick={() => setHeightDefiner(definer)} variant={heightDefiner.value === definer.value ? 'contained' : 'outlined'}>
+                                    {definer.label}
+                                </Button>
+                            ))
+                            }
+                        </ButtonGroup>
                     </Grid>
-                </CardContent>
-            </Card>
-        </>
-    );
+                </Box>
+
+
+                <Grid sx={{
+                    minHeight: '700px',
+                }}>
+                    {(selectedDayRange[0] && graphData && sessionAnnotations && sessionAnnotations.length > 0) && <Grid sx={{ mt: 1 }}>
+                        <ErrorBoundary fallback={<div>Something went wrong</div>}>
+                            <Grid sx={{
+                                position: 'relative',
+                                height: '400px',
+                            }}>
+                                <Grid sx={{
+                                    position: 'absolute',
+                                    height: '400px',
+                                    width: '100%',
+                                }}>
+                                    <ChartWrapper
+                                        options={{
+                                            xaxis: {
+                                                type: 'datetime',
+                                                labels: {
+                                                    datetimeUTC: true,
+                                                    format: selectedDayRange[1] ? 'dd/MM HH:mm' : 'HH:mm',
+                                                    formatter: (value) => {
+                                                        return selectedDayRange[1] ? moment.utc(value).local().format('DD/MM HH:mm') : moment.utc(value).local().format('HH:mm');
+                                                    },
+                                                },
+                                                min: moment.utc(selectedDayRange[0]).startOf('day').valueOf(),
+                                                max: selectedDayRange[1] ? moment.utc(selectedDayRange[1]).endOf('day').valueOf() : moment.utc(selectedDayRange[0]).endOf('day').valueOf(),
+                                            },
+                                            yaxis: {
+                                                min: 0,
+                                                labels: {
+                                                    formatter: (value) => {
+                                                        return heightDefiner.yFormat?.(value) ?? value;
+                                                    }
+                                                }
+                                            },
+                                            tooltip: {
+                                                custom: function ({ series, seriesIndex, dataPointIndex, w }) {
+                                                    var data = w.globals.initialSeries[seriesIndex].data[dataPointIndex];
+
+                                                    return `<ul style='padding-right:10px'>
+                                                            <li>${heightDefiner.label}: ${heightDefiner.yFormat(data.y)}</li>
+                                                            <li>${data.score.beatmap.artist} - ${data.score.beatmap.title} [${data.score.beatmap.diffname}] • ${data.score.accuracy}% ${data.score.rank} • ${data.score.score} score • ${data.score.pp.toFixed(2)}pp</li>
+                                                            <li>${moment.unix(data.x / 1000).format('YYYY-MM-DD HH:mm:ss')}</li>
+                                                        </ul>
+                                                        `
+                                                }
+                                            },
+                                            dataLabels: {
+                                                enabled: false
+                                            },
+                                            markers: {
+                                                size: graphData.map((data) => { return data.size }),
+                                                shape: graphData.map((data) => { return data.shape }),
+                                            },
+                                            annotations: {
+                                                xaxis: [
+                                                    {
+                                                        x: moment.utc(selectedDayRange[0]).startOf('day').valueOf(),
+                                                        strokeDashArray: 0,
+                                                        borderColor: '#775DD0',
+                                                        label: {
+                                                            style: {
+                                                                color: '#fff',
+                                                                background: '#775DD0',
+                                                            },
+                                                            text: 'Start of day',
+                                                        }
+                                                    },
+                                                    {
+                                                        // x: moment.utc(selectedDay).endOf('day').valueOf(),
+                                                        x: selectedDayRange[1] ? moment.utc(selectedDayRange[1]).endOf('day').valueOf() : moment.utc(selectedDayRange[0]).endOf('day').valueOf(),
+                                                        strokeDashArray: 0,
+                                                        borderColor: '#775DD0',
+                                                        label: {
+                                                            style: {
+                                                                color: '#fff',
+                                                                background: '#775DD0',
+                                                            },
+                                                            text: 'End of day',
+                                                        }
+                                                    },
+                                                    ...(
+                                                        //show an annotation for every day between selectedDayRange[0] and selectedDayRange[1]
+                                                        (selectedDayRange[1] ? Array.from(Array(moment.utc(selectedDayRange[1]).diff(moment.utc(selectedDayRange[0]), 'days')).keys()).map((day) => {
+                                                            return {
+                                                                x: moment.utc(selectedDayRange[0]).add(day + 1, 'days').startOf('day').valueOf(),
+                                                                strokeDashArray: 0,
+                                                                borderColor: '#775DD0',
+                                                                label: {
+                                                                    style: {
+                                                                        color: '#fff',
+                                                                        background: '#775DD0',
+                                                                    },
+                                                                    //show the date
+                                                                    text: moment.utc(selectedDayRange[0]).add(day + 1, 'days').format('YYYY-MM-DD'),
+                                                                }
+                                                            }
+                                                        }) : [])
+                                                    ),
+                                                    ...(sessionAnnotations ?? [])
+                                                ]
+                                            }
+                                        }}
+                                        series={graphData}
+                                        type={'scatter'}
+                                    />
+                                </Grid>
+                            </Grid>
+                        </ErrorBoundary>
+                        <Typography variant='caption'>The pink area designates sessions</Typography>
+                        <Grid sx={{ mt: 1, pl: 2 }}>
+                            <Stack direction="column" spacing={2}>
+                                <Grid>
+                                    {
+                                        stats && <>
+                                            <Stack direction="row" sx={{ justifyContent: 'center', alignItems: 'center' }}>
+                                                <Grid sx={{ mr: 3, ml: 3 }}>
+                                                    <img src={IMG_SVG_GRADE_XH} alt='XH' /> {stats.grade_ssh.toLocaleString('en-US')}
+                                                </Grid>
+                                                <Grid sx={{ mr: 3, ml: 3 }}>
+                                                    <img src={IMG_SVG_GRADE_X} alt='X' /> {stats.grade_ss.toLocaleString('en-US')}
+                                                </Grid>
+                                                <Grid sx={{ mr: 3, ml: 3 }}>
+                                                    <img src={IMG_SVG_GRADE_SH} alt='SH' /> {stats.grade_sh.toLocaleString('en-US')}
+                                                </Grid>
+                                                <Grid sx={{ mr: 3, ml: 3 }}>
+                                                    <img src={IMG_SVG_GRADE_S} alt='S' /> {stats.grade_s.toLocaleString('en-US')}
+                                                </Grid>
+                                                <Grid sx={{ mr: 3, ml: 3 }}>
+                                                    <img src={IMG_SVG_GRADE_A} alt='A' /> {stats.grade_a.toLocaleString('en-US')}
+                                                </Grid>
+                                                <Grid sx={{ mr: 3, ml: 3 }}>
+                                                    <img src={IMG_SVG_GRADE_B} alt='B' /> {stats.grade_b.toLocaleString('en-US')}
+                                                </Grid>
+                                                <Grid sx={{ mr: 3, ml: 3 }}>
+                                                    <img src={IMG_SVG_GRADE_C} alt='C' /> {stats.grade_c.toLocaleString('en-US')}
+                                                </Grid>
+                                                <Grid sx={{ mr: 3, ml: 3 }}>
+                                                    <img src={IMG_SVG_GRADE_D} alt='D' /> {stats.grade_d.toLocaleString('en-US')}
+                                                </Grid>
+                                            </Stack>
+                                        </>
+                                    }
+                                </Grid>
+                                <Grid container>
+                                    <Grid item xs={0} md={2}></Grid>
+                                    <Grid item xs={12} md={4}>
+                                        <Paper sx={{ p: 1, m: 1 }} elevation={3}>
+                                            {
+                                                stats && <>
+                                                    <TableContainer>
+                                                        <Table size="small">
+                                                            <TableBody>
+                                                                <TableRow>
+                                                                    <TableCell sx={{ width: '50%' }}>Score gained</TableCell>
+                                                                    <TableCell sx={{ width: '50%' }}>{stats.gained_score.toLocaleString('en-US')}</TableCell>
+                                                                </TableRow>
+                                                                <TableRow>
+                                                                    <TableCell sx={{ width: '50%' }}>Clears gained</TableCell>
+                                                                    <TableCell sx={{ width: '50%' }}>{stats.clears.toLocaleString('en-US')}</TableCell>
+                                                                </TableRow>
+                                                                <TableRow>
+                                                                    <TableCell sx={{ width: '50%' }}>Total PP gained</TableCell>
+                                                                    <TableCell sx={{ width: '50%' }}>{Math.round(stats.pp).toLocaleString('en-US')}pp</TableCell>
+                                                                </TableRow>
+                                                                <TableRow>
+                                                                    <TableCell sx={{ width: '50%' }}>Playtime</TableCell>
+                                                                    <TableCell sx={{ width: '50%' }}>{`${moment.duration(stats.playtime, 'seconds').format('h [hours] m [minutes]')}`}</TableCell>
+                                                                </TableRow>
+                                                                <TableRow>
+                                                                    <TableCell sx={{ width: '50%' }}>Sessions</TableCell>
+                                                                    <TableCell sx={{ width: '50%' }}>{`${sessionCount.toLocaleString('en-US')}`}</TableCell>
+                                                                </TableRow>
+                                                                <TableRow>
+                                                                    <TableCell sx={{ width: '50%' }}>Total session</TableCell>
+                                                                    {/* show up to hours, not days */}
+                                                                    <TableCell sx={{ width: '50%' }}>{`${moment.duration(totalSessionLength, 'seconds').format('h [hours] m [minutes]')}`}</TableCell>
+                                                                </TableRow>
+                                                            </TableBody>
+                                                        </Table>
+                                                    </TableContainer>
+                                                </>
+                                            }
+                                        </Paper>
+                                    </Grid>
+                                    <Grid item xs={12} md={4}>
+                                        <Paper sx={{ p: 1, m: 1 }} elevation={3}>
+                                            {
+                                                stats && <>
+                                                    <TableContainer>
+                                                        <Table size="small">
+                                                            <TableBody>
+                                                                <TableRow>
+                                                                    <TableCell sx={{ width: '50%' }}>Average score</TableCell>
+                                                                    <TableCell sx={{ width: '50%' }}>{Math.round(stats.clears > 0 ? (stats.gained_score / stats.clears) : 0).toLocaleString('en-US')}</TableCell>
+                                                                </TableRow>
+                                                                <TableRow>
+                                                                    <TableCell sx={{ width: '50%' }}>Average stars</TableCell>
+                                                                    <TableCell sx={{ width: '50%' }}>{stats.average_sr.toLocaleString('en-US')}*</TableCell>
+                                                                </TableRow>
+                                                                <TableRow>
+                                                                    <TableCell sx={{ width: '50%' }}>Average PP</TableCell>
+                                                                    <TableCell sx={{ width: '50%' }}>{stats.average_pp.toLocaleString('en-US')}pp</TableCell>
+                                                                </TableRow>
+                                                                <TableRow>
+                                                                    <TableCell sx={{ width: '50%' }}>Average accuracy</TableCell>
+                                                                    <TableCell sx={{ width: '50%' }}>{stats.average_acc.toLocaleString('en-US')}%</TableCell>
+                                                                </TableRow>
+                                                                <TableRow>
+                                                                    <TableCell sx={{ width: '50%' }}>Average length</TableCell>
+                                                                    <TableCell sx={{ width: '50%' }}>{`${moment.duration(stats.average_length, 'seconds').format()}`}</TableCell>
+                                                                </TableRow>
+                                                                <TableRow>
+                                                                    <TableCell sx={{ width: '50%' }}>Average session</TableCell>
+                                                                    <TableCell sx={{ width: '50%' }}>{`${moment.duration(totalSessionLength / sessionCount, 'seconds').format()}`}</TableCell>
+                                                                </TableRow>
+                                                            </TableBody>
+                                                        </Table>
+                                                    </TableContainer>
+                                                </>
+                                            }
+                                        </Paper>
+                                    </Grid>
+                                    <Grid item xs={0} md={2}></Grid>
+                                </Grid>
+                                <Alert severity="info">Start and end times are UTC midnight.</Alert>
+                            </Stack>
+                        </Grid>
+                    </Grid>}
+                </Grid>
+            </CardContent>
+        </Card>
+    </>);
 }
 
 export default SectionDaily;

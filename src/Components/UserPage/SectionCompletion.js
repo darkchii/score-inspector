@@ -50,97 +50,95 @@ function SectionCompletion(props) {
         <Loader />
     </>);
     if (!props.user.data.completion) return (<></>);
-    return (
-        <>
-            {
-                graphs && graphs[selectedGraph] ? <>
-                    <Grid sx={{
-                        height: 280
-                    }}>
-                        <ChartWrapper
-                            options={{
-                                chart: {
-                                    id: "completion-chart"
+    return (<>
+        {
+            graphs && graphs[selectedGraph] ? <>
+                <Grid sx={{
+                    height: 280
+                }}>
+                    <ChartWrapper
+                        options={{
+                            chart: {
+                                id: "completion-chart"
+                            },
+                            yaxis: {
+                                min: 0,
+                                max: 100,
+                                labels: {
+                                    formatter: (value) => {
+                                        if (!value) return value;
+                                        return `${value.toLocaleString('en-US')}%`;
+                                    }
                                 },
-                                yaxis: {
-                                    min: 0,
-                                    max: 100,
-                                    labels: {
-                                        formatter: (value) => {
-                                            if (!value) return value;
-                                            return `${value.toLocaleString('en-US')}%`;
-                                        }
-                                    },
-                                },
-                                xaxis: {
-                                    categories: graphs[selectedGraph].labels,
-                                    tickAmount: 'dataPoints'
-                                }
-                            }}
-                            series={[
-                                {
-                                    name: 'Completion',
-                                    data: graphs[selectedGraph].data,
-                                    color: theme.palette.primary.main,
-                                }
-                            ]}
-                            type={'bar'}
-                        />
-                    </Grid>
-                    {
-                        Object.keys(graphs).map((key, index) => {
-                            let _key = KEY_NAMES[key] ? KEY_NAMES[key] : key;
-                            const stylizedKey = _key.length === 2 ? _key.toUpperCase() : capitalize(_key);
-                            return (
-                                <Button variant={selectedGraph === key ? 'contained' : 'outlined'} sx={{ cursor: 'pointer', display: 'inline-block', mr: 1 }} onClick={() => setSelectedGraph(key)}>{stylizedKey}</Button>
-                                //<Typography variant='subtitle1' sx={{ cursor: 'pointer', display: 'inline-block', mr: 1 }} onClick={() => setSelectedGraph(key)}>{stylizedKey}</Typography>
-                            )
-                        })
-                    }
-                    <Divider sx={{ mt: 1, mb: 1 }} />
-                </> : <></>
-            }
-            <Grid container spacing={0.5}>
+                            },
+                            xaxis: {
+                                categories: graphs[selectedGraph].labels,
+                                tickAmount: 'dataPoints'
+                            }
+                        }}
+                        series={[
+                            {
+                                name: 'Completion',
+                                data: graphs[selectedGraph].data,
+                                color: theme.palette.primary.main,
+                            }
+                        ]}
+                        type={'bar'}
+                    />
+                </Grid>
                 {
-                    Object.keys(props.user.data.completion).map((key, index) => {
+                    Object.keys(graphs).map((key, index) => {
                         let _key = KEY_NAMES[key] ? KEY_NAMES[key] : key;
                         const stylizedKey = _key.length === 2 ? _key.toUpperCase() : capitalize(_key);
                         return (
-                            <Grid item xs={3}>
-                                <Paper sx={{ p: 0.5 }}>
-                                    <Typography variant='title' sx={{ fontSize: '0.85em' }}>{stylizedKey} completion</Typography>
-                                    <TableContainer>
-                                        <Table size='small'>
-                                            <TableBody>
-                                                {
-                                                    props.user.data.completion[key].map((item, index) => {
-                                                        //we want a chip that colors red to green based on completion, use lerp
-                                                        const _completion = item.completion / 100;
-                                                        const color = `rgb(${Math.round(175 - (_completion * 175))}, ${Math.round(_completion * 175)}, 0)`;
-                                                        return (
-                                                            <TableRow>
-                                                                <TableCell sx={{ fontWeight: 'bold' }}>{item.range}</TableCell>
-                                                                <TableCell>
-                                                                    <Chip sx={{ backgroundColor: color, color: 'white' }} size='small' label={`${Math.round(item.completion * 10) / 10}%`} />
-                                                                </TableCell>
-                                                                <TableCell sx={{ p: 0 }} align="right">{item.scores}</TableCell>
-                                                                <TableCell sx={{ p: 0 }} align="center">/</TableCell>
-                                                                <TableCell sx={{ p: 0 }}>{item.beatmaps}</TableCell>
-                                                            </TableRow>
-                                                        )
-                                                    })
-                                                }
-                                            </TableBody>
-                                        </Table>
-                                    </TableContainer>
-                                </Paper>
-                            </Grid>
-                        )
+                            //<Typography variant='subtitle1' sx={{ cursor: 'pointer', display: 'inline-block', mr: 1 }} onClick={() => setSelectedGraph(key)}>{stylizedKey}</Typography>
+                            (<Button variant={selectedGraph === key ? 'contained' : 'outlined'} sx={{ cursor: 'pointer', display: 'inline-block', mr: 1 }} onClick={() => setSelectedGraph(key)}>{stylizedKey}</Button>)
+                        );
                     })
                 }
-            </Grid>
-        </>
-    )
+                <Divider sx={{ mt: 1, mb: 1 }} />
+            </> : <></>
+        }
+        <Grid container spacing={0.5}>
+            {
+                Object.keys(props.user.data.completion).map((key, index) => {
+                    let _key = KEY_NAMES[key] ? KEY_NAMES[key] : key;
+                    const stylizedKey = _key.length === 2 ? _key.toUpperCase() : capitalize(_key);
+                    return (
+                        <Grid item xs={3}>
+                            <Paper sx={{ p: 0.5 }}>
+                                <Typography variant='title' sx={{ fontSize: '0.85em' }}>{stylizedKey} completion</Typography>
+                                <TableContainer>
+                                    <Table size='small'>
+                                        <TableBody>
+                                            {
+                                                props.user.data.completion[key].map((item, index) => {
+                                                    //we want a chip that colors red to green based on completion, use lerp
+                                                    const _completion = item.completion / 100;
+                                                    const color = `rgb(${Math.round(175 - (_completion * 175))}, ${Math.round(_completion * 175)}, 0)`;
+                                                    return (
+                                                        <TableRow>
+                                                            <TableCell sx={{ fontWeight: 'bold' }}>{item.range}</TableCell>
+                                                            <TableCell>
+                                                                <Chip sx={{ backgroundColor: color, color: 'white' }} size='small' label={`${Math.round(item.completion * 10) / 10}%`} />
+                                                            </TableCell>
+                                                            <TableCell sx={{ p: 0 }} align="right">{item.scores}</TableCell>
+                                                            <TableCell sx={{ p: 0 }} align="center">/</TableCell>
+                                                            <TableCell sx={{ p: 0 }}>{item.beatmaps}</TableCell>
+                                                        </TableRow>
+                                                    )
+                                                })
+                                            }
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                            </Paper>
+                        </Grid>
+                    )
+                })
+            }
+        </Grid>
+    </>);
 }
 
 export default SectionCompletion;

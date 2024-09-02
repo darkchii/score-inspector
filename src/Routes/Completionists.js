@@ -15,14 +15,14 @@ function Completionists(props) {
         })();
     }, []);
     return (
-        <Box>
+        (<Box>
             <h1>osu! completionists</h1>
             <Grid container spacing={2}>
                 {
                     //just map 0-4 (osu modes)
                     [...Array(4).keys()].map((mode) => {
                         return (
-                            <Grid item xs={12} md={6} lg={3}>
+                            (<Grid item xs={12} md={6} lg={3}>
                                 <Card>
                                     <CardContent>
                                         {
@@ -58,13 +58,13 @@ function Completionists(props) {
                                                         //select where mode is the current mode, order by completion date and then scores count
                                                         completionists.filter((user) => user.mode === mode).sort((a, b) => a.scores - b.scores).sort((a, b) => new Date(a.completion_date) - new Date(b.completion_date)).map((user) => {
                                                             return (
-                                                                <TableRow key={user.user.osu_id}>
+                                                                // <Typography>{GetFormattedName(user.user.inspector_user)}</Typography>
+                                                                (<TableRow key={user.user.osu_id}>
                                                                     <TableCell>{GetFormattedName(user.user.inspector_user)}</TableCell>
                                                                     <TableCell>{user.completion_date}</TableCell>
                                                                     <TableCell>{user.scores.toLocaleString('en-US')}</TableCell>
-                                                                </TableRow>
-                                                                // <Typography>{GetFormattedName(user.user.inspector_user)}</Typography>
-                                                            )
+                                                                </TableRow>)
+                                                            );
                                                         })
                                                     }
                                                 </TableBody>
@@ -72,8 +72,8 @@ function Completionists(props) {
                                         </TableContainer>
                                     </CardContent>
                                 </Card>
-                            </Grid>
-                        )
+                            </Grid>)
+                        );
                     })
                 }
             </Grid>
@@ -84,8 +84,8 @@ function Completionists(props) {
                 <br />
                 List also includes users not recognized by the official osu! website.
             </Alert>
-        </Box>
-    )
+        </Box>)
+    );
 }
 
 export default Completionists;

@@ -317,7 +317,7 @@ export async function GetTopVisited(order_by = 'count', limit = 10) {
 }
 
 export async function UpdateProfile(data) {
-    if (!await IsUserLoggedIn()) return null;
+    if (!(await IsUserLoggedIn())) return null;
 
     const res = await fetch(`${GetAPI()}login/update_profile`, {
         method: 'POST',
