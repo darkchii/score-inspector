@@ -80,11 +80,17 @@ function PlayerCard(props) {
                             <CardContent>
                                 <Box sx={{ textDecoration: 'none' }} alignContent='center'>
                                     <Stack>
-                                        <Typography>
+                                        <Typography sx={{
+                                            //center vertically
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            //1em space between elements
+                                            gap: '0.2em',
+                                        }}>
                                             <img 
                                                 src={getFlagIcon(props.user.osu?.country_code)} 
                                                 alt={props.user.osu?.country_code} 
-                                                style={{ height: '1em', borderRadius: '5px', marginRight: '0.4em' }} 
+                                                style={{ height: '1em', borderRadius: '5px'}} 
                                             />
                                             {
                                                 props.user.inspector_user?.clan_member && !props.user.inspector_user?.clan_member.pending ? 
