@@ -22,7 +22,7 @@
     "chartjs-chart-geo": "^4.3.1",
     "chartjs-plugin-zoom": "^2.0.1",
     "countries-list": "^3.1.1",
-    "dayjs": "^1.11.12",
+    "dayjs": "^1.11.13",
     "lodash": "^4.17.21",
     "moment": "^2.30.1",
     "moment-duration-format": "^2.3.2",
