@@ -29,7 +29,7 @@ momentDurationFormatSetup(moment);
 
 const GUIDE_NEW_USERS = [
     'Join the osu!alternative discord',
-    'Follow the guide to fetch your scores (#info channel, please read it)',
+    'Follow the guide to fetch your scores (go to #info channel, please read it)',
     'Wait for a couple hours. When done, you generally don\'t need to run it anymore, the live tracker takes over',
 ];
 
