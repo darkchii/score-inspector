@@ -223,7 +223,7 @@ function Header(props) {
                                 </IconButton>
                                 <Menu
                                     id="menu-appbar"
-                                    sx={{ mt: '45px' }}
+                                    sx={{ mt: '45px', pt: 0 }}
                                     keepMounted
                                     anchorEl={showMenu}
                                     anchorOrigin={{

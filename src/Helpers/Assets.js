@@ -17,6 +17,8 @@ import IMG_SVG_GRADE_B from "../Assets/Grade-B.svg";
 import IMG_SVG_GRADE_C from "../Assets/Grade-C.svg";
 import IMG_SVG_GRADE_D from "../Assets/Grade-D.svg";
 
+import IMG_CLANS_BG from "../Assets/Other/clans.jpg";
+
 import IMG_TRIANGLES from "../Assets/Triangles.svg";
 
 import PNG_MOD_HT from "../Assets/MOD_HT.png";
@@ -162,5 +164,6 @@ export {
     IMG_TRIANGLES,
     SVG_TRIANGLES,
     PNG_GUEST,
-    PNG_LEVEL_BADGE
+    PNG_LEVEL_BADGE,
+    IMG_CLANS_BG
 };

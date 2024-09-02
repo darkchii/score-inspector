@@ -1,4 +1,4 @@
-import { Alert, Box, Button, Card, CardContent, CircularProgress, Divider, Grid, Link, Modal, Paper, Skeleton, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from '@mui/material';
+import { Alert, Box, Button, Card, CardActionArea, CardContent, CircularProgress, Divider, Grid, Link, Modal, Paper, Skeleton, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Tooltip, Typography } from '@mui/material';
 import { Link as RouterLink, useSearchParams } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import { formatNumberAsSize, GetAPI, MODAL_STYLE, parseReadableStreamToJson, showNotification } from '../Helpers/Misc';
@@ -21,6 +21,9 @@ import TodayTopPlayers from '../Components/TodayTopPlayers.js';
 import BetterAlert from '../Components/UI/BetterAlert.js';
 import Error from '../Components/UI/Error.js';
 import StatCard from '../Components/UI/StatCard.js';
+import { IMG_CLANS_BG } from '../Helpers/Assets.js';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
 momentDurationFormatSetup(moment);
 
@@ -37,6 +40,8 @@ function Root() {
     const [serverInfo, setServerInfo] = useState(null);
     const [todayData, setTodayData] = useState(null);
     const [visitorStats, setVisitorStats] = useState(null);
+    const [isHoveringClansButton, setIsHoveringClansButton] = useState(false);
+    const [isHoveringHelpButton, setIsHoveringHelpButton] = useState(false);
 
     useEffect(() => {
         const _osuAuthCode = searchParams.get("code");
@@ -144,7 +149,7 @@ function Root() {
                                 <CardContent>
                                     <Grid container spacing={1}>
                                         <Grid item xs={12} md={4}>
-                                            <Grid container spacing={2} sx={{ pb: 1 }}>
+                                            <Grid container spacing={1}>
                                                 {/* <Grid item xs={12} md={12 / 5}>
                                                     <StatCard stats={<>
                                                         <Button variant='contained' component='a' href='https://discord.gg/VZWRZZXcW4' target='_blank'>Join</Button>
@@ -169,12 +174,147 @@ function Root() {
                                                 </Grid>
                                             </Grid>
                                         </Grid>
-                                        <Grid item xs={12} md={8}>
-                                            <Typography variant='title'>For new users</Typography>
+                                        <Grid item xs={12} md={3}>
+                                            <Paper sx={{
+                                                width: '100%',
+                                                height: '100%',
+                                                position: 'relative'
+                                            }}>
+                                                <Box sx={{
+                                                    position: 'absolute',
+                                                    top: 0,
+                                                    left: 0,
+                                                    right: 0,
+                                                    bottom: 0,
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                }}>
+                                                    {/* HelpOutlineIcon */}
+                                                    <HelpOutlineIcon
+                                                        sx={{
+                                                            color: 'rgba(0, 0, 0, 0.1)',
+                                                            //fontSize fit the box
+                                                            fontSize: '10vw',
+                                                        }}
+                                                    />
+                                                </Box>
+                                                <Card sx={{
+                                                    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                                                    width: '100%',
+                                                    height: '100%',
+                                                    display: 'flex',
+                                                }}>
+                                                    <CardActionArea
+                                                        component={RouterLink}
+                                                        sx={{ flexGrow: 1 }}
+                                                        onMouseEnter={() => setIsHoveringHelpButton(true)}
+                                                        onMouseLeave={() => setIsHoveringHelpButton(false)}
+                                                    >
+                                                        <CardContent sx={{
+                                                            flexGrow: 1,
+                                                            display: 'flex',
+                                                            //center vertically
+                                                            alignItems: 'center',
+                                                            height: '100%',
+                                                        }}>
+                                                            <Typography variant='h5' sx={{ color: 'white' }}>How to get your statistics available</Typography>
+                                                            {/* a dropdown Paper when helpbutton is hovered (show below the card, but overlaps anything underneath) */}
+                                                            <Paper
+                                                                sx={{
+                                                                    position: 'absolute',
+                                                                    bottom: isHoveringHelpButton ? 0 : -50,
+                                                                    left: 0,
+                                                                    right: 0,
+                                                                    height: 'auto',
+                                                                    zIndex: 1,
+                                                                    // display: isHoveringHelpButton ? 'block' : 'none',
+                                                                    opacity: isHoveringHelpButton ? 1 : 0,
+                                                                    transition: 'all 0.3s',
+                                                                }}>
+                                                                <Stack spacing={0.2}>
+                                                                    {
+                                                                        GUIDE_NEW_USERS.map((note, index) => {
+                                                                            return (
+                                                                                <BetterAlert sx={{
+                                                                                    padding: '2px'
+                                                                                }} severity='primary'>
+                                                                                    <Typography variant='body2'>{note}</Typography>
+                                                                                </BetterAlert>
+                                                                            );
+                                                                        })
+                                                                    }
+                                                                </Stack>
+                                                            </Paper>
+                                                        </CardContent>
+                                                    </CardActionArea>
+                                                </Card>
+                                            </Paper>
+                                        </Grid>
+                                        <Grid item xs={12} md={5}>
+                                            {/* a fancy massive button to go to the clans */}
+                                            <Paper sx={{
+                                                backgroundImage: `url(${IMG_CLANS_BG})`,
+                                                backgroundSize: 'cover',
+                                                backgroundPosition: 'top center',
+                                                width: '100%',
+                                                height: '100%',
+                                            }}>
+                                                <Card sx={{
+                                                    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                                                    width: '100%',
+                                                    height: '100%',
+                                                    display: 'flex',
+                                                }}>
+                                                    <CardActionArea
+                                                        component={RouterLink}
+                                                        to='/clan'
+                                                        sx={{ flexGrow: 1 }}
+                                                        onMouseEnter={() => setIsHoveringClansButton(true)}
+                                                        onMouseLeave={() => setIsHoveringClansButton(false)}
+                                                    >
+                                                        <CardContent sx={{
+                                                            flexGrow: 1,
+                                                            display: 'flex',
+                                                            //center vertically
+                                                            alignItems: 'center',
+                                                            height: '100%',
+                                                        }}>
+                                                            <Typography variant='h3' sx={{ color: 'white' }}>Check out clans!</Typography>
+
+                                                            {/* a large arrow on the right, pointing right, which moves slightly left when hovering the cardactionarea */}
+                                                            <Box sx={{
+                                                                position: 'absolute',
+                                                                right: 0,
+                                                                top: 0,
+                                                                bottom: 0,
+                                                                display: 'flex',
+                                                                alignItems: 'center',
+                                                                justifyContent: 'center',
+                                                                transition: 'transform 0.2s',
+                                                                // '&:hover': {
+                                                                //     transform: 'translateX(-5px)',
+                                                                // },
+                                                                transform: isHoveringClansButton ? 'translateX(-15px)' : 'translateX(0)',
+                                                            }}>
+                                                                <Box>
+                                                                    <NavigateNextIcon
+                                                                        sx={{
+                                                                            color: 'white',
+                                                                            fontSize: '3rem',
+                                                                        }}
+                                                                    />
+                                                                </Box>
+                                                            </Box>
+                                                        </CardContent>
+                                                    </CardActionArea>
+                                                </Card>
+                                            </Paper>
+                                            {/* <Typography variant='title'>For new users</Typography>
                                             <Stack spacing={0.5}>
                                                 <BetterAlert sx={{
-                                                    pt: 1.15,
-                                                    pb: 1.15,
+                                                    pt: 0.7,
+                                                    pb: 0.7,
                                                 }} severity='warning'>
                                                     <Typography>If you are new, carefully read and follow this!</Typography>
                                                 </BetterAlert>
@@ -182,15 +322,15 @@ function Root() {
                                                     GUIDE_NEW_USERS.map((note, index) => {
                                                         return (
                                                             <BetterAlert sx={{
-                                                                pt: 1.15,
-                                                                pb: 1.15,
+                                                                pt: 0.7,
+                                                                pb: 0.7,
                                                             }} severity='primary'>
                                                                 <Typography>{note}</Typography>
                                                             </BetterAlert>
                                                         );
                                                     })
                                                 }
-                                            </Stack>
+                                            </Stack> */}
                                         </Grid>
                                     </Grid>
                                 </CardContent>
