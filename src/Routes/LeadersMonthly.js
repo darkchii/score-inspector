@@ -168,7 +168,6 @@ function LeadersMonthly(props) {
                     <Loader />
                 ) : (
                     <>
-                        <Alert severity="warning">This page is currently NOT being updated due to performance issues.</Alert>
                         <ButtonGroup sx={{ pb: 1 }}>
                             {/* <Button disabled={dataType === 'score'} variant={dataType === 'score' ? 'contained' : 'outlined'} onClick={() => setDataType('score')}>Total Score</Button>
                             <Button disabled={dataType === 'ss'} variant={dataType === 'ss' ? 'contained' : 'outlined'} onClick={() => setDataType('ss')}>Total SS</Button>
