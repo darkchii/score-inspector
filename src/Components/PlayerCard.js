@@ -1,11 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Box, Card, CardContent, CardMedia, Grid, Stack, Typography } from "@mui/material";
-import ReactCountryFlag from "react-country-flag";
 import { GetRoleIcons } from "../Helpers/Account";
 import LevelIcon from "./UI/LevelIcon";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useRef } from "react";
+import { getFlagIcon } from "../Helpers/Assets";
 
 const SECTIONAL_HEIGHT = 75;
 const BORDER_RADIUS = '15px';
@@ -81,15 +81,10 @@ function PlayerCard(props) {
                                 <Box sx={{ textDecoration: 'none' }} alignContent='center'>
                                     <Stack>
                                         <Typography>
-                                            <ReactCountryFlag
-                                                svg
-                                                style={{
-                                                    fontSize: '1.4em',
-                                                    borderRadius: '5px',
-                                                    paddingRight: '0.4em'
-                                                }}
-                                                cdnUrl="https://flagicons.lipis.dev/flags/4x3/"
-                                                countryCode={props.user.osu?.country_code}
+                                            <img 
+                                                src={getFlagIcon(props.user.osu?.country_code)} 
+                                                alt={props.user.osu?.country_code} 
+                                                style={{ height: '1em', borderRadius: '5px', marginRight: '0.4em' }} 
                                             />
                                             {
                                                 props.user.inspector_user?.clan_member && !props.user.inspector_user?.clan_member.pending ? 

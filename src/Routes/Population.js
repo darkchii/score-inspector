@@ -15,10 +15,10 @@ import WorldAtlas from '../Assets/world-110m.json';
 import Countries from '../Assets/countries.json';
 import { lerpColor, linearToLogarithmic } from "../Helpers/Misc";
 import { Box, Button, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableRow, Tooltip as MUITooltip, Typography, TableHead, Container, useTheme } from "@mui/material";
-import ReactCountryFlag from "react-country-flag";
 import Loader from "../Components/UI/Loader";
 import { Helmet } from 'react-helmet';
 import config from "../config.json";
+import { getFlagIcon } from "../Helpers/Assets";
 
 ChartJS.register(
     Title,
@@ -374,15 +374,7 @@ function Population() {
                                         return (
                                             <TableRow>
                                                 <TableCell>
-                                                    <ReactCountryFlag
-                                                        svg
-                                                        style={{
-                                                            fontSize: '1.6em',
-                                                            borderRadius: '5px',
-                                                        }}
-                                                        cdnUrl="https://flagicons.lipis.dev/flags/4x3/"
-                                                        countryCode={c.code ?? 'xx'}
-                                                    />
+                                                    <img src={getFlagIcon(c.code)} alt={c.code} style={{ height: '1.4em', borderRadius: '5px' }} />
                                                 </TableCell>
                                                 <TableCell>{c.name}</TableCell>
                                                 <TableCell align="right">{value}</TableCell>

@@ -2,7 +2,6 @@ import { Alert, AlertTitle, Box, Button, ButtonGroup, CircularProgress, FormCont
 import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
-import ReactCountryFlag from 'react-country-flag';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getLeaderboard } from '../Helpers/OsuAlt';
 import moment from 'moment/moment';
@@ -14,6 +13,7 @@ import config from "../config.json";
 import { grey } from '@mui/material/colors';
 import { countries } from 'countries-list';
 import { getDedicationLevel } from '../Helpers/Osu';
+import { getFlagIcon } from '../Helpers/Assets';
 momentDurationFormatSetup(moment);
 
 const GROUPED_STATS = {
@@ -413,7 +413,9 @@ function Leaders() {
                                             return (
                                                 <MenuItem key={value.code} value={value.code}>
                                                     {
-                                                        value.code !== 'world' ? <ReactCountryFlag svg style={{ lineHeight: '1em', fontSize: '1.4em', borderRadius: '5px' }} cdnUrl="https://flagicons.lipis.dev/flags/4x3/" countryCode={value.code} /> : <></>
+                                                        value.code !== 'world' ? 
+                                                        <img src={getFlagIcon(value.code)} alt={value.code} style={{ height: '1em', borderRadius: '5px' }} />
+                                                        : <></>
                                                     }
                                                     &nbsp;{value.name}
                                                 </MenuItem>

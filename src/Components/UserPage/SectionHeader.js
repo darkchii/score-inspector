@@ -1,12 +1,12 @@
 import { Avatar, Box, Chip, Grid, Link, Paper, Stack, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableRow, Tooltip, Typography } from "@mui/material";
 import moment from "moment";
 import { useEffect, useState } from "react";
-import ReactCountryFlag from "react-country-flag";
 import { GetFormattedName, GetRoleIcon, GetRoles } from "../../Helpers/Account";
 import TwitterIcon from '@mui/icons-material/Twitter';
 import { DiscordIcon } from "../../Helpers/Icons";
 import { getBonusPerformance } from "../../Helpers/Osu";
 import { Link as VLink } from 'react-router-dom';
+import { getFlagIcon } from "../../Helpers/Assets";
 
 const MAX_VISITORS = 5;
 function SectionHeader(props) {
@@ -97,7 +97,7 @@ function SectionHeader(props) {
                                         }</Typography>
                                 </Stack>
                                 <Stack alignItems='center' direction='row' spacing={1}>
-                                    <ReactCountryFlag svg style={{ lineHeight: '1em', fontSize: '1.4em', borderRadius: '5px' }} cdnUrl="https://flagicons.lipis.dev/flags/4x3/" countryCode={props.user.osu.country.code} />
+                                    <img src={getFlagIcon(props.user.osu.country.code)} alt={props.user.osu.country.code} style={{ height: '1em', borderRadius: '5px' }} />
                                     <Typography variant='h6'>{props.user.osu.country.name}</Typography>
                                     {
                                         props.user.osu.groups.length > 0 ? <>

@@ -5,12 +5,11 @@ import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { useState } from "react";
 import { mods, mod_strings_long } from "../Helpers/Osu";
 import { useEffect } from "react";
-import { getModIcon, getPossibleMods, IMG_SVG_GRADE_A, IMG_SVG_GRADE_B, IMG_SVG_GRADE_C, IMG_SVG_GRADE_D, IMG_SVG_GRADE_S, IMG_SVG_GRADE_SH, IMG_SVG_GRADE_X, IMG_SVG_GRADE_XH } from "../Helpers/Assets";
+import { getFlagIcon, getModIcon, getPossibleMods, IMG_SVG_GRADE_A, IMG_SVG_GRADE_B, IMG_SVG_GRADE_C, IMG_SVG_GRADE_D, IMG_SVG_GRADE_S, IMG_SVG_GRADE_SH, IMG_SVG_GRADE_X, IMG_SVG_GRADE_XH } from "../Helpers/Assets";
 import ImageToggle from "./ImageToggle";
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { countries } from 'countries-list';
-import ReactCountryFlag from "react-country-flag";
 
 const FILTER_FIELD_SIZE = 12 / 5;
 const MIN_DATE = moment('6 Oct 2007');
@@ -471,7 +470,9 @@ function ScoreFilter(props) {
                                                 return (
                                                     <MenuItem key={value.code} value={value.code}>
                                                         {
-                                                            value.code !== 'world' ? <ReactCountryFlag svg style={{ lineHeight: '1em', fontSize: '1.4em', borderRadius: '5px' }} cdnUrl="https://flagicons.lipis.dev/flags/4x3/" countryCode={value.code} /> : <></>
+                                                            value.code !== 'world' ?
+                                                                <img src={getFlagIcon(value.code)} alt={value.code} style={{ height: '1em', borderRadius: '5px', marginRight: '0.4em' }} />
+                                                                : <></>
                                                         }
                                                         &nbsp;{value.name}
                                                     </MenuItem>

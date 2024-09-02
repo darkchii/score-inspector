@@ -4,7 +4,6 @@ import { Box, Stack, Tooltip, Typography, useTheme } from "@mui/material";
 import GlowBar from "../UI/GlowBar";
 import LevelIcon from "../UI/LevelIcon";
 import { LEADERBOARD_BORDER_RADIUS, LEADERBOARD_ITEM_HEIGHT, LeaderboardItem } from "./LeaderboardItem";
-import ReactCountryFlag from "react-country-flag";
 import { GetRoleIcons } from "../../Helpers/Account";
 import NotInterestedIcon from '@mui/icons-material/NotInterested';
 import { useNavigate } from "react-router-dom";
@@ -13,6 +12,7 @@ import FiberNewIcon from '@mui/icons-material/FiberNew';
 import HorizontalRuleIcon from '@mui/icons-material/HorizontalRule';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import { getFlagIcon } from "../../Helpers/Assets";
 
 function PlayerLeaderboardItem(props) {
     const [osu_user, setOsuUser] = useState({});
@@ -61,9 +61,9 @@ function PlayerLeaderboardItem(props) {
             <LeaderboardItem
                 background={osu_user?.cover?.custom_url}
                 onClick={() => {
-                    if(props.remote_profile){
+                    if (props.remote_profile) {
                         window.open(`https://osu.ppy.sh/users/${base_user?.user_id ?? base_user?.osu_id}`, '_blank');
-                    }else{
+                    } else {
                         navigate(`/user/${base_user?.user_id ?? base_user?.osu_id}`);
                     }
                 }}>
@@ -150,13 +150,7 @@ function PlayerLeaderboardItem(props) {
                     alignItems: 'center',
                     width: '50px'
                 }}>
-                    <Box>
-                        <ReactCountryFlag svg
-                            style={{ lineHeight: '1em', fontSize: '1.8em', borderRadius: '5px' }}
-                            cdnUrl="https://flagicons.lipis.dev/flags/4x3/"
-                            countryCode={osu_user?.country_code ?? ''}
-                        />
-                    </Box>
+                    <img src={getFlagIcon(osu_user?.country_code)} alt={osu_user?.country_code} style={{ height: '1.3em', borderRadius: '5px' }} />
                 </Box>
 
                 <Box sx={{

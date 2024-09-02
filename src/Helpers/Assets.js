@@ -123,6 +123,17 @@ function getGradeIcon(grade) {
     // }
 }
 
+function getFlagIcon(country_code){
+    //get flag icons (require.context)
+    if(country_code === null || country_code === undefined){
+        country_code = '__';
+    }
+    country_code = country_code.toUpperCase();
+    const flagIcons = require.context('../Assets/Flags', true);
+    const flag = flagIcons(`./${country_code}.png`);
+    return flag;
+}
+
 export {
     SVG_GRADE_XH,
     SVG_GRADE_X,
@@ -166,4 +177,5 @@ export {
     PNG_GUEST,
     PNG_LEVEL_BADGE,
     IMG_CLANS_BG,
+    getFlagIcon
 };
