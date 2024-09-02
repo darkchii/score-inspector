@@ -19,7 +19,7 @@ const updates = [
             [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Clan logs added', '09238889133d58ddd279313d70dd0b5f5516c224'],
             [PLATFORMTYPES.API | PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Monthly clan rankings added', 'b7ea0f591633c50562371e7fa26878378f6a6c33'],
             [PLATFORMTYPES.WEB, CHANGETYPES.MISC, 'Clan listing and page (slight) redesign', 'a21275e2a7d724eb745008df76574a3bde0f0b1c'],
-            [PLATFORMTYPES.WEB, CHANGETYPES.FIX, 'Changed flag images source to support more territories', '6cc55e42c12f38380d415715359f818eb81e3cb8'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.FIX, 'Changed to local flag images', '6cc55e42c12f38380d415715359f818eb81e3cb8'],
             [PLATFORMTYPES.WEB, CHANGETYPES.FIX, 'Changed population page TopoJSON dataset to correct some borders for world map', 'c5b357723ea67ea51e7b4156c38a19d81d3edf1d'],
             [PLATFORMTYPES.WEB, CHANGETYPES.MISC, 'Global periodic top plays page now contain much more information in the card', '49d154942daf6020f85923c021ed8adfd065bd70'],
             [PLATFORMTYPES.WEB | PLATFORMTYPES.API, CHANGETYPES.MISC, 'Global periodic top plays are now based on 0 utc for that day/week/etc instead of last x days', '3276840f8371eb21d840dc53ec61d570de0d07de'],
