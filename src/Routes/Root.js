@@ -7,7 +7,7 @@ import axios from 'axios';
 import moment from 'moment';
 import momentDurationFormatSetup from "moment-duration-format";
 import ScoreSubmissions from '../Components/ScoreSubmissions';
-import { blue, blueGrey, green, grey, indigo, red } from '@mui/material/colors';
+import { blue, blueGrey, green, grey, indigo, pink, red, yellow } from '@mui/material/colors';
 import GlowBar from '../Components/UI/GlowBar';
 import Loader from '../Components/UI/Loader';
 import config from "../config.json";
@@ -178,7 +178,8 @@ function Root() {
                                             <Paper sx={{
                                                 width: '100%',
                                                 height: '100%',
-                                                position: 'relative'
+                                                position: 'relative',
+                                                backgroundColor: `${pink[700]}`,
                                             }}>
                                                 <Box sx={{
                                                     position: 'absolute',
@@ -200,7 +201,7 @@ function Root() {
                                                     />
                                                 </Box>
                                                 <Card sx={{
-                                                    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                                                    backgroundColor: `rgba(0, 0, 0, 0.7)`,
                                                     width: '100%',
                                                     height: '100%',
                                                     display: 'flex',
