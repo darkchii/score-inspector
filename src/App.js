@@ -1,4 +1,4 @@
-import { Alert, Box, Card, CardContent, CssBaseline, Typography } from '@mui/material';
+import { Alert, Box, Card, CardContent, CssBaseline, Paper, Typography } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import React, { useEffect, useState } from 'react';
 import './App.css';
@@ -91,12 +91,13 @@ function App() {
   const basePage = (
     <>
 
-      <Box sx={{ pb: 2 }}>
+      <Box>
         <Header account={loginData} />
       </Box>
-      <Box sx={{ pl: 2, pr: 2 }}></Box>
-      <Card sx={{
+      <Paper sx={{
         backgroundColor: `${Theme.palette.background.paper}dd`,
+        //no top border-radius
+        borderRadius: 0,
       }}>
         <CardContent>
           <Routes>
@@ -153,8 +154,8 @@ function App() {
             <Route path="player_compare/:user_a?/:user_b?" element={<ComparePlayers />} />
           </Routes>
         </CardContent>
-      </Card>
-      <Box sx={{ pt: 2, pb: 2 }}>
+      </Paper>
+      <Box sx={{ pb: 2 }}>
         <Footer />
       </Box>
     </>
