@@ -10,3 +10,4 @@ updates:
     schedule:
       interval: "weekly"
     target-branch: "dev-2.0"
+    open-pull-requests-limit: 0
