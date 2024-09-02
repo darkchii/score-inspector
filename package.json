@@ -6,7 +6,7 @@
   "dependencies": {
     "@ckeditor/ckeditor5-build-classic": "^43.0.0",
     "@ckeditor/ckeditor5-react": "^9.0.0",
-    "@emotion/react": "^11.13.0",
+    "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
     "@fontsource/comfortaa": "^5.0.21",
     "@fontsource/roboto": "^5.0.14",
