@@ -1,13 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { forwardRef, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Loader from "../Components/UI/Loader";
-import { Alert, Box, Button, ButtonGroup, Chip, Divider, Grid, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, useTheme } from "@mui/material";
+import { Box, Button, ButtonGroup, Chip, Divider, Grid, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography, useTheme } from "@mui/material";
 import config from "../config.json";
 import { Helmet } from "react-helmet";
 import { GetAPI } from "../Helpers/Misc.js";
 import { GetFormattedName } from "../Helpers/Account.js";
 import moment from "moment";
-import { TableVirtuoso } from "react-virtuoso";
 
 const value_types = {
     score: {
@@ -26,18 +25,6 @@ const value_types = {
         format: (value) => `${parseInt(value).toLocaleString('en-US')}pp`,
     },
 }
-
-const VirtuosoTableComponents = {
-    Scroller: forwardRef((props, ref) => (
-        <TableContainer component={Paper} {...props} ref={ref} />
-    )),
-    Table: (props) => (
-        <Table {...props} sx={{ borderCollapse: 'separate', tableLayout: 'fixed' }} />
-    ),
-    TableHead,
-    TableRow: ({ item: _item, ...props }) => <TableRow {...props} />,
-    TableBody: forwardRef((props, ref) => <TableBody {...props} ref={ref} />),
-};
 
 function LeadersMonthly(props) {
     const theme = useTheme();
@@ -263,24 +250,27 @@ function LeadersMonthly(props) {
                                         <Paper style={{ height: 400, width: '100%' }}>
                                             {
                                                 dataOvertakes.length > 0 ? (
-                                                    <TableVirtuoso
-                                                        data={dataOvertakes}
-                                                        components={VirtuosoTableComponents}
-                                                        size={'small'}
-                                                        itemContent={(index, item) => {
-                                                            return (
-                                                                <TableRow>
-                                                                    <TableCell width='5%'><Chip color="primary" size='small' label={value_types[dataType].name} /></TableCell>
-                                                                    <TableCell width='5%'><Chip size='small' label={`${item.time_moment.fromNow()}`} /></TableCell>
-                                                                    <TableCell width='10%'>{GetFormattedName(item.new_user.inspector_user)}</TableCell>
-                                                                    <TableCell width='5%'>overtook</TableCell>
-                                                                    <TableCell width='10%'>{GetFormattedName(item.old_user.inspector_user)}</TableCell>
-                                                                    <TableCell width='10%'>on {item.period}</TableCell>
-                                                                    <TableCell width='45%'> </TableCell>
-                                                                </TableRow>
-                                                            )
-                                                        }}
-                                                    />
+                                                    <TableContainer>
+                                                        <Table size="small">
+                                                            <TableBody>
+                                                                {
+                                                                    dataOvertakes.map((item, index) => {
+                                                                        return (
+                                                                            <TableRow key={index}>
+                                                                                <TableCell width='5%'><Chip color="primary" size='small' label={value_types[dataType].name} /></TableCell>
+                                                                                <TableCell width='5%'><Chip size='small' label={`${item.time_moment.fromNow()}`} /></TableCell>
+                                                                                <TableCell width='12.5%'>{GetFormattedName(item.new_user.inspector_user)}</TableCell>
+                                                                                <TableCell width='5%'>overtook</TableCell>
+                                                                                <TableCell width='12.5%'>{GetFormattedName(item.old_user.inspector_user)}</TableCell>
+                                                                                <TableCell width='10%'>on {item.period}</TableCell>
+                                                                                <TableCell width='40%'> </TableCell>
+                                                                            </TableRow>
+                                                                        )  
+                                                                    })
+                                                                }
+                                                            </TableBody>
+                                                        </Table>
+                                                    </TableContainer>
                                                 ) : (
                                                     <Box sx={{ color: theme.palette.text.primary, p: 1 }}>
                                                         No overtakes recorded yet.
