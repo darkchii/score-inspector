@@ -1,4 +1,4 @@
-import { Box, Button, Chip, Grid, Link, Stack, Table, TableBody, TableCell, TableRow, Typography } from '@mui/material';
+import { Box, Button, Chip, Grid2, Link, Stack, Table, TableBody, TableCell, TableRow, Typography } from '@mui/material';
 import moment from 'moment/moment';
 import React from 'react';
 import { useEffect } from 'react';
@@ -57,7 +57,7 @@ function Update() {
                         <Typography sx={{ display: 'inline-block', mt: 1 }} component='h4' variant='title'>{update.version}</Typography>
                         <Button disabled={!canMove[1]} onClick={() => navigate(`/update/${canMove[1]}`)} size='small'><KeyboardDoubleArrowRightIcon /></Button>
                     </Box>
-                    <Grid sx={{ p: 1 }}>
+                    <Grid2 sx={{ p: 1 }}>
                         {
                             reversedUpdates && reversedUpdates.map((update, index) => {
                                 const id = index + 1;
@@ -69,7 +69,7 @@ function Update() {
                                 );
                             })
                         }
-                    </Grid>
+                    </Grid2>
                     <Typography component='h6'>{update.date} ({moment(update.date).fromNow()})</Typography>
                     <Table size="small">
                         <TableBody>

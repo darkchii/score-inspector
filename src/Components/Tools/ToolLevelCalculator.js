@@ -1,4 +1,4 @@
-import { Box, Button, Grid, Paper, Stack, TextField, Typography } from "@mui/material";
+import { Box, Button, Grid2, Paper, Stack, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 import { showNotification } from "../../Helpers/Misc";
 import { getLevelForScore, getScoreForLevel, getUser } from "../../Helpers/Osu";
@@ -82,19 +82,19 @@ function ToolLevelCalculator() {
                 <Box component={Paper} sx={{ p: 2 }}>
                     <Stack spacing={2}>
                         <Typography variant="h6">Calculate for user</Typography>
-                        <Grid container>
-                            <Grid item xs={3}>
-                            </Grid>
-                            <Grid item xs={6}>
+                        <Grid2 container>
+                            <Grid2 size={3}>
+                            </Grid2>
+                            <Grid2 size={6}>
                                 <Stack spacing={1}>
                                     <TextField disabled={working} value={userCalcNameInput} onChange={e => setUserCalcNameInput(e.target.value)} label="Username" variant="standard" size='small' />
                                     <TextField disabled={working} value={userCalcLevelInput} onChange={e => setUserCalcLevelInput(e.target.value)} label="Level" variant="standard" size='small' />
                                     <Button onClick={() => calculateUserLevel()} disabled={working} variant="contained" size='small'>Calculate</Button>
                                 </Stack >
-                            </Grid>
-                            <Grid item xs={3}>
-                            </Grid>
-                        </Grid>
+                            </Grid2>
+                            <Grid2 size={3}>
+                            </Grid2>
+                        </Grid2>
                         <Typography variant="h6">Score needed: {userCalcResult ? userCalcResult.toLocaleString('en-US') : '-'}</Typography>
                         <Typography variant="body2">This will calculate the amount of score needed to reach the specified level.</Typography>
                     </Stack>
@@ -103,18 +103,18 @@ function ToolLevelCalculator() {
                 <Box component={Paper} sx={{ p: 2 }}>
                     <Stack spacing={2}>
                         <Typography variant="h6">Calculate level to score</Typography>
-                        <Grid container>
-                            <Grid item xs={3}>
-                            </Grid>
-                            <Grid item xs={6}>
+                        <Grid2 container>
+                            <Grid2 size={3}>
+                            </Grid2>
+                            <Grid2 size={6}>
                                 <Stack spacing={1}>
                                     <TextField disabled={working} value={leveltoScoreCalcInput} onChange={e => setLevelToScoreCalcInput(e.target.value)} label="Level" variant="standard" size='small' />
                                     <Button onClick={() => calculateLevelToScore()} disabled={working} variant="contained" size='small'>Calculate</Button>
                                 </Stack >
-                            </Grid>
-                            <Grid item xs={3}>
-                            </Grid>
-                        </Grid>
+                            </Grid2>
+                            <Grid2 size={3}>
+                            </Grid2>
+                        </Grid2>
                         <Typography variant="h6">Score needed: {leveltoScoreCalcResult ? leveltoScoreCalcResult.toLocaleString('en-US') : '-'}</Typography>
                         <Typography variant="body2">This will calculate the amount of score needed to reach the specified level.</Typography>
                     </Stack>
@@ -123,18 +123,18 @@ function ToolLevelCalculator() {
                 <Box component={Paper} sx={{ p: 2 }}>
                     <Stack spacing={2}>
                         <Typography variant="h6">Calculate score to level</Typography>
-                        <Grid container>
-                            <Grid item xs={3}>
-                            </Grid>
-                            <Grid item xs={6}>
+                        <Grid2 container>
+                            <Grid2 size={3}>
+                            </Grid2>
+                            <Grid2 size={6}>
                                 <Stack spacing={1}>
                                     <TextField disabled={working} value={scoreToLevelCalcInput} onChange={e => setScoreToLevelCalcInput(e.target.value)} label="Score" variant="standard" size='small' />
                                     <Button onClick={() => calculateScoreToLevel()} disabled={working} variant="contained" size='small'>Calculate</Button>
                                 </Stack >
-                            </Grid>
-                            <Grid item xs={3}>
-                            </Grid>
-                        </Grid>
+                            </Grid2>
+                            <Grid2 size={3}>
+                            </Grid2>
+                        </Grid2>
                         <Typography variant="h6">Resulting level: {scoreToLevelCalcResult ? scoreToLevelCalcResult.toLocaleString('en-US') : '-'}</Typography>
                         <Typography variant="body2">This will calculate the level resulting from x score</Typography>
                     </Stack>

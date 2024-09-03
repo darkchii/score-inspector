@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Box, Button, ButtonGroup, Card, CardContent, Grid, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography, useTheme, Tooltip as MUITooltip, Alert } from "@mui/material";
+import { Box, Button, ButtonGroup, Card, CardContent, Grid2, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography, useTheme, Tooltip as MUITooltip, Alert } from "@mui/material";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { GRADE_ORDER, getGradeColor } from "../../Helpers/Osu";
@@ -301,8 +301,8 @@ function SectionDaily(props) {
                         </ButtonGroup>
                     </Box>
                     <Box sx={{ pt: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                        <Grid className="graph">
-                            <Grid className="months">
+                        <Grid2 className="graph">
+                            <Grid2 className="months">
                                 <li>Jan</li>
                                 <li>Feb</li>
                                 <li>Mar</li>
@@ -315,8 +315,8 @@ function SectionDaily(props) {
                                 <li>Oct</li>
                                 <li>Nov</li>
                                 <li>Dec</li>
-                            </Grid>
-                            <Grid className="days">
+                            </Grid2>
+                            <Grid2 className="days">
                                 <li>Sun</li>
                                 <li>Mon</li>
                                 <li>Tue</li>
@@ -324,8 +324,8 @@ function SectionDaily(props) {
                                 <li>Thu</li>
                                 <li>Fri</li>
                                 <li>Sat</li>
-                            </Grid>
-                            <Grid className="squares">
+                            </Grid2>
+                            <Grid2 className="squares">
                                 {
                                     //add empty spots if first day is not sunday
                                     yearGraphData && Array.from(Array(moment(yearGraphData[0].date).day()).keys()).map((day) => {
@@ -379,8 +379,8 @@ function SectionDaily(props) {
                                         )
                                     })
                                 }
-                            </Grid>
-                        </Grid>
+                            </Grid2>
+                        </Grid2>
                     </Box>
                     <Paper elevation={1} sx={{ pt: 1, pb: 1 }}>
                         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -418,7 +418,7 @@ function SectionDaily(props) {
                 </Paper>
 
                 <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    <Grid sx={{ my: 2 }}>
+                    <Grid2 sx={{ my: 2 }}>
                         <ButtonGroup size='small'>
                             {heightDefiners.map((definer) => (
                                 <Button onClick={() => setHeightDefiner(definer)} variant={heightDefiner.value === definer.value ? 'contained' : 'outlined'}>
@@ -427,20 +427,20 @@ function SectionDaily(props) {
                             ))
                             }
                         </ButtonGroup>
-                    </Grid>
+                    </Grid2>
                 </Box>
 
 
-                <Grid sx={{
+                <Grid2 sx={{
                     minHeight: '700px',
                 }}>
-                    {(selectedDayRange[0] && graphData && sessionAnnotations && sessionAnnotations.length > 0) && <Grid sx={{ mt: 1 }}>
+                    {(selectedDayRange[0] && graphData && sessionAnnotations && sessionAnnotations.length > 0) && <Grid2 sx={{ mt: 1 }}>
                         <ErrorBoundary fallback={<div>Something went wrong</div>}>
-                            <Grid sx={{
+                            <Grid2 sx={{
                                 position: 'relative',
                                 height: '400px',
                             }}>
-                                <Grid sx={{
+                                <Grid2 sx={{
                                     position: 'absolute',
                                     height: '400px',
                                     width: '100%',
@@ -538,47 +538,47 @@ function SectionDaily(props) {
                                         series={graphData}
                                         type={'scatter'}
                                     />
-                                </Grid>
-                            </Grid>
+                                </Grid2>
+                            </Grid2>
                         </ErrorBoundary>
                         <Typography variant='caption'>The pink area designates sessions</Typography>
-                        <Grid sx={{ mt: 1, pl: 2 }}>
+                        <Grid2 sx={{ mt: 1, pl: 2 }}>
                             <Stack direction="column" spacing={2}>
-                                <Grid>
+                                <Grid2>
                                     {
                                         stats && <>
                                             <Stack direction="row" sx={{ justifyContent: 'center', alignItems: 'center' }}>
-                                                <Grid sx={{ mr: 3, ml: 3 }}>
+                                                <Grid2 sx={{ mr: 3, ml: 3 }}>
                                                     <img src={IMG_SVG_GRADE_XH} alt='XH' /> {stats.grade_ssh.toLocaleString('en-US')}
-                                                </Grid>
-                                                <Grid sx={{ mr: 3, ml: 3 }}>
+                                                </Grid2>
+                                                <Grid2 sx={{ mr: 3, ml: 3 }}>
                                                     <img src={IMG_SVG_GRADE_X} alt='X' /> {stats.grade_ss.toLocaleString('en-US')}
-                                                </Grid>
-                                                <Grid sx={{ mr: 3, ml: 3 }}>
+                                                </Grid2>
+                                                <Grid2 sx={{ mr: 3, ml: 3 }}>
                                                     <img src={IMG_SVG_GRADE_SH} alt='SH' /> {stats.grade_sh.toLocaleString('en-US')}
-                                                </Grid>
-                                                <Grid sx={{ mr: 3, ml: 3 }}>
+                                                </Grid2>
+                                                <Grid2 sx={{ mr: 3, ml: 3 }}>
                                                     <img src={IMG_SVG_GRADE_S} alt='S' /> {stats.grade_s.toLocaleString('en-US')}
-                                                </Grid>
-                                                <Grid sx={{ mr: 3, ml: 3 }}>
+                                                </Grid2>
+                                                <Grid2 sx={{ mr: 3, ml: 3 }}>
                                                     <img src={IMG_SVG_GRADE_A} alt='A' /> {stats.grade_a.toLocaleString('en-US')}
-                                                </Grid>
-                                                <Grid sx={{ mr: 3, ml: 3 }}>
+                                                </Grid2>
+                                                <Grid2 sx={{ mr: 3, ml: 3 }}>
                                                     <img src={IMG_SVG_GRADE_B} alt='B' /> {stats.grade_b.toLocaleString('en-US')}
-                                                </Grid>
-                                                <Grid sx={{ mr: 3, ml: 3 }}>
+                                                </Grid2>
+                                                <Grid2 sx={{ mr: 3, ml: 3 }}>
                                                     <img src={IMG_SVG_GRADE_C} alt='C' /> {stats.grade_c.toLocaleString('en-US')}
-                                                </Grid>
-                                                <Grid sx={{ mr: 3, ml: 3 }}>
+                                                </Grid2>
+                                                <Grid2 sx={{ mr: 3, ml: 3 }}>
                                                     <img src={IMG_SVG_GRADE_D} alt='D' /> {stats.grade_d.toLocaleString('en-US')}
-                                                </Grid>
+                                                </Grid2>
                                             </Stack>
                                         </>
                                     }
-                                </Grid>
-                                <Grid container>
-                                    <Grid item xs={0} md={2}></Grid>
-                                    <Grid item xs={12} md={4}>
+                                </Grid2>
+                                <Grid2 container>
+                                    <Grid2 size={{ xs: 0, md: 2 }}></Grid2>
+                                    <Grid2 size={{ xs: 12, md: 4 }}>
                                         <Paper sx={{ p: 1, m: 1 }} elevation={3}>
                                             {
                                                 stats && <>
@@ -616,8 +616,8 @@ function SectionDaily(props) {
                                                 </>
                                             }
                                         </Paper>
-                                    </Grid>
-                                    <Grid item xs={12} md={4}>
+                                    </Grid2>
+                                    <Grid2 size={{ xs: 12, md: 4 }}>
                                         <Paper sx={{ p: 1, m: 1 }} elevation={3}>
                                             {
                                                 stats && <>
@@ -654,16 +654,16 @@ function SectionDaily(props) {
                                                 </>
                                             }
                                         </Paper>
-                                    </Grid>
-                                    <Grid item xs={0} md={2}></Grid>
-                                </Grid>
+                                    </Grid2>
+                                    <Grid2 size={{ xs: 0, md: 2 }}></Grid2>
+                                </Grid2>
                                 <Alert severity="info">Start and end times are UTC midnight.</Alert>
                             </Stack>
-                        </Grid>
-                    </Grid>}
-                </Grid>
+                        </Grid2>
+                    </Grid2>}
+                </Grid2>
             </CardContent>
-        </Card>
+        </Card >
     </>);
 }
 

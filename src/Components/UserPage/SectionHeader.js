@@ -1,4 +1,4 @@
-import { Avatar, Box, Chip, Grid, Link, Paper, Stack, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableRow, Tooltip, Typography } from "@mui/material";
+import { Avatar, Box, Chip, Grid2, Link, Paper, Stack, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableRow, Tooltip, Typography } from "@mui/material";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { GetFormattedName, GetRoleIcon, GetRoles } from "../../Helpers/Account";
@@ -40,7 +40,7 @@ function SectionHeader(props) {
                         })}
                     </Stack>
                 </Box>
-                <Grid container sx={{
+                <Grid2 sx={{
                     backgroundImage: `url(${props.user.osu.cover_url})`,
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
@@ -51,11 +51,11 @@ function SectionHeader(props) {
                         width: '100%',
                         borderRadius: '10px',
                     }}>
-                        <Grid container spacing={3} alignItems='center'>
-                            <Grid item xs={2}>
+                        <Grid2 container spacing={3} alignItems='center'>
+                            <Grid2 size={2}>
                                 <Avatar src={`https://a.ppy.sh/${props.user.osu.id}`} alt='avatar' sx={{ height: '8rem', width: '8rem', m: 1 }} />
-                            </Grid>
-                            <Grid item xs={8}>
+                            </Grid2>
+                            <Grid2 size={8}>
                                 <Stack direction='row' spacing={1} sx={{ m: 0.5 }}>
                                     <Typography variant='h4'>
                                         {
@@ -130,8 +130,8 @@ function SectionHeader(props) {
                                         </> : <></>
                                     }
                                 </Stack>
-                            </Grid>
-                            <Grid item xs={2}>
+                            </Grid2>
+                            <Grid2 size={2}>
                                 <TableContainer>
                                     <Table size='small' sx={{ [`& .${tableCellClasses.root}`]: { borderBottom: "none", fontSize: '0.75em', lineHeight: '0.5em' } }}>
                                         <TableBody>
@@ -141,10 +141,10 @@ function SectionHeader(props) {
                                         </TableBody>
                                     </Table>
                                 </TableContainer>
-                            </Grid>
-                        </Grid>
+                            </Grid2>
+                        </Grid2>
                     </Box>
-                </Grid>
+                </Grid2>
             </Stack>
         </>
     )

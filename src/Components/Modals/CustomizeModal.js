@@ -1,4 +1,4 @@
-import { Box, Card, CardContent, Grid, Modal, Stack, TextField, Typography } from "@mui/material";
+import { Box, Card, CardContent, Grid2, Modal, Stack, TextField, Typography } from "@mui/material";
 import { useEffect, useImperativeHandle } from "react";
 import { forwardRef } from "react";
 import { useState } from "react";
@@ -85,8 +85,8 @@ function CustomizeModal(props, ref) {
                         <CardContent>
                             <Typography variant='h4'>Edit profile</Typography>
                             <Stack spacing={2} direction='column' sx={{ pt: 1 }}>
-                                <Grid container spacing={2}>
-                                    <Grid item xs={3} sx={{ height: '200px' }}>
+                                <Grid2 container spacing={2}>
+                                    <Grid2 size={3} sx={{ height: '200px' }}>
                                         <Box sx={{
                                             backgroundColor: 'rgba(0, 0, 0, 0.1)',
                                             height: '100%',
@@ -109,8 +109,8 @@ function CustomizeModal(props, ref) {
                                                 </>
                                             }
                                         </Box>
-                                    </Grid>
-                                    <Grid item xs={9}>
+                                    </Grid2>
+                                    <Grid2 size={9}>
                                         <Stack spacing={2} direction='column' sx={{ pt: 1 }}>
                                             <TextField
                                                 disabled={isWorking}
@@ -120,8 +120,8 @@ function CustomizeModal(props, ref) {
                                                 variant="standard" />
                                             <Typography variant='caption'>Feel free to use suggestive content, just don't go over the top with full on naked anime girls.</Typography>
                                         </Stack>
-                                    </Grid>
-                                </Grid>
+                                    </Grid2>
+                                </Grid2>
                                 <LoadingButton disabled={isWorking} loading={isWorking} onClick={save} startIcon={<SaveIcon />}>Save</LoadingButton>
                             </Stack>
                         </CardContent>

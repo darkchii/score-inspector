@@ -1,4 +1,4 @@
-import { Box, Card, CardContent, Grid, Input, InputAdornment, Modal, Stack } from "@mui/material";
+import { Box, Card, CardContent, Grid2, Input, InputAdornment, Modal, Stack } from "@mui/material";
 import { useEffect, useImperativeHandle, useRef } from "react";
 import { forwardRef } from "react";
 import { useState } from "react";
@@ -78,15 +78,15 @@ function UserSearchModal(props, ref) {
                                         sx={{ flexGrow: 1 }} />
                                 </Box>
                                 <Box sx={{ maxHeight: '70vh', overflowY: 'auto' }}>
-                                    <Grid container spacing={1}>
+                                    <Grid2 container spacing={1}>
                                         {
                                             resultList.map((user, index) => (
-                                                <Grid item xs={12} md={6} lg={4} sx={{ height: '160px' }}>
+                                                <Grid2 size={{ xs: 12, md: 6, lg: 4 }} sx={{ height: '160px' }}>
                                                     <PlayerCard onClick={() => { navigate(`/user/${user.user_id}`); setOpen(false); }} user={user} />
-                                                </Grid>
+                                                </Grid2>
                                             ))
                                         }
-                                    </Grid>
+                                    </Grid2>
                                 </Box>
                             </Stack>
                         </CardContent>

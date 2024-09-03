@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Box, Card, CardContent, CardMedia, Grid, Stack, Typography } from "@mui/material";
+import { Box, Card, CardContent, CardMedia, Grid2, Stack, Typography } from "@mui/material";
 import { GetRoleIcons } from "../Helpers/Account";
 import LevelIcon from "./UI/LevelIcon";
 import { useState } from "react";
@@ -56,7 +56,7 @@ function PlayerCard(props) {
                     height: '100%',
                     minHeight: sx.rowHeight
                 }}>
-                <Grid sx={{
+                <Grid2 sx={{
                     height: sx.rowHeight, display: 'flex',
                     minHeight: sx.rowHeight,
                     backgroundImage: `url(${props.user.osu?.cover?.url})`,
@@ -120,32 +120,29 @@ function PlayerCard(props) {
                                 levelProgress={rulesetStats?.level.progress ?? 0} />
                         </Box>
                     </Box>
-                </Grid>
+                </Grid2>
                 {
                     cardHeight >= sx.rowHeight * 2 &&
-                    <Grid sx={{
+                    <Grid2 sx={{
                         height: sx.rowHeight, display: 'flex',
                         width: '100%'
                     }}>
                         <Box
-                            display="flex"
-                            justifyContent="center"
-                            alignItems="center"
                             sx={{
                                 width: '100%',
                                 borderRadius: BORDER_RADIUS,
                                 p: 1,
                             }}>
-                            <Grid container spacing={1}>
-                                <Grid item xs={6}>
+                            <Grid2 container spacing={1}>
+                                <Grid2 size={6}>
                                     <Typography variant='subtitle1'>Global Rank</Typography>
                                     <Typography variant='h5' sx={{
                                         background: "-webkit-linear-gradient(0deg, #8CF6FA, #F68DC4, #FEB887)",
                                         WebkitBackgroundClip: 'text',
                                         WebkitTextFillColor: 'transparent'
                                     }}>#{rulesetStats?.global_rank > 0 ? (Math.max(0, rulesetStats?.global_rank)).toLocaleString('en-US') : '-'}</Typography>
-                                </Grid>
-                                <Grid item xs={6}>
+                                </Grid2>
+                                <Grid2 size={6}>
                                     <Typography variant='subtitle1'>Score Rank</Typography>
                                     <Typography variant='h5'>#{
                                         props.user.osu.score_rank !== null ?
@@ -153,12 +150,12 @@ function PlayerCard(props) {
                                         props.user.osu.scoreRank !== undefined ?
                                             ((Math.max(0, props.user.osu.scoreRank)).toLocaleString('en-US')) :
                                             '10.000+')}</Typography>
-                                </Grid>
-                            </Grid>
+                                </Grid2>
+                            </Grid2>
                         </Box>
-                    </Grid>
+                    </Grid2>
                 }
-            </Card >
+            </Card>
         </Box>
     )
 }

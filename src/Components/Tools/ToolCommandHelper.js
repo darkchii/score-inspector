@@ -1,4 +1,4 @@
-import { Alert, Box, Button, Checkbox, FormControl, FormControlLabel, Grid, InputLabel, MenuItem, Paper, Select, Stack, TextField, Tooltip, Typography } from "@mui/material";
+import { Alert, Box, Button, Checkbox, FormControl, FormControlLabel, Grid2, InputLabel, MenuItem, Paper, Select, Stack, TextField, Tooltip, Typography } from "@mui/material";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { useEffect, useState } from "react";
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
@@ -330,13 +330,13 @@ function ToolCommandHelper() {
                 </Paper>
                 <Paper elevation={2} sx={{ p: 1 }}>
                     <Typography component='p' variant='title'>Arguments</Typography>
-                    <Grid container spacing={2}>
+                    <Grid2 container spacing={2}>
                         {
                             ARGUMENTS.map((argument, index) => {
                                 // const compatible = argument.compatibleWith.includes(selectedCommand?.cmd);
                                 const compatible = true;
                                 return (
-                                    <Grid item xs={argument.width ?? 3}>
+                                    <Grid2 size={argument.width ?? 3}>
                                         <Tooltip title={argument.desc}>
                                             <Box>
                                                 <>
@@ -429,11 +429,11 @@ function ToolCommandHelper() {
                                                 </>
                                             </Box>
                                         </Tooltip>
-                                    </Grid>
+                                    </Grid2>
                                 )
                             })
                         }
-                    </Grid>
+                    </Grid2>
                 </Paper>
 
                 <TextField InputProps={{ readOnly: true }} value={resultingCommand} defaultValue={'Select a command'} label="Result" variant="standard" />

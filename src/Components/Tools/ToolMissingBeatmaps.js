@@ -1,4 +1,4 @@
-import { Accordion, AccordionDetails, AccordionSummary, Alert, Box, Button, CircularProgress, Grid, Link, Paper, Stack, Typography } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Alert, Box, Button, CircularProgress, Grid2, Link, Paper, Stack, Typography } from "@mui/material";
 import axios from "axios";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -170,13 +170,13 @@ function ToolMissingBeatmaps() {
                 <Alert severity="warning">
                     Don't be alarmed if the web page freezes for a while. It takes longer to process larger files.
                 </Alert>
-                <Grid container spacing={1}>
+                <Grid2 container spacing={1}>
                     {
                         beatmaps?.map((mode, index) => {
                             const total = mode?.ranked?.length + mode?.qualified?.length + mode?.loved?.length;
                             return (
                                 <>
-                                    <Grid item xs={4}>
+                                    <Grid2 size={4}>
                                         <Paper elevation={2} sx={{ p: 1 }}>
                                         <Stack alignItems="center" direction="row" gap={2}>
                                                 <TableRowsIcon />
@@ -184,8 +184,8 @@ function ToolMissingBeatmaps() {
                                             </Stack>
                                             <Typography variant="h6">{total?.toLocaleString('en-US') ?? '-'}</Typography>
                                         </Paper>
-                                    </Grid>
-                                    <Grid item xs={4}>
+                                    </Grid2>
+                                    <Grid2 size={4}>
                                         <Paper elevation={2} sx={{ p: 1 }}>
                                             <Stack alignItems="center" direction="row" gap={2}>
                                                 <CheckCircleOutlineIcon />
@@ -193,8 +193,8 @@ function ToolMissingBeatmaps() {
                                             </Stack>
                                             <Typography variant="h6">{mode?.ranked?.length?.toLocaleString('en-US') ?? '-'}</Typography>
                                         </Paper>
-                                    </Grid>
-                                    <Grid item xs={4}>
+                                    </Grid2>
+                                    <Grid2 size={4}>
                                         <Paper elevation={2} sx={{ p: 1 }}>
                                         <Stack alignItems="center" direction="row" gap={2}>
                                                 <FavoriteBorderIcon />
@@ -202,12 +202,12 @@ function ToolMissingBeatmaps() {
                                             </Stack>
                                             <Typography variant="h6">{mode?.loved?.length?.toLocaleString('en-US') ?? '-'}</Typography>
                                         </Paper>
-                                    </Grid>
+                                    </Grid2>
                                 </>
                             )
                         })
                     }
-                </Grid>
+                </Grid2>
                 <Button disable={!readyToUpload || uploading} variant="contained" component="label">
                     {
                         readyToUpload && !uploading ?
@@ -227,20 +227,20 @@ function ToolMissingBeatmaps() {
                                         <Paper elevation={2}>
                                             <Box sx={{ m: 1 }}>
                                                 <Typography variant="h5">{modeNames[index]}</Typography>
-                                                <Grid container>
-                                                    <Grid item xs={12 / 2}>
+                                                <Grid2 container>
+                                                    <Grid2 size={12 / 2}>
                                                         <Paper elevation={4} sx={{ p: 2, m: 1 }}>
                                                             <Typography variant="title" fontSize={'1em'}>Missing Ranked</Typography>
                                                             <Typography variant="h6">{mode?.missingRanked?.length?.toLocaleString('en-US') ?? '-'} ({mode?.missingRankedSets?.length?.toLocaleString('en-US') ?? '-'} sets)</Typography>
                                                         </Paper>
-                                                    </Grid>
-                                                    <Grid item xs={12 / 2}>
+                                                    </Grid2>
+                                                    <Grid2 size={12 / 2}>
                                                         <Paper elevation={4} sx={{ p: 2, m: 1 }}>
                                                             <Typography variant="title" fontSize={'1em'}>Missing Loved</Typography>
                                                             <Typography variant="h6">{mode?.missingLoved?.length?.toLocaleString('en-US') ?? '-'} ({mode?.missingLovedSets?.length?.toLocaleString('en-US') ?? '-'} sets)</Typography>
                                                         </Paper>
-                                                    </Grid>
-                                                </Grid>
+                                                    </Grid2>
+                                                </Grid2>
                                             </Box>
                                             <Box>
                                                 <Accordion>

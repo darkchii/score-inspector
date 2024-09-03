@@ -22,14 +22,12 @@ import Logout from './Routes/Logout';
 import config from './config';
 import Tools from './Routes/Tools';
 import { Helmet } from 'react-helmet';
-import CompDev from './Routes/CompDev';
 import { getFullUser } from './Helpers/Osu';
 import Population from './Routes/Population';
 import Staff from './Routes/Staff';
 import Admin from './Routes/Admin';
 import LeadersScore from './Routes/LeadersScore';
 import Milestones from './Routes/Milestones';
-import Docs from './Routes/Docs';
 import LeadersMonthly from './Routes/LeadersMonthly.js';
 import Completionists from './Routes/Completionists.js';
 import ComparePlayers from './Routes/ComparePlayers.js';
@@ -105,12 +103,10 @@ function App() {
             <Route path="update/:id" element={<Update />} />
             <Route path="*" element={<Error />} />
             <Route path="user/:id/:page?" element={<User />} />
-            <Route path="dev" element={<CompDev />} />
             <Route path="top" element={<Top />} />
             <Route path="stats" element={<Stats />} />
             <Route path="staff" element={<Staff />} />
             <Route path="population" element={<Population />} />
-            <Route path="docs" element={<Docs />} />
             <Route path="completionists" element={<Completionists />} />
             <Route path="logout" element={<Logout />} />
             <Route path="clan/:id?" element={<Clan />} />

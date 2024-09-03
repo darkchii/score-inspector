@@ -1,4 +1,4 @@
-import { Alert, Box, Button, Card, CardActionArea, CardContent, CircularProgress, Divider, Grid, Link, Modal, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from '@mui/material';
+import { Alert, Box, Button, Card, CardActionArea, CardContent, CircularProgress, Divider, Grid2, Link, Modal, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from '@mui/material';
 import { Link as RouterLink, useSearchParams } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import { formatNumberAsSize, GetAPI, MODAL_STYLE, parseReadableStreamToJson, showNotification } from '../Helpers/Misc';
@@ -130,50 +130,47 @@ function Root() {
                         </Modal>
                     </> : <></>
             }
-            <Grid sx={{ pb: 1 }}>
+            <Grid2 sx={{ pb: 1 }}>
                 <Alert severity="warning">
                     Lazer scores are currently <b>not</b> supported. Support will be added once osu!alternative is updated.
                 </Alert>
-            </Grid>
-            <Grid sx={{ pb: 1 }}>
+            </Grid2>
+            <Grid2 sx={{ pb: 1 }}>
                 <Alert severity="info">
                     Try out the new <Link href='https://github.com/darkchii/score-inspector-extension' target='_blank'>browser extension</Link> to integrate more statistics into the official osu! website! It's in very early development, so things might break.
                 </Alert>
-            </Grid>
-            <Grid container spacing={2}>
-                <Grid item xs={12} md={9}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12}>
+            </Grid2>
+            <Grid2 container spacing={2}>
+                <Grid2 size={{ xs: 12, md: 9 }}>
+                    <Stack spacing={2}>
+                        <Grid2>
                             <Card elevation={2}>
                                 <CardContent>
-                                    <Grid container spacing={1}>
-                                        <Grid item xs={12} md={4}>
-                                            <Grid container spacing={1}>
-                                                {/* <Grid item xs={12} md={12 / 5}>
-                                                    <StatCard stats={<>
-                                                        <Button variant='contained' component='a' href='https://discord.gg/VZWRZZXcW4' target='_blank'>Join</Button>
-                                                    </>} title={`Join the osu!alt discord`} color={indigo} icon={<PersonIcon />} />
-                                                </Grid> */}
-                                                <Grid item xs={12} md={12 / 2}>
-                                                    <StatCard stats={serverInfo?.database?.alt?.user_count ? (parseInt(serverInfo?.database?.alt?.user_count ?? 0)).toLocaleString('en-US') : null} title={`Players (${(parseInt(serverInfo?.database?.alt?.priority_user_count ?? 0)).toLocaleString('en-US')} live)`} color={blue} icon={<PersonIcon />} />
-                                                </Grid>
-                                                <Grid item xs={12} md={12 / 2}>
-                                                    <StatCard stats={serverInfo?.database?.alt?.score_count ? formatNumberAsSize(parseInt(serverInfo?.database?.alt?.score_count ?? 0)) : null} title={'Scores'} color={red} icon={<WorkspacePremiumIcon />} />
-                                                </Grid>
-                                                <Grid item xs={12} md={12 / 2}>
-                                                    <StatCard stats={serverInfo?.database?.inspector?.total_visits ? (parseInt(serverInfo?.database?.inspector?.total_visits ?? 0)).toLocaleString('en-US') : null} title={'Profile visits'} color={green} icon={<BadgeIcon />} />
-                                                </Grid>
-                                                <Grid item xs={12} md={12 / 2}>
-                                                    <StatCard stats={serverInfo?.database?.inspector?.unique_visits ? (parseInt(serverInfo?.database?.inspector?.unique_visits ?? 0)).toLocaleString('en-US') : null} title={'Unique users visited'} color={blueGrey} icon={<BadgeIcon />} />
-                                                </Grid>
-                                                <Grid item xs={12} md={12}>
-                                                    <Alert severity='info'>
-                                                        <Typography variant='body2'>Join the <Link href='https://discord.gg/VZWRZZXcW4' target='_blank'>osu!alternative discord</Link>!</Typography>
-                                                    </Alert>
-                                                </Grid>
-                                            </Grid>
-                                        </Grid>
-                                        <Grid item xs={12} md={3}>
+                                    <Grid2 container spacing={1}>
+                                        <Grid2 size={{ xs: 12, md: 4 }}>
+                                            <div>
+                                                <Grid2 container spacing={1}>
+                                                    <Grid2 size={{ xs: 12, md: 12 / 2 }}>
+                                                        <StatCard stats={serverInfo?.database?.alt?.user_count ? (parseInt(serverInfo?.database?.alt?.user_count ?? 0)).toLocaleString('en-US') : null} title={`Players (${(parseInt(serverInfo?.database?.alt?.priority_user_count ?? 0)).toLocaleString('en-US')} live)`} color={blue} icon={<PersonIcon />} />
+                                                    </Grid2>
+                                                    <Grid2 size={{ xs: 12, md: 12 / 2 }}>
+                                                        <StatCard stats={serverInfo?.database?.alt?.score_count ? formatNumberAsSize(parseInt(serverInfo?.database?.alt?.score_count ?? 0)) : null} title={'Scores'} color={red} icon={<WorkspacePremiumIcon />} />
+                                                    </Grid2>
+                                                    <Grid2 size={{ xs: 12, md: 12 / 2 }}>
+                                                        <StatCard stats={serverInfo?.database?.inspector?.total_visits ? (parseInt(serverInfo?.database?.inspector?.total_visits ?? 0)).toLocaleString('en-US') : null} title={'Profile visits'} color={green} icon={<BadgeIcon />} />
+                                                    </Grid2>
+                                                    <Grid2 size={{ xs: 12, md: 12 / 2 }}>
+                                                        <StatCard stats={serverInfo?.database?.inspector?.unique_visits ? (parseInt(serverInfo?.database?.inspector?.unique_visits ?? 0)).toLocaleString('en-US') : null} title={'Unique users visited'} color={blueGrey} icon={<BadgeIcon />} />
+                                                    </Grid2>
+                                                    <Grid2 size={12}>
+                                                        <Alert severity='info'>
+                                                            <Typography variant='body2'>Join the <Link href='https://discord.gg/VZWRZZXcW4' target='_blank'>osu!alternative discord</Link>!</Typography>
+                                                        </Alert>
+                                                    </Grid2>
+                                                </Grid2>
+                                            </div>
+                                        </Grid2>
+                                        <Grid2 size={{ xs: 12, md: 3 }}>
                                             <Paper sx={{
                                                 width: '100%',
                                                 height: '100%',
@@ -250,8 +247,8 @@ function Root() {
                                                     </CardActionArea>
                                                 </Card>
                                             </Paper>
-                                        </Grid>
-                                        <Grid item xs={12} md={5}>
+                                        </Grid2>
+                                        <Grid2 size={{ xs: 12, md: 5 }}>
                                             {/* a fancy massive button to go to the clans */}
                                             <Paper sx={{
                                                 backgroundImage: `url(${IMG_CLANS_BG})`,
@@ -310,76 +307,59 @@ function Root() {
                                                     </CardActionArea>
                                                 </Card>
                                             </Paper>
-                                            {/* <Typography variant='title'>For new users</Typography>
-                                            <Stack spacing={0.5}>
-                                                <BetterAlert sx={{
-                                                    pt: 0.7,
-                                                    pb: 0.7,
-                                                }} severity='warning'>
-                                                    <Typography>If you are new, carefully read and follow this!</Typography>
-                                                </BetterAlert>
-                                                {
-                                                    GUIDE_NEW_USERS.map((note, index) => {
-                                                        return (
-                                                            <BetterAlert sx={{
-                                                                pt: 0.7,
-                                                                pb: 0.7,
-                                                            }} severity='primary'>
-                                                                <Typography>{note}</Typography>
-                                                            </BetterAlert>
-                                                        );
-                                                    })
-                                                }
-                                            </Stack> */}
-                                        </Grid>
-                                    </Grid>
+                                        </Grid2>
+                                    </Grid2>
                                 </CardContent>
                             </Card>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Card elevation={2}>
-                                <CardContent>
-                                    <Typography variant='title'>Top players today</Typography>
-                                    <TodayTopPlayers data={todayData} />
-                                </CardContent>
-                            </Card>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <Grid container spacing={2}>
-                                <Grid item xs={12}>
-                                    <Card elevation={2}>
-                                        <CardContent>
-                                            <Typography variant='title'>Score submissions</Typography>
-                                            <ScoreSubmissions />
-                                        </CardContent>
-                                    </Card>
-                                </Grid>
-                            </Grid>
-                        </Grid>
-                        <Grid item xs={12}>
+                        </Grid2>
+                        <Grid2>
+                            <div>
+                                <Card elevation={2}>
+                                    <CardContent>
+                                        <Typography variant='title'>Top players today</Typography>
+                                        <TodayTopPlayers data={todayData} />
+                                    </CardContent>
+                                </Card>
+                            </div>
+                        </Grid2>
+                        <Grid2>
+                            <div>
+                                <Grid2 container spacing={2}>
+                                    <Grid2 size={12}>
+                                        <Card elevation={2}>
+                                            <CardContent>
+                                                <Typography variant='title'>Score submissions</Typography>
+                                                <ScoreSubmissions />
+                                            </CardContent>
+                                        </Card>
+                                    </Grid2>
+                                </Grid2>
+                            </div>
+                        </Grid2>
+                        <Grid2>
                             <Card elevation={2}>
                                 <CardContent>
                                     <Typography variant='title'>FAQ</Typography>
-                                    <Grid container spacing={2}>
+                                    <Grid2 container spacing={2}>
                                         {
                                             info.map((v, i) => {
                                                 return (
-                                                    <Grid item xs={12} md={6}>
+                                                    <Grid2 size={{ xs: 12, md: 6 }}>
                                                         <Typography variant='title' sx={{ fontSize: '18px' }}>{v.question}</Typography>
                                                         <Typography variant='body2'>{v.answer}</Typography>
-                                                    </Grid>
+                                                    </Grid2>
                                                 )
                                             })
                                         }
-                                    </Grid>
+                                    </Grid2>
                                 </CardContent>
                             </Card>
-                        </Grid>
-                    </Grid>
-                </Grid>
-                <Grid item xs={12} md={3}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12}>
+                        </Grid2>
+                    </Stack>
+                </Grid2>
+                <Grid2 size={{ xs: 12, md: 3 }}>
+                    <Stack spacing={2}>
+                        <Grid2>
                             <Card elevation={2}>
                                 <CardContent>
                                     <Typography variant='title'>Most visited</Typography>
@@ -388,8 +368,8 @@ function Root() {
                                             visitorStats ? (visitorStats.most_visited?.error ? <Error /> : visitorStats.most_visited?.map((v, i) => {
                                                 return (
                                                     <>
-                                                        <Grid container>
-                                                            <Grid item xs={8}>
+                                                        <Grid2 container>
+                                                            <Grid2 size={8}>
                                                                 <Box sx={{ position: 'relative' }}>
                                                                     <GlowBar />
                                                                     <RouterLink to={`user/${v.target_user.osu_id}`}>
@@ -399,11 +379,11 @@ function Root() {
                                                                         })}
                                                                     </RouterLink>
                                                                 </Box>
-                                                            </Grid>
-                                                            <Grid item xs={4}>
+                                                            </Grid2>
+                                                            <Grid2 size={4}>
                                                                 <Typography variant='body2' align='right'>{v.count.toLocaleString('en-US')}</Typography>
-                                                            </Grid>
-                                                        </Grid>
+                                                            </Grid2>
+                                                        </Grid2>
                                                     </>
                                                 )
                                             })) : <Loader />
@@ -416,8 +396,8 @@ function Root() {
                                             visitorStats ? (visitorStats.last_visited?.error ? <Error /> : visitorStats.last_visited?.map((v, i) => {
                                                 return (
                                                     <>
-                                                        <Grid container>
-                                                            <Grid item xs={8}>
+                                                        <Grid2 container>
+                                                            <Grid2 size={8}>
                                                                 <Box sx={{ position: 'relative' }}>
                                                                     <GlowBar />
                                                                     <RouterLink to={`user/${v.target_user.osu_id}`}>
@@ -427,11 +407,11 @@ function Root() {
                                                                         })}
                                                                     </RouterLink>
                                                                 </Box>
-                                                            </Grid>
-                                                            <Grid item xs={4}>
+                                                            </Grid2>
+                                                            <Grid2 size={4}>
                                                                 <Typography variant='body2' align='right'>{moment(v.last_visit).fromNow()}</Typography>
-                                                            </Grid>
-                                                        </Grid>
+                                                            </Grid2>
+                                                        </Grid2>
                                                     </>
                                                 )
                                             })) : <Loader />
@@ -439,8 +419,8 @@ function Root() {
                                     </Stack>
                                 </CardContent>
                             </Card>
-                        </Grid>
-                        <Grid item xs={12}>
+                        </Grid2>
+                        <Grid2>
                             <Card elevation={2}>
                                 <CardContent>
                                     {/* paypal dono link */}
@@ -454,8 +434,8 @@ function Root() {
                                     <Typography variant='body2' align='center'>Add your username to the notes to get a Donator role on the site.</Typography>
                                 </CardContent>
                             </Card>
-                        </Grid>
-                        <Grid item xs={12}>
+                        </Grid2>
+                        <Grid2>
                             <Box>
                                 <iframe
                                     title='osu!alternative discord'
@@ -466,8 +446,8 @@ function Root() {
                                     frameborder="0"
                                     sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
                             </Box>
-                        </Grid>
-                        <Grid item xs={12}>
+                        </Grid2>
+                        <Grid2>
                             <Card elevation={2}>
                                 <CardContent>
                                     <Typography variant='title'>Credits</Typography>
@@ -491,10 +471,10 @@ function Root() {
                                     </TableContainer>
                                 </CardContent>
                             </Card>
-                        </Grid>
-                    </Grid>
-                </Grid>
-            </Grid>
+                        </Grid2>
+                    </Stack>
+                </Grid2>
+            </Grid2 >
         </>
     );
 }

@@ -1,4 +1,4 @@
-import { Alert, AlertTitle, Box, Card, CardContent, CardHeader, CircularProgress, Grid, Link, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography, tableCellClasses, tableRowClasses } from "@mui/material";
+import { Alert, AlertTitle, Box, Card, CardContent, CardHeader, CircularProgress, Grid2, Link, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography, tableCellClasses, tableRowClasses } from "@mui/material";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { IMG_SVG_GRADE_A, IMG_SVG_GRADE_B, IMG_SVG_GRADE_C, IMG_SVG_GRADE_D, IMG_SVG_GRADE_S, IMG_SVG_GRADE_SH, IMG_SVG_GRADE_X, IMG_SVG_GRADE_XH } from "../Helpers/Assets";
@@ -81,8 +81,8 @@ function Stats(props) {
                     These stats are based on what osu!alternative has gathered. Most if not all active and top players are in it, but alot is missing as well.
                 </Alert>
 
-                <Grid container>
-                    <Grid item xs={12} lg={6.5}>
+                <Grid2 container>
+                    <Grid2 size={{ xs: 12, lg: 6.5 }}>
                         <Card>
                             <CardHeader title='Score Stats' />
                             <CardContent>
@@ -134,8 +134,8 @@ function Stats(props) {
                                 </TableContainer>
                             </CardContent>
                         </Card>
-                    </Grid>
-                    <Grid item xs={12} lg={5.5}>
+                    </Grid2>
+                    <Grid2 size={{ xs: 12, lg: 5.5 }}>
                         <Card>
                             <CardHeader title='Performance distribution' />
                             <CardContent>
@@ -174,16 +174,16 @@ function Stats(props) {
                                 </TableContainer>
                             </CardContent>
                         </Card>
-                    </Grid>
-                    <Grid item xs={12}>
+                    </Grid2>
+                    <Grid2 size={12}>
                         <Card>
                             <CardHeader title='Most cleared maps' />
                             <CardContent>
-                                <Grid container spacing={2}>
+                                <Grid2 container spacing={2}>
                                     {
                                         scoreStats && TIME_PERIODS.map((period) => {
                                             return (
-                                                <Grid item xs={12} md={6}>
+                                                <Grid2 size={{ xs: 12, md: 6 }}>
                                                     <Typography key={period.name} variant='body1'>{period.label}</Typography>
                                                     <TableContainer key={period.name} style={{ marginBottom: 20 }}>
                                                         <Table size='small' sx={{
@@ -243,15 +243,15 @@ function Stats(props) {
                                                             </TableBody>
                                                         </Table>
                                                     </TableContainer>
-                                                </Grid>
+                                                </Grid2>
                                             )
                                         })
                                     }
-                                </Grid>
+                                </Grid2>
                             </CardContent>
                         </Card>
-                    </Grid>
-                </Grid>
+                    </Grid2>
+                </Grid2>
 
                 {
                     statsTime && (

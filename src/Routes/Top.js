@@ -1,4 +1,4 @@
-import { Alert, Box, Card, CardActionArea, CardContent, Chip, Grid, Paper, Skeleton, Stack, Tab, Tabs, Tooltip, Typography } from "@mui/material";
+import { Alert, Box, Card, CardActionArea, CardContent, Chip, Grid2, Paper, Skeleton, Stack, Tab, Tabs, Tooltip, Typography } from "@mui/material";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -108,11 +108,11 @@ function Top(props) {
                     }
                 </Tabs>
             </Box>
-            <Grid sx={{ pt: 1 }} container spacing={2}>
+            <Grid2 sx={{ pt: 1 }} container spacing={2}>
                 {
                     Array.from(Array(SCORE_TYPES).keys()).map((i) => {
                         return (
-                            <Grid item xs={12} md={6}>
+                            <Grid2 size={{xs: 12, md: 6}}>
                                 <Paper elevation={2}>
                                     <Stack sx={{ p: 1, mx: 'auto' }} direction='column' spacing={1}>
                                         <Typography variant='title'>{SCORE_TYPE_NAMES[i]}</Typography>
@@ -222,21 +222,11 @@ function Top(props) {
                                         }
                                     </Stack>
                                 </Paper>
-                            </Grid>
+                            </Grid2>
                         )
                     })
                 }
-                <Grid item xs={12} md={6}>
-                    <Paper elevation={2}>
-
-                    </Paper>
-                </Grid>
-                <Grid item xs={12} md={6}>
-                    <Paper elevation={2}>
-
-                    </Paper>
-                </Grid>
-            </Grid>
+            </Grid2>
             <Box sx={{ pt: 1 }}>
                 <Stack direction='column' spacing={2}>
                     <Alert severity='info'>

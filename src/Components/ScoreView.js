@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Box, Card, CardContent, CardMedia, Chip, Grid, Link, ListItem, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableHead, TableRow, Tooltip, Typography } from '@mui/material';
+import { Box, Card, CardContent, CardMedia, Chip, Grid2, Link, ListItem, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableHead, TableRow, Tooltip, Typography } from '@mui/material';
 import { Chart as ChartJS, ArcElement, Tooltip as ChartTooltip, Legend } from 'chart.js';
 import moment from 'moment';
 import { useEffect } from 'react';
@@ -52,7 +52,7 @@ function ScoreView(props) {
         _score.beatmap = JSON.parse(JSON.stringify(beatmap));
 
         _scoreData.sr = _score.beatmap.modded_sr;
-        if(pp_version !== 'live'){
+        if (pp_version !== 'live') {
             _scoreData.sr = _score.beatmap.modded_sr[pp_version] ?? _score.beatmap.modded_sr;
         }
         _score = prepareScore(_score, null);
@@ -105,52 +105,64 @@ function ScoreView(props) {
                 backgroundColor: `rgba(0,0,0,${isScoreSelected ? '0.4' : '0'})`,
                 borderRadius: '5px'
             }}>
-                <Grid container spacing={2}>
-                    <Grid item xs={1} sx={{ display: 'flex', justifyContent: 'right', alignItems: 'center' }}>
-                        <Typography variant="subtitle1">#{index + 1}</Typography>
-                    </Grid>
-                    <Grid item xs={0.5} sx={{ display: 'flex', justifyContent: 'center' }}>
-                        <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%', width: '100%' }}>
-                            <img style={{ height: '80%' }} alt={score.rank} src={getGradeIcon(score.rank)} />
-                        </Box>
-                    </Grid>
-                    <Grid item xs={2} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                        <Link href={`https://osu.ppy.sh/users/${score.user_id}`} target='_blank' rel='noreferrer'>{GetFormattedName(score.user.inspector_user)}</Link>
-                    </Grid>
-                    <Grid item xs={1.5} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                        <Typography variant="subtitle1">{score.score.toLocaleString('en-US')}</Typography>
-                    </Grid>
-                    <Grid item xs={1} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                        <Typography variant="subtitle1">{Math.round(score.pp ?? 0).toLocaleString('en-US')}pp</Typography>
-                    </Grid>
-                    <Grid item xs={2} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                        <Tooltip title='300s/100s/50s/misses'>
-                            <Box sx={{ display: 'flex' }}>
-                                <Typography variant="subtitle2" sx={{ color: blue[500] }}>{score.count300}</Typography>
-                                <Typography variant="subtitle2">/</Typography>
-                                <Typography variant="subtitle2" sx={{ color: green[500] }}>{score.count100}</Typography>
-                                <Typography variant="subtitle2">/</Typography>
-                                <Typography variant="subtitle2" sx={{ color: yellow[500] }}>{score.count50}</Typography>
-                                <Typography variant="subtitle2">/</Typography>
-                                <Typography variant="subtitle2" sx={{ color: red[500] }}>{score.countmiss}</Typography>
+                <Box sx={{ width: '100%' }}>
+                    <Grid2 container spacing={2}>
+                        <Grid2 size={1}>
+                            <Box sx={{ display: 'flex', justifyContent: 'right', alignItems: 'center' }}>
+                                <Typography variant="subtitle1">#{index + 1}</Typography>
                             </Box>
-                        </Tooltip>
-                    </Grid>
-                    <Grid item xs={1} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'right' }}>
-                        <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%', width: '100%' }}>
-                            <Typography variant="subtitle2">
-                                {score.combo}x/{beatmapData.beatmap.maxcombo}x
-                            </Typography>
-                        </Box>
-                    </Grid>
-                    <Grid item xs={3} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                        <Tooltip title={moment(score.date_played).toString()}>
-                            <Typography variant="subtitle1">
-                                {moment(score.date_played).fromNow()}
-                            </Typography>
-                        </Tooltip>
-                    </Grid>
-                </Grid>
+                        </Grid2>
+                        <Grid2 size={0.5}>
+                            <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%', width: '100%' }}>
+                                <img style={{ height: '80%' }} alt={score.rank} src={getGradeIcon(score.rank)} />
+                            </Box>
+                        </Grid2>
+                        <Grid2 size={2}>
+                            <Box sx={{ display: 'flex', justifyContent: 'left', alignItems: 'center' }}>
+                                <Link href={`https://osu.ppy.sh/users/${score.user_id}`} target='_blank' rel='noreferrer'>{GetFormattedName(score.user.inspector_user)}</Link>
+                            </Box>
+                        </Grid2>
+                        <Grid2 size={1.5}>
+                            <Box sx={{ display: 'flex', justifyContent: 'left', alignItems: 'center' }}>
+                                <Typography variant="subtitle1">{score.score.toLocaleString('en-US')}</Typography>
+                            </Box>
+                        </Grid2>
+                        <Grid2 size={1}>
+                            <Box sx={{ display: 'flex', justifyContent: 'left', alignItems: 'center' }}>
+                                <Typography variant="subtitle1">{Math.round(score.pp ?? 0).toLocaleString('en-US')}pp</Typography>
+                            </Box>
+                        </Grid2>
+                        <Grid2 size={2}>
+                            <Box sx={{ display: 'flex', justifyContent: 'left', alignItems: 'center' }}>
+                                <Tooltip title='300s/100s/50s/misses'>
+                                    <Box sx={{ display: 'flex' }}>
+                                        <Typography variant="subtitle2" sx={{ color: blue[500] }}>{score.count300}</Typography>
+                                        <Typography variant="subtitle2">/</Typography>
+                                        <Typography variant="subtitle2" sx={{ color: green[500] }}>{score.count100}</Typography>
+                                        <Typography variant="subtitle2">/</Typography>
+                                        <Typography variant="subtitle2" sx={{ color: yellow[500] }}>{score.count50}</Typography>
+                                        <Typography variant="subtitle2">/</Typography>
+                                        <Typography variant="subtitle2" sx={{ color: red[500] }}>{score.countmiss}</Typography>
+                                    </Box>
+                                </Tooltip>
+                            </Box>
+                        </Grid2>
+                        <Grid2 size={1}>
+                            <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%', width: '100%' }}>
+                                <Typography variant="subtitle2">
+                                    {score.combo}x/{beatmapData.beatmap.maxcombo}x
+                                </Typography>
+                            </Box>
+                        </Grid2>
+                        <Grid2 size={3}>
+                            <Tooltip title={moment(score.date_played).toString()}>
+                                <Typography variant="subtitle1">
+                                    {moment(score.date_played).fromNow()}
+                                </Typography>
+                            </Tooltip>
+                        </Grid2>
+                    </Grid2>
+                </Box>
             </ListItem>
         );
     };
@@ -202,8 +214,8 @@ function ScoreView(props) {
                                     scoreData !== null ?
                                         <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                                             <Box sx={{ px: 4, width: '60%' }}>
-                                                <Grid container spacing={3} sx={{ justifyContent: 'left', my: 1 }}>
-                                                    <Grid item sx={{ width: '30%' }}>
+                                                <Grid2 container spacing={3} sx={{ justifyContent: 'left', my: 1 }}>
+                                                    <Grid2 size={{ width: '30%' }}>
                                                         <Doughnut data={{
                                                             labels: ["300", "100", "50", "Miss"],
                                                             datasets: [
@@ -239,16 +251,16 @@ function ScoreView(props) {
                                                                 }
                                                             }}
                                                         ></Doughnut>
-                                                    </Grid>
-                                                    <Grid item sx={{ width: '70%', minHeight: '100%' }}>
+                                                    </Grid2>
+                                                    <Grid2 size={{ width: '70%', minHeight: '100%' }}>
                                                         <Box height="100%" direction="column" display="flex" alignItems="center">
-                                                            <Grid>
+                                                            <Grid2>
                                                                 <Typography variant="h3" sx={{ mt: 0 }}>{toFixedNumber(scoreData.score.score, 0).toLocaleString('en-US')}</Typography>
                                                                 <Typography variant="subtitle1" display="flex" alignItems="center" sx={{ mt: 0 }} spacing="5">
                                                                     <img alt={scoreData.score.rank} src={getGradeIcon(scoreData.score.rank)} />&nbsp;<b>{scoreData.score.accuracy.toFixed(2)}%</b>&nbsp;★&nbsp;<b>{scoreData.score.recalc[props.data.pp_version].total.toFixed(2)}pp</b>&nbsp;★&nbsp;<b>{scoreData.score.combo}x/{beatmapData.beatmap.maxcombo}x</b>
                                                                 </Typography>
                                                                 <Typography variant="subtitle1" display="flex" alignItems="center" sx={{ mt: 0 }} spacing="5">
-                                                                    Played&nbsp;<b><Tooltip title={'' + scoreData.score.date_played}><Grid>{moment(scoreData.score.date_played).fromNow()}</Grid></Tooltip></b>&nbsp;★ Ranked&nbsp;<b><Tooltip title={'' + beatmapData.beatmap.approved_date}><Grid>{moment(beatmapData.beatmap.approved_date).fromNow()}</Grid></Tooltip></b>
+                                                                    Played&nbsp;<b><Tooltip title={'' + scoreData.score.date_played}><Grid2>{moment(scoreData.score.date_played).fromNow()}</Grid2></Tooltip></b>&nbsp;★ Ranked&nbsp;<b><Tooltip title={'' + beatmapData.beatmap.approved_date}><Grid2>{moment(beatmapData.beatmap.approved_date).fromNow()}</Grid2></Tooltip></b>
                                                                 </Typography>
                                                                 <Typography variant="subtitle1" display="flex" alignItems="center" sx={{ mt: 0 }} spacing="5">
                                                                     AR&nbsp;<b>{scoreData.sr.modded_ar.toFixed(2)}</b>&nbsp;★ CS&nbsp;<b>{scoreData.sr.modded_cs.toFixed(2)}</b>&nbsp;★ HP&nbsp;<b>{scoreData.sr.modded_hp.toFixed(2)}</b>&nbsp;★ OD&nbsp;<b>{scoreData.sr.modded_od.toFixed(2)}</b>
@@ -260,10 +272,10 @@ function ScoreView(props) {
                                                                 <Typography variant="subtitle1" display="flex" alignItems="center" sx={{ mt: 0 }} spacing="5">
                                                                     Played by&nbsp;<Link href={`https://osu.ppy.sh/users/${scoreData.score.user_id}`} target='_blank' rel='noreferrer'>{scoreData.score.user.username}</Link>
                                                                 </Typography>
-                                                            </Grid>
+                                                            </Grid2>
                                                         </Box>
-                                                    </Grid>
-                                                </Grid>
+                                                    </Grid2>
+                                                </Grid2>
                                                 <Typography>Performance breakdown</Typography>
                                                 <Card variant="outlined" sx={{ mb: 3 }}>
                                                     <TableContainer>
@@ -343,44 +355,6 @@ function ScoreView(props) {
                                                     rowCount={leaderboardData?.length}
                                                     rowHeight={rowHeight}
                                                 />
-                                                {/* <TableContainer>
-                                                <Table size="small">
-                                                    <TableHead>
-                                                        <TableRow>
-                                                            <TableCell>#</TableCell>
-                                                            <TableCell>Grade</TableCell>
-                                                            <TableCell>Player</TableCell>
-                                                            <TableCell>Score</TableCell>
-                                                            <TableCell>PP</TableCell>
-                                                            <TableCell>300</TableCell>
-                                                            <TableCell>100</TableCell>
-                                                            <TableCell>50</TableCell>
-                                                            <TableCell>Miss</TableCell>
-                                                            <TableCell></TableCell>
-                                                        </TableRow>
-                                                    </TableHead>
-                                                    <TableBody>
-                                                        {
-                                                            leaderboardData.map((score, index) => {
-                                                                return (
-                                                                    <TableRow key={index}>
-                                                                        <TableCell>{index + 1}</TableCell>
-                                                                        <TableCell><img alt={score.rank} src={getGradeIcon(score.rank)} /></TableCell>
-                                                                        <TableCell><Link href={`https://osu.ppy.sh/users/${score.user_id}`} target='_blank' rel='noreferrer'>{GetFormattedName(score.user.inspector_user)}</Link></TableCell>
-                                                                        <TableCell>{score.score}</TableCell>
-                                                                        <TableCell>{score.pp}</TableCell>
-                                                                        <TableCell>{score.count300}</TableCell>
-                                                                        <TableCell>{score.count100}</TableCell>
-                                                                        <TableCell>{score.count50}</TableCell>
-                                                                        <TableCell>{score.countmiss}</TableCell>
-                                                                        <TableCell><Button onClick={()=>applyScore(props.data.pp_version, score, beatmapData.beatmap)} size='small'>View</Button></TableCell>
-                                                                    </TableRow>
-                                                                )
-                                                            })
-                                                        }
-                                                    </TableBody>
-                                                </Table>
-                                            </TableContainer> */}
                                             </>
                                             : <>Loading scores ...</>
                                     }

@@ -1,4 +1,4 @@
-import { Box, Button, Grid, Paper, Stack, TextField, Typography } from "@mui/material";
+import { Box, Button, Grid2, Paper, Stack, TextField, Typography } from "@mui/material";
 import axios from "axios";
 import { useState } from "react";
 import { showNotification } from "../../Helpers/Misc";
@@ -42,18 +42,18 @@ function ToolScoreRank() {
                 <Box component={Paper} sx={{ p: 2 }}>
                     <Stack spacing={2}>
                         <Typography variant="h6">Get current score needed for specific rank</Typography>
-                        <Grid container>
-                            <Grid item xs={3}>
-                            </Grid>
-                            <Grid item xs={6}>
+                        <Grid2 container>
+                            <Grid2 size={3}>
+                            </Grid2>
+                            <Grid2 size={6}>
                                 <Stack spacing={1}>
                                     <TextField disabled={working} value={rankToScoreInput} onChange={e => setRankToScoreInput(e.target.value)} label="Rank" variant="standard" size='small' />
                                     <Button onClick={() => calcRankToScore()} disabled={working} variant="contained" size='small'>Process</Button>
                                 </Stack >
-                            </Grid>
-                            <Grid item xs={3}>
-                            </Grid>
-                        </Grid>
+                            </Grid2>
+                            <Grid2 size={3}>
+                            </Grid2>
+                        </Grid2>
                         <Typography variant="h6">Needed score: {rankToScoreOutput ? rankToScoreOutput.toLocaleString('en-US') : '-'}</Typography>
                         <Typography variant="body2">This will give you the required score needed for a specific score rank</Typography>
                     </Stack>

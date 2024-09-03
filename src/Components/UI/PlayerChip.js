@@ -1,4 +1,4 @@
-import { Alert, Avatar, Box, Grid, Tooltip, Typography, styled, useTheme } from "@mui/material";
+import { Alert, Avatar, Box, Grid2, Tooltip, Typography, styled, useTheme } from "@mui/material";
 import { useEffect } from "react";
 import { useState } from "react";
 import { cloneElement } from "react";
@@ -123,7 +123,7 @@ function PlayerChip(props) {
                     {props.label}
                 </Typography>
                 {
-                    props.roleIcons && props.roleIcons.length > 0 ? <Grid sx={{ ml: 0.5, display: 'flex' }}>
+                    props.roleIcons && props.roleIcons.length > 0 ? <Grid2 sx={{ ml: 0.5, display: 'flex' }}>
                         {
                             props.roleIcons.map((v, i) => {
                                 return (
@@ -141,7 +141,7 @@ function PlayerChip(props) {
                                 )
                             })
                         }
-                    </Grid> : <></>
+                    </Grid2> : <></>
                 }
             </Box>
         </PlayerTooltip>

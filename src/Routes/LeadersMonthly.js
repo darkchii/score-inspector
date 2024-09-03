@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import Loader from "../Components/UI/Loader";
-import { Box, Button, ButtonGroup, Chip, Divider, Grid, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography, useTheme } from "@mui/material";
+import { Box, Button, ButtonGroup, Chip, Divider, Grid2, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography, useTheme } from "@mui/material";
 import config from "../config.json";
 import { Helmet } from "react-helmet";
 import { GetAPI } from "../Helpers/Misc.js";
@@ -172,10 +172,10 @@ function LeadersMonthly(props) {
                         {
                             data.length > 0 ? (
                                 <>
-                                    <Grid container spacing={0.5}>
+                                    <Grid2 container spacing={0.5}>
                                         {
                                             data.map((item) => (
-                                                <Grid item xs={12} md={3} key={item.year}>
+                                                <Grid2 key={item.year} size={{ xs: 12, md: 3 }}>
                                                     <Paper elevation={3} sx={{ p: 1 }}>
                                                         <Box sx={{
                                                             display: 'flex',
@@ -188,12 +188,12 @@ function LeadersMonthly(props) {
                                                         </Box>
                                                         <Divider sx={{ mt: 0.5, mb: 0.5 }} />
                                                         <Box>
-                                                            <Grid container spacing={1}>
+                                                            <Grid2 container spacing={1}>
                                                                 {
                                                                     item.months.map((month) => {
                                                                         let _date = moment(new Date(`${item.year}-${month.month}-01 UTC`)).utc().format('MMMM');
                                                                         return (
-                                                                            <Grid item xs={3} key={month.month} sx={{
+                                                                            <Grid2 size={3} key={month.month} sx={{
                                                                                 display: 'flex',
                                                                                 justifyContent: 'center',
                                                                                 alignItems: 'center',
@@ -205,26 +205,26 @@ function LeadersMonthly(props) {
                                                                                     icon_only: true,
                                                                                 })}
                                                                                 <Typography variant="subtitle2" component="div">{value_types[dataType].format(month.top.total_score)}</Typography>
-                                                                            </Grid>
+                                                                            </Grid2>
                                                                         )
                                                                     })
                                                                 }
-                                                            </Grid>
+                                                            </Grid2>
                                                         </Box>
                                                     </Paper>
-                                                </Grid>
+                                                </Grid2>
                                             ))
                                         }
-                                    </Grid>
+                                    </Grid2>
                                     <Divider sx={{ mt: 1, mb: 1 }} />
                                     <Box>
                                         <Typography variant="h6" component="div">Top Players by Months ({dataMostAppearances.length})</Typography>
 
-                                        <Grid container spacing={1}>
+                                        <Grid2 container spacing={1}>
                                             {
                                                 dataMostAppearances.map((item, index) => {
                                                     return (
-                                                        <Grid item xs={12 / 8} key={item.user_id}>
+                                                        <Grid2 size={12 / 8} key={item.user_id}>
                                                             <Paper elevation={3} sx={{ p: 1 }}>
                                                                 <Stack direction="column" spacing={1}
                                                                     sx={{
@@ -238,11 +238,11 @@ function LeadersMonthly(props) {
                                                                     <Chip size='small' label={item.count} />
                                                                 </Stack>
                                                             </Paper>
-                                                        </Grid>
+                                                        </Grid2>
                                                     )
                                                 })
                                             }
-                                        </Grid>
+                                        </Grid2>
                                     </Box>
                                     <Divider sx={{ mt: 1, mb: 1 }} />
                                     <Box>
@@ -265,7 +265,7 @@ function LeadersMonthly(props) {
                                                                                 <TableCell width='10%'>on {item.period}</TableCell>
                                                                                 <TableCell width='40%'> </TableCell>
                                                                             </TableRow>
-                                                                        )  
+                                                                        )
                                                                     })
                                                                 }
                                                             </TableBody>

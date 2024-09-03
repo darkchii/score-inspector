@@ -14,7 +14,7 @@ import {
 import WorldAtlas from '../Assets/world-110m.json';
 import Countries from '../Assets/countries.json';
 import { lerpColor, linearToLogarithmic } from "../Helpers/Misc";
-import { Box, Button, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableRow, Tooltip as MUITooltip, Typography, TableHead, Container, useTheme } from "@mui/material";
+import { Box, Button, Grid2, Paper, Table, TableBody, TableCell, TableContainer, TableRow, Tooltip as MUITooltip, Typography, TableHead, Container, useTheme } from "@mui/material";
 import Loader from "../Components/UI/Loader";
 import { Helmet } from 'react-helmet';
 import config from "../config.json";
@@ -331,7 +331,7 @@ function Population() {
                                 ></Chart>
                             </Container>
                         </Box>
-                        <Grid sx={{ display: 'inline-block' }}>
+                        <Grid2 sx={{ display: 'inline-block' }}>
                             {
                                 chartTypes.map((t) => (
                                     <Button sx={{
@@ -343,7 +343,7 @@ function Population() {
                                     }>{t.name}</Button>
                                 ))
                             }
-                        </Grid>
+                        </Grid2>
                         <Typography sx={{ mt: 2, mb: 1 }} variant='subtitle1'>
                             {chartTypes.find((t) => t.value === activeChartType).description}
                             {totalValue !== null ? ` (${chartTypes.find((t) => t.value === activeChartType).output(totalValue)})` : ''}</Typography>

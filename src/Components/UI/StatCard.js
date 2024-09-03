@@ -1,4 +1,4 @@
-import { Box, Grid, Paper, Skeleton, Typography, useTheme } from "@mui/material";
+import { Box, Grid2, Paper, Skeleton, Typography, useTheme } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { useEffect, useState } from "react";
 
@@ -65,8 +65,8 @@ function StatCard(props) {
                         opacity: 0.1 * (props?.opacity ?? 1),
                     }
                 }} />
-                <Grid container direction="column" sx={{ position: 'relative', zIndex: 500 }}>
-                    <Grid item>
+                <Grid2 container direction="column" sx={{ position: 'relative', zIndex: 500 }}>
+                    <Grid2>
                         <Typography
                             sx={{
                                 fontSize: props.titleSize ?? '1rem',
@@ -76,13 +76,13 @@ function StatCard(props) {
                         >
                             {props.title}
                         </Typography>
-                    </Grid>
-                    <Grid item>
+                    </Grid2>
+                    <Grid2>
                         <Typography sx={{ fontSize: props.statSize ?? '2.3rem', fontWeight: 500, mt: 0.5 }}>
                             {props?.stats ?? '-'}
                         </Typography>
-                    </Grid>
-                </Grid>
+                    </Grid2>
+                </Grid2>
             </Box>
         </Paper>
     </>

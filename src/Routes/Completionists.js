@@ -1,4 +1,4 @@
-import { Box, Card, CardContent, Grid, TableBody, Table, TableCell, TableContainer, TableHead, TableRow, Typography, Alert, tableCellClasses } from "@mui/material";
+import { Box, Card, CardContent, Grid2, TableBody, Table, TableCell, TableContainer, TableHead, TableRow, Typography, Alert, tableCellClasses } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { GetAPI } from "../Helpers/Misc";
@@ -17,12 +17,12 @@ function Completionists(props) {
     return (
         (<Box>
             <h1>osu! completionists</h1>
-            <Grid container spacing={2}>
+            <Grid2 container spacing={2}>
                 {
                     //just map 0-4 (osu modes)
                     [...Array(4).keys()].map((mode) => {
                         return (
-                            (<Grid item xs={12} md={6} lg={3}>
+                            (<Grid2 size={{ xs: 12, md: 6, lg: 3 }}>
                                 <Card>
                                     <CardContent>
                                         {
@@ -72,11 +72,11 @@ function Completionists(props) {
                                         </TableContainer>
                                     </CardContent>
                                 </Card>
-                            </Grid>)
+                            </Grid2>)
                         );
                     })
                 }
-            </Grid>
+            </Grid2>
             <Alert severity="info">
                 A collection of users who played every ranked map in a specific mode available at the time of their completion. This list is manually updated and may not be up to date.
                 <br />

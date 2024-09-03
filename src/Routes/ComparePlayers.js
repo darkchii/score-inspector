@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Box, Button, Container, Divider, TextField, Typography, Grid, Alert, TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from "@mui/material";
+import { Box, Button, Container, Divider, TextField, Typography, Grid2, Alert, TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from "@mui/material";
 import { useEffect } from "react";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
@@ -423,17 +423,17 @@ function ComparePlayers() {
                                 Comparing {GetFormattedName(user_data[0].inspector_user)} and {GetFormattedName(user_data[1].inspector_user)}
                             </Box>
                             <Divider sx={{ mt: 2, mb: 2 }} />
-                            <Grid container>
-                                <Grid item xs={12} md={6} sx={{
+                            <Grid2 container>
+                                <Grid2 size={{ xs: 12, md: 6 }} sx={{
                                     pr: 1
                                 }}>
                                     <Alert severity="info" sx={{ mb: 2 }}>Data taken from osu!daily API</Alert>
                                     {
                                         processedData !== null ? GRAPHED_DATA.map((data_type, i) => {
                                             return (
-                                                <Grid>
+                                                <Grid2>
                                                     <Typography variant="h6">{data_type.display_name}</Typography>
-                                                    <Grid sx={{
+                                                    <Grid2 sx={{
                                                         height: 250,
                                                     }}>
                                                         <ChartWrapper
@@ -491,15 +491,15 @@ function ComparePlayers() {
                                                             series={processedData[i]}
                                                             type={'line'}
                                                         />
-                                                    </Grid>
-                                                </Grid>
+                                                    </Grid2>
+                                                </Grid2>
                                             )
                                         }) : <>
                                             <Typography variant="h6">Had problems fetching data from osu!daily api.</Typography>
                                         </>
                                     }
-                                </Grid>
-                                <Grid item xs={12} md={6}>
+                                </Grid2>
+                                <Grid2 size={{ xs: 12, md: 6 }}>
                                     <TableContainer>
                                         <Table size='small'>
                                             <TableHead>
@@ -581,8 +581,8 @@ function ComparePlayers() {
                                             </TableBody>
                                         </Table>
                                     </TableContainer>
-                                </Grid>
-                            </Grid>
+                                </Grid2>
+                            </Grid2>
                         </>
                         :
                         <>

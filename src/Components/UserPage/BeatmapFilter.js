@@ -1,4 +1,4 @@
-import { Button, Checkbox, Grid, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material";
+import { Button, Checkbox, Grid2, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material";
 import moment from "moment";
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
@@ -43,20 +43,20 @@ function BeatmapFilter(props) {
 
     return (
         <>
-            <Grid sx={{ m: 1 }}>
-                <Grid container sx={{ pt: 2, '& > *': { pl: 1 } }}>
-                    <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE}>
+            <Grid2 sx={{ m: 1 }}>
+                <Grid2 container sx={{ pt: 2, '& > *': { pl: 1 } }}>
+                    <Grid2 size={{ xs: 6, md: FILTER_FIELD_SIZE, lg: FILTER_FIELD_SIZE }}>
                         <TextField sx={{ width: '100%' }} label="Min Stars" onChange={(e) => setMinStars(e.target.value)} value={minStars} variant="standard" size="small" />
                         <TextField sx={{ width: '100%' }} label="Max Stars" onChange={(e) => setMaxStars(e.target.value)} value={maxStars} variant="standard" size="small" />
-                    </Grid>
-                    <Grid item xs={6} md={FILTER_FIELD_SIZE} lg={FILTER_FIELD_SIZE}>
+                    </Grid2>
+                    <Grid2 size={{ xs: 6, md: FILTER_FIELD_SIZE, lg: FILTER_FIELD_SIZE }}>
                         <LocalizationProvider dateAdapter={AdapterMoment}>
                             <DesktopDatePicker minDate={MIN_DATE} maxDate={MAX_DATE} label="Min Ranked Date" inputFormat="MM/DD/YYYY" value={minApprovedDate} onChange={setMinApprovedDate} renderInput={(params) => <TextField variant="standard" size="small" {...params} />} />
                             <DesktopDatePicker minDate={MIN_DATE} maxDate={MAX_DATE} label="Max Ranked Date" inputFormat="MM/DD/YYYY" value={maxApprovedDate} onChange={setMaxApprovedDate} renderInput={(params) => <TextField variant="standard" size="small" {...params} />} />
                         </LocalizationProvider>
-                    </Grid>
-                </Grid>
-                <Grid container sx={{ py: 1 }}>
+                    </Grid2>
+                </Grid2>
+                <Grid2 container sx={{ py: 1 }}>
                     <TableContainer>
                         <Table size="small">
                             <TableHead>
@@ -83,12 +83,12 @@ function BeatmapFilter(props) {
                             </TableBody>
                         </Table>
                     </TableContainer>
-                </Grid>
-                <Grid sx={{ alignContent: 'center' }}>
+                </Grid2>
+                <Grid2 sx={{ alignContent: 'center' }}>
                     <Button sx={{ my: 1 }} onClick={onApply} variant="contained">Apply</Button>
                     <Typography variant='subtitle2'>Enter -1 to ignore a filter</Typography>
-                </Grid>
-            </Grid>
+                </Grid2>
+            </Grid2>
         </>
     );
 }

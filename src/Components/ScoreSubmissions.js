@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
-import { Alert, Box, Grid, Tab, Tabs, useTheme } from "@mui/material";
+import { Alert, Box, Grid2, Tab, Tabs, useTheme } from "@mui/material";
 import { getScoreActivity } from "../Helpers/OsuAlt";
 import moment from "moment";
 import Loader from "./UI/Loader";
@@ -125,7 +125,7 @@ function ScoreSubmissions(props) {
 
     return (
         <>
-            <Grid>
+            <Grid2>
                 <Box sx={{
                     borderBottom: 1,
                     borderColor: 'divider',
@@ -163,8 +163,8 @@ function ScoreSubmissions(props) {
                         }
                     </Tabs>
                 </Box>
-            </Grid>
-            <Grid sx={{ height: 280, position: "relative" }}>
+            </Grid2>
+            <Grid2 sx={{ height: 280, position: "relative" }}>
                 {
                     isWorking || !data ?
                         (error ? <Error /> : <Loader />) : <>
@@ -234,7 +234,7 @@ function ScoreSubmissions(props) {
                             />
                         </>
                 }
-            </Grid>
+            </Grid2>
             <Alert severity='info' sx={{ mt: 1 }}>
                 Only shows data osu!alternative has gathered, but trend should be accurate. <br />
                 Longer periods may take a while to load.

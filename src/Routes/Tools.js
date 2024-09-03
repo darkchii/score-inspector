@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, Grid } from "@mui/material";
+import { Button, ButtonGroup, Grid2 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import ToolCommandHelper from "../Components/Tools/ToolCommandHelper";
@@ -49,8 +49,8 @@ function Tools() {
             <Helmet>
                 <title>{TOOL_OBJECTS[currentTool]?.name || 'Tools'} - {config.APP_NAME}</title>
             </Helmet>
-            <Grid container spacing={2}>
-                <Grid item xs={NAV_WIDTH}>
+            <Grid2 container spacing={2}>
+                <Grid2 size={NAV_WIDTH}>
                     <ButtonGroup orientation="vertical" fullWidth>
                         {
                             TOOL_OBJECTS.map((tool, index) => {
@@ -60,11 +60,11 @@ function Tools() {
                             })
                         }
                     </ButtonGroup>
-                </Grid>
-                <Grid item xs={12 - NAV_WIDTH}>
+                </Grid2>
+                <Grid2 size={12 - NAV_WIDTH}>
                     {TOOL_OBJECTS[currentTool].component}
-                </Grid>
-            </Grid>
+                </Grid2>
+            </Grid2>
         </>
     );
 }

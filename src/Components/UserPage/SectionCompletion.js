@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Button, Chip, Divider, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableRow, Typography, useTheme } from "@mui/material";
+import { Button, Chip, Divider, Grid2, Paper, Table, TableBody, TableCell, TableContainer, TableRow, Typography, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
 import { capitalize } from "../../Helpers/Misc";
 import { getCompletionData } from "../../Helpers/OsuAlt";
@@ -53,7 +53,7 @@ function SectionCompletion(props) {
     return (<>
         {
             graphs && graphs[selectedGraph] ? <>
-                <Grid sx={{
+                <Grid2 sx={{
                     height: 280
                 }}>
                     <ChartWrapper
@@ -85,7 +85,7 @@ function SectionCompletion(props) {
                         ]}
                         type={'bar'}
                     />
-                </Grid>
+                </Grid2>
                 {
                     Object.keys(graphs).map((key, index) => {
                         let _key = KEY_NAMES[key] ? KEY_NAMES[key] : key;
@@ -99,13 +99,13 @@ function SectionCompletion(props) {
                 <Divider sx={{ mt: 1, mb: 1 }} />
             </> : <></>
         }
-        <Grid container spacing={0.5}>
+        <Grid2 container spacing={0.5}>
             {
                 Object.keys(props.user.data.completion).map((key, index) => {
                     let _key = KEY_NAMES[key] ? KEY_NAMES[key] : key;
                     const stylizedKey = _key.length === 2 ? _key.toUpperCase() : capitalize(_key);
                     return (
-                        <Grid item xs={3}>
+                        <Grid2 size={3}>
                             <Paper sx={{ p: 0.5 }}>
                                 <Typography variant='title' sx={{ fontSize: '0.85em' }}>{stylizedKey} completion</Typography>
                                 <TableContainer>
@@ -133,11 +133,11 @@ function SectionCompletion(props) {
                                     </Table>
                                 </TableContainer>
                             </Paper>
-                        </Grid>
+                        </Grid2>
                     )
                 })
             }
-        </Grid>
+        </Grid2>
     </>);
 }
 

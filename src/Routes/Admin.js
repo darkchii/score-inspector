@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { AdminGetUsers, AdminValidate, GetRemoteRoles, GetRoleIcon } from "../Helpers/Account";
-import { Alert, Box, Button, ButtonGroup, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
+import { Alert, Box, Button, ButtonGroup, Grid2, Paper, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
 import { Link, useParams } from "react-router-dom";
 import Loader from "../Components/UI/Loader";
 import ImageIcon from '@mui/icons-material/Image';
@@ -61,8 +61,8 @@ function Admin(props) {
                         {
                             isAdmin ?
                                 <>
-                                    <Grid container spacing={2}>
-                                        <Grid item xs={NAV_WIDTH}>
+                                    <Grid2 container spacing={2}>
+                                        <Grid2 size={NAV_WIDTH}>
                                             <ButtonGroup orientation="vertical" fullWidth>
                                                 {
                                                     ADMIN_TOOLS.map((tool, index) => {
@@ -72,11 +72,11 @@ function Admin(props) {
                                                     })
                                                 }
                                             </ButtonGroup>
-                                        </Grid>
-                                        <Grid item xs={12 - NAV_WIDTH}>
+                                        </Grid2>
+                                        <Grid2 size={12 - NAV_WIDTH}>
                                             {ADMIN_TOOLS[currentTool].component}
-                                        </Grid>
-                                    </Grid>
+                                        </Grid2>
+                                    </Grid2>
                                 </>
                                 :
                                 <Alert severity="error">You are not an admin.</Alert>

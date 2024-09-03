@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from "react";
-import { Alert, Box, Button, Card, CardContent, Divider, Grid, Stack, Table, TableBody, TableCell, TableContainer, TableRow, useTheme } from "@mui/material";
+import { Alert, Box, Button, Card, CardContent, Divider, Grid2, Stack, Table, TableBody, TableCell, TableContainer, TableRow, useTheme } from "@mui/material";
 import moment from "moment";
 import { IMG_SVG_GRADE_A, IMG_SVG_GRADE_B, IMG_SVG_GRADE_C, IMG_SVG_GRADE_D, IMG_SVG_GRADE_S, IMG_SVG_GRADE_SH, IMG_SVG_GRADE_X, IMG_SVG_GRADE_XH } from "../../Helpers/Assets";
 
@@ -124,9 +124,9 @@ function SectionSessions(props) {
 
     return (
         <>
-            <Grid container spacing={2}>
+            <Grid2 container spacing={2}>
                 {/* left panel, list of session */}
-                <Grid item xs={12} md={4}>
+                <Grid2 size={{ xs: 12, md: 4 }}>
                     {/* scroll view */}
                     <Box sx={{
                         height: '550px',
@@ -163,9 +163,9 @@ function SectionSessions(props) {
                             })}
                         </Stack>
                     </Box>
-                </Grid>
+                </Grid2>
                 {/* right panel, selected session stats/data/whatever */}
-                <Grid item xs={12} md={8}>
+                <Grid2 size={{ xs: 12, md: 8 }}>
                     {
                         selectedSession && <>
                             <Card>
@@ -174,34 +174,34 @@ function SectionSessions(props) {
                                         mt: theme.spacing(2),
                                         mb: theme.spacing(2),
                                     }}>
-                                        <Grid>
+                                        <Grid2>
                                             <Stack direction="row" sx={{ justifyContent: 'center', alignItems: 'center' }}>
-                                                <Grid sx={{ mr: 3, ml: 3 }}>
+                                                <Grid2 sx={{ mr: 3, ml: 3 }}>
                                                     <img src={IMG_SVG_GRADE_XH} alt='XH' /> {selectedSession.grades.XH.toLocaleString('en-US')}
-                                                </Grid>
-                                                <Grid sx={{ mr: 3 }}>
+                                                </Grid2>
+                                                <Grid2 sx={{ mr: 3 }}>
                                                     <img src={IMG_SVG_GRADE_X} alt='X' /> {selectedSession.grades.X.toLocaleString('en-US')}
-                                                </Grid>
-                                                <Grid sx={{ mr: 3 }}>
+                                                </Grid2>
+                                                <Grid2 sx={{ mr: 3 }}>
                                                     <img src={IMG_SVG_GRADE_SH} alt='SH' /> {selectedSession.grades.SH.toLocaleString('en-US')}
-                                                </Grid>
-                                                <Grid sx={{ mr: 3 }}>
+                                                </Grid2>
+                                                <Grid2 sx={{ mr: 3 }}>
                                                     <img src={IMG_SVG_GRADE_S} alt='S' /> {selectedSession.grades.S.toLocaleString('en-US')}
-                                                </Grid>
-                                                <Grid sx={{ mr: 3 }}>
+                                                </Grid2>
+                                                <Grid2 sx={{ mr: 3 }}>
                                                     <img src={IMG_SVG_GRADE_A} alt='A' /> {selectedSession.grades.A.toLocaleString('en-US')}
-                                                </Grid>
-                                                <Grid sx={{ mr: 3 }}>
+                                                </Grid2>
+                                                <Grid2 sx={{ mr: 3 }}>
                                                     <img src={IMG_SVG_GRADE_B} alt='B' /> {selectedSession.grades.B.toLocaleString('en-US')}
-                                                </Grid>
-                                                <Grid sx={{ mr: 3 }}>
+                                                </Grid2>
+                                                <Grid2 sx={{ mr: 3 }}>
                                                     <img src={IMG_SVG_GRADE_C} alt='C' /> {selectedSession.grades.C.toLocaleString('en-US')}
-                                                </Grid>
-                                                <Grid sx={{ mr: 3 }}>
+                                                </Grid2>
+                                                <Grid2 sx={{ mr: 3 }}>
                                                     <img src={IMG_SVG_GRADE_D} alt='D' /> {selectedSession.grades.D.toLocaleString('en-US')}
-                                                </Grid>
+                                                </Grid2>
                                             </Stack>
-                                        </Grid>
+                                        </Grid2>
                                     </Stack>
                                     <Divider />
                                     <TableContainer>
@@ -219,7 +219,7 @@ function SectionSessions(props) {
                                                     <TableCell colSpan={2} sx={{ fontWeight: 'bold' }}>Duration</TableCell>
                                                     <TableCell colSpan={2}>{selectedSession.duration.format('H[h] m[m] s[s]')}</TableCell>
                                                 </TableRow>
-                                                <Grid sx={{ mt: theme.spacing(4), }} />
+                                                <Grid2 sx={{ mt: theme.spacing(4), }} />
                                                 <TableRow>
                                                     <TableCell colSpan={2} sx={{ fontWeight: 'bold' }}>Score</TableCell>
                                                     <TableCell colSpan={2}>{selectedSession.score.toLocaleString('en-US')}</TableCell>
@@ -232,7 +232,7 @@ function SectionSessions(props) {
                                                     <TableCell colSpan={2} sx={{ fontWeight: 'bold' }}>Highest Score</TableCell>
                                                     <TableCell colSpan={2}>{selectedSession.highest_score.toLocaleString('en-US')}</TableCell>
                                                 </TableRow>
-                                                <Grid sx={{ mt: theme.spacing(4), }} />
+                                                <Grid2 sx={{ mt: theme.spacing(4), }} />
                                                 <TableRow>
                                                     <TableCell colSpan={2} sx={{ fontWeight: 'bold' }}>Total PP</TableCell>
                                                     <TableCell colSpan={2}>{selectedSession.total_pp.toLocaleString('en-US')}pp</TableCell>
@@ -245,7 +245,7 @@ function SectionSessions(props) {
                                                     <TableCell colSpan={2} sx={{ fontWeight: 'bold' }}>Highest PP</TableCell>
                                                     <TableCell colSpan={2}>{selectedSession.highest_pp.toLocaleString('en-US')}pp</TableCell>
                                                 </TableRow>
-                                                <Grid sx={{ mt: theme.spacing(4), }} />
+                                                <Grid2 sx={{ mt: theme.spacing(4), }} />
                                                 <TableRow>
                                                     <TableCell colSpan={2} sx={{ fontWeight: 'bold' }}>Total Map Length</TableCell>
                                                     {/* show as HH:mm:ss */}
@@ -259,7 +259,7 @@ function SectionSessions(props) {
                                                     <TableCell colSpan={2} sx={{ fontWeight: 'bold' }}>Longest Map Length</TableCell>
                                                     <TableCell colSpan={2}>{selectedSession.longest_length.format('H[h] m[m] s[s]')}</TableCell>
                                                 </TableRow>
-                                                <Grid sx={{ mt: theme.spacing(4), }} />
+                                                <Grid2 sx={{ mt: theme.spacing(4), }} />
                                                 <TableRow>
                                                     <TableCell sx={{ fontWeight: 'bold' }}>Total Hits</TableCell>
                                                     <TableCell>{selectedSession.total_hits.toLocaleString('en-US')}</TableCell>
@@ -278,7 +278,7 @@ function SectionSessions(props) {
                                                     <TableCell sx={{ fontWeight: 'bold' }}>Misses</TableCell>
                                                     <TableCell>{selectedSession.countmiss.toLocaleString('en-US')}</TableCell>
                                                 </TableRow>
-                                                <Grid sx={{ mt: theme.spacing(4), }} />
+                                                <Grid2 sx={{ mt: theme.spacing(4), }} />
                                                 <TableRow>
                                                     <TableCell colSpan={2} sx={{ fontWeight: 'bold' }}>Total Breaks</TableCell>
                                                     <TableCell colSpan={2}>{selectedSession.total_breaks.toLocaleString('en-US')}</TableCell>
@@ -305,8 +305,8 @@ function SectionSessions(props) {
                             </Alert>
                         </>
                     }
-                </Grid>
-            </Grid>
+                </Grid2>
+            </Grid2>
         </>
     );
 }

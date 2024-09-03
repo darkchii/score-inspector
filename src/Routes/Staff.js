@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { GetRemoteRoles, GetRemoteUsersByRole, GetRoleIcon } from "../Helpers/Account";
-import { Card, CardContent, CardHeader, Chip, Grid, Stack, Typography } from "@mui/material";
+import { Card, CardContent, CardHeader, Chip, Grid2, Stack, Typography } from "@mui/material";
 import PlayerCard from "../Components/PlayerCard";
 import { useNavigate } from "react-router-dom/dist";
 import { getFullUser } from "../Helpers/Osu";
@@ -58,27 +58,27 @@ function Staff(props) {
                     roles ?
                         roles.map((role, i) => {
                             return (
-                                <Grid>
+                                <Grid2>
                                     <Card>
                                         <CardHeader title={<Chip sx={{ m: 0.2, backgroundColor: `#${role.color}aa` }} icon={GetRoleIcon(role)} label={role.title} />} />
                                         <CardContent>
-                                            <Grid container spacing={1} sx={{
+                                            <Grid2 container spacing={1} sx={{
                                                 px: 2
                                             }}>
                                                 {
                                                     role.users && role.users.length > 0 ?
                                                         role.users?.map((user, index) => (
-                                                            <Grid item xs={12} md={4} lg={3} sx={{ height: '160px', mt: 1 }}>
+                                                            <Grid2 size={{ xs: 12, md: 4, lg: 3 }} sx={{ height: '160px', mt: 1 }}>
                                                                 <PlayerCard onClick={() => { navigate(`/user/${user.osu.id}`); }} user={user} />
-                                                            </Grid>
+                                                            </Grid2>
                                                         )) : <>
                                                             <Typography variant="body1">No users found.</Typography>
                                                         </>
                                                 }
-                                            </Grid>
+                                            </Grid2>
                                         </CardContent>
                                     </Card>
-                                </Grid>
+                                </Grid2>
                             )
                         })
                         : <>

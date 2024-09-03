@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Alert, Avatar, Box, Button, ButtonGroup, Card, CardActionArea, CardContent, CardMedia, Chip, Container, Divider, FormControl, Grid, IconButton, InputAdornment, InputLabel, Menu, MenuItem, Modal, OutlinedInput, Pagination, Select, Stack, Switch, Tab, Table, TableBody, TableCell, TableContainer, TableRow, Tabs, TextField, Tooltip, Typography, styled, tableCellClasses, useTheme } from "@mui/material";
+import { Alert, Avatar, Box, Button, ButtonGroup, Card, CardActionArea, CardContent, CardMedia, Chip, Container, Divider, FormControl, Grid2, IconButton, InputAdornment, InputLabel, Menu, MenuItem, Modal, OutlinedInput, Pagination, Select, Stack, Switch, Tab, Table, TableBody, TableCell, TableContainer, TableRow, Tabs, TextField, Tooltip, Typography, styled, tableCellClasses, useTheme } from "@mui/material";
 import { useState } from "react";
 import { fixedEncodeURIComponent, MODAL_STYLE, showNotification } from "../Helpers/Misc";
 import { useEffect } from "react";
@@ -474,8 +474,8 @@ function ClanPage(props) {
                                     marginBottom: '5px'
                                 }} /> : <></>
                     }
-                    <Grid container spacing={2}>
-                        <Grid item xs={12} md={4}>
+                    <Grid2 container spacing={2}>
+                        <Grid2 size={{ xs: 12, md: 4 }}>
                             <Card elevation={3}>
                                 <CardContent>
                                     <Typography variant='h6'><span style={{ color: `#${clanData.clan.color}` }}>[{clanData.clan.tag}]</span> {clanData.clan.name}</Typography>
@@ -586,8 +586,8 @@ function ClanPage(props) {
                                     </TableContainer>
                                 </CardContent>
                             </Card>
-                        </Grid>
-                        <Grid item xs={12} md={8}>
+                        </Grid2>
+                        <Grid2 size={{ xs: 12, md: 8 }}>
                             {
                                 props.me && props.me.clan_member?.clan?.id === clanData.clan.id && props.me.clan_member?.pending ? <>
                                     <Alert severity='info' sx={{
@@ -768,7 +768,7 @@ function ClanPage(props) {
                                         <>
                                             <Divider sx={{ mt: 1, mb: 1 }} />
                                             <Typography variant='h6'>Member requests</Typography>
-                                            <Grid sx={{
+                                            <Grid2 sx={{
                                                 maxHeight: '60vh',
                                                 overflowY: 'auto',
                                             }}>
@@ -852,12 +852,12 @@ function ClanPage(props) {
                                                             <Typography variant='subtitle2' sx={{ fontStyle: 'italic', }}>No requests</Typography>
                                                     }
                                                 </Stack>
-                                            </Grid>
+                                            </Grid2>
                                         </> : <></>
                                 }
                             </Box >
-                        </Grid >
-                    </Grid >
+                        </Grid2>
+                    </Grid2>
                     {/* clan logs, scrollable div of ~250 height */}
                     <Card elevation={3} sx={{
                         mt: 2,
@@ -948,9 +948,9 @@ function ClanList(props) {
             {
                 clanListData ?
                     <>
-                        <Grid container spacing={1}>
+                        <Grid2 container spacing={1}>
 
-                            <Grid item xs={12} md={10}>
+                            <Grid2 size={{ xs: 12, md: 10 }}>
                                 <Pagination
                                     color="primary"
                                     count={clanListData.total_pages}
@@ -1011,31 +1011,17 @@ function ClanList(props) {
                                         justifyContent: 'center',
                                     }}
                                 />
-                            </Grid>
-                            <Grid item xs={12} md={2}>
-                                <Box sx={{ mt: 1, display: 'flex' }}>
-                                    {/* <Paper
-                                        elevation={3}
-                                        sx={{
-                                            p: 1,
-                                            width: '100%',
-                                        }} fullWidth>
-                                        <Box>
-                                            <Typography variant='body'>Clans {clanListData?.total_clans ?? 0}</Typography>
-                                        </Box>
-                                        <Box>
-                                            <Typography variant='body'>Members {clanListData?.total_members ?? 0}</Typography>
-                                        </Box>
-                                    </Paper> */}
-                                    <Grid container spacing={1}>
-                                        <Grid item xs={6}>
+                            </Grid2>
+                            <Grid2 size={{ xs: 12, md: 2 }}>
+                                <Box sx={{ mt: 1 }}>
+                                    <Grid2 container spacing={1}>
+                                        <Grid2 size={6}>
                                             <StatCard stats={clanListData?.total_clans ?? 0} title='Clans' color={grey} opacity={0.2} icon={<GroupsIcon />} />
-                                        </Grid>
-                                        <Grid item xs={6}>
+                                        </Grid2>
+                                        <Grid2 size={6}>
                                             <StatCard stats={clanListData?.total_members ?? 0} title='Members' color={grey} opacity={0.2} icon={<GroupsIcon />} />
-                                        </Grid>
-                                    </Grid>
-
+                                        </Grid2>
+                                    </Grid2>
                                 </Box>
                                 {/* search field with button right */}
                                 <Box sx={{
@@ -1079,8 +1065,8 @@ function ClanList(props) {
                                         })
                                     }
                                 </ButtonGroup>
-                            </Grid>
-                        </Grid>
+                            </Grid2>
+                        </Grid2>
                     </> : <Loader />
             }
         </>
@@ -1279,7 +1265,7 @@ function ClanTop(props) {
                         width: `${TOP_CLAN_HEIGHT_OFFSET * 2}px`,
                         height: `${TOP_CLAN_HEIGHT_OFFSET * 2}px`,
                         border: `5px solid ${TOP_CLAN_COLORS[props.pos]}`,
-                        backgroundImage: `url(${props.data.header_image_url})`,
+                        backgroundImage: props.data.header_image_url ? `url(${fixedEncodeURIComponent(props.data.header_image_url)})` : undefined,
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
                         backgroundRepeat: 'no-repeat',
@@ -1334,21 +1320,21 @@ function ClanTop(props) {
                 </Tabs>
             </Box>
             <Box>
-                <Grid container sx={{
+                <Grid2 container sx={{
                     mt: `${TOP_CLAN_HEIGHT_OFFSET + 10}px`
                 }}
-                spacing={1}
+                    spacing={1}
                 >
-                    <Grid item xs={4} md={4}>
+                    <Grid2 size={{ xs: 4, md: 4 }}>
                         <TopClanCard pos={1} data={data.data[activeStat][1]} />
-                    </Grid>
-                    <Grid item xs={4} md={4}>
+                    </Grid2>
+                    <Grid2 size={{ xs: 4, md: 4 }}>
                         <TopClanCard pos={0} data={data.data[activeStat][0]} />
-                    </Grid>
-                    <Grid item xs={4} md={4}>
+                    </Grid2>
+                    <Grid2 size={{ xs: 4, md: 4 }}>
                         <TopClanCard pos={2} data={data.data[activeStat][2]} />
-                    </Grid>
-                </Grid>
+                    </Grid2>
+                </Grid2>
                 {/* the rest are index 3 - 9 clans, using leaderboard items */}
                 <Stack spacing={1} sx={{
                     mt: 2
@@ -1357,7 +1343,7 @@ function ClanTop(props) {
                         data.data[activeStat].slice(3).map((clan, index) => {
                             return (
                                 <ClanPlayTooltip title={CLAN_RANKING_STATS[activeStat].tooltip ? CLAN_RANKING_STATS[activeStat].tooltip(clan) : ''}>
-                                    <Grid>
+                                    <Grid2>
                                         <ClanLeaderboardItem
                                             index={index + 4}
                                             clan={clan}
@@ -1377,7 +1363,7 @@ function ClanTop(props) {
                                                 }
                                             ]}
                                         />
-                                    </Grid>
+                                    </Grid2>
                                 </ClanPlayTooltip>
                             )
                         })

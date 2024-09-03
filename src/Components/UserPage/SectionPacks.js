@@ -2,7 +2,7 @@
 import React, { useEffect, useRef } from "react";
 import { useState } from "react";
 import { getBeatmapPackDetails, getBeatmapPacks, getBeatmaps } from "../../Helpers/Osu";
-import { Box, Grid, Paper, Tooltip, Typography, useTheme } from "@mui/material";
+import { Box, Grid2, Paper, Tooltip, Typography, useTheme } from "@mui/material";
 import { is_numeric, lerpColor } from "../../Helpers/Misc";
 import PackCompletionModal from "../Modals/PackCompletionModal";
 import Loader from "../UI/Loader";
@@ -130,7 +130,7 @@ function SectionPacks(props) {
     return (
         <>
             <PackCompletionModal data={selectedPackData} ref={packInfoModalElement} />
-            <Grid sx={{ p: 2 }}>
+            <Grid2 sx={{ p: 2 }}>
                 {
                     packData.map((packType, index) => {
                         return (
@@ -177,7 +177,7 @@ function SectionPacks(props) {
                         )
                     })
                 }
-            </Grid>
+            </Grid2>
         </>
     );
 }
