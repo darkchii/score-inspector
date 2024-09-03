@@ -21,7 +21,6 @@ export function getPerformanceLive(data, debug = false) {
         data.acc = getAccuracyValue(data);
         data.flashlight = getFlashlightValue(data);
         data.total = getTotalValue(data);
-    
     }
     
     data.score = undefined;

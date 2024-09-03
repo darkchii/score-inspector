@@ -40,17 +40,17 @@ function ScoreRow(props) {
                                 <Grid2 size={3.8}>
                                     <Box sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
                                         <Tooltip title={`${score.beatmap.artist} - ${score.beatmap.title} [${score.beatmap.diffname}]`}>
-                                            <Typography sx={{ fontSize: '0.8rem', maxWidth: '100%', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
+                                            <Typography sx={{ fontSize: '0.8rem', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                                                 {score.beatmap.artist} - {score.beatmap.title}
                                             </Typography>
-                                            <Typography sx={{ fontSize: '0.7rem', maxWidth: '100%', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
+                                            <Typography sx={{ fontSize: '0.7rem', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                                                 <span style={{ color: '#ea0' }}>{score.beatmap.diffname}</span> <span style={{ opacity: '0.7' }}>{score.date_played_moment.fromNow()}</span>
                                             </Typography>
                                         </Tooltip>
                                     </Box>
                                 </Grid2>
 
-                                <Grid2 size={0.5}>
+                                <Grid2 size={0.3}>
                                     <Box sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
                                         <Typography sx={{ fontSize: '0.8rem', maxWidth: '100%', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
                                             {score.top_score?.pos ? `#${score.top_score?.pos.toLocaleString('en-US')}` : ''}
@@ -71,7 +71,7 @@ function ScoreRow(props) {
                                     </Box>
                                 </Grid2>
 
-                                <Grid2 size={1}>
+                                <Grid2 size={0.8}>
                                     <Box sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
                                         <Typography sx={{ fontSize: '0.8rem', maxWidth: '100%', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
                                             {score.combo}/{beatmap.maxcombo}x
@@ -79,7 +79,7 @@ function ScoreRow(props) {
                                     </Box>
                                 </Grid2>
 
-                                <Grid2 size={0.4}>
+                                <Grid2 size={0.3}>
                                     <Box sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
                                         <Box>
                                             <Typography sx={{ fontSize: '0.8rem', maxWidth: '100%', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
@@ -92,7 +92,7 @@ function ScoreRow(props) {
                                     </Box>
                                 </Grid2>
 
-                                <Grid2 size={0.4}>
+                                <Grid2 size={0.3}>
                                     <Box sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
                                         <Box>
                                             <Typography sx={{ fontSize: '0.8rem', maxWidth: '100%', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
@@ -142,11 +142,15 @@ function ScoreRow(props) {
                                 </Grid2>
                                 <Grid2 size={0.55}>
                                     <Box sx={{ height: '100%', alignContent: 'right', display: 'flex', alignItems: 'center', justifyContent: 'left' }}>
-                                    <Typography sx={{ ml: 0.4 }} variant="subtitle2"> {(score.beatmap.modded_sr.star_rating ?? 0).toFixed(2)}*</Typography>
+                                        <Tooltip title={
+                                            `Aim: ${score.beatmap.modded_sr.aim_diff.toFixed(2)}, Speed: ${score.beatmap.modded_sr.speed_diff.toFixed(2)}, Flashlight: ${score.beatmap.modded_sr.fl_diff.toFixed(2)}*`
+                                        }>
+                                            <Typography sx={{ ml: 0.4 }} variant="subtitle2"> {(score.beatmap.modded_sr.star_rating ?? 0).toFixed(2)}*</Typography>
+                                        </Tooltip>
                                     </Box>
                                 </Grid2>
 
-                                <Grid2 size={1.4}>
+                                <Grid2 size={1.2}>
                                     <Box sx={{ height: '100%', alignContent: 'right', display: 'flex', alignItems: 'center' }}>
                                         {
                                             getModString(score.enabled_mods).map(mod => (
@@ -161,6 +165,16 @@ function ScoreRow(props) {
                                 <Grid2 size={0.6}>
                                     <Box sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
                                         <Typography variant="subtitle2">{score.accuracy.toFixed(2)}%</Typography>
+                                    </Box>
+                                </Grid2>
+
+                                <Grid2 size={0.8}>
+                                    <Box sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
+                                        {
+                                            !score.is_fc && score.recalc['fc'] ? 
+                                            <Typography variant="subtitle2">(if FC: {Math.round(score.recalc['fc']?.total).toLocaleString('en-US')}pp)</Typography> 
+                                            : <></>
+                                        }
                                     </Box>
                                 </Grid2>
 

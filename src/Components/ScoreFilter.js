@@ -66,6 +66,15 @@ const sorters = [
             return b.beatmap.modded_sr.star_rating - a.beatmap.modded_sr.star_rating;
         },
         internalName: 'star_rating'
+    },
+    {
+        name: 'PP if FC',
+        sort: (a, b) => {
+            let a_pp = !a.is_fc && a.recalc['fc'] > 0 ? a.recalc['fc'] : (a.pp > 0 ? a.pp : a.estimated_pp);
+            let b_pp = !b.is_fc && b.recalc['fc'] > 0 ? b.recalc['fc'] : (b.pp > 0 ? b.pp : b.estimated_pp);
+            return b_pp - a_pp;
+        },
+        internalName: 'pp_fc'
     }
 ]
 
