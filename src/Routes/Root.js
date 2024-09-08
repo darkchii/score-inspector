@@ -215,7 +215,7 @@ function Root() {
                                                             alignItems: 'center',
                                                             height: '100%',
                                                         }}>
-                                                            <Typography variant='h5' sx={{ color: 'white' }}>How to get your statistics available</Typography>
+                                                            <Typography variant='h5' sx={{ color: 'white' }}>How to import stats</Typography>
                                                             {/* a dropdown Paper when helpbutton is hovered (show below the card, but overlaps anything underneath) */}
                                                             <Paper
                                                                 sx={{

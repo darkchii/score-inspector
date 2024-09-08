@@ -33,6 +33,7 @@ import Completionists from './Routes/Completionists.js';
 import ComparePlayers from './Routes/ComparePlayers.js';
 import Clan from './Routes/Clan.js';
 import Loader from './Components/UI/Loader.js';
+import Chat from './Routes/Chat.js';
 
 function App() {
   const [loginData, setLoginData] = useState(null);
@@ -110,6 +111,7 @@ function App() {
             <Route path="completionists" element={<Completionists />} />
             <Route path="logout" element={<Logout />} />
             <Route path="clan/:id?" element={<Clan />} />
+            <Route path="bancho" element={<Chat />} />
             <Route path="milestones" element={<Milestones />}>
               <Route index element={<Milestones />} />
               <Route path="page/:page" element={<Milestones />} />
