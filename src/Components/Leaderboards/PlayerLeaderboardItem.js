@@ -59,7 +59,7 @@ function PlayerLeaderboardItem(props) {
     return (
         <>
             <LeaderboardItem
-                background={osu_user?.cover?.custom_url}
+                background={osu_user?.cover?.custom_url ?? osu_user?.cover_url}
                 onClick={() => {
                     if (props.remote_profile) {
                         window.open(`https://osu.ppy.sh/users/${base_user?.user_id ?? base_user?.osu_id}`, '_blank');
