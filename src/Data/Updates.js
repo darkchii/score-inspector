@@ -24,7 +24,11 @@ const updates = [
             [PLATFORMTYPES.WEB, CHANGETYPES.MISC, 'Global periodic top plays page now contain much more information in the card', '49d154942daf6020f85923c021ed8adfd065bd70'],
             [PLATFORMTYPES.WEB | PLATFORMTYPES.API, CHANGETYPES.MISC, 'Global periodic top plays are now based on 0 utc for that day/week/etc instead of last x days', '3276840f8371eb21d840dc53ec61d570de0d07de'],
             [PLATFORMTYPES.WEB, CHANGETYPES.MISC, 'Small website-wide changes', '49d154942daf6020f85923c021ed8adfd065bd70'],
-            [PLATFORMTYPES.API, CHANGETYPES.FIX, 'Monthly farmers is being updated again']
+            [PLATFORMTYPES.API, CHANGETYPES.FIX, 'Monthly farmers is being updated again'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Added public bancho chats statistics', 'd382d5d08f87ae8a8ca70e20956a9ebc3b3144ba'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.MISC, 'Major update to MUI v6, moved away from deprecated components', '0436f11f76af17094323461c7aecb5a253bfcbe1'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Clan owners can now set default sorting for their clan page', '1347b519029b667f2451966b13725ebd8133c825'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.FIX, 'Profile covers now show up correctly on clan member listing', '3e3e74148b3a0c61f004f209fd6a9a61f4786478'],
         ]
     },
     {
