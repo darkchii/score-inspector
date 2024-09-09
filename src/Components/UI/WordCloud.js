@@ -38,7 +38,7 @@ function WordCloud(props) {
                 sx={{
                     display: 'flex',
                     flexWrap: 'wrap',
-                    gap: '4px',
+                    gap: '2px',
                     justifyContent: 'center',
                     padding: '16px',
                     textAlign: 'center',
@@ -46,7 +46,7 @@ function WordCloud(props) {
             >
                 {wordData.map(({ word, frequency }, index) => {
                     // Scale font size based on frequency
-                    const fontSize = (frequency / maxFrequency) * 1 + 0.8; // Base size + scale
+                    const fontSize = (frequency / maxFrequency) * 1 + 0.7; // Base size + scale
                     const color = `${theme.palette.primary.main}${Math.round(100 + (frequency / maxFrequency) * 105).toString(16)}`;
 
                     return (
