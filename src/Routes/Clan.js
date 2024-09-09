@@ -290,8 +290,10 @@ function ClanPage(props) {
         (async () => {
             try {
                 const data = await GetClan(id, props.me?.osu_id ?? null, (await GetLoginToken()) ?? null);
+                if(data && data.clan.default_sort){
+                    setSorter(data.clan.default_sort);
+                }
                 setClanData(data);
-                console.log(data);
             } catch (err) {
                 showNotification('Error', 'An error occurred while fetching the clan data.', 'error');
                 showNotification('Error', err.message, 'error');
@@ -1427,6 +1429,7 @@ function ClanEdit(props) {
             color: data.clanColor,
             header_image_url: data.clanHeaderUrl,
             disable_requests: data.clanDisableRequests,
+            default_sort: data.clanDefaultSort,
             user: {
                 id: props.user.osu_id,
                 token: await GetLoginToken(),
@@ -1495,6 +1498,7 @@ function ClanFormFields(props) {
     const [clanColor, setClanColor] = useState(('#' + props.clan?.clan.color) ?? '#ffffff');
     const [clanHeaderUrl, setClanHeaderUrl] = useState(props.clan?.clan.header_image_url ?? '');
     const [clanDisableRequests, setClanDisableRequests] = useState(props.clan?.clan.disable_requests ?? false);
+    const [clanDefaultSort, setClanDefaultSort] = useState(props.clan?.clan.default_sort ?? 'average_pp');
     const [isEditMode] = useState(props.clan ? true : false);
 
     const [exampleUser, setExampleUser] = useState(null);
@@ -1538,7 +1542,8 @@ function ClanFormFields(props) {
                 clanDescription: clanDescription,
                 clanColor: clanColor.substring(1),
                 clanHeaderUrl: clanHeaderUrl,
-                clanDisableRequests,
+                clanDisableRequests: clanDisableRequests,
+                clanDefaultSort: clanDefaultSort,
             });
 
             setIsWorking(false);
@@ -1608,6 +1613,34 @@ function ClanFormFields(props) {
                                                     maxLength: 255,
                                                 }}
                                             />
+
+                                            <Box sx={{
+                                                width: '100%',
+                                            }}>
+                                                <FormControl sx={{
+                                                    mt: 1,
+                                                    width: '100%',
+                                                }}>
+                                                    <InputLabel id="edit-default-sort">Default Sort</InputLabel>
+                                                    <Select
+                                                        labelId="edit-default-sort"
+                                                        id="edit-default-sort-select"
+                                                        variant='standard'
+                                                        size="small"
+                                                        value={clanDefaultSort}
+                                                        onChange={(e) => setClanDefaultSort(e.target.value)}
+                                                        disabled={isWorking}
+                                                    >
+                                                        {
+                                                            CLAN_STATS.filter((stat) => stat.user !== false).map((stat) => {
+                                                                return (
+                                                                    <MenuItem value={stat.key}>{stat.name}</MenuItem>
+                                                                )
+                                                            })
+                                                        }
+                                                    </Select>
+                                                </FormControl>
+                                            </Box>
 
                                             {/* MUI switch */}
                                             <Stack direction='row' alignItems='center'>
