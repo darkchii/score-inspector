@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Loader from "./Loader";
-import { Box, Chip, Tooltip, Typography, useTheme } from "@mui/material";
+import { Box, Tooltip, Typography, useTheme } from "@mui/material";
 
 function WordCloud(props) {
     const [wordData, setWordData] = useState(null);

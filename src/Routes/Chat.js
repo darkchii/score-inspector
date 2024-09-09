@@ -103,6 +103,7 @@ function Chat(props) {
             await getPopularHours();
             setIsWorking(false);
         })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     if (isWorking || !chatStats || !chatHistory || !activeUsers || !popularWords || !popularMaps || !popularHours) {
