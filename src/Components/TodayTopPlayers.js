@@ -14,7 +14,7 @@ function TodayTopPlayers(props) {
     </>
 
     return <>
-        <Grid2 container spacing={2} sx={{ pt: 1 }}>
+        <Grid2 container spacing={1} sx={{ pt: 1 }}>
             {
                 Object.keys(props.data).map((key, index) => {
                     return (

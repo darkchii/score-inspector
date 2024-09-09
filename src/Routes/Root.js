@@ -132,7 +132,7 @@ function Root() {
             }
             <Grid2 sx={{ pb: 1 }}>
                 <Alert severity="warning">
-                    Lazer scores are currently <b>not</b> supported. Support will be added once osu!alternative is updated.
+                    Lazer scores are currently <b>partly</b> supported. New mods and rate changes are not supported.
                 </Alert>
             </Grid2>
             <Grid2 sx={{ pb: 1 }}>

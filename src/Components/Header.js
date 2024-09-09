@@ -1,4 +1,4 @@
-import { AppBar, Avatar, Box, Button, Divider, Drawer, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Menu, MenuItem, Stack, Toolbar, Typography, alpha, styled } from '@mui/material';
+import { AppBar, Avatar, Box, Button, Divider, Drawer, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Menu, MenuItem, Stack, Toolbar, Tooltip, Typography, alpha, styled } from '@mui/material';
 import React from 'react';
 import { useRef } from 'react';
 import { Link } from 'react-router-dom';
@@ -99,8 +99,9 @@ function Header(props) {
         { name: 'Stats', icon: <DataUsageIcon />, onClick: () => { }, linkTo: '/stats' },
         { name: 'Tools', icon: <BuildIcon />, onClick: () => { }, linkTo: '/tools' },
         { name: 'Milestones', icon: <EmojiEventsIcon />, onClick: () => { }, linkTo: '/milestones' },
-        { name: 'Bancho', icon: <ChatIcon />, onClick: () => { }, linkTo: '/bancho' },
+        { name: 'Bancho', icon: <ChatIcon />, onClick: () => { }, linkTo: '/bancho', tooltip: 'Statistics about the public in-game osu chats' },
         { name: 'Clans', icon: <GroupIcon />, onClick: () => { }, linkTo: '/clan' },
+        // { name: 'Tournaments', icon: <EmojiEventsIcon />, onClick: () => { }, linkTo: '/tournaments' },
     ];
 
     const handleHeaderMenuOpen = (event, index) => {
@@ -197,21 +198,23 @@ function Header(props) {
                                         headerNavItems.map((item, index) => {
                                             return (
                                                 <Stack direction="row">
-                                                    <Button
-                                                        key={index}
-                                                        size='small'
-                                                        startIcon={item.icon}
-                                                        component={item.linkTo ? Link : null}
-                                                        to={item.linkTo ?? null}
-                                                        onClick={item.onClick}>
-                                                        {item.name}
-                                                    </Button>
+                                                    <Tooltip title={item.tooltip ?? ''}>
+                                                        <Button
+                                                            key={index}
+                                                            size='small'
+                                                            startIcon={item.icon}
+                                                            component={item.linkTo ? Link : null}
+                                                            to={item.linkTo ?? null}
+                                                            onClick={item.onClick}>
+                                                            {item.name}
+                                                        </Button>
 
-                                                    {
-                                                        item.dropDown ?
-                                                            <IconButton onClick={(e) => handleHeaderMenuOpen(e, index)} size='small'><KeyboardArrowDownIcon /></IconButton>
-                                                            : <></>
-                                                    }
+                                                        {
+                                                            item.dropDown ?
+                                                                <IconButton onClick={(e) => handleHeaderMenuOpen(e, index)} size='small'><KeyboardArrowDownIcon /></IconButton>
+                                                                : <></>
+                                                        }
+                                                    </Tooltip>
                                                 </Stack>
                                             )
                                         }

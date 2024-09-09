@@ -232,7 +232,10 @@ function Clan(props) {
                             alignItems: 'center',
                             mb: 1
                         }}>
-                            <Tabs value={tabValue} onChange={handleTabChange}>
+                            <Tabs value={tabValue} onChange={handleTabChange} centered sx={{
+                                //grow to fill the space
+                                flexGrow: 1
+                            }}>
                                 <Tab label="Rankings" {...a11yProps(0)} />
                                 <Tab label="Listing" {...a11yProps(1)} />
                             </Tabs>
@@ -290,7 +293,7 @@ function ClanPage(props) {
         (async () => {
             try {
                 const data = await GetClan(id, props.me?.osu_id ?? null, (await GetLoginToken()) ?? null);
-                if(data && data.clan.default_sort){
+                if (data && data.clan.default_sort) {
                     setSorter(data.clan.default_sort);
                 }
                 setClanData(data);
@@ -532,6 +535,34 @@ function ClanPage(props) {
                                         <Typography variant='body1'>Owner:</Typography>
                                         <Box sx={{ ml: 1 }}> {GetFormattedName(clanData.owner?.user?.inspector_user ?? {})} </Box>
                                     </Box>
+                                    {
+                                        //if owner, show Edit button
+                                        props.me && props.me?.clan_member?.clan && props.me?.clan_member?.clan?.id === clanData.clan.id
+                                            && clanData.clan.owner === props.me?.osu_id
+                                            ?
+                                            <>
+                                                <Divider sx={{ mt: 1, mb: 1 }} />
+                                                <Alert severity={clanData.clan.disable_requests ? 'warning' : 'success'}>
+                                                    Join requests are {clanData.clan.disable_requests ? 'disabled' : 'enabled'}.
+                                                </Alert>
+                                                <Box sx={{ pt: 1 }}>
+                                                    <Button
+                                                        variant='contained'
+                                                        color='primary'
+                                                        size='small'
+                                                        onClick={() => setClanEditModalOpen(true)}
+                                                    >Edit</Button>
+                                                    <Button
+                                                        sx={{ ml: 1 }}
+                                                        variant='contained'
+                                                        color='error'
+                                                        size='small'
+                                                        onClick={() => setClanRemoveModalOpen(true)}
+                                                    >Delete</Button>
+                                                </Box>
+                                            </>
+                                            : <></>
+                                    }
                                     <Divider sx={{ mt: 1, mb: 1 }} />
                                     {/* <Typography variant='body1'>Ranked score: {clanData.stats.ranked_score ?? 0}</Typography>
                                                             <Typography variant='body1'>Total score: {clanData.stats.total_score ?? 0}</Typography> */}
@@ -599,34 +630,7 @@ function ClanPage(props) {
                                     </Alert>
                                 </> : <></>
                             }
-                            {
-                                //if owner, show Edit button
-                                props.me && props.me?.clan_member?.clan && props.me?.clan_member?.clan?.id === clanData.clan.id
-                                    && clanData.clan.owner === props.me?.osu_id
-                                    ?
-                                    <>
-                                        <Alert severity={clanData.clan.disable_requests ? 'warning' : 'success'}>
-                                            Join requests are {clanData.clan.disable_requests ? 'disabled' : 'enabled'}.
-                                        </Alert>
-                                        <Box sx={{ pt: 1 }}>
-                                            <Button
-                                                variant='contained'
-                                                color='primary'
-                                                size='small'
-                                                onClick={() => setClanEditModalOpen(true)}
-                                            >Edit</Button>
-                                            <Button
-                                                sx={{ ml: 1 }}
-                                                variant='contained'
-                                                color='error'
-                                                size='small'
-                                                onClick={() => setClanRemoveModalOpen(true)}
-                                            >Delete</Button>
-                                        </Box>
-                                    </>
-                                    : <></>
-                            }
-                            <Box sx={{ mt: 2 }}>
+                            <Box>
                                 <Box display='flex' sx={{ mb: 1 }}>
                                     <Typography variant='h6'>Members</Typography>
                                     {/* dropdown for sorter */}

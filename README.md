@@ -1,3 +1,7 @@
+![GitHub repo size](https://img.shields.io/github/repo-size/darkchii/score-inspector)
+![GitHub commit activity (branch)](https://img.shields.io/github/commit-activity/w/darkchii/score-inspector/dev-2.0)
+
+
 # Scores Inspector
 
 A visualizer web app that consumes data from the osu!alternative Discord: https://discord.gg/VZWRZZXcW4

@@ -1,7 +1,6 @@
-import { useParams } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import config from "../config.json";
-import { Alert, Box, Card, CardContent, Container, Grid2, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Tooltip, Typography, useTheme } from "@mui/material";
+import { Alert, Box, Card, CardContent, Grid2, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Tooltip, Typography, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { formatNumberAsSize, GetAPI } from "../Helpers/Misc";
