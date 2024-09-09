@@ -11,7 +11,7 @@
     "@mui/icons-material": "^6.0.2",
     "@mui/lab": "^6.0.0-beta.9",
     "@mui/material": "^6.0.2",
-    "@mui/x-date-pickers": "^7.15.0",
+    "@mui/x-date-pickers": "^7.16.0",
     "apexcharts": "^3.53.0",
     "axios": "^1.7.7",
     "buffer": "^6.0.3",
