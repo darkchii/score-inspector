@@ -10,7 +10,7 @@
     "@fontsource/roboto": "^5.0.14",
     "@mui/icons-material": "^6.0.0",
     "@mui/lab": "^6.0.0-beta.8",
-    "@mui/material": "^6.0.0",
+    "@mui/material": "^6.0.2",
     "@mui/x-date-pickers": "^7.15.0",
     "apexcharts": "^3.53.0",
     "axios": "^1.7.7",
