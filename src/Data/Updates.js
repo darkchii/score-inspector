@@ -13,7 +13,7 @@ const PLATFORMTYPES = {
 const updates = [
     {
         version: '3.2.0',
-        date: 'n/a',
+        date: '2024-09-10',
         changes: [
             [PLATFORMTYPES.API | PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Clan ownership transferring added', '6bb6b12d99967be7171cfafc22569a489e2e7189'],
             [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Clan logs added', '09238889133d58ddd279313d70dd0b5f5516c224'],
