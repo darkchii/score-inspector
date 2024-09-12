@@ -200,7 +200,10 @@ function Clan(props) {
         return (
             <div
                 role="tabpanel"
-                hidden={value !== index}
+                // hidden={value !== index}
+                style={{
+                    display: value === index ? 'block' : 'none',
+                }}
                 id={`simple-tabpanel-${index}`}
                 aria-labelledby={`simple-tab-${index}`}
                 {...other}
@@ -222,7 +225,7 @@ function Clan(props) {
                             open={clanCreatorModalOpen}
                             onClose={() => setClanCreatorModalOpen(false)}
                         >
-                            <ClanCreate user={props.me} />
+                            <ClanCreate user={loggedInUser} />
                         </Modal>
                         <Box sx={{
                             borderBottom: 1, borderColor: 'divider',
@@ -1199,7 +1202,6 @@ function ClanTop(props) {
                     setData(null);
                     showNotification('Error', 'An error occurred while fetching the top clans.', 'error');
                 }
-                console.log(response);
             } catch (err) {
                 console.error(err);
                 showNotification('Error', 'An error occurred while fetching the top clans.', 'error');
@@ -1499,7 +1501,7 @@ function ClanFormFields(props) {
     const [clanName, setClanName] = useState(props.clan?.clan.name ?? '');
     const [clanTag, setClanTag] = useState(props.clan?.clan.tag ?? '');
     const [clanDescription, setClanDescription] = useState(props.clan?.clan.description ?? '');
-    const [clanColor, setClanColor] = useState(('#' + props.clan?.clan.color) ?? '#ffffff');
+    const [clanColor, setClanColor] = useState(('#' + (props.clan?.clan.color ?? 'ffffff')));
     const [clanHeaderUrl, setClanHeaderUrl] = useState(props.clan?.clan.header_image_url ?? '');
     const [clanDisableRequests, setClanDisableRequests] = useState(props.clan?.clan.disable_requests ?? false);
     const [clanDefaultSort, setClanDefaultSort] = useState(props.clan?.clan.default_sort ?? 'average_pp');
