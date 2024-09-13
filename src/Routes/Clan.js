@@ -1462,6 +1462,8 @@ function ClanEdit(props) {
 }
 
 function ClanCreate(props) {
+    const navigate = useNavigate();
+
     const onSubmit = async (data) => {
         if (!data.clanName || !data.clanTag || !data.clanDescription || !data.clanColor) {
             showNotification('Error', 'Please fill in all fields.', 'error');
@@ -1484,6 +1486,7 @@ function ClanCreate(props) {
                 showNotification('Error', response.error, 'error');
             } else {
                 showNotification('Success', 'Clan created successfully.', 'success');
+                navigate(`/clan/${response.clan.id}`);
             }
         } catch (err) {
             console.error(err);
