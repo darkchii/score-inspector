@@ -41,7 +41,6 @@ function getScoresPeriodicData(user, scores, dates, beatmaps, period = 'm') {
     data = processCurrentData(scores, data, period);
     data = processAverageData(scores, data, period);
     data = processScoreRankData(user.score_rank_history, data, period);
-    data = processOsuDailyData(user.daily?.modes?.[0]?.lines, data, period);
 
     //convert data to array and sort by date asc
     let data_array = [];
@@ -61,7 +60,6 @@ function getScoresPeriodicData(user, scores, dates, beatmaps, period = 'm') {
     data_array = processCumulativeData(data_array, period);
     data_array = processAverageData(scores, data_array, period);
     data_array = processCompletionData(_beatmaps, data_array, period);
-    data_array = postprocessOsuDailyData(data_array, period);
 
     const graph_data = generateGraphData(user, data_array, period);
     return graph_data;
@@ -213,36 +211,6 @@ function processScoreRankData(score_rank_data, data, period = 'm') {
     return data;
 }
 
-function processOsuDailyData(osu_daily_data, data, period = 'm') {
-    if (osu_daily_data === undefined) {
-        return data;
-    }
-
-    for (let i = 0; i < osu_daily_data.length; i++) {
-        const date = correctDate(osu_daily_data[i].date, period);
-
-        data[date].peak_global_rank = Math.max(data[date].peak_global_rank, osu_daily_data[i].rankworld);
-        data[date].peak_country_rank = Math.max(data[date].peak_country_rank, osu_daily_data[i].rankcountry);
-        data[date].total_total_score = Math.max(data[date].total_total_score, osu_daily_data[i].totalscore);
-        data[date].peak_raw_pp = Math.max(data[date].peak_raw_pp, osu_daily_data[i].pp);
-        data[date].peak_level = Math.max(data[date].peak_level, osu_daily_data[i].level);
-        data[date].peak_playcount = Math.max(data[date].peak_playcount, osu_daily_data[i].playcount);
-    }
-    return data;
-}
-
-function postprocessOsuDailyData(data_array, period = 'm') {
-    for (let i = 0; i < data_array.length; i++) {
-        const previous_data = data_array[i - 1];
-        if (previous_data === undefined || data_array[i].total_total_score === null) {
-            continue;
-        }
-
-        data_array[i].gained_total_score = data_array[i].total_total_score - (previous_data.total_total_score ?? 0);
-    }
-    return data_array;
-}
-
 function generateGraphData(user, data_array, period = 'm') {
     let graph_data = [];
 
@@ -296,35 +264,6 @@ function generateGraphData(user, data_array, period = 'm') {
             {
                 name: 'Ranked Score',
                 graph_data: data_array.map((data) => { return [data.date, data.total_score] }),
-            }
-        ],
-    }];
-
-    //total score gained
-    graph_data = [...graph_data, {
-        id: 'total_score',
-        name: 'Total Score',
-        category: 'incremental',
-        disabled: user.daily?.modes?.[0]?.lines === undefined,
-        data: [
-            {
-                name: 'Total Score',
-                graph_data: data_array.filter((data) => data.gained_total_score !== null).map((data) => { return [data.date, data.gained_total_score] }),
-            }
-        ],
-    }];
-
-    //total score cumulative
-    graph_data = [...graph_data, {
-        id: 'total_score',
-        name: 'Total Score',
-        category: 'cumulative',
-        disabled: user.daily?.modes?.[0]?.lines === undefined,
-        filterNull: true,
-        data: [
-            {
-                name: 'Total Score',
-                graph_data: data_array.map((data) => { return [data.date, data.total_total_score] }),
             }
         ],
     }];
@@ -831,75 +770,6 @@ function generateGraphData(user, data_array, period = 'm') {
         }
     }];
 
-    //highest pc
-    graph_data = [...graph_data, {
-        id: 'max_pc',
-        name: 'Playcount',
-        category: 'misc',
-        disabled: user.daily?.modes?.[0]?.lines === undefined,
-        data: [
-            {
-                name: 'Playcount',
-                graph_data: data_array.filter((data) => data.peak_playcount !== null).map((data) => { return [data.date, data.peak_playcount] }),
-            }
-        ]
-    }];
-
-    //highest raw pp
-    graph_data = [...graph_data, {
-        id: 'max_raw_pp',
-        name: 'Raw PP',
-        category: 'misc',
-        disabled: user.daily?.modes?.[0]?.lines === undefined,
-        data: [
-            {
-                name: 'Raw PP',
-                graph_data: data_array.filter((data) => data.peak_raw_pp !== null).map((data) => { return [data.date, data.peak_raw_pp] }),
-            }
-        ],
-        formatter: (value) => {
-            return `${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}pp`;
-        }
-    }];
-
-    //global rank
-    graph_data = [...graph_data, {
-        id: 'rank_global',
-        name: 'Global Rank',
-        category: 'misc',
-        reversed: true,
-        min: 1, //#0 doesn't exist
-        disabled: user.daily?.modes?.[0]?.lines === undefined,
-        data: [
-            {
-                name: 'Global Rank',
-                graph_data: data_array.filter((data) => data.peak_global_rank !== null).map((data) => { return [data.date, data.peak_global_rank] }),
-            }
-        ],
-        formatter: (value) => {
-            return `#${value.toLocaleString()}`;
-        }
-    }];
-
-    //country rank
-    graph_data = [...graph_data, {
-        id: 'rank_country',
-        name: 'Country Rank',
-        category: 'misc',
-        reversed: true,
-        min: 1, //#0 doesn't exist
-        disabled: user.daily?.modes?.[0]?.lines === undefined,
-        data: [
-            {
-                name: 'Country Rank',
-                graph_data: data_array.filter((data) => data.peak_country_rank !== null).map((data) => { return [data.date, data.peak_country_rank] }),
-            }
-        ],
-        formatter: (value) => {
-            return `#${value.toLocaleString()}`;
-        }
-    }];
-
     //score rank
     graph_data = [...graph_data, {
         id: 'rank_score',
@@ -915,23 +785,6 @@ function generateGraphData(user, data_array, period = 'm') {
         ],
         formatter: (value) => {
             return `#${value.toLocaleString()}`;
-        }
-    }];
-
-    //highest level
-    graph_data = [...graph_data, {
-        id: 'max_level',
-        name: 'Level',
-        category: 'misc',
-        disabled: user.daily?.modes?.[0]?.lines === undefined,
-        data: [
-            {
-                name: 'Level',
-                graph_data: data_array.filter((data) => data.peak_level !== null).map((data) => { return [data.date, data.peak_level] }),
-            }
-        ],
-        formatter: (value) => {
-            return `${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
         }
     }];
 

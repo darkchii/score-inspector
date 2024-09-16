@@ -28,7 +28,6 @@ function Staff(props) {
                     const user_ids = users.map(user => user.osu_id);
                     let _users = [];
                     const full_users = await getFullUser(user_ids, {
-                        skipDailyData: true,
                         skipAltData: true,
                     }, true);
 

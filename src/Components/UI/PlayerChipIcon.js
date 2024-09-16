@@ -45,7 +45,6 @@ function PlayerChipIcon(props) {
                     let _playerData = null;
                     try {
                         _playerData = await getFullUser(props.user_id, {
-                            skipDailyData: true,
                             skipAltData: true
                         }, null, _abortController.signal);
                         if (_playerData.length > 0) {

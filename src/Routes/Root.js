@@ -462,10 +462,6 @@ function Root() {
                                                     <TableCell>score ranking</TableCell>
                                                     <TableCell><Link href='https://github.com/respektive/osustats' target='_blank'>respektive</Link></TableCell>
                                                 </TableRow>
-                                                <TableRow>
-                                                    <TableCell>historical data</TableCell>
-                                                    <TableCell><Link href='https://osudaily.net/' target='_blank'>osu!daily</Link></TableCell>
-                                                </TableRow>
                                             </TableBody>
                                         </Table>
                                     </TableContainer>
