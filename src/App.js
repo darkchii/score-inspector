@@ -30,7 +30,6 @@ import LeadersScore from './Routes/LeadersScore';
 import Milestones from './Routes/Milestones';
 import LeadersMonthly from './Routes/LeadersMonthly.js';
 import Completionists from './Routes/Completionists.js';
-import ComparePlayers from './Routes/ComparePlayers.js';
 import Clan from './Routes/Clan.js';
 import Loader from './Components/UI/Loader.js';
 import Chat from './Routes/Chat.js';
@@ -150,8 +149,6 @@ function App() {
                 </Route>
               </Route>
             </Route>
-            {/* either no params, or required both user_a and user_b */}
-            <Route path="player_compare/:user_a?/:user_b?" element={<ComparePlayers />} />
           </Routes>
         </CardContent>
       </Paper>
