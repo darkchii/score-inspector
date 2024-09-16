@@ -247,7 +247,7 @@ function LeadersMonthly(props) {
                                     <Divider sx={{ mt: 1, mb: 1 }} />
                                     <Box>
                                         <Typography variant="h6" component="div">Overtakes</Typography>
-                                        <Paper style={{ height: 400, width: '100%' }}>
+                                        <Paper style={{ height: 400, width: '100%', overflow: 'auto' }}>
                                             {
                                                 dataOvertakes.length > 0 ? (
                                                     <TableContainer>
