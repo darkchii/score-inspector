@@ -95,6 +95,39 @@ function ClanLeaderboardItem(props) {
                     })
                 }
             </Box>
+            <Box sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                width: '100px'
+            }}>
+                {
+                    props.iconValues?.map((value, index) => {
+                        return (
+                            <Tooltip key={index} title={value.tooltip ?? ''}>
+                                <Box sx={{
+                                    display: 'flex',
+                                    justifyContent: value.alignment,
+                                    alignItems: 'center',
+                                    width: `${100 / props.iconValues.length}%`,
+                                    pl: 1,
+                                    pr: 1,
+                                }}>
+                                    <Typography
+                                        sx={{
+                                            color: value.color ?? 'inherit',
+                                        }}
+                                        variant={value.variant ?? 'h6'}
+                                        textAlign={value.alignment}
+                                        noWrap>
+                                        {value.value}
+                                    </Typography>
+                                </Box>
+                            </Tooltip>
+                        )
+                    })
+                }
+            </Box>
         </LeaderboardItem>
     )
 }

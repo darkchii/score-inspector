@@ -26,6 +26,7 @@ import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import DoneIcon from '@mui/icons-material/Done';
 import ClearIcon from '@mui/icons-material/Clear';
 import { IMG_TRIANGLES } from "../Helpers/Assets";
+import { DiscordIcon } from "../Components/Icons";
 
 //always round to 2 decimal places, and toLocaleString for commas
 const CLAN_STATS = [
@@ -532,12 +533,17 @@ function ClanPage(props) {
                                     <Typography variant='h6'>Statistics</Typography>
                                     <Typography variant='body1'>Members: {clanData.members.length}</Typography>
                                     <Typography variant='body1'>Created: {moment(clanData.clan.creation_date).fromNow()}</Typography>
-                                    <Box sx={{
-                                        display: 'flex'
-                                    }}>
+                                    <Box sx={{ display: 'flex' }}>
                                         <Typography variant='body1'>Owner:</Typography>
                                         <Box sx={{ ml: 1 }}> {GetFormattedName(clanData.owner?.user?.inspector_user ?? {})} </Box>
                                     </Box>
+                                    {
+                                        clanData.clan.discord_invite ? <>
+                                            <Tooltip title={`${clanData.clan.name} has a Discord server, join them!`}>
+                                                <Button size='small' variant='contained' sx={{ mt: 1, backgroundColor: '#7289da' }} startIcon={<DiscordIcon />} href={clanData.clan.discord_invite} target='_blank'>Join Discord</Button>
+                                            </Tooltip>
+                                        </> : <></>
+                                    }
                                     {
                                         //if owner, show Edit button
                                         props.me && props.me?.clan_member?.clan && props.me?.clan_member?.clan?.id === clanData.clan.id
@@ -997,9 +1003,12 @@ function ClanList(props) {
                                                             },
                                                             //select clan_stat entry from sorter, then use format function
                                                             { value: CLAN_STATS.find((stat) => stat.key === sorter).format(clan.clan_stats), alignment: 'left', variant: 'body2' },
-                                                            { value: clan.disable_requests ? <LockIcon color='error' /> : <LockOpenIcon color='success' />, alignment: 'right', variant: 'body2', tooltip: clan.disable_requests ? 'Join requests disabled' : 'Join requests enabled' }
                                                         ]
                                                     }
+                                                    iconValues={[
+                                                        { value: (!clan.discord_invite || clan.discord_invite.length === 0) ? <></> : <DiscordIcon sx={{ color: grey[200] }} />, alignment: 'right', variant: 'body2', tooltip: clan.discord_invite ? 'Has a Discord community' : '' },
+                                                        { value: clan.disable_requests ? <LockIcon color='error' /> : <LockOpenIcon color='success' />, alignment: 'right', variant: 'body2', tooltip: clan.disable_requests ? 'Join requests disabled' : 'Join requests enabled' }
+                                                    ]}
                                                 />
                                             )
                                         })
@@ -1436,6 +1445,7 @@ function ClanEdit(props) {
             header_image_url: data.clanHeaderUrl,
             disable_requests: data.clanDisableRequests,
             default_sort: data.clanDefaultSort,
+            discord_invite: data.clanDiscordInvite,
             user: {
                 id: props.user.osu_id,
                 token: await GetLoginToken(),
@@ -1508,6 +1518,7 @@ function ClanFormFields(props) {
     const [clanHeaderUrl, setClanHeaderUrl] = useState(props.clan?.clan.header_image_url ?? '');
     const [clanDisableRequests, setClanDisableRequests] = useState(props.clan?.clan.disable_requests ?? false);
     const [clanDefaultSort, setClanDefaultSort] = useState(props.clan?.clan.default_sort ?? 'average_pp');
+    const [clanDiscordInvite, setClanDiscordInvite] = useState(props.clan?.clan.discord_invite ?? '');
     const [isEditMode] = useState(props.clan ? true : false);
 
     const [exampleUser, setExampleUser] = useState(null);
@@ -1553,6 +1564,7 @@ function ClanFormFields(props) {
                 clanHeaderUrl: clanHeaderUrl,
                 clanDisableRequests: clanDisableRequests,
                 clanDefaultSort: clanDefaultSort,
+                clanDiscordInvite: clanDiscordInvite,
             });
 
             setIsWorking(false);
@@ -1566,7 +1578,10 @@ function ClanFormFields(props) {
                     <Box>
                         <Typography variant='h6'>Create a clan</Typography>
                         {/* FORM */}
-                        <Box sx={{ mt: 2 }}>
+                        <Box sx={{ mt: 2,
+                            maxHeight: '80vh',
+                            overflowY: 'auto',
+                         }}>
                             <Container>
                                 <Stack spacing={1}>
                                     {
@@ -1612,6 +1627,16 @@ function ClanFormFields(props) {
                                     />
                                     {
                                         isEditMode ? <>
+                                            <TextField
+                                                label='Discord Invite'
+                                                variant='standard'
+                                                value={clanDiscordInvite}
+                                                onChange={(e) => setClanDiscordInvite(e.target.value)}
+                                                disabled={isWorking}
+                                                inputProps={{
+                                                    maxLength: 255,
+                                                }} />
+
                                             <TextField
                                                 label='Header  Image URL'
                                                 variant='standard'
