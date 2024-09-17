@@ -3,7 +3,7 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 import { GetFormattedName, GetRoleIcon, GetRoles } from "../../Helpers/Account";
 import TwitterIcon from '@mui/icons-material/Twitter';
-import { DiscordIcon } from "../../Helpers/Icons";
+import { DiscordIcon } from "../../Components/Icons";
 import { getBonusPerformance } from "../../Helpers/Osu";
 import { Link as VLink } from 'react-router-dom';
 import { getFlagIcon } from "../../Helpers/Assets";
