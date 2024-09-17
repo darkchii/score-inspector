@@ -34,6 +34,7 @@ import Clan from './Routes/Clan.js';
 import Loader from './Components/UI/Loader.js';
 import Chat from './Routes/Chat.js';
 import Tournaments from './Routes/Tournaments.js';
+import Beatmap from './Routes/Beatmap.js';
 
 function App() {
   const [loginData, setLoginData] = useState(null);
@@ -113,6 +114,8 @@ function App() {
             <Route path="clan/:id?" element={<Clan />} />
             <Route path="tournaments/:id?" element={<Tournaments />} />
             <Route path="bancho" element={<Chat />} />
+            <Route path="beatmaps/:id?" element={<Beatmap />} />
+            <Route path="beatmaps/query/:query?" element={<Beatmap />} />
             <Route path="milestones" element={<Milestones />}>
               <Route index element={<Milestones />} />
               <Route path="page/:page" element={<Milestones />} />

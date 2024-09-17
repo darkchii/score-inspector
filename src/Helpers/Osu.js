@@ -6,6 +6,7 @@ import BADGE_COMPLETIONIST_STANDARD from "../Assets/Completionists/standard.png"
 import BADGE_COMPLETIONIST_TAIKO from "../Assets/Completionists/taiko.png";
 import BADGE_COMPLETIONIST_CATCH from "../Assets/Completionists/catch.png";
 import BADGE_COMPLETIONIST_MANIA from "../Assets/Completionists/mania.png";
+import { OsuCatchIcon, OsuManiaIcon, OsuStandardIcon, OsuTaikoIcon } from "../Components/Icons.js";
 
 export const approval_state = {
     '-2': 'Graveyard',
@@ -155,6 +156,25 @@ export async function getUsers(user_ids) {
     return users;
 }
 
+export function getDifficultyColor(rating) {
+    if (rating < 0.1) return '#AAAAAA';
+    if (rating >= 9) return '#000000';
+
+    //get the color based on a gradient from the hex map
+    const colors = ['#4290FB', '#4FC0FF', '#4FFFD5', '#7CFF4F', '#F6F05C', '#FF8068', '#FF4E6F', '#C645B8', '#6563DE', '#18158E', '#000000'];
+    const ratingMap = [0.1, 1.25, 2, 2.5, 3.3, 4.2, 4.9, 5.8, 6.7, 7.7, 9];
+    let color = '#000000';
+
+    for (let i = 0; i < ratingMap.length; i++) {
+        if (rating < ratingMap[i]) {
+            color = colors[i];
+            break;
+        }
+    }
+
+    return color;
+}
+
 export function getHitsFromAccuracy(acc, nobjects, nmiss = 0) {
     let n300 = 0, n100 = 0, n50 = 0
     const max300 = nobjects - nmiss
@@ -184,7 +204,7 @@ export function getHitsFromAccuracy(acc, nobjects, nmiss = 0) {
 export function getModString(value) {
     var data = [];
 
-    if(isNaN(value)) {
+    if (isNaN(value)) {
         return data;
     }
 
