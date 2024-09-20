@@ -122,17 +122,20 @@ function Chat(props) {
                         <Grid2 size={8}>
                             <div>
                                 <Grid2 container spacing={1}>
-                                    <Grid2 size={3}>
+                                    <Grid2 size={12/5}>
                                         <StatCard tooltip={chatStats?.message_count.toLocaleString('en-US')} title="Total messages" stats={formatNumberAsSize(chatStats?.message_count)} color={pink} />
                                     </Grid2>
-                                    <Grid2 size={3}>
+                                    <Grid2 size={12/5}>
                                         <StatCard tooltip={chatStats?.message_count_today.toLocaleString('en-US')} title="Messages today" stats={formatNumberAsSize(chatStats?.message_count_today)} color={pink} />
                                     </Grid2>
-                                    <Grid2 size={3}>
+                                    <Grid2 size={12/5}>
                                         <StatCard tooltip={chatStats?.unique_users.toLocaleString('en-US')} title="Players" stats={formatNumberAsSize(chatStats?.unique_users)} color={pink} />
                                     </Grid2>
-                                    <Grid2 size={3}>
+                                    <Grid2 size={12/5}>
                                         <StatCard tooltip={'Events are triggered by commands (/np, /me)'} title="Event messages" stats={formatNumberAsSize(chatStats?.event_count)} color={pink} />
+                                    </Grid2>
+                                    <Grid2 size={12/5}>
+                                        <StatCard tooltip={chatStats?.banned_users.toLocaleString('en-US')} title="Banned users" stats={formatNumberAsSize(chatStats?.banned_users)} color={pink} />
                                     </Grid2>
                                 </Grid2>
                                 <Grid2 container spacing={1} sx={{ mt: 1 }}>
@@ -148,7 +151,7 @@ function Chat(props) {
                                                                     activeUsers?.map((user) => {
                                                                         return (
                                                                             <TableRow>
-                                                                                <TableCell>{GetFormattedName(user.user.inspector_user)}</TableCell>
+                                                                                <TableCell>{user.user ? GetFormattedName(user.user.inspector_user) : user.id}</TableCell>
                                                                                 <TableCell>{user.message_count}</TableCell>
                                                                             </TableRow>
                                                                         )
