@@ -27,6 +27,7 @@ import DoneIcon from '@mui/icons-material/Done';
 import ClearIcon from '@mui/icons-material/Clear';
 import { IMG_TRIANGLES } from "../Helpers/Assets";
 import { DiscordIcon } from "../Components/Icons";
+import { Helmet } from "react-helmet";
 
 //always round to 2 decimal places, and toLocaleString for commas
 const CLAN_STATS = [
@@ -428,6 +429,18 @@ function ClanPage(props) {
 
     return (
         <>
+            <Helmet>
+                <title>{clanData.clan.name} - osu! clan</title>
+                <meta name="description" content={`View the clan ${clanData.clan.name} on osu!`} />
+                <meta property="og:title" content={`${clanData.clan.name} - osu! clan`} />
+                <meta property="og:description" content={`View the clan ${clanData.clan.name} on osu!`} />
+                <meta property="og:image" content={clanData.clan.header_image_url} />
+                <meta property="og:url" content={`https://score.kirino.sh/clan/${clanData.clan.id}`} />
+                <meta name="twitter:title" content={`${clanData.clan.name} - osu! clan`} />
+                <meta name="twitter:description" content={`View the clan ${clanData.clan.name} on osu!`} />
+                <meta name="twitter:image" content={clanData.clan.header_image_url} />
+                <meta name="twitter:card" content="summary_large_image" />
+            </Helmet>
             <Modal
                 open={clanEditModalOpen}
                 onClose={() => setClanEditModalOpen(false)}
