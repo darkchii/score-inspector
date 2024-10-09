@@ -145,9 +145,9 @@ function PlayerCard(props) {
                                 <Grid2 size={6}>
                                     <Typography variant='subtitle1'>Score Rank</Typography>
                                     <Typography variant='h5'>#{
-                                        props.user.osu.score_rank !== null ?
-                                            ((Math.max(0, props.user.osu.score_rank.rank)).toLocaleString('en-US')) : (
-                                        props.user.osu.scoreRank !== undefined ?
+                                        props.user.osu?.score_rank !== null ?
+                                            ((Math.max(0, props.user.osu?.score_rank?.rank ?? 0)).toLocaleString('en-US')) : (
+                                        props.user.osu?.scoreRank !== undefined ?
                                             ((Math.max(0, props.user.osu.scoreRank)).toLocaleString('en-US')) :
                                             '10.000+')}</Typography>
                                 </Grid2>

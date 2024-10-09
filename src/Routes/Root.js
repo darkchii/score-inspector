@@ -132,7 +132,7 @@ function Root() {
             }
             <Grid2 sx={{ pb: 1 }}>
                 <Alert severity="warning">
-                    Lazer scores are currently <b>partly</b> supported. New mods and rate changes are not supported.
+                    <b>Lazer scores</b> are currently <b>partly</b> supported. New mods and rate changes are not supported. <b>Combo scaling rework</b> is also <b>NOT</b> implemented.
                 </Alert>
             </Grid2>
             <Grid2 sx={{ pb: 1 }}>

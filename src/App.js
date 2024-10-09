@@ -114,8 +114,8 @@ function App() {
             <Route path="clan/:id?" element={<Clan />} />
             <Route path="tournaments/:id?" element={<Tournaments />} />
             <Route path="bancho" element={<Chat />} />
-            <Route path="beatmaps/:id?" element={<Beatmap />} />
-            <Route path="beatmaps/query/:query?" element={<Beatmap />} />
+            {/* <Route path="beatmaps/:id?" element={<Beatmap />} />
+            <Route path="beatmaps/query/:query?" element={<Beatmap />} /> */}
             <Route path="milestones" element={<Milestones />}>
               <Route index element={<Milestones />} />
               <Route path="page/:page" element={<Milestones />} />

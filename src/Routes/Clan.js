@@ -27,7 +27,6 @@ import DoneIcon from '@mui/icons-material/Done';
 import ClearIcon from '@mui/icons-material/Clear';
 import { IMG_TRIANGLES } from "../Helpers/Assets";
 import { DiscordIcon } from "../Components/Icons";
-import { Helmet } from "react-helmet";
 
 //always round to 2 decimal places, and toLocaleString for commas
 const CLAN_STATS = [
@@ -429,18 +428,6 @@ function ClanPage(props) {
 
     return (
         <>
-            <Helmet>
-                <title>{clanData.clan.name} - osu! clan</title>
-                <meta name="description" content={`View the clan ${clanData.clan.name} on osu!`} />
-                <meta property="og:title" content={`${clanData.clan.name} - osu! clan`} />
-                <meta property="og:description" content={`View the clan ${clanData.clan.name} on osu!`} />
-                <meta property="og:image" content={clanData.clan.header_image_url} />
-                <meta property="og:url" content={`https://score.kirino.sh/clan/${clanData.clan.id}`} />
-                <meta name="twitter:title" content={`${clanData.clan.name} - osu! clan`} />
-                <meta name="twitter:description" content={`View the clan ${clanData.clan.name} on osu!`} />
-                <meta name="twitter:image" content={clanData.clan.header_image_url} />
-                <meta name="twitter:card" content="summary_large_image" />
-            </Helmet>
             <Modal
                 open={clanEditModalOpen}
                 onClose={() => setClanEditModalOpen(false)}
@@ -549,6 +536,25 @@ function ClanPage(props) {
                                     <Box sx={{ display: 'flex' }}>
                                         <Typography variant='body1'>Owner:</Typography>
                                         <Box sx={{ ml: 1 }}> {GetFormattedName(clanData.owner?.user?.inspector_user ?? {})} </Box>
+                                    </Box>
+                                    <Box sx={{
+                                        mt: 1,
+                                    }}>
+                                        {/* read-only, clickable input field to copy shareable clan link */}
+                                        <Tooltip title='Click to copy. This URL adds metadata that displays name, image in places like Discord.'>
+                                            <TextField
+                                                variant='outlined'
+                                                fullWidth
+                                                size="small"
+                                                value={`https://clan.kirino.sh/${clanData.clan.id}`}
+                                                onClick={(e) => {
+                                                    e.target.select();
+                                                    // document.execCommand('copy'); //deprecated
+                                                    navigator.clipboard.writeText(`https://clan.kirino.sh/${clanData.clan.id}`);
+                                                    showNotification('Copied', 'Clan link copied to clipboard.', 'info');
+                                                }}
+                                            />
+                                        </Tooltip>
                                     </Box>
                                     {
                                         clanData.clan.discord_invite ? <>
@@ -1591,10 +1597,11 @@ function ClanFormFields(props) {
                     <Box>
                         <Typography variant='h6'>Create a clan</Typography>
                         {/* FORM */}
-                        <Box sx={{ mt: 2,
+                        <Box sx={{
+                            mt: 2,
                             maxHeight: '80vh',
                             overflowY: 'auto',
-                         }}>
+                        }}>
                             <Container>
                                 <Stack spacing={1}>
                                     {
