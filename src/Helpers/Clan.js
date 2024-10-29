@@ -115,6 +115,7 @@ export async function GetClanList(page, sort, dir, limit, search = null) {
 export function FormatClanLog(clan, log) {
     // return 'Log format not implemented yet';
     const log_data = JSON.parse(log.data);
+    let left_user;
     switch (log_data.type) {
         case 'clan_create':
             return 'Clan created';
@@ -126,9 +127,18 @@ export function FormatClanLog(clan, log) {
                 <Box sx={{ ml: 1 }}> {GetFormattedName(joined_user ?? {})} </Box>
                 <Box sx={{ ml: 1 }}> joined the clan </Box>
             </Box>;
+        case 'member_remove':
+            // return `${log_data.user_id} left the clan`;
+            left_user = clan.logs_user_data.find(log => log.osu_id === log_data.user_id);
+            return <Box sx={{
+                display: 'flex'
+            }}>
+                <Box sx={{ ml: 1 }}> {GetFormattedName(left_user ?? {})} </Box>
+                <Box sx={{ ml: 1 }}> has been removed from the clan </Box>
+            </Box>;
         case 'member_leave':
             // return `${log_data.user_id} left the clan`;
-            let left_user = clan.logs_user_data.find(log => log.osu_id === log_data.user_id);
+            left_user = clan.logs_user_data.find(log => log.osu_id === log_data.user_id);
             return <Box sx={{
                 display: 'flex'
             }}>
@@ -165,8 +175,8 @@ export function FormatClanLog(clan, log) {
 
             //convert boolean values to string (on old_data and new_data)
             Object.keys(diff).forEach(key => {
-                if(typeof old_data[key] === 'boolean'){ old_data[key] = old_data[key] ? 'true' : 'false'; }
-                if(typeof new_data[key] === 'boolean'){ new_data[key] = new_data[key] ? 'true' : 'false'; }
+                if (typeof old_data[key] === 'boolean') { old_data[key] = old_data[key] ? 'true' : 'false'; }
+                if (typeof new_data[key] === 'boolean') { new_data[key] = new_data[key] ? 'true' : 'false'; }
             });
 
             //return `Clan updated:\n{list of changes in table fashion}`, no need to show the values
@@ -177,7 +187,7 @@ export function FormatClanLog(clan, log) {
     }
 }
 
-export async function GetTopClans(){
+export async function GetTopClans() {
     const response = await axios.get(`${GetAPI()}clans/rankings`);
     return response.data;
 }
