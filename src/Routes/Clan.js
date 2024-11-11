@@ -902,15 +902,6 @@ function ClanPage(props) {
                                 overflowY: 'auto',
                             }}>
                                 <Typography variant='h6'>Clan history</Typography>
-                                {/* <Stack spacing={1}>
-                            {
-                                clanData.logs.map((log, index) => {
-                                    return <Typography>
-                                        {FormatClanLog(clanData, log)}
-                                    </Typography>
-                                })
-                            }
-                        </Stack> */}
                                 <TableContainer>
                                     <Table size='small'>
                                         <TableBody>
@@ -918,7 +909,7 @@ function ClanPage(props) {
                                                 clanData.logs.map((log, index) => {
                                                     if (FormatClanLog(clanData, log) === null) return <></>;
                                                     return <TableRow key={index}>
-                                                        <TableCell>
+                                                        <TableCell sx={{ width: '20%' }}>
                                                             <Tooltip title={moment(log.created_at).format('MMMM Do YYYY, h:mm:ss a')}>
                                                                 {moment(log.created_at).fromNow()}
                                                             </Tooltip>
