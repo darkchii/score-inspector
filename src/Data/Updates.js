@@ -12,6 +12,20 @@ const PLATFORMTYPES = {
 
 const updates = [
     {
+        version: '3.3.0',
+        date: '2024-11-01',
+        changes: [
+            [PLATFORMTYPES.WEB | PLATFORMTYPES.API, CHANGETYPES.MISC, 'Performance calculator updated to Combo Scaling Removal', '1c4c351171fe4aa520a5d38bd6012b4797c59b4c'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Added clan share URL which can embed in places like Discord', '19cd2df76dca4a7ee5cdebb282aa7ed12b7a8911'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Showing banned user count on Bancho page', 'c739165e3967b6adb8f76181290b97d8240ca799'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.FIX, 'Added missing member kick log formatter', 'a4c70f63e696e3b84a0239ccc07aaf58d931c181'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.FIX, 'Fixed periodic farmers log scroll', 'd570fa04f013179660350072a12a0fd1ccff7cb4'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.REMOVE, 'Removed peak farm days from profile', '78ae143a19f72a31d07f958586ffb20546494a9e'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.REMOVE, 'Removed player comparison page', '88ed545c47adba0c5217246d34240efded7d442c'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.REMOVE, 'Removed osu!daily data and fetch', 'a0def38b6c836438e01c45ac2daf995bc3c43e5f'],
+        ]
+    },
+    {
         version: '3.2.0',
         date: '2024-09-10',
         changes: [

@@ -335,6 +335,7 @@ export const mods = {
     BL: 16777216,
     //TRACEABLE
     TR: 33554432,
+    CL: 67108864,
 }
 
 export function getGrade(score) {
