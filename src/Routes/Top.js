@@ -38,18 +38,18 @@ function Top(props) {
                     getBestScores(selected_period.value, "pp", SCORES_TO_FETCH, false),
                     getBestScores(selected_period.value, "score", SCORES_TO_FETCH, false)
                 ]).then(async (values) => {
-                    const [pp_scores] = await MassCalculatePerformance(values[0]);
-                    const [sc_scores] = await MassCalculatePerformance(values[1]);
-                    const pp_scores_prep = prepareScores(null, pp_scores, false);
-                    const sc_scores_prep = prepareScores(null, sc_scores, false);
+                    let pp_scores_prep = prepareScores(null, values[0], false);
+                    let sc_scores_prep = prepareScores(null, values[1], false);
+                    const [pp_scores] = await MassCalculatePerformance(pp_scores_prep);
+                    const [sc_scores] = await MassCalculatePerformance(sc_scores_prep);
 
-                    pp_scores_prep.sort((a, b) => {
+                    pp_scores.sort((a, b) => {
                         if (a.pp > b.pp) { return -1; }
                         if (a.pp < b.pp) { return 1; }
                         return 0;
                     });
 
-                    sc_scores_prep.sort((a, b) => {
+                    sc_scores.sort((a, b) => {
                         if (a.score > b.score) { return -1; }
                         if (a.score < b.score) { return 1; }
                         return 0;
@@ -193,15 +193,15 @@ function Top(props) {
                                                                                         {(scores[i].significantStat === 'pp' && !score.is_fc && score.recalc['fc']) ? `(${Math.round(score.recalc['fc']?.total).toLocaleString('en-US')}pp if FC)` : ''} {Math.round(score[scores[i].significantStat]).toLocaleString('en-US')}{scores[i].significantStat === 'pp' ? `pp` : ''}
                                                                                     </Typography>
                                                                                     <Typography sx={{ textAlign: 'right' }} variant='body1'>
-                                                                                        {score.modString} {score.is_fc ? 'FC' : ''} {Math.round(score.accuracy * 100) / 100}% {Math.round((score.beatmap.modded_sr?.star_rating ?? 0) * 10) / 10}*
+                                                                                        {score.modString} {score.is_fc ? 'FC' : ''} {Math.round(score.accuracy * 100) / 100}% {Math.round((score.beatmap.difficulty_data?.diff_unified ?? 0) * 10) / 10}*
                                                                                     </Typography>
                                                                                 </Box>
                                                                             </Box>
                                                                             <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                                                                                 {
-                                                                                    score.beatmap.modded_sr ? <>
-                                                                                        <Typography variant='body1' sx={{ color: grey[500] }}>Aim: {score.beatmap.modded_sr.aim_diff.toFixed(2)}* | Speed: {score.beatmap.modded_sr.speed_diff.toFixed(2)}* | {score.beatmap.modded_sr.fl_diff > 0 ? `Flashlight: ${score.beatmap.modded_sr.fl_diff.toFixed(2)}* |` : ''} Speed Notes: {score.beatmap.modded_sr.speed_note_count.toFixed(2)}</Typography>
-                                                                                        <Typography variant='body1' sx={{ color: grey[500] }}>OD{score.beatmap.modded_sr.modded_od.toFixed(2)} AR{score.beatmap.modded_sr.modded_ar.toFixed(2)} CS{score.beatmap.modded_sr.modded_cs.toFixed(2)} HP{score.beatmap.modded_sr.modded_hp.toFixed(2)}</Typography>
+                                                                                    score.beatmap.difficulty_data ? <>
+                                                                                        <Typography variant='body1' sx={{ color: grey[500] }}>Aim: {score.beatmap.difficulty_data.diff_aim.toFixed(2)}* | Speed: {score.beatmap.difficulty_data.diff_speed.toFixed(2)}* | {score.beatmap.difficulty_data.flashlight_rating > 0 ? `Flashlight: ${score.beatmap.difficulty_data.flashlight_rating.toFixed(2)}* |` : ''} Speed Notes: {score.beatmap.difficulty_data.speed_note_count.toFixed(2)}</Typography>
+                                                                                        <Typography variant='body1' sx={{ color: grey[500] }}>OD{score.beatmap.difficulty_data.modded_od.toFixed(2)} AR{score.beatmap.difficulty_data.modded_ar.toFixed(2)} CS{score.beatmap.difficulty_data.modded_cs.toFixed(2)} HP{score.beatmap.difficulty_data.modded_hp.toFixed(2)}</Typography>
                                                                                     </> :
                                                                                         <Typography variant='body1' color='error'>Star ratings currently not available.</Typography>
                                                                                 }

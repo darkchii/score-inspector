@@ -51,13 +51,9 @@ function ScoreView(props) {
 
         _score.beatmap = JSON.parse(JSON.stringify(beatmap));
 
-        _scoreData.sr = _score.beatmap.modded_sr;
-        if (pp_version !== 'live') {
-            _scoreData.sr = _score.beatmap.modded_sr[pp_version] ?? _score.beatmap.modded_sr;
-        }
+        _scoreData.difficulty_data = _score.beatmap.difficulty_data;
         _score = prepareScore(_score, null);
         _scoreData.score = _score;
-
 
         const accHits = [];
         accHits["100%"] = getHitsFromAccuracy(100, beatmap.objects, 0);
@@ -76,19 +72,15 @@ function ScoreView(props) {
         pp["80%"] = getCalculator(pp_version ?? 'live', { accuracy: 0.80, score: _score, combo: beatmap.maxcombo, count300: accHits["80%"].count300, count100: accHits["80%"].count100, count50: accHits["80%"].count50, countmiss: accHits["80%"].countmiss });
         _scoreData.pp = pp;
 
+        console.log(_scoreData);
+
         setScoreData(_scoreData);
     }
 
     async function applyBeatmap(pp_version, beatmap) {
         const _beatmapData = {};
-
         _beatmapData.beatmap = beatmap;
-
-        const _sr = props.data.pp_version ?
-            (beatmap.modded_sr[props.data.pp_version] ?? beatmap.modded_sr) :
-            beatmap.modded_sr;
-
-        _beatmapData.sr = _sr;
+        _beatmapData.difficulty_data = beatmap.difficulty_data;
         setBeatmapData(_beatmapData);
     }
 
@@ -199,7 +191,7 @@ function ScoreView(props) {
                         <Card sx={{ borderRadius: 0, backgroundColor: '#2E293D' }}>
                             <CardContent>
                                 <Typography id="modal-modal-title" variant="h6" component="h2">
-                                    <Chip sx={{ mr: 1 }} size='small' label={`${scoreData !== null ? scoreData.sr.star_rating.toFixed(2) : beatmapData.modded_sr?.[0].star_rating.toFixed(2)}★`} variant="outlined" />
+                                    <Chip sx={{ mr: 1 }} size='small' label={`${scoreData !== null ? scoreData.difficulty_data?.diff_unified.toFixed(2) : beatmapData.difficulty_data?.[0].diff_unified.toFixed(2)}★`} variant="outlined" />
                                     {beatmapData.beatmap.artist} - {beatmapData.beatmap.title} [{beatmapData.beatmap.diffname}] {scoreData !== null ? `${scoreData.score.enabled_mods > 0 ? '+' : ''}${getModString(scoreData.score.enabled_mods)}` : ''}</Typography>
                             </CardContent>
                         </Card>
@@ -263,7 +255,7 @@ function ScoreView(props) {
                                                                     Played&nbsp;<b><Tooltip title={'' + scoreData.score.date_played}><Grid2>{moment(scoreData.score.date_played).fromNow()}</Grid2></Tooltip></b>&nbsp;★ Ranked&nbsp;<b><Tooltip title={'' + beatmapData.beatmap.approved_date}><Grid2>{moment(beatmapData.beatmap.approved_date).fromNow()}</Grid2></Tooltip></b>
                                                                 </Typography>
                                                                 <Typography variant="subtitle1" display="flex" alignItems="center" sx={{ mt: 0 }} spacing="5">
-                                                                    AR&nbsp;<b>{scoreData.sr.modded_ar.toFixed(2)}</b>&nbsp;★ CS&nbsp;<b>{scoreData.sr.modded_cs.toFixed(2)}</b>&nbsp;★ HP&nbsp;<b>{scoreData.sr.modded_hp.toFixed(2)}</b>&nbsp;★ OD&nbsp;<b>{scoreData.sr.modded_od.toFixed(2)}</b>
+                                                                    AR&nbsp;<b>{scoreData.difficulty_data?.modded_ar.toFixed(2)}</b>&nbsp;★ CS&nbsp;<b>{scoreData.difficulty_data?.modded_cs.toFixed(2)}</b>&nbsp;★ HP&nbsp;<b>{scoreData.difficulty_data?.modded_hp.toFixed(2)}</b>&nbsp;★ OD&nbsp;<b>{scoreData.difficulty_data?.modded_od.toFixed(2)}</b>
                                                                 </Typography>
                                                                 <Typography variant="subtitle1" display="flex" alignItems="center" sx={{ mt: 0 }} spacing="5">
                                                                     {moment.utc(moment.duration(scoreData.score.beatmap.modded_length, 'seconds').asMilliseconds()).format("mm:ss")} minutes&nbsp;★&nbsp;
@@ -298,6 +290,33 @@ function ScoreView(props) {
                                                                     <TableCell>{(scoreData.score.recalc[props.data.pp_version]?.speed ?? 0).toFixed(1)}pp</TableCell>
                                                                     <TableCell>{(scoreData.score.recalc[props.data.pp_version]?.acc ?? 0).toFixed(1)}pp</TableCell>
                                                                     <TableCell>{(scoreData.score.recalc[props.data.pp_version]?.flashlight ?? 0).toFixed(1)}pp</TableCell>
+                                                                </TableRow>
+                                                            </TableBody>
+                                                        </Table>
+                                                    </TableContainer>
+                                                </Card>
+                                                <Typography>Skill breakdown</Typography>
+                                                <Card variant="outlined" sx={{ mb: 3 }}>
+                                                    <TableContainer>
+                                                        <Table size="small" sx={{
+                                                            [`& .${tableCellClasses.root}`]: {
+                                                                borderBottom: "none"
+                                                            }
+                                                        }}>
+                                                            <TableHead>
+                                                                <TableRow>
+                                                                    <TableCell>Aim</TableCell>
+                                                                    <TableCell>Speed</TableCell>
+                                                                    <TableCell>Strain</TableCell>
+                                                                    <TableCell>Flashlight</TableCell>
+                                                                </TableRow>
+                                                            </TableHead>
+                                                            <TableBody>
+                                                                <TableRow>
+                                                                    <TableCell>{(scoreData.difficulty_data?.diff_aim ?? 0).toFixed(2)}★</TableCell>
+                                                                    <TableCell>{(scoreData.difficulty_data?.diff_speed ?? 0).toFixed(2)}★</TableCell>
+                                                                    <TableCell>{(scoreData.difficulty_data?.diff_strain ?? 0).toFixed(2)}★</TableCell>
+                                                                    <TableCell>{(scoreData.difficulty_data?.flashlight_rating ?? 0).toFixed(2)}★</TableCell>
                                                                 </TableRow>
                                                             </TableBody>
                                                         </Table>

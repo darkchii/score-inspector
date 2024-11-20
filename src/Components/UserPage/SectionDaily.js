@@ -18,11 +18,11 @@ const heightDefiners = [
     { value: 'acc', nesting: ['accuracy'], label: 'Accuracy', yFormat: (y) => y.toFixed(2) + '%' },
     { value: 'combo', nesting: ['combo'], label: 'Combo', yFormat: (y) => y.toLocaleString('en-US') + 'x' },
     { value: 'length', nesting: ['beatmap', 'length'], label: 'Length', yFormat: (y) => moment.utc(y * 1000).format('mm:ss') },
-    { value: 'sr', nesting: ['beatmap', 'modded_sr', 'star_rating'], label: 'Stars', yFormat: (y) => y.toFixed(2) + '★' },
-    { value: 'cs', nesting: ['beatmap', 'modded_sr', 'modded_cs'], label: 'CS', yFormat: (y) => y.toFixed(2) },
-    { value: 'ar', nesting: ['beatmap', 'modded_sr', 'modded_ar'], label: 'AR', yFormat: (y) => y.toFixed(2) },
-    { value: 'od', nesting: ['beatmap', 'modded_sr', 'modded_od'], label: 'OD', yFormat: (y) => y.toFixed(2) },
-    { value: 'hp', nesting: ['beatmap', 'modded_sr', 'modded_hp'], label: 'HP', yFormat: (y) => y.toFixed(2) },
+    { value: 'sr', nesting: ['beatmap', 'difficulty_data', 'diff_unified'], label: 'Stars', yFormat: (y) => y.toFixed(2) + '★' },
+    { value: 'cs', nesting: ['beatmap', 'difficulty_data', 'modded_cs'], label: 'CS', yFormat: (y) => y.toFixed(2) },
+    { value: 'ar', nesting: ['beatmap', 'difficulty_data', 'modded_ar'], label: 'AR', yFormat: (y) => y.toFixed(2) },
+    { value: 'od', nesting: ['beatmap', 'difficulty_data', 'modded_od'], label: 'OD', yFormat: (y) => y.toFixed(2) },
+    { value: 'hp', nesting: ['beatmap', 'difficulty_data', 'modded_hp'], label: 'HP', yFormat: (y) => y.toFixed(2) },
 ]
 
 const GRADE_INFO = {
@@ -227,7 +227,7 @@ function SectionDaily(props) {
                     _stats.clears++;
                     _stats.pp += score.pp ?? 0;
                     acc += score.accuracy;
-                    sr += score.beatmap.modded_sr?.star_rating ?? 0;
+                    sr += score.beatmap.difficulty_data?.diff_unified ?? 0;
                     _stats.playtime += score.beatmap.modded_length;
                 });
                 _stats.average_acc = acc / sorted.length;

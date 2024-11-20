@@ -83,10 +83,10 @@ function ScoreRow(props) {
                                     <Box sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
                                         <Box>
                                             <Typography sx={{ fontSize: '0.8rem', maxWidth: '100%', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
-                                                AR: {toFixedNumber(beatmap.modded_sr.modded_ar, 1)}
+                                                AR: {toFixedNumber(beatmap.difficulty_data.modded_ar ?? -1, 1)}
                                             </Typography>
                                             <Typography sx={{ fontSize: '0.8rem', maxWidth: '100%', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
-                                                CS: {toFixedNumber(beatmap.modded_sr.modded_cs, 1)}
+                                                CS: {toFixedNumber(beatmap.difficulty_data.modded_cs ?? -1, 1)}
                                             </Typography>
                                         </Box>
                                     </Box>
@@ -96,10 +96,10 @@ function ScoreRow(props) {
                                     <Box sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
                                         <Box>
                                             <Typography sx={{ fontSize: '0.8rem', maxWidth: '100%', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
-                                                OD: {toFixedNumber(beatmap.modded_sr.modded_od, 1)}
+                                                OD: {toFixedNumber(beatmap.difficulty_data.modded_od ?? -1, 1)}
                                             </Typography>
                                             <Typography sx={{ fontSize: '0.8rem', maxWidth: '100%', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
-                                                HP: {toFixedNumber(beatmap.modded_sr.modded_hp, 1)}
+                                                HP: {toFixedNumber(beatmap.difficulty_data.modded_hp ?? -1, 1)}
                                             </Typography>
                                         </Box>
                                     </Box>
@@ -121,7 +121,7 @@ function ScoreRow(props) {
                                 <Grid2 size={0.55}>
                                     <Box sx={{ height: '100%', alignContent: 'right', display: 'flex', alignItems: 'center', justifyContent: 'right', pr: 0.3 }}>
                                         {
-                                            score.beatmap.modded_sr.star_rating && score.beatmap.modded_sr.star_rating !== score.beatmap.stars ?
+                                            score.beatmap.difficulty_data.diff_unified && score.beatmap.difficulty_data.diff_unified !== score.beatmap.stars ?
                                                 <>
                                                     <Typography variant="subtitle2" sx={{ opacity: 0.4 }}>
                                                         {score.beatmap.stars.toFixed(2)}*
@@ -133,7 +133,7 @@ function ScoreRow(props) {
                                 <Grid2 size={0.1}>
                                     <Box sx={{ height: '100%', alignContent: 'right', display: 'flex', alignItems: 'center' }}>
                                         {
-                                            score.beatmap.modded_sr.star_rating && score.beatmap.modded_sr.star_rating !== score.beatmap.stars ?
+                                            score.beatmap.difficulty_data.diff_unified && score.beatmap.difficulty_data.diff_unified !== score.beatmap.stars ?
                                                 <>
                                                     <Typography variant="subtitle2" sx={{ opacity: 0.4 }}>{"-> "}</Typography>
                                                 </> : <></>
@@ -143,9 +143,9 @@ function ScoreRow(props) {
                                 <Grid2 size={0.55}>
                                     <Box sx={{ height: '100%', alignContent: 'right', display: 'flex', alignItems: 'center', justifyContent: 'left' }}>
                                         <Tooltip title={
-                                            `Aim: ${score.beatmap.modded_sr.aim_diff.toFixed(2)}, Speed: ${score.beatmap.modded_sr.speed_diff.toFixed(2)}, Flashlight: ${score.beatmap.modded_sr.fl_diff.toFixed(2)}*`
+                                            `Aim: ${score.beatmap.difficulty_data.diff_aim.toFixed(2)}, Speed: ${score.beatmap.difficulty_data.diff_speed.toFixed(2)}, Strain: ${score.beatmap.difficulty_data.diff_strain.toFixed(2)}, Flashlight: ${(score.beatmap.difficulty_data.flashlight_rating ?? 0).toFixed(2)}*`
                                         }>
-                                            <Typography sx={{ ml: 0.4 }} variant="subtitle2"> {(score.beatmap.modded_sr.star_rating ?? 0).toFixed(2)}*</Typography>
+                                            <Typography sx={{ ml: 0.4 }} variant="subtitle2"> {(score.beatmap.difficulty_data.diff_unified ?? 0).toFixed(2)}*</Typography>
                                         </Tooltip>
                                     </Box>
                                 </Grid2>
@@ -171,9 +171,9 @@ function ScoreRow(props) {
                                 <Grid2 size={0.8}>
                                     <Box sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
                                         {
-                                            !score.is_fc && score.recalc['fc'] ? 
-                                            <Typography variant="subtitle2">(if FC: {Math.round(score.recalc['fc']?.total).toLocaleString('en-US')}pp)</Typography> 
-                                            : <></>
+                                            !score.is_fc && score.recalc['fc'] ?
+                                                <Typography variant="subtitle2">(if FC: {Math.round(score.recalc['fc']?.total).toLocaleString('en-US')}pp)</Typography>
+                                                : <></>
                                         }
                                     </Box>
                                 </Grid2>

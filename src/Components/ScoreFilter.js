@@ -63,7 +63,7 @@ const sorters = [
     {
         name: 'Stars',
         sort: (a, b) => {
-            return b.beatmap.modded_sr.star_rating - a.beatmap.modded_sr.star_rating;
+            return b.beatmap.difficulty_data.diff_unified - a.beatmap.difficulty_data.diff_unified;
         },
         internalName: 'star_rating'
     },

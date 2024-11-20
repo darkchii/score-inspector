@@ -87,7 +87,7 @@ function User() {
 
                 user_out.score_rank_history = score_rank_history;
 
-                setLoadingState('Fetching user scores');
+                setLoadingState('Fetching user scores (this can take a while)');
                 const _scores = await getUserScores(user_out.alt.user_id, loved === true, onScoreDownloadProgress);
                 if (_scores === null || _scores.error !== undefined) {
                     setUser(null);
@@ -166,7 +166,13 @@ function User() {
                     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
                         <Stack spacing={2} direction='column' alignItems='center'>
                             <CircularProgress />
-                            <Typography variant='subtitle1' sx={{ ml: 2 }}>{loadingState}</Typography>
+                            {/* <Typography variant='subtitle1' sx={{ ml: 2 }}>{loadingState}</Typography> */}
+                            <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+                                <Alert
+                                    severity='info'
+                                    sx={{ width: '100%' }}
+                                >{loadingState}</Alert>
+                            </Box>
                         </Stack>
                     </Box>
                 </> : user === null || !user ? <>

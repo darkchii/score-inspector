@@ -1,28 +1,68 @@
+import { clamp } from "lodash";
 import { mods } from "../Osu";
+
+const PERFORMANCE_BASE_MULTIPLIER = 1.15;
 
 export function getPerformanceLive(data, debug = false) {
     const sr_model = 'live';
     const score = data.score;
-    data.count300 = data.count300 ?? score.count300;
-    data.count100 = data.count100 ?? score.count100;
-    data.count50 = data.count50 ?? score.count50;
-    data.countmiss = data.countmiss ?? score.countmiss;
+    data.usingClassicSliderAccuracy = true; //osualt only has classic scores for now
+    data.countGreat = data.count300 ?? score.count300;
+    data.countOk = data.count100 ?? score.count100;
+    data.countMeh = data.count50 ?? score.count50;
+    data.countMiss = data.countmiss ?? score.countmiss;
+    data.countSliderEndsDropped = 0; //osualt only has classic scores for now
+    data.countSliderTickMiss = 0; //osualt only has classic scores for now
     data.combo = data.combo ?? score.combo;
-    data.totalhits = data.count300 + data.count100 + data.count50 + data.countmiss;
-    data.accuracy = getAccuracy(data);
+    data.maxCombo = score.beatmap.maxcombo;
+    data.totalHits = data.countGreat + data.countOk + data.countMeh + data.countMiss;
+    data.accuracy = score.accuracy * 0.01;
+    data.sliderCount = score.beatmap.sliders;
+    data.effectiveMissCount = 0;
+    data.totalImperfectHits = data.countOk + data.countMeh + data.countMiss;
+    data.difficulty_data = score.beatmap.difficulty_data;
 
-    data.modded_sr = score.beatmap.modded_sr;
-    if(data.modded_sr){
-        data.lengthBonus = 0.95 + 0.4 * Math.min(1, data.totalhits / 2000.0) + (data.totalhits > 2000 ? (Math.log10(data.totalhits / 2000.0) * 0.5) : 0.0);
-        data.comboScalingFactor = getComboScalingFactor(data.combo, data.score.beatmap.maxcombo);
-        data.effectiveMissCount = getEffectiveMissCount(data);
+    if (data.difficulty_data) {
+        if (data.sliderCount > 0) {
+            if (data.usingClassicSliderAccuracy) {
+                let fullComboThreshold = data.maxCombo - 0.1 * data.sliderCount;
+                if (data.combo < fullComboThreshold)
+                    data.effectiveMissCount = fullComboThreshold / Math.max(1, data.combo);
+                data.effectiveMissCount = Math.min(data.effectiveMissCount, data.totalImperfectHits);
+            } else {
+                let fullComboThreshold = data.maxCombo - data.countSliderEndsDropped;
+                if (data.combo < fullComboThreshold)
+                    data.effectiveMissCount = data.maxCombo - data.countSliderEndsDropped;
+                data.effectiveMissCount = Math.min(data.effectiveMissCount, data.countSliderTickMiss + data.countMiss);
+            }
+        }
+        data.effectiveMissCount = Math.max(data.countMiss, data.effectiveMissCount);
+        data.effectiveMissCount = Math.min(data.totalHits, data.effectiveMissCount);
+
+        data.multiplier = PERFORMANCE_BASE_MULTIPLIER;
+
+        if (data.score.parsed_mods.hasMod(mods.NF)) {
+            data.multiplier *= Math.max(0.9, 1.0 - 0.02 * data.effectiveMissCount);
+        }
+
+        if (data.score.parsed_mods.hasMod(mods.SO) && data.totalHits > 0) {
+            data.multiplier *= 1.0 - Math.pow(data.score.beatmap.spinners / data.totalHits, 0.85);
+        }
+
+        if (data.score.parsed_mods.hasMod(mods.RX)) {
+            let okMultiplier = Math.max(0.0, data.difficulty_data.od > 0 ? 1 - Math.pow(data.difficulty_data.od / 13.33, 1.8) : 1);
+            let mehMultiplier = Math.max(0.0, data.difficulty_data.od > 0 ? 1 - Math.pow(data.difficulty_data.od / 13.33, 5) : 1);
+
+            data.effectiveMissCount = Math.min(data.effectiveMissCount + data.countOk * okMultiplier + data.countMeh * mehMultiplier, data.totalHits);
+        }
+
         data.aim = getAimValue(data);
         data.speed = getSpeedValue(data);
         data.acc = getAccuracyValue(data);
         data.flashlight = getFlashlightValue(data);
         data.total = getTotalValue(data);
     }
-    
+
     data.score = undefined;
 
     const output = {
@@ -34,198 +74,175 @@ export function getPerformanceLive(data, debug = false) {
         version: 'live',
         model: sr_model,
         accuracy: data.accuracy,
-        count300: data.count300,
-        count100: data.count100,
-        count50: data.count50,
-        countmiss: data.countmiss,
+        count300: data.countGreat,
+        count100: data.countOk,
+        count50: data.countMeh,
+        countmiss: data.countMiss,
     }
 
     return output;
 }
 
 function getTotalValue(data) {
-    if (data.score.enabled_mods & mods.RX || data.score.enabled_mods & mods.AP) {
-        return 0;
-    }
+    let totalValue =
+        Math.pow(data.aim, 1.1) +
+        Math.pow(data.speed, 1.1) +
+        Math.pow(data.acc, 1.1) +
+        Math.pow(data.flashlight, 1.1);
 
-    var mul = 1.14;
+    totalValue = Math.pow(totalValue, 1 / 1.1);
 
-    if ((data.score.enabled_mods & mods.NF) !== 0) {
-        mul *= Math.max(0.9, 1.0 - 0.02 * data.effectiveMissCount);
-    }
+    totalValue *= data.multiplier;
 
-    if ((data.score.enabled_mods & mods.SO) !== 0) {
-        mul *= 1.0 - Math.pow(data.score.spinners / data.totalhits, 0.85);
-    }
-
-    var total = Math.pow(
-        Math.pow(data.aim, 1.1) + Math.pow(data.speed, 1.1) +
-        Math.pow(data.acc, 1.1) + Math.pow(data.flashlight, 1.1),
-        0.90909090909 // 1.0 / 1.1
-    ) * mul;
-
-    return total;
+    return totalValue;
 }
 
 function getAimValue(data) {
-    var raw_aim = data.modded_sr.aim_diff;
+    let aimValue = difficultyToPerformance(data.difficulty_data.diff_aim);
 
-    var aimValue = Math.pow(5.0 * Math.max(1.0, raw_aim * 14.8148148148) - 4.0, 3.0) * 0.00001;
+    let lengthBonus = 0.95 + 0.4 * Math.min(1, data.totalHits / 2000.0) + (data.totalHits > 2000 ? Math.log10(data.totalHits / 2000.0) * 0.5 : 0.0);
 
-    aimValue *= data.lengthBonus;
+    aimValue *= lengthBonus;
 
-    if (data.effectiveMissCount > 0) {
-        aimValue *= 0.97 * Math.pow(1.0 - Math.pow(data.effectiveMissCount / data.totalhits, 0.775), data.effectiveMissCount);
-    }
+    if (data.effectiveMissCount > 0)
+        aimValue *= calculateMissPenalty(data.effectiveMissCount, data.difficulty_data.aim_difficult_strain_count);
 
-    aimValue *= data.comboScalingFactor;
+    let approachRateFactor = 0.0;
+    if (data.difficulty_data.ar > 10.33)
+        approachRateFactor = 0.3 * (data.difficulty_data.ar - 10.33);
+    else if (data.difficulty_data.ar < 8.0)
+        approachRateFactor = 0.05 * (8.0 - data.difficulty_data.ar);
 
-    var approachRateFactor = 0.0;
-    if (data.modded_sr.modded_ar > 10.33) {
-        approachRateFactor = 0.3 * (data.modded_sr.modded_ar - 10.33);
-    } else if (data.modded_sr.modded_ar < 8) {
-        approachRateFactor = 0.05 * (8.0 - data.modded_sr.modded_ar);
-    }
+    if (data.score.parsed_mods.hasMod(mods.RX))
+        approachRateFactor = 0.0;
 
-    aimValue *= 1.0 + approachRateFactor * data.lengthBonus;
+    aimValue *= 1.0 + approachRateFactor * lengthBonus;
 
-    if (data.score.enabled_mods & mods.HD) {
-        aimValue *= 1.0 + 0.04 * (12.0 - data.modded_sr.modded_ar);
-    }
+    if (data.score.parsed_mods.hasMod(mods.BL))
+        aimValue *= 1.3 + (data.totalHits * (0.0016 / (1 + 2 * data.effectiveMissCount)) * Math.pow(data.accuracy, 16)) * (1 - 0.003 * data.difficulty_data.modded_hp * data.difficulty_data.modded_hp);
+    else if (data.score.parsed_mods.hasMod(mods.HD) || data.score.parsed_mods.hasMod(mods.TR))
+        aimValue *= 1.0 + 0.04 * (12.0 - data.difficulty_data.ar);
 
-    var estimateDifficultSliders = data.score.beatmap.sliders * 0.15;
+    let estimateDifficultSliders = data.sliderCount * 0.15;
 
-    if (data.score.beatmap.sliders > 0) {
-        var estimateSliderEndsDropped = Math.min(Math.max(Math.min(data.count100 + data.count50 + data.countmiss, data.score.beatmap.maxcombo - data.combo), 0.0), estimateDifficultSliders);
-        var sliderNerfFactor = (1.0 - data.modded_sr.slider_factor) * Math.pow(1.0 - estimateSliderEndsDropped / estimateDifficultSliders, 3) + data.modded_sr.slider_factor;
+    if (data.sliderCount > 0) {
+        let estimateImproperlyFollowedDifficultSliders;
+
+        if (data.usingClassicSliderAccuracy) {
+            let maximumPossibleDroppedSliders = data.totalImperfectHits;
+            estimateImproperlyFollowedDifficultSliders = clamp(Math.min(maximumPossibleDroppedSliders, data.maxCombo - data.combo), 0, estimateDifficultSliders);
+        } else {
+            estimateImproperlyFollowedDifficultSliders = clamp(data.countSliderEndsDropped + data.countSliderTickMiss, 0, estimateDifficultSliders);
+        }
+
+        let sliderNerfFactor = (1 - data.difficulty_data.slider_factor) * Math.pow(1 - estimateImproperlyFollowedDifficultSliders / estimateDifficultSliders, 3) + data.difficulty_data.slider_factor;
         aimValue *= sliderNerfFactor;
     }
 
     aimValue *= data.accuracy;
+    aimValue *= 0.98 + Math.pow(data.difficulty_data.od, 2) * 0.0004;
 
-    aimValue *= 0.98 + ((data.modded_sr.modded_od * data.modded_sr.modded_od) * 0.0004);
     return aimValue;
 }
 
 function getSpeedValue(data) {
-    var speedValue = Math.pow(5.0 * Math.max(1.0, data.modded_sr.speed_diff / 0.0675) - 4.0, 3.0) / 100000.0;
+    if (data.score.parsed_mods.hasMod(mods.RX)) {
+        return 0;
+    }
 
-    speedValue *= data.lengthBonus;
+    let speedValue = difficultyToPerformance(data.difficulty_data.diff_speed);
+    let lengthBonus = 0.95 + 0.4 * Math.min(1, data.totalHits / 2000.0) + (data.totalHits > 2000 ? Math.log10(data.totalHits / 2000.0) * 0.5 : 0.0);
+    speedValue *= lengthBonus;
 
     if (data.effectiveMissCount > 0) {
-        speedValue *= 0.97 * Math.pow(1.0 - Math.pow(data.effectiveMissCount / data.totalhits, 0.775), Math.pow(data.effectiveMissCount, 0.875));
+        speedValue *= calculateMissPenalty(data.effectiveMissCount, data.difficulty_data.speed_difficult_strain_count);
     }
 
-    speedValue *= data.comboScalingFactor;
+    let approachRateFactor = 0.0;
+    if (data.difficulty_data.ar > 10.33)
+        approachRateFactor = 0.3 * (data.difficulty_data.ar - 10.33);
 
-    var approachRateFactor = 0.0;
-    if (data.modded_sr.modded_ar > 10.33) {
-        approachRateFactor = 0.3 * (data.modded_sr.modded_ar - 10.33);
-    }
-    speedValue *= 1.0 + approachRateFactor * data.lengthBonus;
+    speedValue *= 1.0 + approachRateFactor * lengthBonus;
 
-    if ((data.score.enabled_mods & mods.HD) !== 0) {
-        speedValue *= (1.0 + 0.04 * (12.0 - data.modded_sr.modded_ar));
-    }
+    if (data.score.parsed_mods.hasMod(mods.BL))
+        speedValue *= 1.12;
+    else if (data.score.parsed_mods.hasMod(mods.HD) || data.score.parsed_mods.hasMod(mods.TR))
+        speedValue *= 1.0 + 0.04 * (12.0 - data.difficulty_data.ar);
 
-    let relevantTotalDiff = data.totalhits - data.modded_sr.speed_note_count;
-    let relevantCount300 = Math.max(0.0, data.count300 - relevantTotalDiff);
-    let relevantCount100 = Math.max(0.0, data.count100 - Math.max(0.0, relevantTotalDiff - data.count300));
-    let relevantCount50 = Math.max(0.0, data.count50 - Math.max(0.0, relevantTotalDiff - data.count300 - data.count100));
-    let relevantAccuracy = data.modded_sr.speed_note_count === 0.0 ? 0.0 : (
-        (relevantCount300 * 6.0 + relevantCount100 * 2.0 + relevantCount50) / (data.modded_sr.speed_note_count * 6.0)
-    )
-    speedValue *= (0.95 + (data.modded_sr.modded_od * data.modded_sr.modded_od) / 750.0) * Math.pow((data.accuracy + relevantAccuracy) / 2.0, (14.5 - Math.max(data.modded_sr.modded_od, 8.0)) * 0.5);
-    speedValue *= Math.pow(0.99, (data.count50 < data.totalhits * 0.002) ? 0.0 : (data.count50 - data.totalhits * 0.002));
+    let relevantTotalDiff = data.totalHits - data.difficulty_data.speed_note_count;
+    let relevantCountGreat = Math.max(0.0, data.countGreat - relevantTotalDiff);
+    let relevantCountOk = Math.max(0.0, data.countOk - Math.max(0.0, relevantTotalDiff - data.countGreat));
+    let relevantCountMeh = Math.max(0.0, data.countMeh - Math.max(0.0, relevantTotalDiff - data.countGreat - data.countOk));
+    let relevantAccuracy = data.difficulty_data.speed_note_count === 0.0 ? 0.0 : (
+        (relevantCountGreat * 6.0 + relevantCountOk * 2.0 + relevantCountMeh) / (data.difficulty_data.speed_note_count * 6.0)
+    );
+
+    speedValue *= (0.95 + Math.pow(data.difficulty_data.od, 2) / 750.0) * Math.pow((data.accuracy + relevantAccuracy) / 2.0, (14.5 - data.difficulty_data.od) * 0.5);
+
+    speedValue *= Math.pow(0.99, data.countMeh < data.totalHits / 500 ? 0.0 : data.countMeh - data.totalHits / 500);
 
     return speedValue;
 }
 
 function getAccuracyValue(data) {
-    var betterAccuracyPercentage = 0.0;
-
-    var numHitObjectsWithAccuracy = 0.0;
-
-    if (data.score.enabled_mods & mods.SV2) {
-        numHitObjectsWithAccuracy = data.totalhits;
-        betterAccuracyPercentage = getAccuracy(data.combo, data.score.beatmap.maxcombo);
-    } else {
-        numHitObjectsWithAccuracy = data.score.beatmap.circles;
-        if (numHitObjectsWithAccuracy > 0) {
-            betterAccuracyPercentage = ((data.count300 - (data.totalhits - numHitObjectsWithAccuracy)) * 6 + data.count100 * 2 + data.count50) / (numHitObjectsWithAccuracy * 6);
-        }
-
-        if (betterAccuracyPercentage < 0) { betterAccuracyPercentage = 0; }
+    if (data.score.parsed_mods.hasMod(mods.RX)) {
+        return 0;
     }
 
-    var accValue = Math.pow(1.52163, data.modded_sr.modded_od) * Math.pow(betterAccuracyPercentage, 24) * 2.83;
-    accValue *= Math.min(1.15, Math.pow(numHitObjectsWithAccuracy * 0.001, 0.3));
+    let betterAccuracyPercentage;
+    let amountHitObjectsWithAccuracy = data.score.beatmap.circles;
+    if (!data.usingClassicSliderAccuracy)
+        amountHitObjectsWithAccuracy += data.score.beatmap.sliders;
 
-    if ((data.score.enabled_mods & mods.HD) !== 0) {
-        accValue *= 1.08;
-    }
+    if (amountHitObjectsWithAccuracy > 0)
+        betterAccuracyPercentage = ((data.countGreat - (data.totalHits - amountHitObjectsWithAccuracy)) * 6 + data.countOk * 2 + data.countMeh) / (amountHitObjectsWithAccuracy * 6);
+    else
+        betterAccuracyPercentage = 0;
 
-    if ((data.score.enabled_mods & mods.FL) !== 0) {
-        accValue *= 1.02;
-    }
+    if (betterAccuracyPercentage < 0)
+        betterAccuracyPercentage = 0;
 
-    return accValue;
+    let accuracyValue = Math.pow(1.52163, data.difficulty_data.od) * Math.pow(betterAccuracyPercentage, 24) * 2.83;
+    accuracyValue *= Math.min(1.15, Math.pow(amountHitObjectsWithAccuracy * 0.001, 0.3));
+
+    if (data.score.parsed_mods.hasMod(mods.BL))
+        accuracyValue *= 1.14;
+    else if (data.score.parsed_mods.hasMod(mods.HD) || data.score.parsed_mods.hasMod(mods.TR))
+        accuracyValue *= 1.08;
+
+    if (data.score.parsed_mods.hasMod(mods.FL))
+        accuracyValue *= 1.02;
+
+    return accuracyValue;
 }
 
 function getFlashlightValue(data) {
-    var flashlightValue = 0;
+    if (!data.score.parsed_mods.hasMod(mods.FL))
+        return 0;
 
-    if ((data.score.enabled_mods & mods.FL) !== 0) {
-        var rawFlashlight = data.modded_sr.fl_diff;
+    let flashlightValue = (25 * Math.pow(data.difficulty_data.flashlight_rating, 2));
 
-        flashlightValue = (rawFlashlight * rawFlashlight) * 25.0;
+    if (data.effectiveMissCount > 0)
+        flashlightValue *= 0.97 * Math.pow(1 - Math.pow(data.effectiveMissCount / data.totalHits, 0.775), Math.pow(data.effectiveMissCount, 0.875));
 
-        if (data.effectiveMissCount > 0) {
-            flashlightValue *= 0.97 * Math.pow(1 - Math.pow(data.effectiveMissCount / data.totalhits, 0.775), Math.pow(data.effectiveMissCount, 0.875));
-        }
+    flashlightValue *= getComboScalingFactor(data);
 
-        flashlightValue *= data.comboScalingFactor;
+    flashlightValue *= 0.7 + 0.1 * Math.min(1.0, data.totalHits / 200) + (data.totalHits > 200 ? 0.2 * Math.min(1.0, (data.totalHits - 200) / 200) : 0.0);
 
-        flashlightValue *= 0.7 + 0.1 * Math.min(1.0, data.totalhits * 0.005) +
-            (data.totalhits > 200 ? (0.2 * Math.min(1.0, (data.totalhits - 200) * 0.005)) : 0.0);
-
-        flashlightValue *= (0.5 + data.accuracy / 0.5);
-        flashlightValue *= 0.98 + (data.modded_sr.modded_od * data.modded_sr.modded_od) * 0.0004;
-    }
+    flashlightValue *= 0.5 + data.accuracy / 2.0;
+    flashlightValue *= 0.98 + Math.pow(data.difficulty_data.od, 2) / 2500;
 
     return flashlightValue;
 }
 
-function getEffectiveMissCount(data) {
-    var comboBasedMissCount = 0.0;
-
-    if (data.score.sliders > 0) {
-        var fullComboThreshold = data.score.beatmap.maxcombo - 0.1 * data.score.beatmap.sliders;
-        if (data.combo < fullComboThreshold) {
-            comboBasedMissCount = fullComboThreshold / Math.max(1, data.score.beatmap.maxcombo);
-        }
-    }
-
-    comboBasedMissCount = Math.min(comboBasedMissCount, data.count100 + data.count50 + data.countmiss);
-    return Math.max(data.countmiss, comboBasedMissCount);
+function getComboScalingFactor(data) {
+    return data.maxCombo <= 0 ? 1 : Math.min(1, Math.pow(data.combo, 0.8) / Math.pow(data.maxCombo, 0.8));
 }
 
-function getAccuracy(data) {
-
-    if (data.totalhits === 0) {
-        return 0;
-    }
-
-    if (data.accuracy !== undefined) {
-        return data.accuracy;
-    }
-
-    return Math.min(Math.max((data.count50 * 50 + data.count100 * 100 + data.count300 * 300) / (data.totalhits * 300), 0.0), 1.0);
+function difficultyToPerformance(difficulty) {
+    return Math.pow(5 * Math.max(1, difficulty / 0.0675) - 4, 3) / 100000;
 }
 
-function getComboScalingFactor(score_combo, beatmap_combo) {
-    if (beatmap_combo > 0) {
-        return Math.min(Math.pow(score_combo, 0.8) / Math.pow(beatmap_combo, 0.8), 1.0);
-    }
-    return 1.0;
+function calculateMissPenalty(missCount, difficultStrainCount) {
+    return 0.96 / ((missCount / (4 * Math.pow(Math.log(difficultStrainCount), 0.94))) + 1);
 }

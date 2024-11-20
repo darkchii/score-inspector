@@ -116,7 +116,7 @@ function PerformanceRecordsChart(props) {
                                 <ul>
                                     <li>${Math.round(pp)}pp &bull; ${user.username}</li>
                                     <li>${beatmap.artist} - ${beatmap.title} [${beatmap.diffname}]</li>
-                                    <li>${Math.round(beatmap.modded_sr.star_rating * 10) / 10}* +${getModString(parseInt(score.enabled_mods))}</li>
+                                    <li>${Math.round(beatmap.difficulty_data.diff_unified * 10) / 10}* +${getModString(parseInt(score.enabled_mods))}</li>
                                 </ul>`
                             }
                             // y: {

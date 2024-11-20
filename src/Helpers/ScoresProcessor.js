@@ -5,6 +5,7 @@ import { getSessions } from "./Session";
 import { getPeriodicData } from "./ScoresPeriodicProcessor.js";
 import axios from "axios";
 import { getCalculator } from "./Performance/Performance.js";
+import Mods from "./Mods.js";
 
 const FEEDBACK_SLEEP_TIME = 100; // give the browser bit of breathing room to update the UI before each intensive task
 export async function processScores(user, scores, onCallbackError, onScoreProcessUpdate, allow_loved) {
@@ -62,7 +63,7 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
         data.total.score += score.score ?? 0;
         data.total.acc += score.accuracy ?? 0;
         data.total.length += score.beatmap.modded_length ?? 0;
-        data.total.star_rating += score.beatmap.modded_sr?.star_rating ?? 0;
+        data.total.star_rating += score.beatmap.difficulty_data?.diff_unified ?? 0;
         data.total.scoreLazerClassic += score.scoreLazerClassic ?? 0;
         data.total.scoreLazerStandardised += score.scoreLazerStandardised ?? 0;
         data.total.is_fc += score.is_fc ?? 0;
@@ -142,9 +143,9 @@ export function prepareScores(user, scores, calculateOtherPP = true) {
 
     //sort by time
     scores.sort((a, b) => a.date_played_moment.valueOf() - b.date_played_moment.valueOf());
-    
+
     console.log(`[SCORES] Latest score:`);
-    console.log(scores[scores.length-1]);
+    console.log(scores[scores.length - 1]);
 
     return scores;
 }
@@ -162,6 +163,20 @@ export function prepareScore(score, user = null) {
     //test string
     score.date_played_moment_string = score.date_played_moment.format('YYYY-MM-DD HH:mm:ss');
     score.enabled_mods = parseInt(score.enabled_mods);
+
+    //convert the enum to an array of mods in following format: 
+    // [
+    //     {
+    //         acronym: 'HD',
+    //     }
+    // ]
+    // this follows whatever osu api provides nowadays, but osualt uses the legacy enum format
+    // futureproofing
+    score.parsed_mods = new Mods(score.enabled_mods);
+
+    if (score.beatmap.difficulty_data) {
+        score.beatmap.difficulty_data = applyModdedAttributes(score.beatmap, score.parsed_mods);
+    }
 
     score.beatmap = prepareBeatmap(score.beatmap, score.enabled_mods);
 
@@ -211,21 +226,27 @@ function getBestScores(scores) {
     };
 
     scores.forEach(score => {
-        if (!score.is_loved) {
-            if (_scores.best_pp === null || score.pp > _scores.best_pp.pp) {
-                _scores.best_pp = score;
-            }
-            if ((score.enabled_mods & mods.NF) === 0) {
-                if ((_scores.best_sr === null ||( score.beatmap.modded_sr?.star_rating ?? 0) > (_scores.best_sr.beatmap.modded_sr?.star_rating ?? 0))) {
-                    _scores.best_sr = score;
+        try {
+            if (!score.is_loved) {
+                if (_scores.best_pp === null || score.pp > _scores.best_pp.pp) {
+                    _scores.best_pp = score;
+                }
+                if ((score.enabled_mods & mods.NF) === 0) {
+                    if ((_scores.best_sr === null || (score.beatmap.difficulty_data?.diff_unified ?? 0) > (_scores.best_sr.beatmap.difficulty_data?.diff_unified ?? 0))) {
+                        _scores.best_sr = score;
+                    }
+                }
+                if (_scores.best_score === null || score.score > _scores.best_score.score) {
+                    _scores.best_score = score;
+                }
+                if (_scores.oldest === null || score.date_played < _scores.oldest.date_played) {
+                    _scores.oldest = score;
                 }
             }
-            if (_scores.best_score === null || score.score > _scores.best_score.score) {
-                _scores.best_score = score;
-            }
-            if (_scores.oldest === null || score.date_played < _scores.oldest.date_played) {
-                _scores.oldest = score;
-            }
+        } catch (err) {
+            console.error(score);
+            console.error('Something went wrong on score with beatmap_id: ' + score.beatmap_id);
+            throw err;
         }
     });
 
@@ -268,4 +289,99 @@ function getDayPlaycountSpread(scores) {
     });
 
     return { hours, values };
+}
+
+const ar_ms_step1 = 120;
+const ar_ms_step2 = 150;
+
+const ar0_ms = 1800;
+const ar5_ms = 1200;
+const ar10_ms = 450;
+
+const od_ms_step = 6;
+const od0_ms = 79.5;
+const od10_ms = 19.5;
+function applyModdedAttributes(beatmap, parsed_mods) {
+    let difficulty_data = JSON.parse(JSON.stringify(beatmap.difficulty_data));
+    let speed = 1;
+    let ar_multiplier = 1;
+    let ar;
+    let ar_ms;
+
+    if ((parsed_mods.hasMod(mods.DT) || parsed_mods.hasMod(mods.NC))) {
+        speed = 1.5;
+    } else if (parsed_mods.hasMod(mods.HT)) {
+        speed = 0.75;
+    }
+
+    if (parsed_mods.hasMod(mods.HR)) {
+        ar_multiplier = 1.4;
+    } else if (parsed_mods.hasMod(mods.EZ)) {
+        ar_multiplier = 0.5;
+    }
+
+    ar = beatmap.ar * ar_multiplier;
+
+    if (ar <= 5)
+        ar_ms = ar0_ms - ar_ms_step1 * ar;
+    else
+        ar_ms = ar5_ms - ar_ms_step2 * (ar - 5);
+
+    ar_ms /= speed;
+
+    if (ar <= 5)
+        ar = (ar0_ms - ar_ms) / ar_ms_step1;
+    else
+        ar = 5 + (ar5_ms - ar_ms) / ar_ms_step2;
+
+    let cs = 1;
+    let cs_multiplier = 1;
+
+    if(parsed_mods.hasMod(mods.HR)) {
+        cs_multiplier = 1.3;
+    } else if(parsed_mods.hasMod(mods.EZ)) {
+        cs_multiplier = 0.5;
+    }
+
+    cs = beatmap.cs * cs_multiplier;
+
+    if(cs > 10) cs = 10;
+
+    let od = 1;
+    let odms = 1;
+    let od_multiplier = 1;
+
+    if(parsed_mods.hasMod(mods.HR)) {
+        od_multiplier = 1.4;
+    } else if(parsed_mods.hasMod(mods.EZ)) {
+        od_multiplier = 0.5;
+    }
+
+    od = beatmap.od * od_multiplier;
+    odms = od0_ms - Math.ceil(od_ms_step * od);
+    odms = Math.min(od0_ms, Math.max(od10_ms));
+
+    odms /= speed;
+
+    od = (od0_ms - odms) / od_ms_step;
+
+    let hp = 1;
+    let hp_multiplier = 1;
+
+    if(parsed_mods.hasMod(mods.HR)) {
+        hp_multiplier = 1.4;
+    } else if(parsed_mods.hasMod(mods.EZ)) {
+        hp_multiplier = 0.5;
+    }
+
+    hp = beatmap.hp * hp_multiplier;
+
+    if(hp > 10) hp = 10;
+
+    difficulty_data.modded_ar = ar;
+    difficulty_data.modded_cs = cs;
+    difficulty_data.modded_od = od;
+    difficulty_data.modded_hp = hp;
+
+    return difficulty_data;
 }

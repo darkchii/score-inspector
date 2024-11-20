@@ -132,12 +132,12 @@ function Root() {
             }
             <Grid2 sx={{ pb: 1 }}>
                 <Alert severity="warning">
-                    <b>Lazer scores</b> are currently <b>partly</b> supported. New mods and rate changes are not supported. <b>Combo scaling rework</b> is also <b>NOT</b> implemented.
+                    <b>Lazer scores</b> are currently <b>partly</b> supported. New mods and rate changes are not supported.
                 </Alert>
             </Grid2>
             <Grid2 sx={{ pb: 1 }}>
-                <Alert severity="info">
-                    Try out the new <Link href='https://github.com/darkchii/score-inspector-extension' target='_blank'>browser extension</Link> to integrate more statistics into the official osu! website! It's in very early development, so things might break.
+                <Alert severity="success">
+                    As of Nov 14 2024, The new <b>star ratings</b> and <b>performance calculator</b> from <b>Combo Scaling Rework</b> have been implemented.
                 </Alert>
             </Grid2>
             <Grid2 container spacing={2}>
@@ -249,64 +249,78 @@ function Root() {
                                             </Paper>
                                         </Grid2>
                                         <Grid2 size={{ xs: 12, md: 5 }}>
-                                            {/* a fancy massive button to go to the clans */}
-                                            <Paper sx={{
-                                                backgroundImage: `url(${IMG_CLANS_BG})`,
-                                                backgroundSize: 'cover',
-                                                backgroundPosition: 'top center',
+                                            <Box sx={{
                                                 width: '100%',
                                                 height: '100%',
+                                                display: 'flex',
+                                                flexDirection: 'column',
                                             }}>
-                                                <Card sx={{
-                                                    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-                                                    width: '100%',
-                                                    height: '100%',
-                                                    display: 'flex',
-                                                }}>
-                                                    <CardActionArea
-                                                        component={RouterLink}
-                                                        to='/clan'
-                                                        sx={{ flexGrow: 1 }}
-                                                        onMouseEnter={() => setIsHoveringClansButton(true)}
-                                                        onMouseLeave={() => setIsHoveringClansButton(false)}
-                                                    >
-                                                        <CardContent sx={{
-                                                            flexGrow: 1,
-                                                            display: 'flex',
-                                                            //center vertically
-                                                            alignItems: 'center',
-                                                            height: '100%',
-                                                        }}>
-                                                            <Typography variant='h3' sx={{ color: 'white' }}>Check out clans!</Typography>
+                                                <Grid2 sx={{ pb: 1 }}>
+                                                    <Alert severity="info">
+                                                        Use this <Link href='https://github.com/darkchii/score-inspector-extension' target='_blank'>browser extension</Link> to integrate clans and statistics into the official osu! website
+                                                    </Alert>
+                                                </Grid2>
 
-                                                            {/* a large arrow on the right, pointing right, which moves slightly left when hovering the cardactionarea */}
-                                                            <Box sx={{
-                                                                position: 'absolute',
-                                                                right: 0,
-                                                                top: 0,
-                                                                bottom: 0,
+                                                {/* a fancy massive button to go to the clans */}
+                                                <Paper sx={{
+                                                    backgroundImage: `url(${IMG_CLANS_BG})`,
+                                                    backgroundSize: 'cover',
+                                                    backgroundPosition: 'top center',
+                                                    width: '100%',
+                                                    flexGrow: 1,
+                                                    position: 'relative',
+                                                }}>
+                                                    <Card sx={{
+                                                        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                                                        width: '100%',
+                                                        height: '100%',
+                                                        display: 'flex',
+                                                    }}>
+                                                        <CardActionArea
+                                                            component={RouterLink}
+                                                            to='/clan'
+                                                            sx={{ flexGrow: 1 }}
+                                                            onMouseEnter={() => setIsHoveringClansButton(true)}
+                                                            onMouseLeave={() => setIsHoveringClansButton(false)}
+                                                        >
+                                                            <CardContent sx={{
+                                                                flexGrow: 1,
                                                                 display: 'flex',
+                                                                //center vertically
                                                                 alignItems: 'center',
-                                                                justifyContent: 'center',
-                                                                transition: 'transform 0.2s',
-                                                                // '&:hover': {
-                                                                //     transform: 'translateX(-5px)',
-                                                                // },
-                                                                transform: isHoveringClansButton ? 'translateX(-15px)' : 'translateX(0)',
+                                                                height: '100%',
                                                             }}>
-                                                                <Box>
-                                                                    <NavigateNextIcon
-                                                                        sx={{
-                                                                            color: 'white',
-                                                                            fontSize: '3rem',
-                                                                        }}
-                                                                    />
+                                                                <Typography variant='h3' sx={{ color: 'white' }}>Check out clans!</Typography>
+
+                                                                {/* a large arrow on the right, pointing right, which moves slightly left when hovering the cardactionarea */}
+                                                                <Box sx={{
+                                                                    position: 'absolute',
+                                                                    right: 0,
+                                                                    top: 0,
+                                                                    bottom: 0,
+                                                                    display: 'flex',
+                                                                    alignItems: 'center',
+                                                                    justifyContent: 'center',
+                                                                    transition: 'transform 0.2s',
+                                                                    // '&:hover': {
+                                                                    //     transform: 'translateX(-5px)',
+                                                                    // },
+                                                                    transform: isHoveringClansButton ? 'translateX(-15px)' : 'translateX(0)',
+                                                                }}>
+                                                                    <Box>
+                                                                        <NavigateNextIcon
+                                                                            sx={{
+                                                                                color: 'white',
+                                                                                fontSize: '3rem',
+                                                                            }}
+                                                                        />
+                                                                    </Box>
                                                                 </Box>
-                                                            </Box>
-                                                        </CardContent>
-                                                    </CardActionArea>
-                                                </Card>
-                                            </Paper>
+                                                            </CardContent>
+                                                        </CardActionArea>
+                                                    </Card>
+                                                </Paper>
+                                            </Box>
                                         </Grid2>
                                     </Grid2>
                                 </CardContent>
