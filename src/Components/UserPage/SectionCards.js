@@ -1,9 +1,10 @@
-import { Box, Grid2, Paper, Table, TableBody, TableCell, TableContainer, TableRow, Tooltip, Typography, useTheme } from "@mui/material";
+import { Box, Grid2, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Tooltip, Typography, useTheme } from "@mui/material";
 import moment from "moment";
 import BestScoreCard from "./BestScoreCard";
 import GlowBar from "../UI/GlowBar";
 import ChartWrapper from "../../Helpers/ChartWrapper.js";
 import { MILESTONES_FORMATTER } from "../../Helpers/Misc.js";
+import ScoreRow from "../ScoreRow.js";
 
 function SectionCards(props) {
     const theme = useTheme();
@@ -184,6 +185,26 @@ function SectionCards(props) {
                             ]}
                             type={'bar'}
                         />
+                    </Paper>
+                    : <></>
+            }
+        </Grid2>
+        <Grid2>
+            {
+                props?.user?.data?.latest_scores ?
+                    <Paper elevation={2} sx={{ p: 1, pt: 2, pb: 2, pl: 2 }}>
+                        <Typography variant='h6'>Latest scores</Typography>
+                        <Stack direction="column" justifyContent="center" alignItems="center" sx={{ mt: 2 }} spacing={0.5}>
+                            {
+                                props?.user?.data?.latest_scores.map((score, index) => {
+                                    return (
+                                        <ScoreRow data={{
+                                            score: score,
+                                        }} />
+                                    )
+                                })
+                            }
+                        </Stack>
                     </Paper>
                     : <></>
             }

@@ -1,73 +1,52 @@
-import { ReactComponent as SVG_GRADE_XH } from "../Assets/Grade-XH.svg";
-import { ReactComponent as SVG_GRADE_X } from "../Assets/Grade-X.svg";
-import { ReactComponent as SVG_GRADE_SH } from "../Assets/Grade-SH.svg";
-import { ReactComponent as SVG_GRADE_S } from "../Assets/Grade-S.svg";
-import { ReactComponent as SVG_GRADE_A } from "../Assets/Grade-A.svg";
-import { ReactComponent as SVG_GRADE_B } from "../Assets/Grade-B.svg";
-import { ReactComponent as SVG_GRADE_C } from "../Assets/Grade-C.svg";
-import { ReactComponent as SVG_GRADE_D } from "../Assets/Grade-D.svg";
+import { ReactComponent as SVG_GRADE_XH } from "../Assets/Grades/Grade-XH.svg";
+import { ReactComponent as SVG_GRADE_X } from "../Assets/Grades/Grade-X.svg";
+import { ReactComponent as SVG_GRADE_SH } from "../Assets/Grades/Grade-SH.svg";
+import { ReactComponent as SVG_GRADE_S } from "../Assets/Grades/Grade-S.svg";
+import { ReactComponent as SVG_GRADE_A } from "../Assets/Grades/Grade-A.svg";
+import { ReactComponent as SVG_GRADE_B } from "../Assets/Grades/Grade-B.svg";
+import { ReactComponent as SVG_GRADE_C } from "../Assets/Grades/Grade-C.svg";
+import { ReactComponent as SVG_GRADE_D } from "../Assets/Grades/Grade-D.svg";
 import { ReactComponent as SVG_TRIANGLES } from "../Assets/Triangles.svg";
 
-import IMG_SVG_GRADE_XH from "../Assets/Grade-XH.svg";
-import IMG_SVG_GRADE_X from "../Assets/Grade-X.svg";
-import IMG_SVG_GRADE_SH from "../Assets/Grade-SH.svg";
-import IMG_SVG_GRADE_S from "../Assets/Grade-S.svg";
-import IMG_SVG_GRADE_A from "../Assets/Grade-A.svg";
-import IMG_SVG_GRADE_B from "../Assets/Grade-B.svg";
-import IMG_SVG_GRADE_C from "../Assets/Grade-C.svg";
-import IMG_SVG_GRADE_D from "../Assets/Grade-D.svg";
+import IMG_SVG_GRADE_XH from "../Assets/Grades/Grade-XH.svg";
+import IMG_SVG_GRADE_X from "../Assets/Grades/Grade-X.svg";
+import IMG_SVG_GRADE_SH from "../Assets/Grades/Grade-SH.svg";
+import IMG_SVG_GRADE_S from "../Assets/Grades/Grade-S.svg";
+import IMG_SVG_GRADE_A from "../Assets/Grades/Grade-A.svg";
+import IMG_SVG_GRADE_B from "../Assets/Grades/Grade-B.svg";
+import IMG_SVG_GRADE_C from "../Assets/Grades/Grade-C.svg";
+import IMG_SVG_GRADE_D from "../Assets/Grades/Grade-D.svg";
 
 import IMG_CLANS_BG from "../Assets/Other/clans.jpg";
 
 import IMG_TRIANGLES from "../Assets/Triangles.svg";
 
-import PNG_MOD_HT from "../Assets/MOD_HT.png";
-import PNG_MOD_NC from "../Assets/MOD_NC.png";
-import PNG_MOD_NF from "../Assets/MOD_NF.png";
-import PNG_MOD_PF from "../Assets/MOD_PF.png";
-import PNG_MOD_RX from "../Assets/MOD_RX.png";
-import PNG_MOD_SD from "../Assets/MOD_SD.png";
-import PNG_MOD_SO from "../Assets/MOD_SO.png";
-import PNG_MOD_TP from "../Assets/MOD_TP.png";
-import PNG_MOD_AP from "../Assets/MOD_AP.png";
-import PNG_MOD_AT from "../Assets/MOD_AT.png";
-import PNG_MOD_CN from "../Assets/MOD_CN.png";
-import PNG_MOD_DT from "../Assets/MOD_DT.png";
-import PNG_MOD_EZ from "../Assets/MOD_EZ.png";
-import PNG_MOD_FL from "../Assets/MOD_FL.png";
-import PNG_MOD_HD from "../Assets/MOD_HD.png";
-import PNG_MOD_HR from "../Assets/MOD_HR.png";
-import PNG_MOD_TD from "../Assets/MOD_TD.png";
-import PNG_MOD_NM from "../Assets/MOD_NM.png";
-import PNG_MOD_CL from "../Assets/MOD_CL.png";
-
 import PNG_GUEST from "../Assets/Guest.png";
 
 import PNG_LEVEL_BADGE from "../Assets/levelbadge.png";
 
-function getModIcon(modString) {
-    switch (modString) {
-        default: return null;
-        case "HT": return PNG_MOD_HT;
-        case "NC": return PNG_MOD_NC;
-        case "NF": return PNG_MOD_NF;
-        case "PF": return PNG_MOD_PF;
-        case "RX": return PNG_MOD_RX;
-        case "SD": return PNG_MOD_SD;
-        case "SO": return PNG_MOD_SO;
-        case "TP": return PNG_MOD_TP;
-        case "AP": return PNG_MOD_AP;
-        case "AT": return PNG_MOD_AT;
-        case "CN": return PNG_MOD_CN;
-        case "DT": return PNG_MOD_DT;
-        case "EZ": return PNG_MOD_EZ;
-        case "FL": return PNG_MOD_FL;
-        case "HD": return PNG_MOD_HD;
-        case "HR": return PNG_MOD_HR;
-        case "TD": return PNG_MOD_TD;
-        case "CL": return PNG_MOD_CL;
-        case "None": return PNG_MOD_NM;
+//this dictates the custom icon badge
+//these mods simply get the acronym overlayed on the badge
+function getModIcon(acronym, is_type = false) {
+    if(acronym === null || acronym === undefined){
+        console.error("getModIcon: acronym is null or undefined");
+        return null;
     }
+    acronym = acronym.toUpperCase();
+    const modIcons = require.context('../Assets/Mods', true);
+    try{
+        let name;
+        if(is_type){
+            name = `./MOD_BG_${acronym}.png`;
+        }else{
+            name = `./MOD_${acronym}.png`;
+        }
+        const icon = modIcons(name);
+        return icon;
+    }catch(err){ 
+        console.error(err);
+    }
+    return null;
 }
 
 export function getPossibleMods() {
@@ -110,17 +89,6 @@ _GRADE_ICONS_IMG['D'] = IMG_SVG_GRADE_D;
 
 function getGradeIcon(grade) {
     return _GRADE_ICONS_IMG[grade];
-    // switch (grade) {
-    //     case 'XH': return _GRADE_ICON_XH
-    //     case 'X': return _GRADE_ICON_X
-    //     case 'SH': return _GRADE_ICON_SH
-    //     case 'S': return _GRADE_ICON_S
-    //     case 'A': return _GRADE_ICON_A
-    //     case 'B': return _GRADE_ICON_B
-    //     case 'C': return _GRADE_ICON_C
-    //     case 'D': return _GRADE_ICON_D
-    //     default: return null
-    // }
 }
 
 function getFlagIcon(country_code){
@@ -143,25 +111,6 @@ export {
     SVG_GRADE_B,
     SVG_GRADE_C,
     SVG_GRADE_D,
-    PNG_MOD_HT,
-    PNG_MOD_NC,
-    PNG_MOD_NF,
-    PNG_MOD_PF,
-    PNG_MOD_RX,
-    PNG_MOD_SD,
-    PNG_MOD_SO,
-    PNG_MOD_TP,
-    PNG_MOD_AP,
-    PNG_MOD_AT,
-    PNG_MOD_CN,
-    PNG_MOD_DT,
-    PNG_MOD_EZ,
-    PNG_MOD_FL,
-    PNG_MOD_HD,
-    PNG_MOD_HR,
-    PNG_MOD_TD,
-    PNG_MOD_NM,
-    PNG_MOD_CL,
     getModIcon,
     getGradeIcon,
     IMG_SVG_GRADE_XH,

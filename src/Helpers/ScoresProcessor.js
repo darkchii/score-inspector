@@ -45,6 +45,7 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
             star_rating: 0
         },
         allow_loved: allow_loved,
+        latest_scores: []
     };
 
     onScoreProcessUpdate('Calculating performance');
@@ -133,6 +134,13 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
     await sleep(FEEDBACK_SLEEP_TIME);
     data.averageDaySpread = getDayPlaycountSpread(scores);
 
+    onScoreProcessUpdate('Latest scores');
+    await sleep(FEEDBACK_SLEEP_TIME);
+    scores.sort((a, b) => b.date_played_moment.valueOf() - a.date_played_moment.valueOf());
+    data.latest_scores = scores.slice(0, 20);
+
+    console.log(data.latest_scores);
+
     return data;
 }
 
@@ -172,10 +180,10 @@ export function prepareScore(score, user = null) {
     // ]
     // this follows whatever osu api provides nowadays, but osualt uses the legacy enum format
     // futureproofing
-    score.parsed_mods = new Mods(score.enabled_mods);
+    score.mods = new Mods(score.enabled_mods, score.mods);
 
     if (score.beatmap.difficulty_data) {
-        score.beatmap.difficulty_data = applyModdedAttributes(score.beatmap, score.parsed_mods);
+        score.beatmap.difficulty_data = applyModdedAttributes(score.beatmap, score.mods);
     }
 
     score.beatmap = prepareBeatmap(score.beatmap, score.enabled_mods);
@@ -382,6 +390,15 @@ function applyModdedAttributes(beatmap, parsed_mods) {
     difficulty_data.modded_cs = cs;
     difficulty_data.modded_od = od;
     difficulty_data.modded_hp = hp;
+
+    if(parsed_mods.hasMod("DA")) {
+        const mod = parsed_mods.getMod("DA");
+
+        if(mod.settings?.drain_rate) { difficulty_data.modded_hp = mod.settings.drain_rate; }
+        if(mod.settings?.overall_difficulty) { difficulty_data.modded_od = mod.settings.overall_difficulty; }
+        if(mod.settings?.approach_rate) { difficulty_data.modded_ar = mod.settings.approach_rate; }
+        if(mod.settings?.circle_size) { difficulty_data.modded_cs = mod.settings.circle_size; }
+    }
 
     return difficulty_data;
 }

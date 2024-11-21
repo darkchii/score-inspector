@@ -2,9 +2,10 @@ import { Box, Grid2, Tooltip, Typography, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
 import { getGradeIcon, getModIcon } from "../Helpers/Assets.js";
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import { red } from "@mui/material/colors";
+import { grey, red } from "@mui/material/colors";
 import { getModString, mod_strings_long, mods } from "../Helpers/Osu.js";
 import { toFixedNumber } from "../Helpers/Misc.js";
+import Mods from "../Helpers/Mods.js";
 
 function ScoreRow(props) {
     const theme = useTheme();
@@ -118,7 +119,7 @@ function ScoreRow(props) {
                                     }
                                 </Grid2>
 
-                                <Grid2 size={0.55}>
+                                <Grid2 size={0.4}>
                                     <Box sx={{ height: '100%', alignContent: 'right', display: 'flex', alignItems: 'center', justifyContent: 'right', pr: 0.3 }}>
                                         {
                                             score.beatmap.difficulty_data.diff_unified && score.beatmap.difficulty_data.diff_unified !== score.beatmap.stars ?
@@ -140,7 +141,7 @@ function ScoreRow(props) {
                                         }
                                     </Box>
                                 </Grid2>
-                                <Grid2 size={0.55}>
+                                <Grid2 size={0.4}>
                                     <Box sx={{ height: '100%', alignContent: 'right', display: 'flex', alignItems: 'center', justifyContent: 'left' }}>
                                         <Tooltip title={
                                             `Aim: ${score.beatmap.difficulty_data.diff_aim.toFixed(2)}, Speed: ${score.beatmap.difficulty_data.diff_speed.toFixed(2)}, Strain: ${score.beatmap.difficulty_data.diff_strain.toFixed(2)}, Flashlight: ${(score.beatmap.difficulty_data.flashlight_rating ?? 0).toFixed(2)}*`
@@ -150,14 +151,11 @@ function ScoreRow(props) {
                                     </Box>
                                 </Grid2>
 
-                                <Grid2 size={1.2}>
+                                <Grid2 size={1.7}>
                                     <Box sx={{ height: '100%', alignContent: 'right', display: 'flex', alignItems: 'center' }}>
                                         {
-                                            getModString(score.enabled_mods).map(mod => (
-                                                <Tooltip title={mod_strings_long[mods[mod]]}>
-                                                    <img height="20px" src={getModIcon(mod)} alt={mod} />
-                                                </Tooltip>
-                                            ))
+                                            // getModString(score.enabled_mods).map(mod => (
+                                            score.mods.valueOf().map(mod => Mods.getModElement(mod))
                                         }
                                     </Box>
                                 </Grid2>
@@ -168,8 +166,8 @@ function ScoreRow(props) {
                                     </Box>
                                 </Grid2>
 
-                                <Grid2 size={0.8}>
-                                    <Box sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
+                                <Grid2 size={0.6}>
+                                    <Box sx={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'right', pr: 1, color: grey[500] }}>
                                         {
                                             !score.is_fc && score.recalc['fc'] ?
                                                 <Typography variant="subtitle2">(if FC: {Math.round(score.recalc['fc']?.total).toLocaleString('en-US')}pp)</Typography>

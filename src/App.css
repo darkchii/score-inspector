@@ -96,3 +96,35 @@ a {
 .squares li[data-level="3"] {
     background-color: #196127;
 }
+
+.mod {
+    --mod-height: 24px;
+    --generic-display: flex;
+    background-position: 50%;
+    background-repeat: no-repeat;
+    background-size: contain;
+    display: flex;
+    height: var(--mod-height, 22px);
+    position: relative;
+    width: calc(var(--mod-height, 22px)*45/32)
+}
+
+.mod-img {
+    --generic-display: none;
+}
+
+.mod:after {
+    align-items: center;
+    color: #545454;
+    content: attr(data-acronym);
+    display: var(--generic-display);
+    font-size: 12px;
+    height: 100%;
+    justify-content: center;
+    left: 0;
+    padding-right: 1px;
+    padding-top: 1px;
+    position: absolute;
+    top: 0;
+    width: 100%
+}

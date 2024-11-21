@@ -41,15 +41,15 @@ export function getPerformanceLive(data, debug = false) {
 
         data.multiplier = PERFORMANCE_BASE_MULTIPLIER;
 
-        if (data.score.parsed_mods.hasMod(mods.NF)) {
+        if (data.score.mods.hasMod(mods.NF)) {
             data.multiplier *= Math.max(0.9, 1.0 - 0.02 * data.effectiveMissCount);
         }
 
-        if (data.score.parsed_mods.hasMod(mods.SO) && data.totalHits > 0) {
+        if (data.score.mods.hasMod(mods.SO) && data.totalHits > 0) {
             data.multiplier *= 1.0 - Math.pow(data.score.beatmap.spinners / data.totalHits, 0.85);
         }
 
-        if (data.score.parsed_mods.hasMod(mods.RX)) {
+        if (data.score.mods.hasMod(mods.RX)) {
             let okMultiplier = Math.max(0.0, data.difficulty_data.od > 0 ? 1 - Math.pow(data.difficulty_data.od / 13.33, 1.8) : 1);
             let mehMultiplier = Math.max(0.0, data.difficulty_data.od > 0 ? 1 - Math.pow(data.difficulty_data.od / 13.33, 5) : 1);
 
@@ -113,14 +113,14 @@ function getAimValue(data) {
     else if (data.difficulty_data.ar < 8.0)
         approachRateFactor = 0.05 * (8.0 - data.difficulty_data.ar);
 
-    if (data.score.parsed_mods.hasMod(mods.RX))
+    if (data.score.mods.hasMod(mods.RX))
         approachRateFactor = 0.0;
 
     aimValue *= 1.0 + approachRateFactor * lengthBonus;
 
-    if (data.score.parsed_mods.hasMod(mods.BL))
+    if (data.score.mods.hasMod(mods.BL))
         aimValue *= 1.3 + (data.totalHits * (0.0016 / (1 + 2 * data.effectiveMissCount)) * Math.pow(data.accuracy, 16)) * (1 - 0.003 * data.difficulty_data.modded_hp * data.difficulty_data.modded_hp);
-    else if (data.score.parsed_mods.hasMod(mods.HD) || data.score.parsed_mods.hasMod(mods.TR))
+    else if (data.score.mods.hasMod(mods.HD) || data.score.mods.hasMod(mods.TR))
         aimValue *= 1.0 + 0.04 * (12.0 - data.difficulty_data.ar);
 
     let estimateDifficultSliders = data.sliderCount * 0.15;
@@ -146,7 +146,7 @@ function getAimValue(data) {
 }
 
 function getSpeedValue(data) {
-    if (data.score.parsed_mods.hasMod(mods.RX)) {
+    if (data.score.mods.hasMod(mods.RX)) {
         return 0;
     }
 
@@ -164,9 +164,9 @@ function getSpeedValue(data) {
 
     speedValue *= 1.0 + approachRateFactor * lengthBonus;
 
-    if (data.score.parsed_mods.hasMod(mods.BL))
+    if (data.score.mods.hasMod(mods.BL))
         speedValue *= 1.12;
-    else if (data.score.parsed_mods.hasMod(mods.HD) || data.score.parsed_mods.hasMod(mods.TR))
+    else if (data.score.mods.hasMod(mods.HD) || data.score.mods.hasMod(mods.TR))
         speedValue *= 1.0 + 0.04 * (12.0 - data.difficulty_data.ar);
 
     let relevantTotalDiff = data.totalHits - data.difficulty_data.speed_note_count;
@@ -185,7 +185,7 @@ function getSpeedValue(data) {
 }
 
 function getAccuracyValue(data) {
-    if (data.score.parsed_mods.hasMod(mods.RX)) {
+    if (data.score.mods.hasMod(mods.RX)) {
         return 0;
     }
 
@@ -205,19 +205,19 @@ function getAccuracyValue(data) {
     let accuracyValue = Math.pow(1.52163, data.difficulty_data.od) * Math.pow(betterAccuracyPercentage, 24) * 2.83;
     accuracyValue *= Math.min(1.15, Math.pow(amountHitObjectsWithAccuracy * 0.001, 0.3));
 
-    if (data.score.parsed_mods.hasMod(mods.BL))
+    if (data.score.mods.hasMod(mods.BL))
         accuracyValue *= 1.14;
-    else if (data.score.parsed_mods.hasMod(mods.HD) || data.score.parsed_mods.hasMod(mods.TR))
+    else if (data.score.mods.hasMod(mods.HD) || data.score.mods.hasMod(mods.TR))
         accuracyValue *= 1.08;
 
-    if (data.score.parsed_mods.hasMod(mods.FL))
+    if (data.score.mods.hasMod(mods.FL))
         accuracyValue *= 1.02;
 
     return accuracyValue;
 }
 
 function getFlashlightValue(data) {
-    if (!data.score.parsed_mods.hasMod(mods.FL))
+    if (!data.score.mods.hasMod(mods.FL))
         return 0;
 
     let flashlightValue = (25 * Math.pow(data.difficulty_data.flashlight_rating, 2));
