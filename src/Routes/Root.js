@@ -131,13 +131,10 @@ function Root() {
                     </> : <></>
             }
             <Grid2 sx={{ pb: 1 }}>
-                <Alert severity="warning">
-                    <b>Lazer scores</b> are currently <b>partly</b> supported. New mods and rate changes are not supported.
-                </Alert>
-            </Grid2>
-            <Grid2 sx={{ pb: 1 }}>
                 <Alert severity="success">
-                    As of Nov 14 2024, The new <b>star ratings</b> and <b>performance calculator</b> from <b>Combo Scaling Rework</b> have been implemented.
+                    As of Nov 22 2024, The new <b>star ratings</b> and <b>performance calculator</b> from <b>Combo Scaling Rework</b> have been implemented.<br />
+                    Lazer scores are now supported, including <b>new mods</b>, <b>rate changes</b> and <b>difficulty adjustments</b>.<br />
+                    <span style={{ fontSize: '0.8em' }}>This change is somewhat retroactive to all scores, but scores set before Nov 21 2024 will slowly have their star ratings added.</span>
                 </Alert>
             </Grid2>
             <Grid2 container spacing={2}>
@@ -154,7 +151,7 @@ function Root() {
                                                         <StatCard stats={serverInfo?.database?.alt?.user_count ? (parseInt(serverInfo?.database?.alt?.user_count ?? 0)).toLocaleString('en-US') : null} title={`Players (${(parseInt(serverInfo?.database?.alt?.priority_user_count ?? 0)).toLocaleString('en-US')} live)`} color={blue} icon={<PersonIcon />} />
                                                     </Grid2>
                                                     <Grid2 size={{ xs: 12, md: 12 / 2 }}>
-                                                        <StatCard stats={serverInfo?.database?.alt?.score_count ? formatNumberAsSize(parseInt(serverInfo?.database?.alt?.score_count ?? 0)) : null} title={'Scores'} color={red} icon={<WorkspacePremiumIcon />} />
+                                                        <StatCard stats={serverInfo?.database?.alt?.score_count ? formatNumberAsSize(parseInt(serverInfo?.database?.alt?.score_count ?? 0)) : null} title={`Scores (${formatNumberAsSize(parseInt(serverInfo?.database?.alt?.lazerified_score_count ?? 0))} lazerified)`} color={red} icon={<WorkspacePremiumIcon />} />
                                                     </Grid2>
                                                     <Grid2 size={{ xs: 12, md: 12 / 2 }}>
                                                         <StatCard stats={serverInfo?.database?.inspector?.total_visits ? (parseInt(serverInfo?.database?.inspector?.total_visits ?? 0)).toLocaleString('en-US') : null} title={'Profile visits'} color={green} icon={<BadgeIcon />} />

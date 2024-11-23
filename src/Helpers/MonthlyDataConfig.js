@@ -37,14 +37,14 @@ export const dataToList = [
     {
         outputValue: "total_sr",
         exec: function (output, score) {
-            return output + score.beatmap.difficulty_data.diff_unified;
+            return output + score.beatmap.difficulty_data.star_rating;
         }
     },
     {
         outputValue: "highest_sr",
         exec: function (output, score) {
             if((score.beatmap.approved === 1 || score.beatmap.approved === 2) && !(score.enabled_mods & mods.NF)){
-                return Math.max(output, score.beatmap.difficulty_data.diff_unified ?? 0);
+                return Math.max(output, score.beatmap.difficulty_data.star_rating ?? 0);
             }
             return output;
         }

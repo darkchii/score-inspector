@@ -1,7 +1,8 @@
-import { Box, Tooltip } from "@mui/material";
+import { Box, Tooltip, Typography } from "@mui/material";
 import { getModString, mods } from "./Osu";
 import { getModIcon } from "./Assets";
 import ModData from "../Data/ModData";
+import { isEmpty } from "lodash";
 
 let _MOD_ICON_CACHE = {};
 
@@ -10,6 +11,8 @@ class Mods {
         this.mods_enum = mods_enum;
         this.mods_data = [];
         this.modern_mods = modern_mods;
+
+        this.speed = 0;
 
         if (modern_mods === null || modern_mods === undefined) {
             this.mods_data.push({
@@ -31,6 +34,7 @@ class Mods {
 
                     if (mod & mods.HT) {
                         _mod.speed_change = 0.75;
+
                     }
 
                     this.mods_data.push(_mod);
@@ -40,23 +44,50 @@ class Mods {
             this.mods_data = modern_mods;
         }
 
+        if(Mods.hasMod(this, "DT") || Mods.hasMod(this, "NC")){
+            const mod = Mods.getMod(this, "DT") || Mods.getMod(this, "NC");
+            this.speed = mod.settings?.speed_change || 1.5;
+        }
+
+        if(Mods.hasMod(this, "HT")){
+            const mod = Mods.getMod(this, "HT");
+            this.speed = mod.settings?.speed_change || 0.75;
+        }
+
+        
         this.mods_data.forEach(mod => {
             const data = Mods.getModData(mod.acronym);
             mod.data = data || {};
         });
+        
+        if(this.mods_data.length === 0){
+            this.mods_data.push({
+                acronym: "NM",
+                data: {
+                    Acronym: "NM",
+                    Name: "No mods",
+                    Description: "No mods were selected"
+                },
+            });
+        }
     }
 
-    hasMod(mod) {
-        return this.mods_data.find(m => m.acronym === mod) !== undefined;
+    static hasMod(mods, mod) {
+        return mods.mods_data.find(m => m.acronym === mod) !== undefined;
     }
 
-    getMod(mod) {
-        return this.mods_data.find(m => m.acronym === mod);
+    static getMod(mods, mod) {
+        return mods.mods_data.find(m => m.acronym === mod);
     }
 
     //overload to return this.mods_data if this object is called without function
-    valueOf() {
-        return this.mods_data;
+    static valueOf(mods) {
+        return mods.mods_data;
+    }
+
+    static isEmpty(mods) {
+        //return true if the array is empty or NM is the only mod
+        return isEmpty(mods.mods_data) || (mods.mods_data.length === 1 && mods.mods_data[0].acronym === "NM");
     }
 
     static getModData(acronym) {
@@ -68,7 +99,11 @@ class Mods {
         return data.Settings.find(s => s.Name === setting);
     }
 
-    static getModElement(mod, height = 24) {
+    static getModElements(mods, height = 24, style = {}) {
+        return Mods.valueOf(mods).map((mod, i) => Mods.getModElement(mod, 20, i === 0 ? { marginLeft: 0 } : {}));
+    }
+
+    static getModElement(mod, height = 24, style = {}) {
         if (mod.data === undefined) {
             console.error(`Mod ${mod.acronym} does not have data`);
             return null;
@@ -99,6 +134,7 @@ class Mods {
             tooltip_extra_data = str.join(", ");
         }
 
+        const settings = mod.settings;
 
         return (
             <Tooltip title={
@@ -108,7 +144,10 @@ class Mods {
                     </Box>
                 </Box>
             }>
-                <Box className={`mod ${superimpose_acronym ? '' : 'mod-img'}`} data-acronym={mod.acronym} key={mod.acronym}>
+                <Box style={{
+                    ...style,
+                    '--mod-height': `${height}px`,
+                }} className={`mod ${superimpose_acronym ? '' : 'mod-img'}`} data-acronym={mod.acronym} key={mod.acronym}>
                     <img src={mod_icon} alt={mod.acronym} height={height} />
                 </Box>
             </Tooltip>

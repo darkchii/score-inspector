@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Box, Card, CardContent, CardMedia, Chip, Grid2, Link, ListItem, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableHead, TableRow, Tooltip, Typography } from '@mui/material';
+import { Box, Card, CardContent, CardMedia, Chip, Grid2, Link, ListItem, Stack, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableHead, TableRow, Tooltip, Typography } from '@mui/material';
 import { Chart as ChartJS, ArcElement, Tooltip as ChartTooltip, Legend } from 'chart.js';
 import moment from 'moment';
 import { useEffect } from 'react';
@@ -12,14 +12,29 @@ import { getCalculator } from '../Helpers/Performance/Performance';
 import { getBeatmapScores } from '../Helpers/OsuAlt';
 import { prepareBeatmap, prepareScore } from '../Helpers/ScoresProcessor';
 import { GetFormattedName } from '../Helpers/Account';
-import { List } from "react-virtualized";
-import { blue, green, red, yellow } from '@mui/material/colors';
+import { Grid, List } from "react-virtualized";
+import { blue, green, orange, red, yellow } from '@mui/material/colors';
+import WarningIcon from '@mui/icons-material/Warning';
+import Mods from '../Helpers/Mods';
+import ScoreDial from './ScoreDial';
 ChartJS.register(ArcElement, ChartTooltip, Legend);
+
+function ScoreViewStat(props) {
+    return (
+        <div className='score-stats__stat'>
+            <div className='score-stats__stat-row score-stats__stat-row--label'>
+                {props.label}
+            </div>
+            <div className={`score-stats__stat-row ${props.small ? 'score-stats__stat-small' : ''}`}>
+                {props.value}
+            </div>
+        </div>
+    );
+}
 
 function ScoreView(props) {
     const [scoreData, setScoreData] = useState(null);
     const [beatmapData, setBeatmapData] = useState(null);
-    const [leaderboardData, setLeaderboardData] = useState(null);
 
     async function fixScore(score) {
         let _score = score.score;
@@ -27,15 +42,14 @@ function ScoreView(props) {
             if (_score !== null && _score !== null) {
                 _score = await getBeatmapMaxscore(score.beatmap_id);
                 var mul = 1;
-                const m = score.enabled_mods;
 
-                if (m & mods.EZ) { mul *= 0.5; }
-                if (m & mods.NF) { mul *= 0.5; }
-                if (m & mods.HT) { mul *= 0.3; }
-                if (m & mods.HR) { mul *= 1.12; }
-                if (m & mods.DT) { mul *= 1.06; }
-                if (m & mods.NC) { mul *= 1.06; }
-                if (m & mods.HD) { mul *= 1.06; }
+                if (Mods.hasMod(_score.mods, "EZ")) { mul *= 0.5; }
+                if (Mods.hasMod(_score.mods, "NF")) { mul *= 0.5; }
+                if (Mods.hasMod(_score.mods, "HT")) { mul *= 0.3; }
+                if (Mods.hasMod(_score.mods, "HR")) { mul *= 1.12; }
+                if (Mods.hasMod(_score.mods, "DT")) { mul *= 1.06; }
+                if (Mods.hasMod(_score.mods, "NC")) { mul *= 1.06; }
+                if (Mods.hasMod(_score.mods, "HD")) { mul *= 1.06; }
 
                 const real_score = _score * mul;
 
@@ -52,7 +66,8 @@ function ScoreView(props) {
         _score.beatmap = JSON.parse(JSON.stringify(beatmap));
 
         _scoreData.difficulty_data = _score.beatmap.difficulty_data;
-        _score = prepareScore(_score, null);
+        console.log(_score);
+        // _score = prepareScore(_score, null);
         _scoreData.score = _score;
 
         const accHits = [];
@@ -84,81 +99,6 @@ function ScoreView(props) {
         setBeatmapData(_beatmapData);
     }
 
-    const rowHeight = ({ index }) => {
-        return 40;
-    };
-
-    const leaderboardRowRenderer = ({ index, key, style }) => {
-        const score = leaderboardData[index];
-        const isScoreSelected = score.user_id === scoreData?.score?.user_id;
-        return (
-            <ListItem key={key} style={{
-                ...style,
-                backgroundColor: `rgba(0,0,0,${isScoreSelected ? '0.4' : '0'})`,
-                borderRadius: '5px'
-            }}>
-                <Box sx={{ width: '100%' }}>
-                    <Grid2 container spacing={2}>
-                        <Grid2 size={1}>
-                            <Box sx={{ display: 'flex', justifyContent: 'right', alignItems: 'center' }}>
-                                <Typography variant="subtitle1">#{index + 1}</Typography>
-                            </Box>
-                        </Grid2>
-                        <Grid2 size={0.5}>
-                            <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%', width: '100%' }}>
-                                <img style={{ height: '80%' }} alt={score.rank} src={getGradeIcon(score.rank)} />
-                            </Box>
-                        </Grid2>
-                        <Grid2 size={2}>
-                            <Box sx={{ display: 'flex', justifyContent: 'left', alignItems: 'center' }}>
-                                <Link href={`https://osu.ppy.sh/users/${score.user_id}`} target='_blank' rel='noreferrer'>{GetFormattedName(score.user.inspector_user)}</Link>
-                            </Box>
-                        </Grid2>
-                        <Grid2 size={1.5}>
-                            <Box sx={{ display: 'flex', justifyContent: 'left', alignItems: 'center' }}>
-                                <Typography variant="subtitle1">{score.score.toLocaleString('en-US')}</Typography>
-                            </Box>
-                        </Grid2>
-                        <Grid2 size={1}>
-                            <Box sx={{ display: 'flex', justifyContent: 'left', alignItems: 'center' }}>
-                                <Typography variant="subtitle1">{Math.round(score.pp ?? 0).toLocaleString('en-US')}pp</Typography>
-                            </Box>
-                        </Grid2>
-                        <Grid2 size={2}>
-                            <Box sx={{ display: 'flex', justifyContent: 'left', alignItems: 'center' }}>
-                                <Tooltip title='300s/100s/50s/misses'>
-                                    <Box sx={{ display: 'flex' }}>
-                                        <Typography variant="subtitle2" sx={{ color: blue[500] }}>{score.count300}</Typography>
-                                        <Typography variant="subtitle2">/</Typography>
-                                        <Typography variant="subtitle2" sx={{ color: green[500] }}>{score.count100}</Typography>
-                                        <Typography variant="subtitle2">/</Typography>
-                                        <Typography variant="subtitle2" sx={{ color: yellow[500] }}>{score.count50}</Typography>
-                                        <Typography variant="subtitle2">/</Typography>
-                                        <Typography variant="subtitle2" sx={{ color: red[500] }}>{score.countmiss}</Typography>
-                                    </Box>
-                                </Tooltip>
-                            </Box>
-                        </Grid2>
-                        <Grid2 size={1}>
-                            <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%', width: '100%' }}>
-                                <Typography variant="subtitle2">
-                                    {score.combo}x/{beatmapData.beatmap.maxcombo}x
-                                </Typography>
-                            </Box>
-                        </Grid2>
-                        <Grid2 size={3}>
-                            <Tooltip title={moment(score.date_played).toString()}>
-                                <Typography variant="subtitle1">
-                                    {moment(score.date_played).fromNow()}
-                                </Typography>
-                            </Tooltip>
-                        </Grid2>
-                    </Grid2>
-                </Box>
-            </ListItem>
-        );
-    };
-
     useEffect(() => {
         setScoreData(null);
         if (props.data !== undefined) {
@@ -170,13 +110,12 @@ function ScoreView(props) {
                     await applyScore(props.data.pp_version, props.data.score, _beatmap);
                 }
                 await applyBeatmap(props.data.pp_version, _beatmap);
-
-                //get beatmap scores
-                const data = await getBeatmapScores(_beatmap.beatmap_id, 2000);
-                setLeaderboardData(data);
             })();
         }
     }, [props.data, props.data.score, props.data.beatmap]);
+
+    if (!scoreData)
+        return <></>;
 
     return (
         <>
@@ -191,11 +130,71 @@ function ScoreView(props) {
                         <Card sx={{ borderRadius: 0, backgroundColor: '#2E293D' }}>
                             <CardContent>
                                 <Typography id="modal-modal-title" variant="h6" component="h2">
-                                    <Chip sx={{ mr: 1 }} size='small' label={`${scoreData !== null ? scoreData.difficulty_data?.diff_unified.toFixed(2) : beatmapData.difficulty_data?.[0].diff_unified.toFixed(2)}★`} variant="outlined" />
-                                    {beatmapData.beatmap.artist} - {beatmapData.beatmap.title} [{beatmapData.beatmap.diffname}] {scoreData !== null ? `${scoreData.score.enabled_mods > 0 ? '+' : ''}${getModString(scoreData.score.enabled_mods)}` : ''}</Typography>
+                                    <Chip sx={{ mr: 1 }} size='small' label={`${scoreData !== null ? scoreData.difficulty_data?.star_rating.toFixed(2) : beatmapData.difficulty_data?.[0].star_rating.toFixed(2)}★`} variant="outlined" />
+                                    {beatmapData.beatmap.artist} - {beatmapData.beatmap.title} [{beatmapData.beatmap.diffname}] {beatmapData.difficulty_data?.is_legacy ?
+                                        <Tooltip title="This score uses old star ratings and may cause incorrect mod and/or pp values">
+                                            <WarningIcon sx={{ color: orange[500] }} />
+                                        </Tooltip>
+                                        : null}</Typography>
                             </CardContent>
                         </Card>
-                        <Box sx={{
+                        <Grid2 sx={{
+                            m: 2
+                        }}>
+                            <Stack direction="column" spacing={1} sx={{
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                            }}>
+                                <ScoreDial score={scoreData.score} />
+                                <Typography variant="h3">{toFixedNumber(scoreData.score.score, 0).toLocaleString('en-US')}</Typography>
+                                <Box sx={{
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                }}>
+                                    {Mods.getModElements(scoreData.score.mods)}
+                                </Box>
+                                <div className='score-stats__group score-stats__group--stats'>
+                                    <div className='score-stats__group-row'>
+                                        <ScoreViewStat label='Accuracy' value={`${scoreData.score.accuracy.toFixed(2)}%`} />
+                                        <ScoreViewStat label='Max Combo' value={`${scoreData.score.combo}/${beatmapData.beatmap.maxcombo}`} />
+                                        <ScoreViewStat label='PP' value={`${(scoreData.score.recalc[props.data.pp_version]?.total ?? 0).toFixed(0)}`} />
+                                    </div>
+                                    <div className='score-stats__group-row'>
+                                        <ScoreViewStat label='Great' value={`${scoreData.score.count300}`} />
+                                        <ScoreViewStat label='Ok' value={`${scoreData.score.count100}`} />
+                                        <ScoreViewStat label='Meh' value={`${scoreData.score.count50}`} />
+                                        <ScoreViewStat label='Miss' value={`${scoreData.score.countmiss}`} />
+                                    </div>
+                                    <div className='score-stats__group-row'>
+                                        <ScoreViewStat label='AR' value={`${scoreData.difficulty_data?.approach_rate.toFixed(2)}`} />
+                                        <ScoreViewStat label='CS' value={`${scoreData.difficulty_data?.circle_size.toFixed(2)}`} />
+                                        <ScoreViewStat label='HP' value={`${scoreData.difficulty_data?.drain_rate.toFixed(2)}`} />
+                                        <ScoreViewStat label='OD' value={`${scoreData.difficulty_data?.overall_difficulty.toFixed(2)}`} />
+                                    </div>
+                                    <div className='score-stats__group-row'>
+                                        <ScoreViewStat label='Aim PP' value={`${(scoreData.score.recalc[props.data.pp_version]?.aim ?? 0).toFixed(1)}`} />
+                                        <ScoreViewStat label='Speed PP' value={`${(scoreData.score.recalc[props.data.pp_version]?.speed ?? 0).toFixed(1)}`} />
+                                        <ScoreViewStat label='Flashlight PP' value={`${(scoreData.score.recalc[props.data.pp_version]?.flashlight ?? 0).toFixed(1)}`} />
+                                    </div>
+                                </div>
+                                <Typography variant="subtitle2" display="flex" alignItems="center" sx={{ mt: 0 }} spacing="5">
+                                    {/* pretty print like 23 November 2024 3:52 PM */}
+                                    Played on {moment(scoreData.score.date_played).format('LLL')}
+                                </Typography>
+                                <div className='score-stats__group score-stats__group--stats'>
+                                    <div className='score-stats__group-row'><ScoreViewStat label='Aim Rating' value={`${(scoreData.difficulty_data?.aim_difficulty ?? 0).toFixed(8)}★`} small={true} /></div>
+                                    <div className='score-stats__group-row'><ScoreViewStat label='Speed Rating' value={`${(scoreData.difficulty_data?.speed_difficulty ?? 0).toFixed(8)}★`} small={true} /></div>
+                                    <div className='score-stats__group-row'><ScoreViewStat label='Flashlight Rating' value={`${(scoreData.difficulty_data?.flashlight_difficulty ?? 0).toFixed(8)}★`} small={true} /></div>
+                                    <div className='score-stats__group-row'><ScoreViewStat label='Speed note count' value={`${(scoreData.difficulty_data?.speed_note_count ?? 0).toFixed(8)}`} small={true} /></div>
+                                    <div className='score-stats__group-row'><ScoreViewStat label='Aim Difficult Strain Count' value={`${(scoreData.difficulty_data?.aim_difficult_strain_count ?? 0).toFixed(8)}`} small={true} /></div>
+                                    <div className='score-stats__group-row'><ScoreViewStat label='Speed Difficult Strain Count' value={`${(scoreData.difficulty_data?.speed_difficult_strain_count ?? 0).toFixed(8)}`} small={true} /></div>
+                                    <div className='score-stats__group-row'><ScoreViewStat label='Slider Factor' value={`${(scoreData.difficulty_data?.slider_factor ?? 0).toFixed(8)}`} small={true} /></div>
+
+                                </div>
+                            </Stack>
+                        </Grid2>
+                        {/* <Box sx={{
                             display: 'flex',
                             justifyContent: 'center',
                             alignItems: 'center',
@@ -255,7 +254,7 @@ function ScoreView(props) {
                                                                     Played&nbsp;<b><Tooltip title={'' + scoreData.score.date_played}><Grid2>{moment(scoreData.score.date_played).fromNow()}</Grid2></Tooltip></b>&nbsp;★ Ranked&nbsp;<b><Tooltip title={'' + beatmapData.beatmap.approved_date}><Grid2>{moment(beatmapData.beatmap.approved_date).fromNow()}</Grid2></Tooltip></b>
                                                                 </Typography>
                                                                 <Typography variant="subtitle1" display="flex" alignItems="center" sx={{ mt: 0 }} spacing="5">
-                                                                    AR&nbsp;<b>{scoreData.difficulty_data?.modded_ar.toFixed(2)}</b>&nbsp;★ CS&nbsp;<b>{scoreData.difficulty_data?.modded_cs.toFixed(2)}</b>&nbsp;★ HP&nbsp;<b>{scoreData.difficulty_data?.modded_hp.toFixed(2)}</b>&nbsp;★ OD&nbsp;<b>{scoreData.difficulty_data?.modded_od.toFixed(2)}</b>
+                                                                    AR&nbsp;<b>{scoreData.difficulty_data?.approach_rate.toFixed(2)}</b>&nbsp;★ CS&nbsp;<b>{scoreData.difficulty_data?.circle_size.toFixed(2)}</b>&nbsp;★ HP&nbsp;<b>{scoreData.difficulty_data?.drain_rate.toFixed(2)}</b>&nbsp;★ OD&nbsp;<b>{scoreData.difficulty_data?.overall_difficulty.toFixed(2)}</b>
                                                                 </Typography>
                                                                 <Typography variant="subtitle1" display="flex" alignItems="center" sx={{ mt: 0 }} spacing="5">
                                                                     {moment.utc(moment.duration(scoreData.score.beatmap.modded_length, 'seconds').asMilliseconds()).format("mm:ss")} minutes&nbsp;★&nbsp;
@@ -313,10 +312,9 @@ function ScoreView(props) {
                                                             </TableHead>
                                                             <TableBody>
                                                                 <TableRow>
-                                                                    <TableCell>{(scoreData.difficulty_data?.diff_aim ?? 0).toFixed(2)}★</TableCell>
-                                                                    <TableCell>{(scoreData.difficulty_data?.diff_speed ?? 0).toFixed(2)}★</TableCell>
-                                                                    <TableCell>{(scoreData.difficulty_data?.diff_strain ?? 0).toFixed(2)}★</TableCell>
-                                                                    <TableCell>{(scoreData.difficulty_data?.flashlight_rating ?? 0).toFixed(2)}★</TableCell>
+                                                                    <TableCell>{(scoreData.difficulty_data?.aim_difficulty ?? 0).toFixed(2)}★</TableCell>
+                                                                    <TableCell>{(scoreData.difficulty_data?.speed_difficulty ?? 0).toFixed(2)}★</TableCell>
+                                                                    <TableCell>{(scoreData.difficulty_data?.flashlight_difficulty ?? 0).toFixed(2)}★</TableCell>
                                                                 </TableRow>
                                                             </TableBody>
                                                         </Table>
@@ -363,21 +361,6 @@ function ScoreView(props) {
                                         </Box>
                                         : <></>
                                 }
-                                <Box sx={{ px: 4 }}>
-                                    {
-                                        leaderboardData !== null && leaderboardData.length > 0 ?
-                                            <>
-                                                <List
-                                                    width={1200}
-                                                    height={600}
-                                                    rowRenderer={leaderboardRowRenderer}
-                                                    rowCount={leaderboardData?.length}
-                                                    rowHeight={rowHeight}
-                                                />
-                                            </>
-                                            : <>Loading scores ...</>
-                                    }
-                                </Box>
                             </Box>
                         </Box>
                         <Box sx={{ px: 4 }}>
@@ -385,7 +368,7 @@ function ScoreView(props) {
                                 Mapped by <Link href={`https://osu.ppy.sh/users/${props.data.score.beatmap.creator_id}`} target='_blank' rel='noreferrer'>{props.data.score.beatmap.creator}</Link>
                                 &nbsp;- Go to <Link href={`https://osu.ppy.sh/beatmaps/${props.data.score.beatmap.beatmap_id}`} target='_blank' rel='noreferrer'>Beatmap</Link>
                             </Typography>
-                        </Box>
+                        </Box> */}
                     </CardContent>
                 </Card>
                 : <></>

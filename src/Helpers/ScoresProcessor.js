@@ -64,7 +64,7 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
         data.total.score += score.score ?? 0;
         data.total.acc += score.accuracy ?? 0;
         data.total.length += score.beatmap.modded_length ?? 0;
-        data.total.star_rating += score.beatmap.difficulty_data?.diff_unified ?? 0;
+        data.total.star_rating += score.beatmap.difficulty_data?.star_rating ?? 0;
         data.total.scoreLazerClassic += score.scoreLazerClassic ?? 0;
         data.total.scoreLazerStandardised += score.scoreLazerStandardised ?? 0;
         data.total.is_fc += score.is_fc ?? 0;
@@ -180,10 +180,29 @@ export function prepareScore(score, user = null) {
     // ]
     // this follows whatever osu api provides nowadays, but osualt uses the legacy enum format
     // futureproofing
-    score.mods = new Mods(score.enabled_mods, score.mods);
+
+    //only if score.mods isnt of type Mods
+    if (!(score.mods instanceof Mods)) {
+        score.mods = new Mods(score.enabled_mods, score.mods);
+    }
 
     if (score.beatmap.difficulty_data) {
         score.beatmap.difficulty_data = applyModdedAttributes(score.beatmap, score.mods);
+
+        score.beatmap.difficulty_data.aim_difficulty = parseFloat(score.beatmap.difficulty_data.aim_difficulty);
+        score.beatmap.difficulty_data.speed_difficulty = parseFloat(score.beatmap.difficulty_data.speed_difficulty);
+        score.beatmap.difficulty_data.flashlight_difficulty = parseFloat(score.beatmap.difficulty_data.flashlight_difficulty);
+        score.beatmap.difficulty_data.star_rating = parseFloat(score.beatmap.difficulty_data.star_rating);
+        score.beatmap.difficulty_data.slider_factor = parseFloat(score.beatmap.difficulty_data.slider_factor ?? 1);
+        score.beatmap.difficulty_data.speed_note_count = parseFloat(score.beatmap.difficulty_data.speed_note_count ?? 0);
+
+        score.beatmap.difficulty_data.aim_difficult_strain_count = parseFloat(score.beatmap.difficulty_data.aim_difficult_strain_count ?? 0);
+        score.beatmap.difficulty_data.speed_difficult_strain_count = parseFloat(score.beatmap.difficulty_data.speed_difficult_strain_count ?? 0);
+
+        score.beatmap.difficulty_data.overall_difficulty = parseFloat(score.beatmap.difficulty_data.overall_difficulty);
+        score.beatmap.difficulty_data.approach_rate = parseFloat(score.beatmap.difficulty_data.approach_rate);
+        score.beatmap.difficulty_data.circle_size = parseFloat(score.beatmap.difficulty_data.circle_size);
+        score.beatmap.difficulty_data.drain_rate = parseFloat(score.beatmap.difficulty_data.drain_rate);
     }
 
     score.beatmap = prepareBeatmap(score.beatmap, score.enabled_mods);
@@ -240,7 +259,7 @@ function getBestScores(scores) {
                     _scores.best_pp = score;
                 }
                 if ((score.enabled_mods & mods.NF) === 0) {
-                    if ((_scores.best_sr === null || (score.beatmap.difficulty_data?.diff_unified ?? 0) > (_scores.best_sr.beatmap.difficulty_data?.diff_unified ?? 0))) {
+                    if ((_scores.best_sr === null || (score.beatmap.difficulty_data?.star_rating ?? 0) > (_scores.best_sr.beatmap.difficulty_data?.star_rating ?? 0))) {
                         _scores.best_sr = score;
                     }
                 }
@@ -311,94 +330,94 @@ const od0_ms = 79.5;
 const od10_ms = 19.5;
 function applyModdedAttributes(beatmap, parsed_mods) {
     let difficulty_data = JSON.parse(JSON.stringify(beatmap.difficulty_data));
-    let speed = 1;
-    let ar_multiplier = 1;
-    let ar;
-    let ar_ms;
+    if(difficulty_data.is_corrected) return difficulty_data;
+    let speed = parsed_mods.speed;
+    
+    if (!difficulty_data.approach_rate) {
+        let ar_multiplier = 1;
+        let ar;
+        let ar_ms;
 
-    if ((parsed_mods.hasMod(mods.DT) || parsed_mods.hasMod(mods.NC))) {
-        speed = 1.5;
-    } else if (parsed_mods.hasMod(mods.HT)) {
-        speed = 0.75;
+        if (Mods.hasMod(parsed_mods, "HR")) {
+            ar_multiplier = 1.4;
+        } else if (Mods.hasMod(parsed_mods, "EZ")) {
+            ar_multiplier = 0.5;
+        }
+
+        ar = beatmap.ar * ar_multiplier;
+
+        if (ar <= 5)
+            ar_ms = ar0_ms - ar_ms_step1 * ar;
+        else
+            ar_ms = ar5_ms - ar_ms_step2 * (ar - 5);
+
+        ar_ms /= speed;
+
+        if (ar <= 5)
+            ar = (ar0_ms - ar_ms) / ar_ms_step1;
+        else
+            ar = 5 + (ar5_ms - ar_ms) / ar_ms_step2;
+
+        difficulty_data.approach_rate = ar;
     }
 
-    if (parsed_mods.hasMod(mods.HR)) {
-        ar_multiplier = 1.4;
-    } else if (parsed_mods.hasMod(mods.EZ)) {
-        ar_multiplier = 0.5;
+    if (!difficulty_data.circle_size) {
+        let cs = 1;
+        let cs_multiplier = 1;
+
+        if (Mods.hasMod(parsed_mods, "HR")) {
+            cs_multiplier = 1.3;
+        } else if (Mods.hasMod(parsed_mods, "EZ")) {
+            cs_multiplier = 0.5;
+        }
+
+        cs = beatmap.cs * cs_multiplier;
+
+        if (cs > 10) cs = 10;
+
+        difficulty_data.circle_size = cs;
     }
 
-    ar = beatmap.ar * ar_multiplier;
+    if (!difficulty_data.overall_difficulty) {
+        let od = 1;
+        let odms = 1;
+        let od_multiplier = 1;
 
-    if (ar <= 5)
-        ar_ms = ar0_ms - ar_ms_step1 * ar;
-    else
-        ar_ms = ar5_ms - ar_ms_step2 * (ar - 5);
+        if (Mods.hasMod(parsed_mods, "HR")) {
+            od_multiplier = 1.4;
+        } else if (Mods.hasMod(parsed_mods, "EZ")) {
+            od_multiplier = 0.5;
+        }
 
-    ar_ms /= speed;
+        od = beatmap.od * od_multiplier;
+        odms = od0_ms - Math.ceil(od_ms_step * od);
+        odms = Math.min(od0_ms, Math.max(od10_ms));
 
-    if (ar <= 5)
-        ar = (ar0_ms - ar_ms) / ar_ms_step1;
-    else
-        ar = 5 + (ar5_ms - ar_ms) / ar_ms_step2;
+        odms /= speed;
 
-    let cs = 1;
-    let cs_multiplier = 1;
+        od = (od0_ms - odms) / od_ms_step;
 
-    if(parsed_mods.hasMod(mods.HR)) {
-        cs_multiplier = 1.3;
-    } else if(parsed_mods.hasMod(mods.EZ)) {
-        cs_multiplier = 0.5;
+        difficulty_data.overall_difficulty = od;
     }
 
-    cs = beatmap.cs * cs_multiplier;
+    if (!difficulty_data.drain_rate) {
+        let hp = 1;
+        let hp_multiplier = 1;
 
-    if(cs > 10) cs = 10;
+        if (Mods.hasMod(parsed_mods, "HR")) {
+            hp_multiplier = 1.4;
+        } else if (Mods.hasMod(parsed_mods, "EZ")) {
+            hp_multiplier = 0.5;
+        }
 
-    let od = 1;
-    let odms = 1;
-    let od_multiplier = 1;
+        hp = beatmap.hp * hp_multiplier;
 
-    if(parsed_mods.hasMod(mods.HR)) {
-        od_multiplier = 1.4;
-    } else if(parsed_mods.hasMod(mods.EZ)) {
-        od_multiplier = 0.5;
+        if (hp > 10) hp = 10;
+
+        difficulty_data.drain_rate = hp;
     }
 
-    od = beatmap.od * od_multiplier;
-    odms = od0_ms - Math.ceil(od_ms_step * od);
-    odms = Math.min(od0_ms, Math.max(od10_ms));
-
-    odms /= speed;
-
-    od = (od0_ms - odms) / od_ms_step;
-
-    let hp = 1;
-    let hp_multiplier = 1;
-
-    if(parsed_mods.hasMod(mods.HR)) {
-        hp_multiplier = 1.4;
-    } else if(parsed_mods.hasMod(mods.EZ)) {
-        hp_multiplier = 0.5;
-    }
-
-    hp = beatmap.hp * hp_multiplier;
-
-    if(hp > 10) hp = 10;
-
-    difficulty_data.modded_ar = ar;
-    difficulty_data.modded_cs = cs;
-    difficulty_data.modded_od = od;
-    difficulty_data.modded_hp = hp;
-
-    if(parsed_mods.hasMod("DA")) {
-        const mod = parsed_mods.getMod("DA");
-
-        if(mod.settings?.drain_rate) { difficulty_data.modded_hp = mod.settings.drain_rate; }
-        if(mod.settings?.overall_difficulty) { difficulty_data.modded_od = mod.settings.overall_difficulty; }
-        if(mod.settings?.approach_rate) { difficulty_data.modded_ar = mod.settings.approach_rate; }
-        if(mod.settings?.circle_size) { difficulty_data.modded_cs = mod.settings.circle_size; }
-    }
+    difficulty_data.is_corrected = true;
 
     return difficulty_data;
 }

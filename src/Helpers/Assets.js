@@ -39,7 +39,7 @@ function getModIcon(acronym, is_type = false) {
         if(is_type){
             name = `./MOD_BG_${acronym}.png`;
         }else{
-            name = `./MOD_${acronym}.png`;
+            name = `./${acronym}@2x.png`;
         }
         const icon = modIcons(name);
         return icon;

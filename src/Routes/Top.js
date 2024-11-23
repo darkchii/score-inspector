@@ -10,6 +10,7 @@ import config from "../config.json";
 import { MassCalculatePerformance } from "../Helpers/Osu.js";
 import { grey } from "@mui/material/colors";
 import { getGradeIcon } from "../Helpers/Assets.js";
+import Mods from "../Helpers/Mods.js";
 
 const SCORES_TO_FETCH = 10;
 const PERIODS = [
@@ -112,7 +113,7 @@ function Top(props) {
                 {
                     Array.from(Array(SCORE_TYPES).keys()).map((i) => {
                         return (
-                            <Grid2 size={{xs: 12, md: 6}}>
+                            <Grid2 size={{ xs: 12, md: 6 }}>
                                 <Paper elevation={2}>
                                     <Stack sx={{ p: 1, mx: 'auto' }} direction='column' spacing={1}>
                                         <Typography variant='title'>{SCORE_TYPE_NAMES[i]}</Typography>
@@ -149,10 +150,10 @@ function Top(props) {
                                                                         width: '100%',
                                                                     }}>
                                                                         <Stack direction='column' spacing={0} sx={{ width: '100%' }}>
-                                                                            {/* <Marquee pauseOnHover={true} speed={40} gradient={false}> */}
                                                                             <Tooltip title={`${score.beatmap.artist} - ${score.beatmap.title} [${score.beatmap.diffname}]`}>
                                                                                 <Typography textOverflow='ellipsis' noWrap variant='h6' sx={{ fontSize: '1em' }}>{score.beatmap.artist} - {score.beatmap.title} [{score.beatmap.diffname}]</Typography>
                                                                             </Tooltip>
+                                                                            {/* <Marquee pauseOnHover={true} speed={40} gradient={false}> */}
                                                                             {/* </Marquee> */}
                                                                             <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                                                                                 <Box>
@@ -183,25 +184,36 @@ function Top(props) {
                                                                                                     Math.round(score.score).toLocaleString('en-US')
                                                                                                     : `${Math.round(score.pp).toLocaleString('en-US')}pp ${(!score.is_fc && score.recalc['fc']) ? `(${Math.round(score.recalc['fc']?.total).toLocaleString('en-US')}pp if FC)` : ''}`
                                                                                             }
+                                                                                            {' | '}
 
+                                                                                        </Typography>
+                                                                                        <Typography sx={{
+                                                                                            textAlign: 'left',
+                                                                                            display: 'flex',
+                                                                                            justifyContent: 'flex-start',
+                                                                                            alignItems: 'center',
+                                                                                            pl: 1
+                                                                                        }} variant='h6'>
+                                                                                            {score.mods.valueOf().map(mod => Mods.getModElement(mod, 20))}
                                                                                         </Typography>
                                                                                     </Box>
                                                                                     {/* <Button onClick={() => { setModalData({ active: true, score: score }) }} size='small' variant='contained'>View</Button> */}
                                                                                 </Box>
                                                                                 <Box sx={{ float: 'right' }}>
+
                                                                                     <Typography sx={{ textAlign: 'right' }} variant='h6'>
                                                                                         {(scores[i].significantStat === 'pp' && !score.is_fc && score.recalc['fc']) ? `(${Math.round(score.recalc['fc']?.total).toLocaleString('en-US')}pp if FC)` : ''} {Math.round(score[scores[i].significantStat]).toLocaleString('en-US')}{scores[i].significantStat === 'pp' ? `pp` : ''}
                                                                                     </Typography>
                                                                                     <Typography sx={{ textAlign: 'right' }} variant='body1'>
-                                                                                        {score.modString} {score.is_fc ? 'FC' : ''} {Math.round(score.accuracy * 100) / 100}% {Math.round((score.beatmap.difficulty_data?.diff_unified ?? 0) * 10) / 10}*
+                                                                                        {score.is_fc ? 'FC' : ''} {Math.round(score.accuracy * 100) / 100}% {Math.round((score.beatmap.difficulty_data?.star_rating ?? 0) * 10) / 10}*
                                                                                     </Typography>
                                                                                 </Box>
                                                                             </Box>
                                                                             <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                                                                                 {
                                                                                     score.beatmap.difficulty_data ? <>
-                                                                                        <Typography variant='body1' sx={{ color: grey[500] }}>Aim: {score.beatmap.difficulty_data.diff_aim.toFixed(2)}* | Speed: {score.beatmap.difficulty_data.diff_speed.toFixed(2)}* | {score.beatmap.difficulty_data.flashlight_rating > 0 ? `Flashlight: ${score.beatmap.difficulty_data.flashlight_rating.toFixed(2)}* |` : ''} Speed Notes: {score.beatmap.difficulty_data.speed_note_count.toFixed(2)}</Typography>
-                                                                                        <Typography variant='body1' sx={{ color: grey[500] }}>OD{score.beatmap.difficulty_data.modded_od.toFixed(2)} AR{score.beatmap.difficulty_data.modded_ar.toFixed(2)} CS{score.beatmap.difficulty_data.modded_cs.toFixed(2)} HP{score.beatmap.difficulty_data.modded_hp.toFixed(2)}</Typography>
+                                                                                        <Typography variant='body1' sx={{ color: grey[500] }}>Aim: {score.beatmap.difficulty_data.aim_difficulty.toFixed(2)}* | Speed: {score.beatmap.difficulty_data.speed_difficulty.toFixed(2)}* | {score.beatmap.difficulty_data.flashlight_difficulty > 0 ? `Flashlight: ${score.beatmap.difficulty_data.flashlight_difficulty.toFixed(2)}* |` : ''} Speed Notes: {score.beatmap.difficulty_data.speed_note_count.toFixed(2)}</Typography>
+                                                                                        <Typography variant='body1' sx={{ color: grey[500] }}>OD{score.beatmap.difficulty_data.overall_difficulty.toFixed(2)} AR{score.beatmap.difficulty_data.approach_rate.toFixed(2)} CS{score.beatmap.difficulty_data.circle_size.toFixed(2)} HP{score.beatmap.difficulty_data.drain_rate.toFixed(2)}</Typography>
                                                                                     </> :
                                                                                         <Typography variant='body1' color='error'>Star ratings currently not available.</Typography>
                                                                                 }

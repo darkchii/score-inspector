@@ -1,5 +1,90 @@
 body {
     font-family: "Comfortaa, roboto";
+    --forum-bg: hsl(var(--hsl-h1));
+    --forum-text: #29b;
+    --forum-text: #6cf;
+    --forum-item-background-color: hsl(var(--hsl-b4));
+    --forum-item-background-color-hover: hsl(var(--hsl-b3));
+    --base-hue: var(--base-hue-override, var(--base-hue-default));
+    --base-hue-deg: calc(var(--base-hue)*1deg);
+    --level-tier-iron: #bab3ab, #bab3ab;
+    --level-tier-bronze: #b88f7a, #855c47;
+    --level-tier-silver: #e0e0eb, #a3a3c2;
+    --level-tier-gold: #f0e4a8, #e0c952;
+    --level-tier-platinum: #a8f0ef, #52e0df;
+    --level-tier-rhodium: #d9f8d3, #a0cf96;
+    --level-tier-radiant: #97dcff, #ed82ff;
+    --level-tier-lustrous: #ffe600, #ed82ff;
+    --hsl-p: var(--base-hue), 100%, 50%;
+    --hsl-h1: var(--base-hue), 100%, 70%;
+    --hsl-h2: var(--base-hue), 50%, 45%;
+    --hsl-c1: var(--base-hue), 40%, 100%;
+    --hsl-c2: var(--base-hue), 40%, 90%;
+    --hsl-l1: var(--base-hue), 40%, 80%;
+    --hsl-l2: var(--base-hue), 40%, 75%;
+    --hsl-l3: var(--base-hue), 40%, 70%;
+    --hsl-l4: var(--base-hue), 40%, 50%;
+    --hsl-d1: var(--base-hue), 20%, 35%;
+    --hsl-d2: var(--base-hue), 20%, 30%;
+    --hsl-d3: var(--base-hue), 20%, 25%;
+    --hsl-d4: var(--base-hue), 20%, 20%;
+    --hsl-d5: var(--base-hue), 20%, 15%;
+    --hsl-d6: var(--base-hue), 20%, 10%;
+    --hsl-f1: var(--base-hue), 10%, 60%;
+    --hsl-b1: var(--base-hue), 10%, 40%;
+    --hsl-b2: var(--base-hue), 10%, 30%;
+    --hsl-b3: var(--base-hue), 10%, 25%;
+    --hsl-b4: var(--base-hue), 10%, 20%;
+    --hsl-b5: var(--base-hue), 10%, 15%;
+    --hsl-b6: var(--base-hue), 10%, 10%;
+    --c-saturation-1: 100%;
+    --c-saturation-2: 80%;
+    --c-saturation-3: 60%;
+    --c-saturation-4: 40%;
+    --c-lightness-1: 70%;
+    --c-lightness-2: 60%;
+    --c-lightness-3: 50%;
+    --c-lightness-4: 30%;
+    --colour-pink-hue: 333;
+    --hsl-pink-1: var(--colour-pink-hue), var(--c-saturation-1), var(--c-lightness-1);
+    --hsl-pink-2: var(--colour-pink-hue), var(--c-saturation-2), var(--c-lightness-2);
+    --hsl-pink-3: var(--colour-pink-hue), var(--c-saturation-3), var(--c-lightness-3);
+    --hsl-pink-4: var(--colour-pink-hue), var(--c-saturation-4), var(--c-lightness-4);
+    --colour-purple-hue: 255;
+    --hsl-purple-1: var(--colour-purple-hue), var(--c-saturation-1), var(--c-lightness-1);
+    --hsl-purple-2: var(--colour-purple-hue), var(--c-saturation-2), var(--c-lightness-2);
+    --hsl-purple-3: var(--colour-purple-hue), var(--c-saturation-3), var(--c-lightness-3);
+    --hsl-purple-4: var(--colour-purple-hue), var(--c-saturation-4), var(--c-lightness-4);
+    --colour-blue-hue: 200;
+    --hsl-blue-1: var(--colour-blue-hue), var(--c-saturation-1), var(--c-lightness-1);
+    --hsl-blue-2: var(--colour-blue-hue), var(--c-saturation-2), var(--c-lightness-2);
+    --hsl-blue-3: var(--colour-blue-hue), var(--c-saturation-3), var(--c-lightness-3);
+    --hsl-blue-4: var(--colour-blue-hue), var(--c-saturation-4), var(--c-lightness-4);
+    --colour-green-hue: 125;
+    --hsl-green-1: var(--colour-green-hue), var(--c-saturation-1), var(--c-lightness-1);
+    --hsl-green-2: var(--colour-green-hue), var(--c-saturation-2), var(--c-lightness-2);
+    --hsl-green-3: var(--colour-green-hue), var(--c-saturation-3), var(--c-lightness-3);
+    --hsl-green-4: var(--colour-green-hue), var(--c-saturation-4), var(--c-lightness-4);
+    --colour-lime-hue: 90;
+    --hsl-lime-1: var(--colour-lime-hue), var(--c-saturation-1), var(--c-lightness-1);
+    --hsl-lime-2: var(--colour-lime-hue), var(--c-saturation-2), var(--c-lightness-2);
+    --hsl-lime-3: var(--colour-lime-hue), var(--c-saturation-3), var(--c-lightness-3);
+    --hsl-lime-4: var(--colour-lime-hue), var(--c-saturation-4), var(--c-lightness-4);
+    --colour-orange-hue: 45;
+    --hsl-orange-1: var(--colour-orange-hue), var(--c-saturation-1), var(--c-lightness-1);
+    --hsl-orange-2: var(--colour-orange-hue), var(--c-saturation-2), var(--c-lightness-2);
+    --hsl-orange-3: var(--colour-orange-hue), var(--c-saturation-3), var(--c-lightness-3);
+    --hsl-orange-4: var(--colour-orange-hue), var(--c-saturation-4), var(--c-lightness-4);
+    --colour-red-hue: 360;
+    --hsl-red-1: var(--colour-red-hue), var(--c-saturation-1), var(--c-lightness-1);
+    --hsl-red-2: var(--colour-red-hue), var(--c-saturation-2), var(--c-lightness-2);
+    --hsl-red-3: var(--colour-red-hue), var(--c-saturation-3), var(--c-lightness-3);
+    --hsl-red-4: var(--colour-red-hue), var(--c-saturation-4), var(--c-lightness-4);
+    --colour-darkorange-hue: 20;
+    --hsl-darkorange-1: var(--colour-darkorange-hue), var(--c-saturation-1), var(--c-lightness-1);
+    --hsl-darkorange-2: var(--colour-darkorange-hue), var(--c-saturation-2), var(--c-lightness-2);
+    --hsl-darkorange-3: var(--colour-darkorange-hue), var(--c-saturation-3), var(--c-lightness-3);
+    --hsl-darkorange-4: var(--colour-darkorange-hue), var(--c-saturation-4), var(--c-lightness-4)
 }
 
 :root {
@@ -106,7 +191,7 @@ a {
     display: flex;
     height: var(--mod-height, 22px);
     position: relative;
-    width: calc(var(--mod-height, 22px)*45/32)
+    /* width: calc(var(--mod-height, 22px)*45/32) */
 }
 
 .mod-img {
@@ -127,4 +212,55 @@ a {
     position: absolute;
     top: 0;
     width: 100%
+}
+
+.score-stats {
+    display: flex;
+    flex-direction: column;
+    padding: 20px 10px
+}
+
+.score-stats__group {
+    width: 100%;
+    grid-gap: 5px;
+    display: grid;
+    margin: 5px;
+    width: 100%
+}
+
+.score-stats__group--stats .score-stats__group-row {
+    grid-gap: 5px;
+    display: grid;
+    grid-auto-columns: 1fr;
+    grid-auto-flow: column;
+    width: 100%
+}
+
+.score-stats__stat {
+    background-color: hsl(330deg, 10%, 10%);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    padding: 8px;
+}
+
+.score-stats__stat-row {
+    font-size: 22px;
+    line-height: normal;
+    margin: 2px;
+}
+
+.score-stats__stat-small {
+    font-size: 15px;
+}
+
+.score-stats__stat-row--label {
+    font-size: 10px;
+    text-transform: uppercase;
+    white-space: nowrap
+}
+
+.score-stats__stat-row--perfect {
+    color: hsl(var(--hsl-lime-1))
 }

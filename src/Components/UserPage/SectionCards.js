@@ -156,7 +156,7 @@ function SectionCards(props) {
         <Grid2 container>
             <Grid2 sx={{ minHeight: '100%', p: 0.5 }} size={{ xs: 6, md: 3 }}><BestScoreCard valueTitle={'Top performance'} valueLabel={`${props.user.data.bestScores.best_pp?.pp.toFixed(1)}pp`} score={props.user.data.bestScores.best_pp} /></Grid2>
             <Grid2 sx={{ minHeight: '100%', p: 0.5 }} size={{ xs: 6, md: 3 }}><BestScoreCard valueTitle={'Top score'} valueLabel={`${props.user.data.bestScores.best_score?.score.toLocaleString('en-US')} score`} score={props.user.data.bestScores.best_score} /></Grid2>
-            <Grid2 sx={{ minHeight: '100%', p: 0.5 }} size={{ xs: 6, md: 3 }}><BestScoreCard valueTitle={'Top stars'} valueLabel={`${props.user.data.bestScores.best_sr?.beatmap.difficulty_data.diff_unified.toFixed(1)}*`} score={props.user.data.bestScores.best_sr} /></Grid2>
+            <Grid2 sx={{ minHeight: '100%', p: 0.5 }} size={{ xs: 6, md: 3 }}><BestScoreCard valueTitle={'Top stars'} valueLabel={`${props.user.data.bestScores.best_sr?.beatmap.difficulty_data.star_rating.toFixed(1)}*`} score={props.user.data.bestScores.best_sr} /></Grid2>
             <Grid2 sx={{ minHeight: '100%', p: 0.5 }} size={{ xs: 6, md: 3 }}><BestScoreCard valueTitle={'Oldest'} valueLabel={`${moment(props.user.data.bestScores.oldest?.date_played).format('MMMM Do YYYY')}`} score={props.user.data.bestScores.oldest} /></Grid2>
         </Grid2>
         <Grid2>

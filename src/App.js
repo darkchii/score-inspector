@@ -95,7 +95,7 @@ function App() {
         <Header account={loginData} />
       </Box>
       <Paper sx={{
-        backgroundColor: `${Theme.palette.background.paper}dd`,
+        backgroundColor: `${Theme.palette.background.paper}dd`, 
         //no top border-radius
         borderRadius: 0,
       }}>
