@@ -7,11 +7,13 @@ import { getModString, mod_strings_long, mods } from "../Helpers/Osu.js";
 import { toFixedNumber } from "../Helpers/Misc.js";
 import Mods from "../Helpers/Mods.js";
 import WarningIcon from '@mui/icons-material/Warning';
+import ScoreModal from "./ScoreModal.js";
 
 function ScoreRow(props) {
     const theme = useTheme();
     const [score, setScore] = useState(null);
     const [beatmap, setBeatmap] = useState(null);
+    const [modalData, setModalData] = useState({ active: false });
 
     useEffect(() => {
         setScore(props.data.score);
@@ -19,19 +21,28 @@ function ScoreRow(props) {
         console.log(props.data.score);
     }, [props.data]);
 
+    const onClick = () => {
+        setModalData({ active: true, score: score });
+    }
 
     return (
         <>
             {
                 score !== null ?
                     <>
+                        <ScoreModal data={modalData} />
                         <Box
+                            onClick={onClick}
                             sx={{
                                 margin: 0,
                                 width: '100%',
                                 height: '2.5rem',
                                 bgcolor: theme.palette.background.default,
                                 borderRadius: theme.shape.borderRadius,
+                                '&:hover': {
+                                    bgcolor: theme.palette.background.paper,
+                                    cursor: 'pointer'
+                                }
                             }} >
                             <Grid2 container>
                                 <Grid2 size={0.3}>
@@ -167,7 +178,7 @@ function ScoreRow(props) {
                                 <Grid2 size={1.7}>
                                     <Box sx={{ height: '100%', alignContent: 'right', display: 'flex', alignItems: 'center' }}>
                                         {
-                                            Mods.getModElements(score.mods)
+                                            Mods.getModElements(score.mods, 18)
                                         }
                                     </Box>
                                 </Grid2>
@@ -205,21 +216,9 @@ function ScoreRow(props) {
                                                 alignItems: 'center',
                                                 justifyContent: props.data.hide_diff ? 'center' : 'right',
                                                 bgcolor: theme.palette.background.paper,
-                                                borderTopRightRadius: theme.shape.borderRadius,
-                                                borderBottomRightRadius: theme.shape.borderRadius,
+                                                borderRadius: theme.shape.borderRadius,
                                                 position: 'relative',
-                                                pr: 1,
-                                                '&:before': {
-                                                    bgcolor: theme.palette.background.default,
-                                                    clipPath: 'polygon(0 0,100% 50%,0 100%)',
-                                                    WebkitClipPath: 'polygon(0 0,100% 50%,0 100%)',
-                                                    content: '""',
-                                                    height: '100%',
-                                                    width: '10px',
-                                                    position: 'absolute',
-                                                    left: 0,
-                                                    top: 0
-                                                }
+                                                pr: 1
                                             }}>
                                             <Typography variant="subtitle1">
                                                 {toFixedNumber(score.pp > 0 ? score.pp : score.estimated_pp, 2).toLocaleString('en-US')}pp

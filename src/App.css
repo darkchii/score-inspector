@@ -1,11 +1,70 @@
+@font-face {
+    font-family: "Venera";
+    src: local('Venera-500'),
+        url('./Assets/Fonts/Venera-500.otf') format('opentype');
+}
+
+@font-face {
+    font-family: "Torus";
+    font-weight: 100;
+    src: local('Torus-Thin'),
+        url('./Assets/Fonts/Torus-Thin.otf') format('opentype');
+}
+
+@font-face {
+    font-family: "Torus";
+    font-weight: 600;
+    src: local('Torus-SemiBold'),
+        url('./Assets/Fonts/Torus-SemiBold.otf') format('opentype');
+}
+
+@font-face {
+    font-family: "Torus";
+    font-weight: 700;
+    src: local('Torus-SemiBold'),
+        url('./Assets/Fonts/Torus-SemiBold.otf') format('opentype');
+}
+
+@font-face {
+    font-family: "Torus";
+    font-weight: 400;
+    src: local('Torus-Regular'),
+        url('./Assets/Fonts/Torus-Regular.otf') format('opentype');
+}
+
+@font-face {
+    font-family: "Torus";
+    font-weight: 300;
+    src: local('Torus-Light'),
+        url('./Assets/Fonts/Torus-Light.otf') format('opentype');
+}
+
+@font-face {
+    font-family: "Torus";
+    font-weight: 900;
+    src: local('Torus-Heavy'),
+        url('./Assets/Fonts/Torus-Heavy.otf') format('opentype');
+}
+
+@font-face {
+    font-family: "Torus";
+    font-weight: 800;
+    src: local('Torus-Bold'),
+        url('./Assets/Fonts/Torus-Bold.otf') format('opentype');
+}
+
 body {
-    font-family: "Comfortaa, roboto";
+    /* Torus, Inter, "Helvetica Neue", Tahoma, Arial,
+  "Hiragino Kaku Gothic ProN", Meiryo, "Microsoft YaHei", "Apple SD Gothic Neo",
+  sans-serif */
+    font-family: "Torus", "Inter", "Helvetica Neue", Tahoma, Arial, "Hiragino Kaku Gothic ProN", Meiryo,
+        "Microsoft YaHei", "Apple SD Gothic Neo", sans-serif;
     --forum-bg: hsl(var(--hsl-h1));
     --forum-text: #29b;
     --forum-text: #6cf;
     --forum-item-background-color: hsl(var(--hsl-b4));
     --forum-item-background-color-hover: hsl(var(--hsl-b3));
-    --base-hue: var(--base-hue-override, var(--base-hue-default));
+    --base-hue: 330deg !important;
     --base-hue-deg: calc(var(--base-hue)*1deg);
     --level-tier-iron: #bab3ab, #bab3ab;
     --level-tier-bronze: #b88f7a, #855c47;
@@ -84,7 +143,13 @@ body {
     --hsl-darkorange-1: var(--colour-darkorange-hue), var(--c-saturation-1), var(--c-lightness-1);
     --hsl-darkorange-2: var(--colour-darkorange-hue), var(--c-saturation-2), var(--c-lightness-2);
     --hsl-darkorange-3: var(--colour-darkorange-hue), var(--c-saturation-3), var(--c-lightness-3);
-    --hsl-darkorange-4: var(--colour-darkorange-hue), var(--c-saturation-4), var(--c-lightness-4)
+    --hsl-darkorange-4: var(--colour-darkorange-hue), var(--c-saturation-4), var(--c-lightness-4);
+    --colour-rank-d: #ff5a5a;
+    --colour-rank-c: #ff8e5d;
+    --colour-rank-b: #e3b130;
+    --colour-rank-a: #88da20;
+    --colour-rank-s: #02b5c3;
+    --colour-rank-ss: #de31ae;
 }
 
 :root {
@@ -214,6 +279,19 @@ a {
     width: 100%
 }
 
+.score-info {}
+
+.score-info__item {
+    margin: 10px;
+    position: relative;
+}
+
+.score-info__item--dial {
+    margin: 0 15px;
+    width: 200px;
+    height: 200px;
+}
+
 .score-stats {
     display: flex;
     flex-direction: column;
@@ -221,11 +299,9 @@ a {
 }
 
 .score-stats__group {
-    width: 100%;
     grid-gap: 5px;
     display: grid;
-    margin: 5px;
-    width: 100%
+    width: 100%;
 }
 
 .score-stats__group--stats .score-stats__group-row {
@@ -233,11 +309,11 @@ a {
     display: grid;
     grid-auto-columns: 1fr;
     grid-auto-flow: column;
-    width: 100%
 }
 
-.score-stats__stat {
-    background-color: hsl(330deg, 10%, 10%);
+.score-stats__stat,
+.score-stats__stat-small {
+    background-color: hsla(324, 10%, 10%, 0.8);
     border-radius: 10px;
     display: flex;
     flex-direction: column;
@@ -245,14 +321,19 @@ a {
     padding: 8px;
 }
 
-.score-stats__stat-row {
-    font-size: 22px;
+.score-stats__stat-small {
+    padding: 4px;
+}
+
+.score-stats__stat-row,
+.score-stats__stat-row-small {
+    font-size: 20px;
     line-height: normal;
     margin: 2px;
 }
 
-.score-stats__stat-small {
-    font-size: 15px;
+.score-stats__stat-row-small {
+    font-size: 13px;
 }
 
 .score-stats__stat-row--label {
@@ -261,6 +342,107 @@ a {
     white-space: nowrap
 }
 
+.score-stats__stat-row--label-small {
+    font-size: 8px;
+    text-transform: uppercase;
+    white-space: nowrap
+}
+
 .score-stats__stat-row--perfect {
     color: hsl(var(--hsl-lime-1))
+}
+
+.score_dial {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.score_dial_layer {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+}
+
+.score_dial_layer_grade {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    font-family: "Venera";
+    font-size: 50px;
+    padding-top: 0.15em;
+    text-shadow: 0 0 10px hsl(var(--hsl-c1))
+}
+
+.score-dial_outer_gradient_start {
+    stop-color: hsl(var(--hsl-blue-1))
+}
+
+.score-dial_outer_gradient_end {
+    stop-color: hsl(var(--hsl-lime-1))
+}
+
+.score_dial_inner {
+    stroke: none;
+}
+
+.score_dial_inner-0 {
+    fill: var(--colour-rank-d);
+}
+
+.score_dial_inner-1 {
+    fill: var(--colour-rank-c);
+}
+
+.score_dial_inner-2 {
+    fill: var(--colour-rank-b);
+}
+
+.score_dial_inner-3 {
+    fill: var(--colour-rank-a);
+}
+
+.score_dial_inner-4 {
+    fill: var(--colour-rank-s);
+}
+
+.score_dial_inner-5 {
+    fill: var(--colour-rank-ss);
+}
+
+.score_dial_outer-0 {
+    fill: url(#dial-outer);
+}
+
+.score_dial_outer-1 {
+    fill: hsl(var(--hsl-b6))
+}
+
+.difficulty-badge {
+    border-radius: 10000px;
+    background-color: var(--bg);
+    color: hsl(var(--hsl-b6));
+    padding: 0 0.5em;
+    display: flex;
+    align-items: center;
+    font-weight: 800;
+    font-size: "max(0.6em, 12px)";
+    height: 100%;
+}
+
+.difficulty-badge__expert-plus {
+    color: hsl(var(--hsl-orange-1));
+}
+
+.difficulty-badge__icon {
+    font-size: 0.3em;
+    margin-right: 0.4em;
+}
+
+.difficulty-badge__rating {
+    min-width: 0.5em * 2 + 0.2em;
 }

@@ -194,7 +194,7 @@ function Top(props) {
                                                                                             alignItems: 'center',
                                                                                             pl: 1
                                                                                         }} variant='h6'>
-                                                                                            {score.mods.valueOf().map(mod => Mods.getModElement(mod, 20))}
+                                                                                            {Mods.valueOf(score.mods).map(mod => Mods.getModElement(mod, 20))}
                                                                                         </Typography>
                                                                                     </Box>
                                                                                     {/* <Button onClick={() => { setModalData({ active: true, score: score }) }} size='small' variant='contained'>View</Button> */}

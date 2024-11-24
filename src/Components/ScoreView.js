@@ -1,35 +1,138 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Box, Card, CardContent, CardMedia, Chip, Grid2, Link, ListItem, Stack, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableHead, TableRow, Tooltip, Typography } from '@mui/material';
+import { Box, Card, CardContent, CardMedia, Chip, Divider, Grid2, Link, ListItem, Stack, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableHead, TableRow, Tooltip, Typography, useTheme } from '@mui/material';
 import { Chart as ChartJS, ArcElement, Tooltip as ChartTooltip, Legend } from 'chart.js';
 import moment from 'moment';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { Doughnut } from 'react-chartjs-2';
 import { getGradeIcon } from '../Helpers/Assets';
-import { toFixedNumber } from '../Helpers/Misc';
+import { toFixedNumber, formatNumber } from '../Helpers/Misc';
 import { getBeatmapMaxscore, getHitsFromAccuracy, getModString, mods } from '../Helpers/Osu';
 import { getCalculator } from '../Helpers/Performance/Performance';
 import { getBeatmapScores } from '../Helpers/OsuAlt';
 import { prepareBeatmap, prepareScore } from '../Helpers/ScoresProcessor';
 import { GetFormattedName } from '../Helpers/Account';
 import { Grid, List } from "react-virtualized";
-import { blue, green, orange, red, yellow } from '@mui/material/colors';
+import { blue, green, grey, orange, red, yellow } from '@mui/material/colors';
 import WarningIcon from '@mui/icons-material/Warning';
 import Mods from '../Helpers/Mods';
 import ScoreDial from './ScoreDial';
+import StarsLabel from './StarsLabel';
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import EditNoteIcon from '@mui/icons-material/EditNote';
+import StarIcon from '@mui/icons-material/Star';
+import * as d3 from 'd3';
 ChartJS.register(ArcElement, ChartTooltip, Legend);
 
 function ScoreViewStat(props) {
+    const theme = useTheme();
+    const arc = d3.arc();
+    const pie = d3.pie().sortValues(null);
+
     return (
-        <div className='score-stats__stat'>
-            <div className='score-stats__stat-row score-stats__stat-row--label'>
-                {props.label}
+        <Tooltip title={props.tooltip ?? ''}>
+            <div className={`score-stats__stat${props.small ? '-small' : ''}`}>
+                <div className={`score-stats__stat-row score-stats__stat-row--label${props.small ? '-small' : ''}`} style={{
+                    color: props.labelColor ?? undefined,
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                }}>
+                    {props.labelIcon ?? null}
+                    {props.label}
+
+                    {/* add a colored horizontal line of 30px wide on the far right if props.lineDecorator is true */}
+                    {props.lineDecorator ? <div style={{
+                        width: '20px',
+                        height: '4px',
+                        backgroundColor: props.labelColor ?? theme.palette.text.primary,
+                        marginLeft: '1em',
+                        borderRadius: '20px',
+                    }}></div> : null}
+                </div>
+                <div className={`score-stats__stat-row${props.small ? '-small' : ''}`} style={{
+                    color: props.valueColor ?? undefined,
+                    display: 'flex',
+                    justifyContent: 'space-between',
+
+                }}>
+                    <span style={{
+                        //align the icon with the text
+                        display: 'flex',
+                        alignItems: 'center',
+                    }}>
+                        {
+                            props.originalValue ?
+                                //this should be slightly smaller and gray
+                                <span style={{
+                                    fontSize: '0.8em',
+                                    color: theme.palette.text.secondary,
+                                    display: 'flex',
+                                    alignItems: 'center',
+
+                                }}>
+                                    {props.originalValue}
+                                    <KeyboardArrowRightIcon sx={{ fontSize: '1em' }} />
+                                </span> : null
+                        }
+                        {props.value}
+                        {props.valueIcon ?? null}
+                    </span>
+
+                    {/* progress circle on the far right, use inline styling, theres no class */}
+                    {props.progress !== undefined ?
+                        <div style={{
+                            height: 'inherit',
+                            width: '1em',
+                            marginLeft: '1em',
+                        }}>
+                            <svg viewBox='0 0 26 26'>
+                                <defs>
+                                    <linearGradient gradientTransform='rotate(90)' id='dial-outer'>
+                                        <stop className='score-dial_outer_gradient_start' offset='0%' />
+                                        <stop className='score-dial_outer_gradient_end' offset='100%' />
+                                    </linearGradient>
+                                </defs>
+                                <g transform="translate(13,13)">
+                                    {
+                                        pie([props.progress, 1 - props.progress]).map((d, i) => (
+                                            <path
+                                                key={i}
+                                                className={`score_dial_outer score_dial_outer-${d.index}`}
+                                                d={arc({ innerRadius: 10, outerRadius: 13, ...d }) ?? undefined}
+                                            />
+                                        ))
+                                    }
+                                </g>
+                            </svg>
+                        </div>
+                        : null
+                    }
+                </div>
             </div>
-            <div className={`score-stats__stat-row ${props.small ? 'score-stats__stat-small' : ''}`}>
-                {props.value}
-            </div>
-        </div>
+        </Tooltip>
     );
+}
+
+function rankCutoffs(is_legacy) {
+    let absoluteCutoffs;
+    if (is_legacy) {
+        absoluteCutoffs = [0, 0.6, 0.8, 0.867, 0.933, 0.99, 1];
+    } else {
+        absoluteCutoffs = [0, 0.7, 0.8, 0.9, 0.95, 0.99, 1];
+    }
+
+    return differenceBetweenConsecutiveElements(absoluteCutoffs);
+}
+
+function differenceBetweenConsecutiveElements(arr) {
+    const result = [];
+
+    for (let i = 1; i < arr.length; i++) {
+        result.push(arr[i] - arr[i - 1]);
+    }
+
+    return result;
 }
 
 function ScoreView(props) {
@@ -120,256 +223,295 @@ function ScoreView(props) {
     return (
         <>
             {beatmapData !== null ?
-                <Card sx={{ ...props.data.style, maxHeight: '90%', overflowY: 'auto' }}>
-                    <CardMedia
-                        component="img"
-                        height="140"
-                        image={`https://assets.ppy.sh/beatmaps/${beatmapData.beatmap.set_id}/covers/cover.jpg`}
-                    />
-                    <CardContent sx={{ px: 0, py: 0, backgroundColor: 'background.paper2' }}>
-                        <Card sx={{ borderRadius: 0, backgroundColor: '#2E293D' }}>
-                            <CardContent>
-                                <Typography id="modal-modal-title" variant="h6" component="h2">
-                                    <Chip sx={{ mr: 1 }} size='small' label={`${scoreData !== null ? scoreData.difficulty_data?.star_rating.toFixed(2) : beatmapData.difficulty_data?.[0].star_rating.toFixed(2)}★`} variant="outlined" />
-                                    {beatmapData.beatmap.artist} - {beatmapData.beatmap.title} [{beatmapData.beatmap.diffname}] {beatmapData.difficulty_data?.is_legacy ?
-                                        <Tooltip title="This score uses old star ratings and may cause incorrect mod and/or pp values">
-                                            <WarningIcon sx={{ color: orange[500] }} />
-                                        </Tooltip>
-                                        : null}</Typography>
-                            </CardContent>
-                        </Card>
+                <Card sx={{
+                    ...props.data.style,
+                    maxHeight: '90vh',
+                    height: '90vh',
+                    // minWidth: Mods.containsSettings(scoreData.score.mods) ? '70%' : '40%',
+                }}>
+                    <Box sx={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        zIndex: -1,
+                        backgroundImage: `url(https://assets.ppy.sh/beatmaps/${beatmapData.beatmap.set_id}/covers/raw.jpg)`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                        filter: 'blur(10px)',
+                        opacity: 0.5
+                    }}></Box>
+                    <Box sx={{
+                        position: 'relative',
+                        width: '100%',
+                        height: '100%',
+                    }}>
                         <Grid2 sx={{
-                            m: 2
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            width: '100%',
+                            height: '100%',
+                            display: 'flex',
+                            overflow: 'hidden',
+                            padding: 2,
+                            //set all children to flex: 0 0 auto;		
+                            '& > *': {
+                                height: '100%',
+                                overflowY: 'scroll',
+                            }
                         }}>
-                            <Stack direction="column" spacing={1} sx={{
-                                justifyContent: 'center',
-                                alignItems: 'center',
+                            <Grid2 sx={{
+                                //if with mods, 1/3rd otherwise 1/2
+                                // width: Mods.containsSettings(scoreData.score.mods) ? '20%' : '30%',
+                                width: '20%',
+                                padding: 1,
                             }}>
-                                <ScoreDial score={scoreData.score} />
-                                <Typography variant="h3">{toFixedNumber(scoreData.score.score, 0).toLocaleString('en-US')}</Typography>
-                                <Box sx={{
-                                    display: 'flex',
+                                <div className='score-stats__group score-stats__group--stats'>
+                                    <Typography variant='subtitle2'>Difficulty</Typography>
+                                    <div className='score-stats__group-row'><ScoreViewStat valueIcon={<StarIcon sx={{ fontSize: '1em' }} />} label='Aim Rating' value={`${formatNumber(scoreData.difficulty_data?.aim_difficulty ?? 0, 2)}`} small={true} /></div>
+                                    <div className='score-stats__group-row'><ScoreViewStat valueIcon={<StarIcon sx={{ fontSize: '1em' }} />} label='Speed Rating' value={`${formatNumber(scoreData.difficulty_data?.speed_difficulty ?? 0, 2)}`} small={true} /></div>
+                                    <div className='score-stats__group-row'><ScoreViewStat valueIcon={<StarIcon sx={{ fontSize: '1em' }} />} label='Flashlight Rating' value={`${formatNumber(scoreData.difficulty_data?.flashlight_difficulty ?? 0, 2)}`} small={true} /></div>
+                                    <div className='score-stats__group-row'><ScoreViewStat label='Speed note count' value={`${formatNumber(scoreData.difficulty_data?.speed_note_count ?? 0, 2)}`} small={true} /></div>
+                                    <div className='score-stats__group-row'><ScoreViewStat label='Aim Difficult Strain Count' value={`${formatNumber(scoreData.difficulty_data?.aim_difficult_strain_count ?? 0, 2)}`} small={true} /></div>
+                                    <div className='score-stats__group-row'><ScoreViewStat label='Speed Difficult Strain Count' value={`${formatNumber(scoreData.difficulty_data?.speed_difficult_strain_count ?? 0, 2)}`} small={true} /></div>
+                                    <div className='score-stats__group-row'><ScoreViewStat label='Slider Factor' value={`${formatNumber(scoreData.difficulty_data?.slider_factor ?? 0, 3)}`} small={true} /></div>
+                                </div>
+                            </Grid2>
+                            <Grid2 sx={{
+                                // width: Mods.containsSettings(scoreData.score.mods) ? '60%' : '70%',
+                                width: '60%',
+                                padding: 1,
+                            }}>
+                                <Stack direction="column" spacing={1} sx={{
                                     justifyContent: 'center',
                                     alignItems: 'center',
+                                    width: '100%'
                                 }}>
-                                    {Mods.getModElements(scoreData.score.mods)}
-                                </Box>
-                                <div className='score-stats__group score-stats__group--stats'>
-                                    <div className='score-stats__group-row'>
-                                        <ScoreViewStat label='Accuracy' value={`${scoreData.score.accuracy.toFixed(2)}%`} />
-                                        <ScoreViewStat label='Max Combo' value={`${scoreData.score.combo}/${beatmapData.beatmap.maxcombo}`} />
-                                        <ScoreViewStat label='PP' value={`${(scoreData.score.recalc[props.data.pp_version]?.total ?? 0).toFixed(0)}`} />
-                                    </div>
-                                    <div className='score-stats__group-row'>
-                                        <ScoreViewStat label='Great' value={`${scoreData.score.count300}`} />
-                                        <ScoreViewStat label='Ok' value={`${scoreData.score.count100}`} />
-                                        <ScoreViewStat label='Meh' value={`${scoreData.score.count50}`} />
-                                        <ScoreViewStat label='Miss' value={`${scoreData.score.countmiss}`} />
-                                    </div>
-                                    <div className='score-stats__group-row'>
-                                        <ScoreViewStat label='AR' value={`${scoreData.difficulty_data?.approach_rate.toFixed(2)}`} />
-                                        <ScoreViewStat label='CS' value={`${scoreData.difficulty_data?.circle_size.toFixed(2)}`} />
-                                        <ScoreViewStat label='HP' value={`${scoreData.difficulty_data?.drain_rate.toFixed(2)}`} />
-                                        <ScoreViewStat label='OD' value={`${scoreData.difficulty_data?.overall_difficulty.toFixed(2)}`} />
-                                    </div>
-                                    <div className='score-stats__group-row'>
-                                        <ScoreViewStat label='Aim PP' value={`${(scoreData.score.recalc[props.data.pp_version]?.aim ?? 0).toFixed(1)}`} />
-                                        <ScoreViewStat label='Speed PP' value={`${(scoreData.score.recalc[props.data.pp_version]?.speed ?? 0).toFixed(1)}`} />
-                                        <ScoreViewStat label='Flashlight PP' value={`${(scoreData.score.recalc[props.data.pp_version]?.flashlight ?? 0).toFixed(1)}`} />
-                                    </div>
-                                </div>
-                                <Typography variant="subtitle2" display="flex" alignItems="center" sx={{ mt: 0 }} spacing="5">
-                                    {/* pretty print like 23 November 2024 3:52 PM */}
-                                    Played on {moment(scoreData.score.date_played).format('LLL')}
-                                </Typography>
-                                <div className='score-stats__group score-stats__group--stats'>
-                                    <div className='score-stats__group-row'><ScoreViewStat label='Aim Rating' value={`${(scoreData.difficulty_data?.aim_difficulty ?? 0).toFixed(8)}★`} small={true} /></div>
-                                    <div className='score-stats__group-row'><ScoreViewStat label='Speed Rating' value={`${(scoreData.difficulty_data?.speed_difficulty ?? 0).toFixed(8)}★`} small={true} /></div>
-                                    <div className='score-stats__group-row'><ScoreViewStat label='Flashlight Rating' value={`${(scoreData.difficulty_data?.flashlight_difficulty ?? 0).toFixed(8)}★`} small={true} /></div>
-                                    <div className='score-stats__group-row'><ScoreViewStat label='Speed note count' value={`${(scoreData.difficulty_data?.speed_note_count ?? 0).toFixed(8)}`} small={true} /></div>
-                                    <div className='score-stats__group-row'><ScoreViewStat label='Aim Difficult Strain Count' value={`${(scoreData.difficulty_data?.aim_difficult_strain_count ?? 0).toFixed(8)}`} small={true} /></div>
-                                    <div className='score-stats__group-row'><ScoreViewStat label='Speed Difficult Strain Count' value={`${(scoreData.difficulty_data?.speed_difficult_strain_count ?? 0).toFixed(8)}`} small={true} /></div>
-                                    <div className='score-stats__group-row'><ScoreViewStat label='Slider Factor' value={`${(scoreData.difficulty_data?.slider_factor ?? 0).toFixed(8)}`} small={true} /></div>
+                                    <Box sx={{
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        width: '100%',
+                                        fontFamily: 'Torus !important',
 
-                                </div>
-                            </Stack>
-                        </Grid2>
-                        {/* <Box sx={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                        }}>
-                            <Box sx={{ px: 4, width: '1400px' }}>
+                                        //they should stack on top of each other
+                                        flexDirection: 'column',
+                                    }}>
+                                        <Typography variant="h5" sx={{ fontWeight: 'bold' }}>{beatmapData.beatmap.title}</Typography>
+                                        <Typography variant="body2" sx={{ fontWeight: 'bold' }}>{beatmapData.beatmap.artist}</Typography>
+                                    </Box>
+                                    <div className='score-info__item score-info__item--dial'>
+                                        <ScoreDial accuracy={scoreData.score.accuracy * 0.01} rank={scoreData.score.rank} rankCutoffs={rankCutoffs(Mods.hasMod(scoreData.score.mods, "CL"))} />
+                                    </div>
+                                    <Typography variant="h3">{toFixedNumber(scoreData.score.score, 0).toLocaleString('en-US')}</Typography>
+                                    <Box sx={{
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                    }}>
+                                        <Box sx={{ pr: 1 }}>
+                                            <StarsLabel stars={beatmapData.difficulty_data?.star_rating} />
+                                        </Box>
+                                        {Mods.getModElements(scoreData.score.mods, 22)}
+                                    </Box>
+                                    <Box sx={{
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        width: '100%',
+                                        fontFamily: 'Torus !important',
 
+                                        //they should stack on top of each other
+                                        flexDirection: 'column',
+                                    }}>
+                                        <Typography variant="body2" sx={{ fontWeight: 'bold' }}>{beatmapData.beatmap.diffname}</Typography>
+                                        <Typography variant="subtitles1" sx={{ fontWeight: 100 }}>mapped by <span style={{ fontWeight: 'bold' }}>{beatmapData.beatmap.creator}</span></Typography>
+                                    </Box>
+                                    <Box sx={{
+                                        maxWidth: '700px',
+                                    }}>
+                                        <div className='score-stats__group score-stats__group--stats'>
+                                            <div className='score-stats__group-row'>
+                                                <ScoreViewStat
+                                                    progress={scoreData.score.accuracy * 0.01}
+                                                    label='Accuracy'
+                                                    value={`${scoreData.score.accuracy.toFixed(2)}%`}
+                                                    valueColor={scoreData.score.accuracy === 100 ? green[500] : undefined} />
+                                                <ScoreViewStat
+                                                    progress={scoreData.score.combo / beatmapData.beatmap.maxcombo}
+                                                    label='Max Combo'
+                                                    value={`${scoreData.score.combo}/${beatmapData.beatmap.maxcombo}`}
+                                                    valueColor={scoreData.score.combo === beatmapData.beatmap.maxcombo ? green[500] : undefined} />
+                                                <ScoreViewStat
+                                                    tooltip={
+                                                        (scoreData.score.recalc['fc']?.total ?? 0) !== (scoreData.score.recalc[props.data.pp_version]?.total ?? 0) ?
+                                                            'PP if your score were an FC' : undefined
+                                                    }
+                                                    originalValue={
+                                                        (scoreData.score.recalc['fc']?.total ?? 0) !== (scoreData.score.recalc[props.data.pp_version]?.total ?? 0) ?
+                                                            formatNumber(scoreData.score.recalc['fc']?.total ?? 0, 0) : undefined
+                                                    }
+                                                    label='PP'
+                                                    value={`${formatNumber(scoreData.score.recalc[props.data.pp_version]?.total ?? 0, 0)}`} />
+                                            </div>
+                                            <div className='score-stats__group-row'>
+                                                <ScoreViewStat lineDecorator={true} label='Great' value={`${formatNumber(scoreData.score.count300)}`} labelColor='#69EE00' />
+                                                <ScoreViewStat lineDecorator={true} label='Ok' value={`${formatNumber(scoreData.score.count100)}`} labelColor='#FAFF00' />
+                                                <ScoreViewStat lineDecorator={true} label='Meh' value={`${formatNumber(scoreData.score.count50)}`} labelColor='#FFB800' />
+                                                <ScoreViewStat lineDecorator={true} label='Miss' value={`${formatNumber(scoreData.score.countmiss)}`} labelColor={red[400]} />
+                                            </div>
+                                            <div className='score-stats__group-row'>
+                                                <ScoreViewStat
+                                                    label='AR'
+                                                    valueColor={(Math.ceil(scoreData.difficulty_data?.approach_rate * 100) / 100) !== (Math.ceil(beatmapData.beatmap.ar * 100) / 100) ? (Math.ceil(scoreData.difficulty_data?.approach_rate * 100) / 100) > (Math.ceil(beatmapData.beatmap.ar * 100) / 100) ? red[500] : green[500] : undefined}
+                                                    originalValue={(Math.ceil(scoreData.difficulty_data?.approach_rate * 100) / 100) !== (Math.ceil(beatmapData.beatmap.ar * 100) / 100) ? formatNumber(beatmapData.beatmap.ar, 2) : undefined}
+                                                    value={`${formatNumber(scoreData.difficulty_data?.approach_rate, 2)}`}
+                                                />
+                                                <ScoreViewStat
+                                                    label='CS'
+                                                    valueColor={(Math.ceil(scoreData.difficulty_data?.circle_size * 100) / 100) !== (Math.ceil(beatmapData.beatmap.cs * 100) / 100) ? (Math.ceil(scoreData.difficulty_data?.circle_size * 100) / 100) > (Math.ceil(beatmapData.beatmap.cs * 100) / 100) ? red[500] : green[500] : undefined}
+                                                    originalValue={(Math.ceil(scoreData.difficulty_data?.circle_size * 100) / 100) !== (Math.ceil(beatmapData.beatmap.cs * 100) / 100) ? formatNumber(beatmapData.beatmap.cs, 2) : undefined}
+                                                    value={`${formatNumber(scoreData.difficulty_data?.circle_size, 2)}`}
+                                                />
+                                                <ScoreViewStat
+                                                    label='HP'
+                                                    valueColor={(Math.ceil(scoreData.difficulty_data?.drain_rate * 100) / 100) !== (Math.ceil(beatmapData.beatmap.hp * 100) / 100) ? (Math.ceil(scoreData.difficulty_data?.drain_rate * 100) / 100) > (Math.ceil(beatmapData.beatmap.hp * 100) / 100) ? red[500] : green[500] : undefined}
+                                                    originalValue={(Math.ceil(scoreData.difficulty_data?.drain_rate * 100) / 100) !== (Math.ceil(beatmapData.beatmap.hp * 100) / 100) ? formatNumber(beatmapData.beatmap.hp, 2) : undefined}
+                                                    value={`${formatNumber(scoreData.difficulty_data?.drain_rate, 2)}`}
+                                                />
+                                                <ScoreViewStat
+                                                    label='OD'
+                                                    valueColor={(Math.ceil(scoreData.difficulty_data?.overall_difficulty * 100) / 100) !== (Math.ceil(beatmapData.beatmap.od * 100) / 100) ? (Math.ceil(scoreData.difficulty_data?.overall_difficulty * 100) / 100) > (Math.ceil(beatmapData.beatmap.od * 100) / 100) ? red[500] : green[500] : undefined}
+                                                    originalValue={(Math.ceil(scoreData.difficulty_data?.overall_difficulty * 100) / 100) !== (Math.ceil(beatmapData.beatmap.od * 100) / 100) ? formatNumber(beatmapData.beatmap.od, 2) : undefined}
+                                                    value={`${formatNumber(scoreData.difficulty_data?.overall_difficulty, 2)}`}
+                                                />
+                                            </div>
+                                            <div className='score-stats__group-row'>
+                                                <ScoreViewStat label='Aim PP' value={`${formatNumber(scoreData.score.recalc[props.data.pp_version]?.aim ?? 0, 1)}`} />
+                                                <ScoreViewStat label='Speed PP' value={`${formatNumber(scoreData.score.recalc[props.data.pp_version]?.speed ?? 0, 1)}`} />
+                                                <ScoreViewStat label='Flashlight PP' value={`${formatNumber(scoreData.score.recalc[props.data.pp_version]?.flashlight ?? 0, 1)}`} />
+                                            </div>
+                                        </div>
+                                    </Box>
+                                    <Typography variant="subtitle2" display="flex" alignItems="center" sx={{ mt: 0 }} spacing="5">
+                                        {/* pretty print like 23 November 2024 3:52 PM */}
+                                        Played on {moment(scoreData.score.date_played).format('LLL')}<br />
+                                        by {scoreData.score.user.username}
+                                    </Typography>
+                                </Stack>
+                            </Grid2>
+                            <Grid2 sx={{
+                                width: '20%',
+                                padding: 1,
+                            }}>
                                 {
-                                    scoreData !== null ?
-                                        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                                            <Box sx={{ px: 4, width: '60%' }}>
-                                                <Grid2 container spacing={3} sx={{ justifyContent: 'left', my: 1 }}>
-                                                    <Grid2 size={{ width: '30%' }}>
-                                                        <Doughnut data={{
-                                                            labels: ["300", "100", "50", "Miss"],
-                                                            datasets: [
-                                                                {
-                                                                    data: [scoreData.score.count300, scoreData.score.count100, scoreData.score.count50, scoreData.score.countmiss],
-                                                                    backgroundColor: [
-                                                                        '#8BC34A',
-                                                                        '#FDD835',
-                                                                        '#FB8C00',
-                                                                        '#D32F2F',
-                                                                    ],
-                                                                    borderWidth: 5,
-                                                                    borderColor: '#ffffff00',
-                                                                    hoverOffset: 5
-                                                                }
-                                                            ]
-                                                        }}
-                                                            options={{
-                                                                plugins: {
-                                                                    legend: {
-                                                                        display: false
-                                                                    },
-                                                                    datalabels: {
-                                                                        display: 'auto',
-                                                                        color: 'white',
-                                                                        font: {
-                                                                            family: "Roboto",
-                                                                            weight: 700
-                                                                        },
-                                                                        backgroundColor: '#000000aa',
-                                                                        borderRadius: 4
-                                                                    }
-                                                                }
-                                                            }}
-                                                        ></Doughnut>
-                                                    </Grid2>
-                                                    <Grid2 size={{ width: '70%', minHeight: '100%' }}>
-                                                        <Box height="100%" direction="column" display="flex" alignItems="center">
-                                                            <Grid2>
-                                                                <Typography variant="h3" sx={{ mt: 0 }}>{toFixedNumber(scoreData.score.score, 0).toLocaleString('en-US')}</Typography>
-                                                                <Typography variant="subtitle1" display="flex" alignItems="center" sx={{ mt: 0 }} spacing="5">
-                                                                    <img alt={scoreData.score.rank} src={getGradeIcon(scoreData.score.rank)} />&nbsp;<b>{scoreData.score.accuracy.toFixed(2)}%</b>&nbsp;★&nbsp;<b>{scoreData.score.recalc[props.data.pp_version].total.toFixed(2)}pp</b>&nbsp;★&nbsp;<b>{scoreData.score.combo}x/{beatmapData.beatmap.maxcombo}x</b>
-                                                                </Typography>
-                                                                <Typography variant="subtitle1" display="flex" alignItems="center" sx={{ mt: 0 }} spacing="5">
-                                                                    Played&nbsp;<b><Tooltip title={'' + scoreData.score.date_played}><Grid2>{moment(scoreData.score.date_played).fromNow()}</Grid2></Tooltip></b>&nbsp;★ Ranked&nbsp;<b><Tooltip title={'' + beatmapData.beatmap.approved_date}><Grid2>{moment(beatmapData.beatmap.approved_date).fromNow()}</Grid2></Tooltip></b>
-                                                                </Typography>
-                                                                <Typography variant="subtitle1" display="flex" alignItems="center" sx={{ mt: 0 }} spacing="5">
-                                                                    AR&nbsp;<b>{scoreData.difficulty_data?.approach_rate.toFixed(2)}</b>&nbsp;★ CS&nbsp;<b>{scoreData.difficulty_data?.circle_size.toFixed(2)}</b>&nbsp;★ HP&nbsp;<b>{scoreData.difficulty_data?.drain_rate.toFixed(2)}</b>&nbsp;★ OD&nbsp;<b>{scoreData.difficulty_data?.overall_difficulty.toFixed(2)}</b>
-                                                                </Typography>
-                                                                <Typography variant="subtitle1" display="flex" alignItems="center" sx={{ mt: 0 }} spacing="5">
-                                                                    {moment.utc(moment.duration(scoreData.score.beatmap.modded_length, 'seconds').asMilliseconds()).format("mm:ss")} minutes&nbsp;★&nbsp;
-                                                                    <b>{(scoreData.score.mods & mods.DoubleTime ? scoreData.score.bpm * 1.5 : (scoreData.score.mods & mods.HalfTime ? beatmapData.beatmap.bpm * 0.75 : beatmapData.beatmap.bpm))}</b> bpm
-                                                                </Typography>
-                                                                <Typography variant="subtitle1" display="flex" alignItems="center" sx={{ mt: 0 }} spacing="5">
-                                                                    Played by&nbsp;<Link href={`https://osu.ppy.sh/users/${scoreData.score.user_id}`} target='_blank' rel='noreferrer'>{scoreData.score.user.username}</Link>
-                                                                </Typography>
-                                                            </Grid2>
-                                                        </Box>
-                                                    </Grid2>
-                                                </Grid2>
-                                                <Typography>Performance breakdown</Typography>
-                                                <Card variant="outlined" sx={{ mb: 3 }}>
-                                                    <TableContainer>
-                                                        <Table size="small" sx={{
-                                                            [`& .${tableCellClasses.root}`]: {
-                                                                borderBottom: "none"
-                                                            }
-                                                        }}>
-                                                            <TableHead>
-                                                                <TableRow>
-                                                                    <TableCell>Aim PP</TableCell>
-                                                                    <TableCell>Speed PP</TableCell>
-                                                                    <TableCell>Accuracy PP</TableCell>
-                                                                    <TableCell>Flashlight PP</TableCell>
-                                                                </TableRow>
-                                                            </TableHead>
-                                                            <TableBody>
-                                                                <TableRow>
-                                                                    <TableCell>{(scoreData.score.recalc[props.data.pp_version]?.aim ?? 0).toFixed(1)}pp</TableCell>
-                                                                    <TableCell>{(scoreData.score.recalc[props.data.pp_version]?.speed ?? 0).toFixed(1)}pp</TableCell>
-                                                                    <TableCell>{(scoreData.score.recalc[props.data.pp_version]?.acc ?? 0).toFixed(1)}pp</TableCell>
-                                                                    <TableCell>{(scoreData.score.recalc[props.data.pp_version]?.flashlight ?? 0).toFixed(1)}pp</TableCell>
-                                                                </TableRow>
-                                                            </TableBody>
-                                                        </Table>
-                                                    </TableContainer>
-                                                </Card>
-                                                <Typography>Skill breakdown</Typography>
-                                                <Card variant="outlined" sx={{ mb: 3 }}>
-                                                    <TableContainer>
-                                                        <Table size="small" sx={{
-                                                            [`& .${tableCellClasses.root}`]: {
-                                                                borderBottom: "none"
-                                                            }
-                                                        }}>
-                                                            <TableHead>
-                                                                <TableRow>
-                                                                    <TableCell>Aim</TableCell>
-                                                                    <TableCell>Speed</TableCell>
-                                                                    <TableCell>Strain</TableCell>
-                                                                    <TableCell>Flashlight</TableCell>
-                                                                </TableRow>
-                                                            </TableHead>
-                                                            <TableBody>
-                                                                <TableRow>
-                                                                    <TableCell>{(scoreData.difficulty_data?.aim_difficulty ?? 0).toFixed(2)}★</TableCell>
-                                                                    <TableCell>{(scoreData.difficulty_data?.speed_difficulty ?? 0).toFixed(2)}★</TableCell>
-                                                                    <TableCell>{(scoreData.difficulty_data?.flashlight_difficulty ?? 0).toFixed(2)}★</TableCell>
-                                                                </TableRow>
-                                                            </TableBody>
-                                                        </Table>
-                                                    </TableContainer>
-                                                </Card>
+                                    Mods.containsSettings(scoreData.score.mods) ?
+                                        <>
+                                            <Box sx={{ width: '100%' }}>
                                                 {
-                                                    performance !== null ?
-                                                        <>
-                                                            <Typography>Accuracy to performance</Typography>
-                                                            <Card variant="outlined" sx={{ mb: 3 }}>
-                                                                <TableContainer>
-                                                                    <Table size="small" sx={{
-                                                                        [`& .${tableCellClasses.root}`]: {
-                                                                            borderBottom: "none"
-                                                                        }
-                                                                    }}>
-                                                                        <TableHead>
-                                                                            <TableRow>
-                                                                                <TableCell>80% FC</TableCell>
-                                                                                <TableCell>90% FC</TableCell>
-                                                                                <TableCell>95% FC</TableCell>
-                                                                                <TableCell>98% FC</TableCell>
-                                                                                <TableCell>99% FC</TableCell>
-                                                                                <TableCell>100% FC</TableCell>
-                                                                            </TableRow>
-                                                                        </TableHead>
-                                                                        <TableBody>
-                                                                            <TableRow>
-                                                                                <TableCell>{(scoreData.pp["80%"]?.total ?? 0).toFixed(0)}pp</TableCell>
-                                                                                <TableCell>{(scoreData.pp["90%"]?.total ?? 0).toFixed(0)}pp</TableCell>
-                                                                                <TableCell>{(scoreData.pp["95%"]?.total ?? 0).toFixed(0)}pp</TableCell>
-                                                                                <TableCell>{(scoreData.pp["98%"]?.total ?? 0).toFixed(0)}pp</TableCell>
-                                                                                <TableCell>{(scoreData.pp["99%"]?.total ?? 0).toFixed(0)}pp</TableCell>
-                                                                                <TableCell>{(scoreData.pp["100%"]?.total ?? 0).toFixed(0)}pp</TableCell>
-                                                                            </TableRow>
-                                                                        </TableBody>
-                                                                    </Table>
-                                                                </TableContainer>
-                                                            </Card>
-                                                        </>
-                                                        : <></>
+                                                    Mods.getModsWithSettings(scoreData.score.mods).map((mod, i) => {
+                                                        const settings = mod.settings;
+                                                        return (
+                                                            <Box>
+                                                                <div key={mod.acronym} className='score-stats__group score-stats__group--stats'>
+                                                                    <Box sx={{ display: 'flex', justifyContent: 'left', alignItems: 'center' }}>
+                                                                        <Box sx={{ mr: 1 }}>
+                                                                            {Mods.getModElement(mod, 20)}
+                                                                        </Box>
+                                                                        <Typography variant='subtitle2'>{mod.data.Name}</Typography>
+                                                                    </Box>
+                                                                    {
+                                                                        Object.keys(settings).map((setting, i) => {
+                                                                            const data = Mods.getModSettingsData(mod.acronym, setting);
+                                                                            let value;
+                                                                            let valueTyped;
+                                                                            // let originalValue = Mods.getModOriginalValue(beatmapData.beatmap, setting);
+                                                                            let [originalValue, invertSkillHandler] = Mods.getModOriginalValue(beatmapData.beatmap, mod.acronym, setting);
+                                                                            let color = undefined;
+
+
+                                                                            value = settings[setting];
+                                                                            if (data.Type === 'number') {
+                                                                                value = formatNumber(value, 2);
+                                                                                valueTyped = parseFloat(value);
+                                                                            } else if (data.Type === 'boolean') {
+                                                                                value = value ? 'Yes' : 'No';
+                                                                                valueTyped = value;
+                                                                            }
+
+                                                                            if (originalValue !== null) {
+                                                                                originalValue = parseFloat(originalValue);
+
+
+                                                                                if (!invertSkillHandler) {
+                                                                                    if (valueTyped > originalValue) {
+                                                                                        color = red[500];
+                                                                                    } else if (valueTyped < originalValue) {
+                                                                                        color = green[500];
+                                                                                    }
+                                                                                } else {
+                                                                                    if (valueTyped > originalValue) {
+                                                                                        color = green[500];
+                                                                                    } else if (valueTyped < originalValue) {
+                                                                                        color = red[500];
+                                                                                    }
+                                                                                }
+                                                                            }
+
+                                                                            console.log(originalValue, invertSkillHandler);
+
+                                                                            return (
+                                                                                <div className='score-stats__group-row'>
+                                                                                    <ScoreViewStat
+                                                                                        tooltip={data.Description}
+                                                                                        label={data.Label}
+                                                                                        originalValue={originalValue}
+                                                                                        value={value}
+                                                                                        small={true}
+                                                                                        valueColor={color}
+                                                                                    />
+                                                                                </div>
+                                                                            );
+                                                                        })
+                                                                    }
+                                                                    {
+                                                                        i < Mods.getModsWithSettings(scoreData.score.mods).length - 1 ?
+                                                                            <Divider sx={{
+                                                                                pb: 1
+                                                                            }} /> : null
+                                                                    }
+                                                                </div>
+                                                            </Box>
+                                                        );
+                                                    })
                                                 }
                                             </Box>
+                                            {/* when we are overflowing, add an icon to indicate there is more */}
+                                            <Box sx={{
+                                                display: 'flex',
+                                                justifyContent: 'center',
+                                                alignItems: 'center',
+                                                mt: 1,
+                                            }}>
+                                                <Chip label='More' />
+                                            </Box> </> : <Box sx={{
+                                                width: '100%',
+                                                height: '100%',
+                                                display: 'flex',
+                                                justifyContent: 'center',
+                                                alignItems: 'center',
+                                                flexDirection: 'column',
+                                                color: grey[500]
+                                            }}>
+                                            <EditNoteIcon sx={{ fontSize: '5em' }} />
+                                            <Typography variant='h6'>No mod settings applied</Typography>
                                         </Box>
-                                        : <></>
                                 }
-                            </Box>
-                        </Box>
-                        <Box sx={{ px: 4 }}>
-                            <Typography id="modal-modal-description" sx={{ mt: 0 }}>
-                                Mapped by <Link href={`https://osu.ppy.sh/users/${props.data.score.beatmap.creator_id}`} target='_blank' rel='noreferrer'>{props.data.score.beatmap.creator}</Link>
-                                &nbsp;- Go to <Link href={`https://osu.ppy.sh/beatmaps/${props.data.score.beatmap.beatmap_id}`} target='_blank' rel='noreferrer'>Beatmap</Link>
-                            </Typography>
-                        </Box> */}
-                    </CardContent>
+                            </Grid2>
+                        </Grid2>
+                    </Box>
                 </Card>
                 : <></>
             }

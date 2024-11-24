@@ -11,11 +11,67 @@ export const MODAL_STYLE = {
     transform: 'translate(-50%, -50%)',
     bgcolor: 'background.paper',
     minWidth: '80%',
+    maxHeight: '80%',
     boxShadow: 24,
     borderRadius: 3,
     '&:focus': {
         outline: 'none',
     },
+}
+
+const eachModifier = (modifiersArray, callback) => {
+    modifiersArray.forEach((modifiers) => {
+      if (Array.isArray(modifiers)) {
+        modifiers.forEach((modifier) => {
+          if (modifier != null) {
+            callback(modifier);
+          }
+        });
+      } else if (typeof modifiers === 'string') {
+        callback(modifiers);
+      } else {
+        // forEach(modifiers, (isActive, modifier) => {
+        //   if (isActive) {
+        //     callback(modifier);
+        //   }
+        // });
+        //forEach doesnt exist in our codebase
+        for (const [modifier, isActive] of Object.entries(modifiers)) {
+          if (isActive) {
+            callback(modifier);
+          }
+        }
+      }
+    });
+  };
+
+export function classWithModifiers(className, ...modifiersArray) {
+    let ret = className;
+
+    eachModifier(modifiersArray, (m) => ret += ` ${className}--${m}`);
+
+    return ret;
+}
+
+const defaultNumberFormatter = new Intl.NumberFormat(window.currentLocale);
+
+export function formatNumber(num, precision, options, locale) {
+    if(num === null || num === undefined || !num || isNaN(num) || num === Infinity || num === -Infinity) {
+        return num;
+    }
+
+    if (precision == null && options == null && locale == null) {
+        return defaultNumberFormatter.format(num);
+    }
+
+    options ??= {};
+
+    if (precision != null) {
+        options.minimumFractionDigits = precision;
+        options.maximumFractionDigits = precision;
+    }
+
+    return num.toLocaleString(locale ?? window.currentLocale, options);
 }
 
 export function fixedEncodeURIComponent(str) {

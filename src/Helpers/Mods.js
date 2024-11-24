@@ -44,23 +44,23 @@ class Mods {
             this.mods_data = modern_mods;
         }
 
-        if(Mods.hasMod(this, "DT") || Mods.hasMod(this, "NC")){
+        if (Mods.hasMod(this, "DT") || Mods.hasMod(this, "NC")) {
             const mod = Mods.getMod(this, "DT") || Mods.getMod(this, "NC");
             this.speed = mod.settings?.speed_change || 1.5;
         }
 
-        if(Mods.hasMod(this, "HT")){
+        if (Mods.hasMod(this, "HT")) {
             const mod = Mods.getMod(this, "HT");
             this.speed = mod.settings?.speed_change || 0.75;
         }
 
-        
+
         this.mods_data.forEach(mod => {
             const data = Mods.getModData(mod.acronym);
             mod.data = data || {};
         });
-        
-        if(this.mods_data.length === 0){
+
+        if (this.mods_data.length === 0) {
             this.mods_data.push({
                 acronym: "NM",
                 data: {
@@ -80,6 +80,14 @@ class Mods {
         return mods.mods_data.find(m => m.acronym === mod);
     }
 
+    static containsSettings(mods) {
+        return mods.mods_data.some(m => m.settings !== undefined);
+    }
+
+    static containsSetting(mods, setting) {
+        return mods.mods_data.some(m => m.settings !== undefined && m.settings[setting] !== undefined);
+    }
+
     //overload to return this.mods_data if this object is called without function
     static valueOf(mods) {
         return mods.mods_data;
@@ -94,13 +102,39 @@ class Mods {
         return ModData[0].Mods.find(m => m.Acronym === acronym);
     }
 
+    static getModOriginalValue(beatmap, acronym, setting) {
+
+        let originalValue;
+        let invertSkillHandler = false;
+
+        if (acronym === "DA") {
+            if (setting === 'approach_rate') { originalValue = parseFloat(beatmap.ar); }
+            if (setting === 'circle_size') { originalValue = parseFloat(beatmap.cs); }
+            if (setting === 'drain_rate') { originalValue = parseFloat(beatmap.hp); }
+            if (setting === 'overall_difficulty') { originalValue = parseFloat(beatmap.od); }
+        }else if(acronym === "FL"){
+            if(setting === 'size_multiplier'){ originalValue = 1; invertSkillHandler = true; }
+        }else if(acronym === "DT" || acronym === "NC"){
+            if(setting === 'speed_change'){ originalValue = 1.5; }
+        }else if(acronym === "HT"){
+            if(setting === 'speed_change'){ originalValue = 0.75; }
+        }
+        
+        console.log(`[Mods.getModOriginalValue] Beatmap: ${beatmap} Acronym: ${acronym} Setting: ${setting}, Original Value: ${originalValue}, Invert Skill Handler: ${invertSkillHandler}`);
+        return [originalValue, invertSkillHandler];
+    }
+
     static getModSettingsData(acronym, setting) {
         const data = Mods.getModData(acronym);
         return data.Settings.find(s => s.Name === setting);
     }
 
-    static getModElements(mods, height = 24, style = {}) {
-        return Mods.valueOf(mods).map((mod, i) => Mods.getModElement(mod, 20, i === 0 ? { marginLeft: 0 } : {}));
+    static getModsWithSettings(mods) {
+        return mods.mods_data.filter(m => m.settings !== undefined);
+    }
+
+    static getModElements(mods, height = 20, style = {}) {
+        return Mods.valueOf(mods).map((mod, i) => Mods.getModElement(mod, height, i === 0 ? { marginLeft: 0 } : {}));
     }
 
     static getModElement(mod, height = 24, style = {}) {
@@ -124,9 +158,9 @@ class Mods {
 
         let tooltip_extra_data = null;
 
-        if(mod.settings !== undefined){
+        if (mod.settings !== undefined) {
             let str = [];
-            for(const setting in mod.settings){
+            for (const setting in mod.settings) {
                 let data = Mods.getModSettingsData(mod.acronym, setting);
                 //str += `${data.Name}: ${mod.settings[setting]}\n`;
                 str.push(`${data.Label}: ${mod.settings[setting]}`);
