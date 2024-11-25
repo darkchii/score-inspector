@@ -254,7 +254,13 @@ const GROUPED_STATS = {
         {
             name: 'longest_approval', title: 'Longest Rank Time',
             description: 'List of beatmaps sorted by longest time from submission to ranked',
-            customFormat: (value) => moment.duration(value, 'seconds').format('y[y] M[m] d[d]')
+            customFormat: (value) => moment.duration(value, 'seconds').format('y[y] M[m] d[d]'),
+            extraFormatter: (value) => {
+                console.log(value);
+                if (value === undefined || value === null) return '';
+                let _date = moment(new Date(value[0])).utc().format('DD MMMM YYYY');
+                return `${_date}`;
+            }
         },
         {
             name: 'longest_maps', title: 'Longest Maps',
@@ -413,9 +419,9 @@ function Leaders() {
                                             return (
                                                 <MenuItem key={value.code} value={value.code}>
                                                     {
-                                                        value.code !== 'world' ? 
-                                                        <img src={getFlagIcon(value.code)} alt={value.code} style={{ height: '1em', borderRadius: '5px' }} />
-                                                        : <></>
+                                                        value.code !== 'world' ?
+                                                            <img src={getFlagIcon(value.code)} alt={value.code} style={{ height: '1em', borderRadius: '5px' }} />
+                                                            : <></>
                                                     }
                                                     &nbsp;{value.name}
                                                 </MenuItem>
@@ -519,7 +525,15 @@ function Leaders() {
                                                         alignment: 'left',
                                                         variant: 'body2',
                                                         color: grey[500]
-                                                    }
+                                                    },
+                                                    ...(statistic?.extraFormatter !== undefined && statistic?.extraFormatter != null ?
+                                                        [{
+                                                            value: statistic?.extraFormatter(entry?.extra_data),
+                                                            alignment: 'left',
+                                                            variant: 'body2',
+                                                            color: grey[500]
+                                                        }]
+                                                        : [])
                                                 ]}
                                             />
                                         );
