@@ -60,6 +60,7 @@ function PlayerLeaderboardItem(props) {
         <>
             <LeaderboardItem
                 background={osu_user?.cover?.custom_url ?? osu_user?.cover_url}
+                backgroundColor={osu_user?.groups?.[0]?.colour ?? theme.typography.title.color}
                 onClick={() => {
                     if (props.remote_profile) {
                         window.open(`https://osu.ppy.sh/users/${base_user?.user_id ?? base_user?.osu_id}`, '_blank');

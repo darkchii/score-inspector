@@ -10,18 +10,36 @@ export function LeaderboardItem(props) {
             height: LEADERBOARD_ITEM_HEIGHT,
             maxHeight: LEADERBOARD_ITEM_HEIGHT,
             width: "100%",
-            // backgroundImage: `url(${props.background})`,
-            // make it safe, no xss, remove closing brackets from url
-            backgroundImage: `url(${fixedEncodeURIComponent(props.background)})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
             position: 'relative',
             borderRadius: LEADERBOARD_BORDER_RADIUS,
             ...props.sx
         }}>
             <Box sx={{
-                backgroundColor: "rgba(0, 0, 0, 0.7)",
+                //Background color that fades out to the right
+                position: 'absolute',
+                width: '100%',
+                height: '100%',
+                backgroundImage: `url(${fixedEncodeURIComponent(props.background)})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
+                borderRadius: LEADERBOARD_BORDER_RADIUS,
+                zIndex: -3
+            }} />
+            {
+                props.backgroundColor ?
+                    <Box sx={{
+                        //Background color that fades out to the right halfways
+                        position: 'absolute',
+                        width: '100%',
+                        height: '100%',
+                        background: `linear-gradient(to right, ${props.backgroundColor}, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0))`,
+                        borderRadius: LEADERBOARD_BORDER_RADIUS,
+                        zIndex: -1
+                    }} /> : <></>
+            }
+
+            <Box sx={{
                 width: "100%",
                 height: "100%",
                 position: 'absolute',
