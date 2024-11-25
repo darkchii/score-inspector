@@ -1,8 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Box, Card, CardContent, CardMedia, Chip, Divider, Grid2, Link, ListItem, Stack, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableHead, TableRow, Tooltip, Typography, useTheme } from '@mui/material';
+import { Avatar, Box, Button, Card, CardContent, CardMedia, Chip, Divider, Grid2, Link, ListItem, Stack, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableHead, TableRow, Tooltip, Typography, useTheme } from '@mui/material';
 import { Chart as ChartJS, ArcElement, Tooltip as ChartTooltip, Legend } from 'chart.js';
 import moment from 'moment';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useState } from 'react';
 import { Doughnut } from 'react-chartjs-2';
 import { getGradeIcon } from '../Helpers/Assets';
@@ -22,6 +22,7 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import StarIcon from '@mui/icons-material/Star';
 import * as d3 from 'd3';
+import * as htmlToImage from "html-to-image";
 ChartJS.register(ArcElement, ChartTooltip, Legend);
 
 function ScoreViewStat(props) {
@@ -138,6 +139,22 @@ function differenceBetweenConsecutiveElements(arr) {
 function ScoreView(props) {
     const [scoreData, setScoreData] = useState(null);
     const [beatmapData, setBeatmapData] = useState(null);
+    const screenshotArea = useRef(null);
+
+    async function createImage() {
+        if (!screenshotArea.current) {
+            return;
+        }
+
+        //with cross-origin
+        await htmlToImage.toPng(screenshotArea.current).then(function (dataUrl) {
+            var link = document.createElement('a');
+            const id = scoreData.score.user.username + '_' + scoreData.score.beatmap.beatmap_id + '_' + scoreData.score.date_played;
+            link.download = `${id}.png`;
+            link.href = dataUrl;
+            link.click();
+        });
+    }
 
     async function fixScore(score) {
         let _score = score.score;
@@ -223,296 +240,356 @@ function ScoreView(props) {
     return (
         <>
             {beatmapData !== null ?
-                <Card sx={{
-                    ...props.data.style,
-                    maxHeight: '90vh',
-                    height: '90vh',
-                    // minWidth: Mods.containsSettings(scoreData.score.mods) ? '70%' : '40%',
-                }}>
+                <>
                     <Box sx={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
                         width: '100%',
-                        height: '100%',
-                        zIndex: -1,
-                        backgroundImage: `url(https://assets.ppy.sh/beatmaps/${beatmapData.beatmap.set_id}/covers/raw.jpg)`,
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center',
-                        filter: 'blur(10px)',
-                        opacity: 0.5
-                    }}></Box>
-                    <Box sx={{
-                        position: 'relative',
-                        width: '100%',
-                        height: '100%',
+                        pt: 1
                     }}>
-                        <Grid2 sx={{
-                            position: 'absolute',
-                            top: 0,
-                            left: 0,
+                        <Button
+                            variant='contained'
+                            onClick={createImage}
+                        >Get Image</Button>
+                    </Box>
+
+                    <Card
+                        sx={{
+                            ...props.data.style,
+                            maxHeight: '90vh',
+                            height: '90vh',
+                            // minWidth: Mods.containsSettings(scoreData.score.mods) ? '70%' : '40%',
+                        }}>
+                        <div style={{
                             width: '100%',
                             height: '100%',
-                            display: 'flex',
-                            overflow: 'hidden',
-                            padding: 2,
-                            //set all children to flex: 0 0 auto;		
-                            '& > *': {
-                                height: '100%',
-                                overflowY: 'scroll',
-                            }
                         }}>
-                            <Grid2 sx={{
-                                //if with mods, 1/3rd otherwise 1/2
-                                // width: Mods.containsSettings(scoreData.score.mods) ? '20%' : '30%',
-                                width: '20%',
-                                padding: 1,
+                            <Box
+                                crossOrigin='anonymous'
+                                sx={{
+                                    position: 'absolute',
+                                    top: 0,
+                                    left: 0,
+                                    width: '100%',
+                                    height: '100%',
+                                    zIndex: -2,
+                                    backgroundImage: `url(https://assets.ppy.sh/beatmaps/${beatmapData.beatmap.set_id}/covers/raw.jpg)`,
+                                    backgroundSize: 'cover',
+                                    backgroundPosition: 'center',
+                                    filter: 'blur(10px)',
+                                }}></Box>
+                            <Box sx={{
+                                position: 'absolute',
+                                top: 0,
+                                left: 0,
+                                width: '100%',
+                                height: '100%',
+                                zIndex: -1,
+                                backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                            }}></Box>
+                            <Box sx={{
+                                position: 'relative',
+                                width: '100%',
+                                height: '100%',
                             }}>
-                                <div className='score-stats__group score-stats__group--stats'>
-                                    <Typography variant='subtitle2'>Difficulty</Typography>
-                                    <div className='score-stats__group-row'><ScoreViewStat valueIcon={<StarIcon sx={{ fontSize: '1em' }} />} label='Aim Rating' value={`${formatNumber(scoreData.difficulty_data?.aim_difficulty ?? 0, 2)}`} small={true} /></div>
-                                    <div className='score-stats__group-row'><ScoreViewStat valueIcon={<StarIcon sx={{ fontSize: '1em' }} />} label='Speed Rating' value={`${formatNumber(scoreData.difficulty_data?.speed_difficulty ?? 0, 2)}`} small={true} /></div>
-                                    <div className='score-stats__group-row'><ScoreViewStat valueIcon={<StarIcon sx={{ fontSize: '1em' }} />} label='Flashlight Rating' value={`${formatNumber(scoreData.difficulty_data?.flashlight_difficulty ?? 0, 2)}`} small={true} /></div>
-                                    <div className='score-stats__group-row'><ScoreViewStat label='Speed note count' value={`${formatNumber(scoreData.difficulty_data?.speed_note_count ?? 0, 2)}`} small={true} /></div>
-                                    <div className='score-stats__group-row'><ScoreViewStat label='Aim Difficult Strain Count' value={`${formatNumber(scoreData.difficulty_data?.aim_difficult_strain_count ?? 0, 2)}`} small={true} /></div>
-                                    <div className='score-stats__group-row'><ScoreViewStat label='Speed Difficult Strain Count' value={`${formatNumber(scoreData.difficulty_data?.speed_difficult_strain_count ?? 0, 2)}`} small={true} /></div>
-                                    <div className='score-stats__group-row'><ScoreViewStat label='Slider Factor' value={`${formatNumber(scoreData.difficulty_data?.slider_factor ?? 0, 3)}`} small={true} /></div>
-                                </div>
-                            </Grid2>
-                            <Grid2 sx={{
-                                // width: Mods.containsSettings(scoreData.score.mods) ? '60%' : '70%',
-                                width: '60%',
-                                padding: 1,
-                            }}>
-                                <Stack direction="column" spacing={1} sx={{
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    width: '100%'
+                                <Grid2 sx={{
+                                    position: 'absolute',
+                                    top: 0,
+                                    left: 0,
+                                    width: '100%',
+                                    height: '100%',
+                                    display: 'flex',
+                                    overflow: 'hidden',
+                                    padding: 2,
+                                    //set all children to flex: 0 0 auto;		
+                                    '& > *': {
+                                        height: '100%',
+                                        overflowY: 'scroll',
+                                    }
                                 }}>
-                                    <Box sx={{
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                        width: '100%',
-                                        fontFamily: 'Torus !important',
-
-                                        //they should stack on top of each other
-                                        flexDirection: 'column',
-                                    }}>
-                                        <Typography variant="h5" sx={{ fontWeight: 'bold' }}>{beatmapData.beatmap.title}</Typography>
-                                        <Typography variant="body2" sx={{ fontWeight: 'bold' }}>{beatmapData.beatmap.artist}</Typography>
-                                    </Box>
-                                    <div className='score-info__item score-info__item--dial'>
-                                        <ScoreDial accuracy={scoreData.score.accuracy * 0.01} rank={scoreData.score.rank} rankCutoffs={rankCutoffs(Mods.hasMod(scoreData.score.mods, "CL"))} />
-                                    </div>
-                                    <Typography variant="h3">{toFixedNumber(scoreData.score.score, 0).toLocaleString('en-US')}</Typography>
-                                    <Box sx={{
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                    }}>
-                                        <Box sx={{ pr: 1 }}>
-                                            <StarsLabel stars={beatmapData.difficulty_data?.star_rating} />
-                                        </Box>
-                                        {Mods.getModElements(scoreData.score.mods, 22)}
-                                    </Box>
-                                    <Box sx={{
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                        width: '100%',
-                                        fontFamily: 'Torus !important',
-
-                                        //they should stack on top of each other
-                                        flexDirection: 'column',
-                                    }}>
-                                        <Typography variant="body2" sx={{ fontWeight: 'bold' }}>{beatmapData.beatmap.diffname}</Typography>
-                                        <Typography variant="subtitles1" sx={{ fontWeight: 100 }}>mapped by <span style={{ fontWeight: 'bold' }}>{beatmapData.beatmap.creator}</span></Typography>
-                                    </Box>
-                                    <Box sx={{
-                                        maxWidth: '700px',
+                                    <Grid2 sx={{
+                                        //if with mods, 1/3rd otherwise 1/2
+                                        // width: Mods.containsSettings(scoreData.score.mods) ? '20%' : '30%',
+                                        width: '20%',
+                                        padding: 1,
                                     }}>
                                         <div className='score-stats__group score-stats__group--stats'>
-                                            <div className='score-stats__group-row'>
-                                                <ScoreViewStat
-                                                    progress={scoreData.score.accuracy * 0.01}
-                                                    label='Accuracy'
-                                                    value={`${scoreData.score.accuracy.toFixed(2)}%`}
-                                                    valueColor={scoreData.score.accuracy === 100 ? green[500] : undefined} />
-                                                <ScoreViewStat
-                                                    progress={scoreData.score.combo / beatmapData.beatmap.maxcombo}
-                                                    label='Max Combo'
-                                                    value={`${scoreData.score.combo}/${beatmapData.beatmap.maxcombo}`}
-                                                    valueColor={scoreData.score.combo === beatmapData.beatmap.maxcombo ? green[500] : undefined} />
-                                                <ScoreViewStat
-                                                    tooltip={
-                                                        (scoreData.score.recalc['fc']?.total ?? 0) !== (scoreData.score.recalc[props.data.pp_version]?.total ?? 0) ?
-                                                            'PP if your score were an FC' : undefined
-                                                    }
-                                                    originalValue={
-                                                        (scoreData.score.recalc['fc']?.total ?? 0) !== (scoreData.score.recalc[props.data.pp_version]?.total ?? 0) ?
-                                                            formatNumber(scoreData.score.recalc['fc']?.total ?? 0, 0) : undefined
-                                                    }
-                                                    label='PP'
-                                                    value={`${formatNumber(scoreData.score.recalc[props.data.pp_version]?.total ?? 0, 0)}`} />
-                                            </div>
-                                            <div className='score-stats__group-row'>
-                                                <ScoreViewStat lineDecorator={true} label='Great' value={`${formatNumber(scoreData.score.count300)}`} labelColor='#69EE00' />
-                                                <ScoreViewStat lineDecorator={true} label='Ok' value={`${formatNumber(scoreData.score.count100)}`} labelColor='#FAFF00' />
-                                                <ScoreViewStat lineDecorator={true} label='Meh' value={`${formatNumber(scoreData.score.count50)}`} labelColor='#FFB800' />
-                                                <ScoreViewStat lineDecorator={true} label='Miss' value={`${formatNumber(scoreData.score.countmiss)}`} labelColor={red[400]} />
-                                            </div>
-                                            <div className='score-stats__group-row'>
-                                                <ScoreViewStat
-                                                    label='AR'
-                                                    valueColor={(Math.ceil(scoreData.difficulty_data?.approach_rate * 100) / 100) !== (Math.ceil(beatmapData.beatmap.ar * 100) / 100) ? (Math.ceil(scoreData.difficulty_data?.approach_rate * 100) / 100) > (Math.ceil(beatmapData.beatmap.ar * 100) / 100) ? red[500] : green[500] : undefined}
-                                                    originalValue={(Math.ceil(scoreData.difficulty_data?.approach_rate * 100) / 100) !== (Math.ceil(beatmapData.beatmap.ar * 100) / 100) ? formatNumber(beatmapData.beatmap.ar, 2) : undefined}
-                                                    value={`${formatNumber(scoreData.difficulty_data?.approach_rate, 2)}`}
-                                                />
-                                                <ScoreViewStat
-                                                    label='CS'
-                                                    valueColor={(Math.ceil(scoreData.difficulty_data?.circle_size * 100) / 100) !== (Math.ceil(beatmapData.beatmap.cs * 100) / 100) ? (Math.ceil(scoreData.difficulty_data?.circle_size * 100) / 100) > (Math.ceil(beatmapData.beatmap.cs * 100) / 100) ? red[500] : green[500] : undefined}
-                                                    originalValue={(Math.ceil(scoreData.difficulty_data?.circle_size * 100) / 100) !== (Math.ceil(beatmapData.beatmap.cs * 100) / 100) ? formatNumber(beatmapData.beatmap.cs, 2) : undefined}
-                                                    value={`${formatNumber(scoreData.difficulty_data?.circle_size, 2)}`}
-                                                />
-                                                <ScoreViewStat
-                                                    label='HP'
-                                                    valueColor={(Math.ceil(scoreData.difficulty_data?.drain_rate * 100) / 100) !== (Math.ceil(beatmapData.beatmap.hp * 100) / 100) ? (Math.ceil(scoreData.difficulty_data?.drain_rate * 100) / 100) > (Math.ceil(beatmapData.beatmap.hp * 100) / 100) ? red[500] : green[500] : undefined}
-                                                    originalValue={(Math.ceil(scoreData.difficulty_data?.drain_rate * 100) / 100) !== (Math.ceil(beatmapData.beatmap.hp * 100) / 100) ? formatNumber(beatmapData.beatmap.hp, 2) : undefined}
-                                                    value={`${formatNumber(scoreData.difficulty_data?.drain_rate, 2)}`}
-                                                />
-                                                <ScoreViewStat
-                                                    label='OD'
-                                                    valueColor={(Math.ceil(scoreData.difficulty_data?.overall_difficulty * 100) / 100) !== (Math.ceil(beatmapData.beatmap.od * 100) / 100) ? (Math.ceil(scoreData.difficulty_data?.overall_difficulty * 100) / 100) > (Math.ceil(beatmapData.beatmap.od * 100) / 100) ? red[500] : green[500] : undefined}
-                                                    originalValue={(Math.ceil(scoreData.difficulty_data?.overall_difficulty * 100) / 100) !== (Math.ceil(beatmapData.beatmap.od * 100) / 100) ? formatNumber(beatmapData.beatmap.od, 2) : undefined}
-                                                    value={`${formatNumber(scoreData.difficulty_data?.overall_difficulty, 2)}`}
-                                                />
-                                            </div>
-                                            <div className='score-stats__group-row'>
-                                                <ScoreViewStat label='Aim PP' value={`${formatNumber(scoreData.score.recalc[props.data.pp_version]?.aim ?? 0, 1)}`} />
-                                                <ScoreViewStat label='Speed PP' value={`${formatNumber(scoreData.score.recalc[props.data.pp_version]?.speed ?? 0, 1)}`} />
-                                                <ScoreViewStat label='Flashlight PP' value={`${formatNumber(scoreData.score.recalc[props.data.pp_version]?.flashlight ?? 0, 1)}`} />
-                                            </div>
+                                            <Typography variant='subtitle2'>Difficulty</Typography>
+                                            <div className='score-stats__group-row'><ScoreViewStat valueIcon={<StarIcon sx={{ fontSize: '1em' }} />} label='Aim Rating' value={`${formatNumber(scoreData.difficulty_data?.aim_difficulty ?? 0, 2)}`} small={true} /></div>
+                                            <div className='score-stats__group-row'><ScoreViewStat valueIcon={<StarIcon sx={{ fontSize: '1em' }} />} label='Speed Rating' value={`${formatNumber(scoreData.difficulty_data?.speed_difficulty ?? 0, 2)}`} small={true} /></div>
+                                            <div className='score-stats__group-row'><ScoreViewStat valueIcon={<StarIcon sx={{ fontSize: '1em' }} />} label='Flashlight Rating' value={`${formatNumber(scoreData.difficulty_data?.flashlight_difficulty ?? 0, 2)}`} small={true} /></div>
+                                            <div className='score-stats__group-row'><ScoreViewStat label='Speed note count' value={`${formatNumber(scoreData.difficulty_data?.speed_note_count ?? 0, 2)}`} small={true} /></div>
+                                            <div className='score-stats__group-row'><ScoreViewStat label='Aim Difficult Strain Count' value={`${formatNumber(scoreData.difficulty_data?.aim_difficult_strain_count ?? 0, 2)}`} small={true} /></div>
+                                            <div className='score-stats__group-row'><ScoreViewStat label='Speed Difficult Strain Count' value={`${formatNumber(scoreData.difficulty_data?.speed_difficult_strain_count ?? 0, 2)}`} small={true} /></div>
+                                            <div className='score-stats__group-row'><ScoreViewStat label='Slider Factor' value={`${formatNumber(scoreData.difficulty_data?.slider_factor ?? 0, 3)}`} small={true} /></div>
                                         </div>
-                                    </Box>
-                                    <Typography variant="subtitle2" display="flex" alignItems="center" sx={{ mt: 0 }} spacing="5">
-                                        {/* pretty print like 23 November 2024 3:52 PM */}
-                                        Played on {moment(scoreData.score.date_played).format('LLL')}<br />
-                                        by {scoreData.score.user.username}
-                                    </Typography>
-                                </Stack>
-                            </Grid2>
-                            <Grid2 sx={{
-                                width: '20%',
-                                padding: 1,
-                            }}>
-                                {
-                                    Mods.containsSettings(scoreData.score.mods) ?
-                                        <>
-                                            <Box sx={{ width: '100%' }}>
-                                                {
-                                                    Mods.getModsWithSettings(scoreData.score.mods).map((mod, i) => {
-                                                        const settings = mod.settings;
-                                                        return (
-                                                            <Box>
-                                                                <div key={mod.acronym} className='score-stats__group score-stats__group--stats'>
-                                                                    <Box sx={{ display: 'flex', justifyContent: 'left', alignItems: 'center' }}>
-                                                                        <Box sx={{ mr: 1 }}>
-                                                                            {Mods.getModElement(mod, 20)}
-                                                                        </Box>
-                                                                        <Typography variant='subtitle2'>{mod.data.Name}</Typography>
-                                                                    </Box>
-                                                                    {
-                                                                        Object.keys(settings).map((setting, i) => {
-                                                                            const data = Mods.getModSettingsData(mod.acronym, setting);
-                                                                            let value;
-                                                                            let valueTyped;
-                                                                            // let originalValue = Mods.getModOriginalValue(beatmapData.beatmap, setting);
-                                                                            let [originalValue, invertSkillHandler] = Mods.getModOriginalValue(beatmapData.beatmap, mod.acronym, setting);
-                                                                            let color = undefined;
-
-
-                                                                            value = settings[setting];
-                                                                            if (data.Type === 'number') {
-                                                                                value = formatNumber(value, 2);
-                                                                                valueTyped = parseFloat(value);
-                                                                            } else if (data.Type === 'boolean') {
-                                                                                value = value ? 'Yes' : 'No';
-                                                                                valueTyped = value;
-                                                                            }
-
-                                                                            if (originalValue !== null) {
-                                                                                originalValue = parseFloat(originalValue);
-
-
-                                                                                if (!invertSkillHandler) {
-                                                                                    if (valueTyped > originalValue) {
-                                                                                        color = red[500];
-                                                                                    } else if (valueTyped < originalValue) {
-                                                                                        color = green[500];
-                                                                                    }
-                                                                                } else {
-                                                                                    if (valueTyped > originalValue) {
-                                                                                        color = green[500];
-                                                                                    } else if (valueTyped < originalValue) {
-                                                                                        color = red[500];
-                                                                                    }
-                                                                                }
-                                                                            }
-
-                                                                            console.log(originalValue, invertSkillHandler);
-
-                                                                            return (
-                                                                                <div className='score-stats__group-row'>
-                                                                                    <ScoreViewStat
-                                                                                        tooltip={data.Description}
-                                                                                        label={data.Label}
-                                                                                        originalValue={originalValue}
-                                                                                        value={value}
-                                                                                        small={true}
-                                                                                        valueColor={color}
-                                                                                    />
-                                                                                </div>
-                                                                            );
-                                                                        })
-                                                                    }
-                                                                    {
-                                                                        i < Mods.getModsWithSettings(scoreData.score.mods).length - 1 ?
-                                                                            <Divider sx={{
-                                                                                pb: 1
-                                                                            }} /> : null
-                                                                    }
-                                                                </div>
-                                                            </Box>
-                                                        );
-                                                    })
-                                                }
-                                            </Box>
-                                            {/* when we are overflowing, add an icon to indicate there is more */}
-                                            <Box sx={{
-                                                display: 'flex',
+                                    </Grid2>
+                                    <Grid2 ref={screenshotArea} sx={{
+                                        // width: Mods.containsSettings(scoreData.score.mods) ? '60%' : '70%',
+                                        width: '60%',
+                                        padding: 1,
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                    }}>
+                                        <Box sx={{
+                                            maxWidth: '800px',
+                                            width: '620px'
+                                        }}>
+                                            <Stack direction="column" spacing={1} sx={{
                                                 justifyContent: 'center',
                                                 alignItems: 'center',
-                                                mt: 1,
+                                                width: '100%'
                                             }}>
-                                                <Chip label='More' />
-                                            </Box> </> : <Box sx={{
-                                                width: '100%',
-                                                height: '100%',
-                                                display: 'flex',
-                                                justifyContent: 'center',
-                                                alignItems: 'center',
-                                                flexDirection: 'column',
-                                                color: grey[500]
-                                            }}>
-                                            <EditNoteIcon sx={{ fontSize: '5em' }} />
-                                            <Typography variant='h6'>No mod settings applied</Typography>
+                                                <Box sx={{
+                                                    display: 'flex',
+                                                    justifyContent: 'center',
+                                                    alignItems: 'center',
+                                                    width: '100%',
+                                                    fontFamily: 'Torus !important',
+
+                                                    //they should stack on top of each other
+                                                    flexDirection: 'column',
+                                                }}>
+                                                    <Typography variant="h5" sx={{ fontWeight: 'bold' }}>{beatmapData.beatmap.title}</Typography>
+                                                    <Typography variant="body2" sx={{ fontWeight: 'bold' }}>{beatmapData.beatmap.artist}</Typography>
+                                                </Box>
+                                                <div className='score-info__item score-info__item--dial'>
+                                                    <ScoreDial accuracy={scoreData.score.accuracy * 0.01} rank={scoreData.score.rank} rankCutoffs={rankCutoffs(Mods.hasMod(scoreData.score.mods, "CL"))} />
+                                                </div>
+                                                <span className='lazer-text-gradient' style={{
+                                                    fontFamily: 'Torus',
+                                                    fontSize: '3em',
+                                                }}>{toFixedNumber(scoreData.score.score, 0).toLocaleString('en-US')}</span>
+                                                <Box sx={{
+                                                    display: 'flex',
+                                                    justifyContent: 'center',
+                                                    alignItems: 'center',
+                                                    flexWrap: 'wrap',
+                                                }}>
+                                                    <Box sx={{ pr: 1 }}>
+                                                        <StarsLabel stars={beatmapData.difficulty_data?.star_rating} />
+                                                    </Box>
+                                                    {Mods.getModElements(scoreData.score.mods, 22)}
+                                                </Box>
+                                                <Box sx={{
+                                                    display: 'flex',
+                                                    justifyContent: 'center',
+                                                    alignItems: 'center',
+                                                    width: '100%',
+                                                    fontFamily: 'Torus !important',
+
+                                                    //they should stack on top of each other
+                                                    flexDirection: 'column',
+                                                }}>
+                                                    <Typography variant="body2" sx={{ fontWeight: 'bold' }}>{beatmapData.beatmap.diffname}</Typography>
+                                                    <Typography variant="subtitles1" sx={{ fontWeight: 100 }}>mapped by <span style={{ fontWeight: 'bold' }}>{beatmapData.beatmap.creator}</span></Typography>
+                                                </Box>
+                                                <div className='score-stats__group score-stats__group--stats'>
+                                                    <div className='score-stats__group-row'>
+                                                        <ScoreViewStat
+                                                            progress={scoreData.score.accuracy * 0.01}
+                                                            label='Accuracy'
+                                                            value={`${scoreData.score.accuracy.toFixed(2)}%`}
+                                                            valueColor={scoreData.score.accuracy === 100 ? green[500] : undefined} />
+                                                        <ScoreViewStat
+                                                            progress={scoreData.score.combo / beatmapData.beatmap.maxcombo}
+                                                            label='Max Combo'
+                                                            value={`${scoreData.score.combo}/${beatmapData.beatmap.maxcombo}`}
+                                                            valueColor={scoreData.score.combo === beatmapData.beatmap.maxcombo ? green[500] : undefined} />
+                                                        <ScoreViewStat
+                                                            tooltip={
+                                                                (scoreData.score.recalc['fc']?.total ?? 0) !== (scoreData.score.recalc[props.data.pp_version]?.total ?? 0) ?
+                                                                    'PP if your score were an FC' : undefined
+                                                            }
+                                                            originalValue={
+                                                                (scoreData.score.recalc['fc']?.total ?? 0) !== (scoreData.score.recalc[props.data.pp_version]?.total ?? 0) ?
+                                                                    formatNumber(scoreData.score.recalc['fc']?.total ?? 0, 0) : undefined
+                                                            }
+                                                            label='PP'
+                                                            value={`${formatNumber(scoreData.score.recalc[props.data.pp_version]?.total ?? 0, 0)}`} />
+                                                    </div>
+                                                    <div className='score-stats__group-row'>
+                                                        <ScoreViewStat lineDecorator={true} label='Great' value={`${formatNumber(scoreData.score.count300)}`} labelColor='#69EE00' />
+                                                        <ScoreViewStat lineDecorator={true} label='Ok' value={`${formatNumber(scoreData.score.count100)}`} labelColor='#FAFF00' />
+                                                        <ScoreViewStat lineDecorator={true} label='Meh' value={`${formatNumber(scoreData.score.count50)}`} labelColor='#FFB800' />
+                                                        <ScoreViewStat lineDecorator={true} label='Miss' value={`${formatNumber(scoreData.score.countmiss)}`} labelColor={red[400]} />
+                                                    </div>
+                                                    <div className='score-stats__group-row'>
+                                                        <ScoreViewStat
+                                                            label='AR'
+                                                            valueColor={(Math.ceil(scoreData.difficulty_data?.approach_rate * 100) / 100) !== (Math.ceil(beatmapData.beatmap.ar * 100) / 100) ? (Math.ceil(scoreData.difficulty_data?.approach_rate * 100) / 100) > (Math.ceil(beatmapData.beatmap.ar * 100) / 100) ? red[500] : green[500] : undefined}
+                                                            originalValue={(Math.ceil(scoreData.difficulty_data?.approach_rate * 100) / 100) !== (Math.ceil(beatmapData.beatmap.ar * 100) / 100) ? formatNumber(beatmapData.beatmap.ar, 2) : undefined}
+                                                            value={`${formatNumber(scoreData.difficulty_data?.approach_rate, 2)}`}
+                                                        />
+                                                        <ScoreViewStat
+                                                            label='CS'
+                                                            valueColor={(Math.ceil(scoreData.difficulty_data?.circle_size * 100) / 100) !== (Math.ceil(beatmapData.beatmap.cs * 100) / 100) ? (Math.ceil(scoreData.difficulty_data?.circle_size * 100) / 100) > (Math.ceil(beatmapData.beatmap.cs * 100) / 100) ? red[500] : green[500] : undefined}
+                                                            originalValue={(Math.ceil(scoreData.difficulty_data?.circle_size * 100) / 100) !== (Math.ceil(beatmapData.beatmap.cs * 100) / 100) ? formatNumber(beatmapData.beatmap.cs, 2) : undefined}
+                                                            value={`${formatNumber(scoreData.difficulty_data?.circle_size, 2)}`}
+                                                        />
+                                                        <ScoreViewStat
+                                                            label='HP'
+                                                            valueColor={(Math.ceil(scoreData.difficulty_data?.drain_rate * 100) / 100) !== (Math.ceil(beatmapData.beatmap.hp * 100) / 100) ? (Math.ceil(scoreData.difficulty_data?.drain_rate * 100) / 100) > (Math.ceil(beatmapData.beatmap.hp * 100) / 100) ? red[500] : green[500] : undefined}
+                                                            originalValue={(Math.ceil(scoreData.difficulty_data?.drain_rate * 100) / 100) !== (Math.ceil(beatmapData.beatmap.hp * 100) / 100) ? formatNumber(beatmapData.beatmap.hp, 2) : undefined}
+                                                            value={`${formatNumber(scoreData.difficulty_data?.drain_rate, 2)}`}
+                                                        />
+                                                        <ScoreViewStat
+                                                            label='OD'
+                                                            valueColor={(Math.ceil(scoreData.difficulty_data?.overall_difficulty * 100) / 100) !== (Math.ceil(beatmapData.beatmap.od * 100) / 100) ? (Math.ceil(scoreData.difficulty_data?.overall_difficulty * 100) / 100) > (Math.ceil(beatmapData.beatmap.od * 100) / 100) ? red[500] : green[500] : undefined}
+                                                            originalValue={(Math.ceil(scoreData.difficulty_data?.overall_difficulty * 100) / 100) !== (Math.ceil(beatmapData.beatmap.od * 100) / 100) ? formatNumber(beatmapData.beatmap.od, 2) : undefined}
+                                                            value={`${formatNumber(scoreData.difficulty_data?.overall_difficulty, 2)}`}
+                                                        />
+                                                    </div>
+                                                    <div className='score-stats__group-row'>
+                                                        <ScoreViewStat label='Aim PP' value={`${formatNumber(scoreData.score.recalc[props.data.pp_version]?.aim ?? 0, 1)}`} />
+                                                        <ScoreViewStat label='Speed PP' value={`${formatNumber(scoreData.score.recalc[props.data.pp_version]?.speed ?? 0, 1)}`} />
+                                                        <ScoreViewStat label='Flashlight PP' value={`${formatNumber(scoreData.score.recalc[props.data.pp_version]?.flashlight ?? 0, 1)}`} />
+                                                    </div>
+                                                </div>
+                                                <Box sx={{
+                                                    //we want 2 children, one on the left and one on the right
+                                                    display: 'flex',
+                                                    justifyContent: 'space-between',
+                                                    alignItems: 'center',
+                                                    width: '100%',
+                                                    mt: 1,
+                                                }}>
+                                                    <Box sx={{
+                                                        display: 'flex',
+                                                        justifyContent: 'left',
+                                                        alignItems: 'center',
+                                                        gap: 1,
+                                                    }}>
+                                                        <Avatar variant="rounded" src={`https://a.ppy.sh/${scoreData.score.user_id}`} />
+                                                        <Typography variant='subtitle1'>{scoreData.score.user.username}</Typography>
+                                                    </Box>
+                                                    <Box>
+                                                        <Typography variant='caption'>Achieved on</Typography>
+                                                        <Typography variant='subtitle2'>{moment(scoreData.score.date_played).format('LLL')}</Typography>
+                                                    </Box>
+                                                </Box>
+                                                {/* <Typography variant="subtitle2" display="flex" alignItems="center" sx={{ mt: 0 }} spacing="5">
+                                                Played on {moment(scoreData.score.date_played).format('LLL')}<br />
+                                                by {scoreData.score.user.username}
+                                            </Typography> */}
+                                            </Stack>
                                         </Box>
-                                }
-                            </Grid2>
-                        </Grid2>
-                    </Box>
-                </Card>
+                                    </Grid2>
+                                    <Grid2 sx={{
+                                        width: '20%',
+                                        padding: 1,
+                                    }}>
+                                        {
+                                            Mods.containsSettings(scoreData.score.mods) ?
+                                                <>
+                                                    <Box sx={{ width: '100%' }}>
+                                                        {
+                                                            Mods.getModsWithSettings(scoreData.score.mods).map((mod, i) => {
+                                                                const settings = mod.settings;
+                                                                return (
+                                                                    <Box>
+                                                                        <div key={mod.acronym} className='score-stats__group score-stats__group--stats'>
+                                                                            <Box sx={{ display: 'flex', justifyContent: 'left', alignItems: 'center' }}>
+                                                                                <Box sx={{ mr: 1 }}>
+                                                                                    {Mods.getModElement(mod, 20)}
+                                                                                </Box>
+                                                                                <Typography variant='subtitle2'>{mod.data.Name}</Typography>
+                                                                            </Box>
+                                                                            {
+                                                                                Object.keys(settings).map((setting, i) => {
+                                                                                    const data = Mods.getModSettingsData(mod.acronym, setting);
+                                                                                    let value;
+                                                                                    let valueTyped;
+                                                                                    // let originalValue = Mods.getModOriginalValue(beatmapData.beatmap, setting);
+                                                                                    let [originalValue, invertSkillHandler] = Mods.getModOriginalValue(beatmapData.beatmap, mod.acronym, setting);
+                                                                                    let color = undefined;
+
+
+                                                                                    value = settings[setting];
+                                                                                    if (data.Type === 'number') {
+                                                                                        value = formatNumber(value, 2);
+                                                                                        valueTyped = parseFloat(value);
+                                                                                    } else if (data.Type === 'boolean') {
+                                                                                        value = value ? 'Yes' : 'No';
+                                                                                        valueTyped = value;
+                                                                                    }
+
+                                                                                    if (originalValue !== null) {
+                                                                                        originalValue = parseFloat(originalValue);
+
+
+                                                                                        if (!invertSkillHandler) {
+                                                                                            if (valueTyped > originalValue) {
+                                                                                                color = red[500];
+                                                                                            } else if (valueTyped < originalValue) {
+                                                                                                color = green[500];
+                                                                                            }
+                                                                                        } else {
+                                                                                            if (valueTyped > originalValue) {
+                                                                                                color = green[500];
+                                                                                            } else if (valueTyped < originalValue) {
+                                                                                                color = red[500];
+                                                                                            }
+                                                                                        }
+                                                                                    }
+
+                                                                                    console.log(originalValue, invertSkillHandler);
+
+                                                                                    return (
+                                                                                        <div className='score-stats__group-row'>
+                                                                                            <ScoreViewStat
+                                                                                                tooltip={data.Description}
+                                                                                                label={data.Label}
+                                                                                                originalValue={originalValue}
+                                                                                                value={value}
+                                                                                                small={true}
+                                                                                                valueColor={color}
+                                                                                            />
+                                                                                        </div>
+                                                                                    );
+                                                                                })
+                                                                            }
+                                                                            {
+                                                                                i < Mods.getModsWithSettings(scoreData.score.mods).length - 1 ?
+                                                                                    <Divider sx={{
+                                                                                        pb: 1
+                                                                                    }} /> : null
+                                                                            }
+                                                                        </div>
+                                                                    </Box>
+                                                                );
+                                                            })
+                                                        }
+                                                    </Box>
+                                                    {/* when we are overflowing, add an icon to indicate there is more */}
+                                                    <Box sx={{
+                                                        display: 'flex',
+                                                        justifyContent: 'center',
+                                                        alignItems: 'center',
+                                                        mt: 1,
+                                                    }}>
+                                                        <Chip label='More' />
+                                                    </Box> </> : <Box sx={{
+                                                        width: '100%',
+                                                        height: '100%',
+                                                        display: 'flex',
+                                                        justifyContent: 'center',
+                                                        alignItems: 'center',
+                                                        flexDirection: 'column',
+                                                        color: grey[500]
+                                                    }}>
+                                                    <EditNoteIcon sx={{ fontSize: '5em' }} />
+                                                    <Typography variant='h6'>No mod settings applied</Typography>
+                                                </Box>
+                                        }
+                                    </Grid2>
+                                </Grid2>
+                            </Box>
+                        </div>
+                    </Card>
+                </>
                 : <></>
             }
         </>

@@ -446,3 +446,12 @@ a {
 .difficulty-badge__rating {
     min-width: 0.5em * 2 + 0.2em;
 }
+
+.lazer-text-gradient {
+    /* text color #FFFFFF to #B2E5FE top to bottom */
+    color: #FFFFFF;
+    background: linear-gradient(180deg, #FFFFFF, #B2E5FE);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}

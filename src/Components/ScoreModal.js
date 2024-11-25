@@ -14,6 +14,16 @@ function ScoreModal(props) {
         if (props.data !== undefined && props.data.score !== undefined) {
             setOpen(props.data.active);
         }
+
+        //when pressing ESC key, close the modal
+        const handleKeyDown = (e) => {
+            if (e.key === 'Escape') {
+                handleClose();
+                //remove the event listener
+                window.removeEventListener('keydown', handleKeyDown);
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
     }, [props.data]);
 
     return (

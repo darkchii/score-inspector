@@ -17,7 +17,7 @@ let DefaultTheme = createTheme({
         borderRadius: 10
     },
     typography: {
-        fontFamily: 'Comfortaa',
+        fontFamily: 'Torus',
         fontWeight: 700,
         title: {
             color: '#66FFCC',
