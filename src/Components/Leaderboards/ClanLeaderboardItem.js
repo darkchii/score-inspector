@@ -58,6 +58,13 @@ function ClanLeaderboardItem(props) {
                     <Typography>
                         {props.clan?.name}
                     </Typography>
+                    <Typography sx={{
+                        fontSize: '0.8em',
+                        color: 'rgba(255, 255, 255, 0.7)',
+                        fontWeight: 100
+                    }}>
+                        Lead by <span style={{ fontWeight: 300, color: 'rgba(255,255,255,0.9)' }}>{props.clan?.owner_user?.known_username}</span>
+                    </Typography>
                 </Box>
             </Box>
 
@@ -80,15 +87,17 @@ function ClanLeaderboardItem(props) {
                                     pl: 1,
                                     pr: 1,
                                 }}>
-                                    <Typography
-                                        sx={{
-                                            color: value.color ?? 'inherit',
-                                        }}
-                                        variant={value.variant ?? 'h6'}
-                                        textAlign={value.alignment}
-                                        noWrap>
-                                        {value.value}
-                                    </Typography>
+                                    <Box>
+                                        <Typography
+                                            sx={{
+                                                color: value.color ?? 'inherit',
+                                            }}
+                                            variant={value.variant ?? 'h6'}
+                                            textAlign={value.alignment}
+                                            noWrap>
+                                            {value.value}
+                                        </Typography>
+                                    </Box>
                                 </Box>
                             </Tooltip>
                         )

@@ -1,8 +1,10 @@
 import { Box, Tooltip, Typography } from "@mui/material";
 import { getModString, mods } from "./Osu";
-import { getModIcon } from "./Assets";
+import { getModIcon, PNG_MOD_EXTENDER } from "./Assets";
 import ModData from "../Data/ModData";
 import { isEmpty } from "lodash";
+import { formatNumber, getHueRotate, ImageWithColor } from "./Misc";
+import Color from "color";
 
 let _MOD_ICON_CACHE = {};
 
@@ -112,14 +114,14 @@ class Mods {
             if (setting === 'circle_size') { originalValue = parseFloat(beatmap.cs); }
             if (setting === 'drain_rate') { originalValue = parseFloat(beatmap.hp); }
             if (setting === 'overall_difficulty') { originalValue = parseFloat(beatmap.od); }
-        }else if(acronym === "FL"){
-            if(setting === 'size_multiplier'){ originalValue = 1; invertSkillHandler = true; }
-        }else if(acronym === "DT" || acronym === "NC"){
-            if(setting === 'speed_change'){ originalValue = 1.5; }
-        }else if(acronym === "HT"){
-            if(setting === 'speed_change'){ originalValue = 0.75; }
+        } else if (acronym === "FL") {
+            if (setting === 'size_multiplier') { originalValue = 1; invertSkillHandler = true; }
+        } else if (acronym === "DT" || acronym === "NC") {
+            if (setting === 'speed_change') { originalValue = 1.5; }
+        } else if (acronym === "HT") {
+            if (setting === 'speed_change') { originalValue = 0.75; }
         }
-        
+
         console.log(`[Mods.getModOriginalValue] Beatmap: ${beatmap} Acronym: ${acronym} Setting: ${setting}, Original Value: ${originalValue}, Invert Skill Handler: ${invertSkillHandler}`);
         return [originalValue, invertSkillHandler];
     }
@@ -133,11 +135,41 @@ class Mods {
         return mods.mods_data.filter(m => m.settings !== undefined);
     }
 
-    static getModElements(mods, height = 20, style = {}) {
-        return Mods.valueOf(mods).map((mod, i) => Mods.getModElement(mod, height, i === 0 ? { marginLeft: 0 } : {}));
+    static isModSpeedChange(mod) {
+        return mod.acronym === "DT" || mod.acronym === "NC" || mod.acronym === "HT" || mod.acronym === "DC";
     }
 
-    static getModElement(mod, height = 24, style = {}) {
+    static getDefaultSpeedChange(mod) {
+        if (mod.acronym === "DT" || mod.acronym === "NC") {
+            return 1.5;
+        } else if (mod.acronym === "HT" || mod.acronym === "DC") {
+            return 0.75;
+        } else {
+            return 1;
+        }
+    }
+
+    static getModElements(mods, height = 20, style = {}, show_extra_mod_info = false, gap = 5) {
+        // return Mods.valueOf(mods).map((mod, i) => Mods.getModElement(mod, height, i === 0 ? { marginLeft: 0 } : {}));
+        return Mods.valueOf(mods).map((mod, i) => Mods.getModElement(mod, height, {
+            marginLeft: i === 0 ? 0 : gap,
+            ...style
+        }, show_extra_mod_info));
+    }
+
+    static getModTypeColor(mod) {
+        switch (mod.data.Type) {
+            case "Automation": return "#66ccff";
+            case "DifficultyIncrease": return "#ff6666";
+            case "DifficultyReduction": return "#b2ff66";
+            case "Conversion": return "#8c66ff";
+            case "Fun": return "#ff66ab";
+            case "System": return "#ffcc22";
+            default: return "#ffffff";
+        }
+    }
+
+    static getModElement(mod, height = 24, style = {}, show_extra_mod_info = false) {
         if (mod.data === undefined) {
             console.error(`Mod ${mod.acronym} does not have data`);
             return null;
@@ -168,7 +200,23 @@ class Mods {
             tooltip_extra_data = str.join(", ");
         }
 
-        const settings = mod.settings;
+        // let width = undefined;
+        //   width: calc($height * unit(@mod-width) / unit(@mod-height));
+        let width = undefined;
+
+        let extra_data_string = undefined;
+
+        if (show_extra_mod_info) {
+            // if (mod.acronym === "DT" || mod.acronym === "NC" || mod.acronym === "HT" || mod.acronym === "DC") {
+            if (Mods.isModSpeedChange(mod)) {
+                extra_data_string = `${formatNumber(mod.settings?.speed_change ?? Mods.getDefaultSpeedChange(mod), 2)}x`;
+            }
+        }
+
+        if (extra_data_string !== undefined) {
+            width = height * 3;
+        }
+        console.log(`[Mods.getModElement] Mod: ${mod.acronym} Data: ${extra_data_string}`);
 
         return (
             <Tooltip title={
@@ -178,11 +226,61 @@ class Mods {
                     </Box>
                 </Box>
             }>
-                <Box style={{
-                    ...style,
-                    '--mod-height': `${height}px`,
-                }} className={`mod ${superimpose_acronym ? '' : 'mod-img'}`} data-acronym={mod.acronym} key={mod.acronym}>
-                    <img src={mod_icon} alt={mod.acronym} height={height} />
+                <Box sx={{
+                    display: 'flex',
+                    position: 'relative',
+                }}>
+                    <Box style={{
+                        ...style,
+                        '--mod-height': `${height}px`,
+                        ...(width !== undefined && extra_data_string !== undefined ? { '--mod-width': `${width}px` } : {}),
+                    }} className={`mod ${superimpose_acronym ? '' : 'mod-img'}`} data-acronym={mod.acronym} key={mod.acronym}>
+                        <img src={mod_icon} alt={mod.acronym} height={height} />
+                    </Box>
+                    {show_extra_mod_info !== undefined && extra_data_string !== undefined ?
+                        <>
+                            <Box sx={{
+                                position: 'absolute',
+                                top: 0,
+                                bottom: 0,
+                                height: '100%',
+                                left: '1.45em',
+                            }}>
+                                <ImageWithColor
+                                    src={PNG_MOD_EXTENDER}
+                                    height='100%'
+                                    // color={'#ff0000'}
+                                    color={Color(Mods.getModTypeColor(mod)).darken(0.9).hex()}
+                                />
+                            </Box>
+                            <Box sx={{
+                                position: 'absolute',
+                                top: 0,
+                                left: '1.5em',
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                height: '100%',
+                                width: width - height,
+                            }}>
+                                <Typography sx={{
+                                    fontSize: '0.65em',
+                                    fontWeight: 'bold',
+                                    color: Color(Mods.getModTypeColor(mod)).lighten(0.1).hex(),
+                                }}>{extra_data_string}</Typography>
+                            </Box>
+                        </>
+                        // <Box sx={{
+                        //     display: 'flex',
+                        //     justifyContent: 'center',
+                        //     alignItems: 'center',
+                        //     height: '100%',
+                        //     width: '100%',
+
+                        // }}>
+                        //     <Typography sx={{ fontSize: '0.8em' }}>{extra_data_string}</Typography>
+                        // </Box>
+                        : null}
                 </Box>
             </Tooltip>
         )

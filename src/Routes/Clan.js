@@ -27,6 +27,7 @@ import DoneIcon from '@mui/icons-material/Done';
 import ClearIcon from '@mui/icons-material/Clear';
 import { IMG_TRIANGLES } from "../Helpers/Assets";
 import { DiscordIcon } from "../Components/Icons";
+import OsuTabs from "../Components/OsuTabs";
 
 //always round to 2 decimal places, and toLocaleString for commas
 const CLAN_STATS = [
@@ -1326,17 +1327,17 @@ function ClanTop(props) {
             <Box sx={{
                 zIndex: 2
             }}>
-                <Typography variant='body1'>Best clans of</Typography>
-                <Typography variant='h5' sx={{
-                    fontStyle: 'italic',
+                <Typography variant='h3' sx={{
+                    fontWeight: 100,
                 }}>{data.date}</Typography>
+                <Typography variant='body1'>Best clans</Typography>
             </Box>
             <Box sx={{
                 //center horizontally
                 justifyContent: 'center',
                 display: 'flex',
             }}>
-                <Tabs value={activeStatIndex} onChange={(e, value) => setActiveStatIndex(value)}>
+                <OsuTabs value={activeStatIndex} onChange={(e, value) => setActiveStatIndex(value)}>
                     {
                         Object.keys(CLAN_RANKING_STATS).map((stat) => {
                             return (
@@ -1344,7 +1345,7 @@ function ClanTop(props) {
                             )
                         })
                     }
-                </Tabs>
+                </OsuTabs>
             </Box>
             <Box>
                 <Grid2 container sx={{
@@ -1379,7 +1380,9 @@ function ClanTop(props) {
                                                     value: '', alignment: 'left', variant: 'body2'
                                                 },
                                                 {
-                                                    value: CLAN_RANKING_STATS[activeStat].name, alignment: 'right', variant: 'body2',
+                                                    value: CLAN_RANKING_STATS[activeStat].name, 
+                                                    alignment: 'right', 
+                                                    variant: 'body2',
                                                     color: grey[500]
                                                 },
                                                 {

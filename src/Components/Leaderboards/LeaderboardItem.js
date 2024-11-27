@@ -12,6 +12,7 @@ export function LeaderboardItem(props) {
             width: "100%",
             position: 'relative',
             borderRadius: LEADERBOARD_BORDER_RADIUS,
+            zIndex: 0,
             ...props.sx
         }}>
             <Box sx={{
@@ -24,7 +25,16 @@ export function LeaderboardItem(props) {
                 backgroundPosition: 'center',
                 backgroundRepeat: 'no-repeat',
                 borderRadius: LEADERBOARD_BORDER_RADIUS,
-                zIndex: -3
+                zIndex: 1
+            }} />
+            <Box sx={{
+                //Background color that fades out to the right
+                position: 'absolute',
+                width: '100%',
+                height: '100%',
+                backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                borderRadius: LEADERBOARD_BORDER_RADIUS,
+                zIndex: 2
             }} />
             {
                 props.backgroundColor ?
@@ -33,9 +43,9 @@ export function LeaderboardItem(props) {
                         position: 'absolute',
                         width: '100%',
                         height: '100%',
-                        background: `linear-gradient(to right, ${props.backgroundColor}, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0))`,
+                        background: `linear-gradient(to right, ${props.backgroundColor}27, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0))`,
                         borderRadius: LEADERBOARD_BORDER_RADIUS,
-                        zIndex: -1
+                        zIndex: 3
                     }} /> : <></>
             }
 
@@ -50,7 +60,8 @@ export function LeaderboardItem(props) {
                     transition: 'all 0.2s',
                     backgroundColor: "rgba(0, 0, 0, 0.5)",
                     cursor: props.onClick ? 'pointer' : 'default'
-                }
+                },
+                zIndex: 4,
             }}
                 onClick={props.onClick}
             >

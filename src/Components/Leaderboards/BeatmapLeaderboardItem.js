@@ -24,6 +24,13 @@ function BeatmapLeaderboardItem(props) {
         <>
             <LeaderboardItem
                 background={`https://assets.ppy.sh/beatmaps/${osu_beatmap?.set_id}/covers/cover.jpg`}
+                backgroundColor={
+                    //less obtrusive color, so darker shades of what we already have
+                    osu_beatmap?.approved === 4 ? '#aa0000' :
+                        osu_beatmap?.approved === 3 ? '#aa6600' :
+                            osu_beatmap?.approved === 2 ? '#006600' :
+                                osu_beatmap?.approved === 1 ? '#0066aa' : '#000000'
+                }
                 onClick={() => {
                     if (type === 'beatmapsets')
                         window.open(`https://osu.ppy.sh/beatmapsets/${base_beatmap?.set_id}`, "_blank");

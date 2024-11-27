@@ -1,10 +1,14 @@
+import { animated, useSpring } from '@react-spring/web';
 import * as d3 from 'd3';
+import { useEffect, useState } from 'react';
+import { getRankFromAccuracy, rankCutoffs } from '../Helpers/Osu';
+import Mods from '../Helpers/Mods';
 
 const displayRank = {
-    "A": "A",
-    "B": "B",
-    "C": "C",
     "D": "D",
+    "C": "C",
+    "B": "B",
+    "A": "A",
     "S": "S",
     "SH": "S",
     "X": "SS",
@@ -14,7 +18,28 @@ const displayRank = {
 function ScoreDial(props) {
     const arc = d3.arc();
     const pie = d3.pie().sortValues(null);
-    const valueData = [props.accuracy, 1 - props.accuracy];
+    const [displayedRank, setDisplayedRank] = useState("D");
+    const _rankCutoffs = rankCutoffs(Mods.hasMod(props.score.mods, "CL"));
+    const springData = useSpring({
+        from: {
+            pos: [0]
+        },
+        to: {
+            //radians
+            pos: [(props.accuracy * 360) * (Math.PI / 180)]
+        },
+        config: {
+            duration: 1250,
+            easing: d3.easeQuadInOut,
+        },
+        onChange: (result, spring, item) => {
+            // setDisplayedRank(rankCutoffs(Mods.hasMod(props.mods, "CL")));
+            const rad = result.value.pos[0];
+            const progress = rad / (2 * Math.PI);
+            const grade = getRankFromAccuracy(props.score, progress);
+            setDisplayedRank(displayRank[grade]);
+        }
+    })
 
     return (
         <div className="score_dial">
@@ -28,7 +53,7 @@ function ScoreDial(props) {
                     </defs>
                     <g transform="translate(100,100)">
                         {
-                            pie(props.rankCutoffs).map((d) => (
+                            pie(_rankCutoffs).map((d) => (
                                 <path
                                     key={d.index}
                                     className={`score_dial_inner score_dial_inner-${d.index}`}
@@ -37,20 +62,32 @@ function ScoreDial(props) {
                             ))
                         }
                         {
-                            pie(valueData).map((d) => (
+                            // pie(valueData).map((d, i) => (
+                            <>
                                 <path
-                                    key={d.index}
-                                    className={`score_dial_outer score_dial_outer-${d.index}`}
-                                    d={arc({ innerRadius: 75, outerRadius: 100, ...d }) ?? undefined}
+                                    key={1}
+                                    className={`score_dial_outer score_dial_outer-${1}`}
+                                    d={arc({ innerRadius: 75, outerRadius: 100, startAngle: 0, endAngle: 2 * Math.PI }) ?? undefined}
                                 />
-                            ))
+                                <animated.path
+                                    key={0}
+                                    className={`score_dial_outer score_dial_outer-${0}`}
+                                    // d={arc({ innerRadius: 75, outerRadius: 100, ...d }) ?? undefined}
+                                    d={
+                                        springData.pos.to((accuracy) => {
+                                            return arc({ innerRadius: 75, outerRadius: 100, startAngle: 0, endAngle: accuracy })
+                                        })
+                                    }
+                                />
+                            </>
+                            // ))
                         }
                     </g>
                 </svg>
             </div>
 
             <div className='score_dial_layer score_dial_layer_grade'>
-                <span>{displayRank[props.rank]}</span>
+                <span>{displayedRank}</span>
             </div>
         </div>
     );

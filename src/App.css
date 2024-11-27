@@ -255,6 +255,7 @@ a {
     background-size: contain;
     display: flex;
     height: var(--mod-height, 22px);
+    width: var(--mod-width, auto);
     position: relative;
     /* width: calc(var(--mod-height, 22px)*45/32) */
 }

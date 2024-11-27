@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { Doughnut } from 'react-chartjs-2';
 import { getGradeIcon } from '../Helpers/Assets';
 import { toFixedNumber, formatNumber } from '../Helpers/Misc';
-import { getBeatmapMaxscore, getHitsFromAccuracy, getModString, mods } from '../Helpers/Osu';
+import { getBeatmapMaxscore, getHitsFromAccuracy, getModString, mods, rankCutoffs } from '../Helpers/Osu';
 import { getCalculator } from '../Helpers/Performance/Performance';
 import { getBeatmapScores } from '../Helpers/OsuAlt';
 import { prepareBeatmap, prepareScore } from '../Helpers/ScoresProcessor';
@@ -23,12 +23,26 @@ import EditNoteIcon from '@mui/icons-material/EditNote';
 import StarIcon from '@mui/icons-material/Star';
 import * as d3 from 'd3';
 import * as htmlToImage from "html-to-image";
+import { useSpring, animated } from '@react-spring/web';
 ChartJS.register(ArcElement, ChartTooltip, Legend);
 
 function ScoreViewStat(props) {
     const theme = useTheme();
     const arc = d3.arc();
     const pie = d3.pie().sortValues(null);
+    const springData = useSpring({
+        from: {
+            pos: [0]
+        },
+        to: {
+            //radians
+            pos: [(props.progress * 360) * (Math.PI / 180)] 
+        },
+        config: {
+            duration: 1000,
+            easing: d3.easeCubic
+        }
+    })
 
     return (
         <Tooltip title={props.tooltip ?? ''}>
@@ -96,13 +110,16 @@ function ScoreViewStat(props) {
                                 </defs>
                                 <g transform="translate(13,13)">
                                     {
-                                        pie([props.progress, 1 - props.progress]).map((d, i) => (
-                                            <path
-                                                key={i}
-                                                className={`score_dial_outer score_dial_outer-${d.index}`}
-                                                d={arc({ innerRadius: 10, outerRadius: 13, ...d }) ?? undefined}
+                                        // pie([props.progress, 1 - props.progress]).map((d, i) => (
+                                            <animated.path
+                                                className={`score_dial_outer score_dial_outer-0`}
+                                                d={
+                                                    springData.pos.to((prog) => {
+                                                        return arc({ innerRadius: 10, outerRadius: 13, startAngle: 0, endAngle: prog })
+                                                    })
+                                                }
                                             />
-                                        ))
+                                        // ))
                                     }
                                 </g>
                             </svg>
@@ -113,27 +130,6 @@ function ScoreViewStat(props) {
             </div>
         </Tooltip>
     );
-}
-
-function rankCutoffs(is_legacy) {
-    let absoluteCutoffs;
-    if (is_legacy) {
-        absoluteCutoffs = [0, 0.6, 0.8, 0.867, 0.933, 0.99, 1];
-    } else {
-        absoluteCutoffs = [0, 0.7, 0.8, 0.9, 0.95, 0.99, 1];
-    }
-
-    return differenceBetweenConsecutiveElements(absoluteCutoffs);
-}
-
-function differenceBetweenConsecutiveElements(arr) {
-    const result = [];
-
-    for (let i = 1; i < arr.length; i++) {
-        result.push(arr[i] - arr[i - 1]);
-    }
-
-    return result;
 }
 
 function ScoreView(props) {
@@ -356,7 +352,7 @@ function ScoreView(props) {
                                                     <Typography variant="body2" sx={{ fontWeight: 'bold' }}>{beatmapData.beatmap.artist}</Typography>
                                                 </Box>
                                                 <div className='score-info__item score-info__item--dial'>
-                                                    <ScoreDial accuracy={scoreData.score.accuracy * 0.01} rank={scoreData.score.rank} rankCutoffs={rankCutoffs(Mods.hasMod(scoreData.score.mods, "CL"))} />
+                                                    <ScoreDial accuracy={scoreData.score.accuracy * 0.01} rank={scoreData.score.rank} score={scoreData.score} />
                                                 </div>
                                                 <span className='lazer-text-gradient' style={{
                                                     fontFamily: 'Torus',
@@ -371,7 +367,7 @@ function ScoreView(props) {
                                                     <Box sx={{ pr: 1 }}>
                                                         <StarsLabel stars={beatmapData.difficulty_data?.star_rating} />
                                                     </Box>
-                                                    {Mods.getModElements(scoreData.score.mods, 22)}
+                                                    {Mods.getModElements(scoreData.score.mods, 22, undefined, true)}
                                                 </Box>
                                                 <Box sx={{
                                                     display: 'flex',
@@ -564,14 +560,7 @@ function ScoreView(props) {
                                                         }
                                                     </Box>
                                                     {/* when we are overflowing, add an icon to indicate there is more */}
-                                                    <Box sx={{
-                                                        display: 'flex',
-                                                        justifyContent: 'center',
-                                                        alignItems: 'center',
-                                                        mt: 1,
-                                                    }}>
-                                                        <Chip label='More' />
-                                                    </Box> </> : <Box sx={{
+                                                 </> : <Box sx={{
                                                         width: '100%',
                                                         height: '100%',
                                                         display: 'flex',

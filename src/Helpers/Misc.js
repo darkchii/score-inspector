@@ -9,7 +9,6 @@ export const MODAL_STYLE = {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    bgcolor: 'background.paper',
     minWidth: '80%',
     maxHeight: '80%',
     boxShadow: 24,
@@ -19,31 +18,75 @@ export const MODAL_STYLE = {
     },
 }
 
+export const ImageWithColor = ({ src, color, height }) => {
+    return (
+        <svg height={height} style={{ display: "block" }}>
+          <defs>
+            <filter id="colorFilter">
+              <feColorMatrix
+                type="matrix"
+                values={`0 0 0 0 ${parseInt(color.slice(1, 3), 16) / 255}
+                         0 0 0 0 ${parseInt(color.slice(3, 5), 16) / 255}
+                         0 0 0 0 ${parseInt(color.slice(5, 7), 16) / 255}
+                         0 0 0 1 0`}
+              />
+            </filter>
+          </defs>
+          <image
+            href={src}
+            height={height}
+            style={{ filter: "url(#colorFilter)" }}
+          />
+        </svg>
+      );
+};
+
+export function getHueRotate(hex) {
+    // Convert hex to RGB
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+
+    // Calculate hue
+    const max = Math.max(r, g, b), min = Math.min(r, g, b);
+    let hue;
+    if (max === min) {
+        hue = 0;
+    } else if (max === r) {
+        hue = (60 * ((g - b) / (max - min)) + 360) % 360;
+    } else if (max === g) {
+        hue = (60 * ((b - r) / (max - min)) + 120) % 360;
+    } else {
+        hue = (60 * ((r - g) / (max - min)) + 240) % 360;
+    }
+    return hue;
+}
+
 const eachModifier = (modifiersArray, callback) => {
     modifiersArray.forEach((modifiers) => {
-      if (Array.isArray(modifiers)) {
-        modifiers.forEach((modifier) => {
-          if (modifier != null) {
-            callback(modifier);
-          }
-        });
-      } else if (typeof modifiers === 'string') {
-        callback(modifiers);
-      } else {
-        // forEach(modifiers, (isActive, modifier) => {
-        //   if (isActive) {
-        //     callback(modifier);
-        //   }
-        // });
-        //forEach doesnt exist in our codebase
-        for (const [modifier, isActive] of Object.entries(modifiers)) {
-          if (isActive) {
-            callback(modifier);
-          }
+        if (Array.isArray(modifiers)) {
+            modifiers.forEach((modifier) => {
+                if (modifier != null) {
+                    callback(modifier);
+                }
+            });
+        } else if (typeof modifiers === 'string') {
+            callback(modifiers);
+        } else {
+            // forEach(modifiers, (isActive, modifier) => {
+            //   if (isActive) {
+            //     callback(modifier);
+            //   }
+            // });
+            //forEach doesnt exist in our codebase
+            for (const [modifier, isActive] of Object.entries(modifiers)) {
+                if (isActive) {
+                    callback(modifier);
+                }
+            }
         }
-      }
     });
-  };
+};
 
 export function classWithModifiers(className, ...modifiersArray) {
     let ret = className;
@@ -56,7 +99,7 @@ export function classWithModifiers(className, ...modifiersArray) {
 const defaultNumberFormatter = new Intl.NumberFormat(window.currentLocale);
 
 export function formatNumber(num, precision, options, locale) {
-    if(num === null || num === undefined || !num || isNaN(num) || num === Infinity || num === -Infinity) {
+    if (num === null || num === undefined || !num || isNaN(num) || num === Infinity || num === -Infinity) {
         return num;
     }
 

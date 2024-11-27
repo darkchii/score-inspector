@@ -7,6 +7,7 @@ import BADGE_COMPLETIONIST_TAIKO from "../Assets/Completionists/taiko.png";
 import BADGE_COMPLETIONIST_CATCH from "../Assets/Completionists/catch.png";
 import BADGE_COMPLETIONIST_MANIA from "../Assets/Completionists/mania.png";
 import * as d3 from "d3";
+import Mods from "./Mods.js";
 
 export const approval_state = {
     '-2': 'Graveyard',
@@ -578,6 +579,53 @@ export function FilterStarratingArray(sr_arr, mods_enum) {
     mods_enum = parseInt(mods_enum);
     mods_enum &= ~excluded_mods.reduce((a, b) => a | b, 0);
     return sr_arr.filter(sr => sr.mods_enum === mods_enum)?.[0];
+}
+
+export function getRankFromAccuracy(score, accuracy) {
+    if (Mods.hasMod(score.mods, "CL")) {
+        //legacy grading
+        if (accuracy === 1 && isHiddenRank(score.mods)) return 'XH';
+        if (accuracy === 1) return 'X';
+        if (accuracy > 0.90 && score.countmiss === 0 && (score.count50 / (score.count300 + score.count100 + score.count50) <= 0.01)) { return isHiddenRank(score.mods) ? 'SH' : 'S'; }
+        if ((accuracy > 0.80 && score.countmiss === 0) || (accuracy > 0.90)) { return 'A'; }
+        if ((accuracy > 0.70 && score.countmiss === 0) || (accuracy > 0.80)) { return 'B'; }
+        if (accuracy > 0.60) { return 'C'; }
+        return 'D';
+    } else {
+        //lazer grading
+        if (accuracy === 1 && isHiddenRank(score.mods)) return 'XH';
+        if (accuracy === 1) return 'X';
+        if (accuracy > 0.95 && score.countmiss === 0) { return isHiddenRank(score.mods) ? 'SH' : 'S'; }
+        if (accuracy > 0.90) { return 'A'; }
+        if (accuracy > 0.80) { return 'B'; }
+        if (accuracy > 0.70) { return 'C'; }
+        return 'D';
+    }
+}
+
+export function isHiddenRank(mods) {
+    return Mods.hasMod(mods, "HD") || Mods.hasMod(mods, "FL") || Mods.hasMod(mods, "FI");
+}
+
+export function rankCutoffs(is_legacy, get_absolute = false) {
+    let absoluteCutoffs;
+    if (is_legacy) {
+        absoluteCutoffs = [0, 0.6, 0.8, 0.867, 0.933, 0.99, 1];
+    } else {
+        absoluteCutoffs = [0, 0.7, 0.8, 0.9, 0.95, 0.99, 1];
+    }
+
+    return differenceBetweenConsecutiveElements(absoluteCutoffs);
+}
+
+function differenceBetweenConsecutiveElements(arr) {
+    const result = [];
+
+    for (let i = 1; i < arr.length; i++) {
+        result.push(arr[i] - arr[i - 1]);
+    }
+
+    return result;
 }
 
 export async function MassCalculatePerformance(scores) {

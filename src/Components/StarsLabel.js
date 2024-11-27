@@ -9,6 +9,7 @@ function StarsLabel(props) {
     return (
         <div className={`difficulty-badge ${stars > 6.5 ? 'difficulty-badge__expert-plus' : ''}`} style={{
             '--bg': getDiffColor(stars),
+            ...props.style
         }}>
             <span className='difficulty-badge__icon'>
                 <StarIcon />

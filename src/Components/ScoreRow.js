@@ -176,10 +176,41 @@ function ScoreRow(props) {
                                 </Grid2>
 
                                 <Grid2 size={1.7}>
-                                    <Box sx={{ height: '100%', alignContent: 'right', display: 'flex', alignItems: 'center' }}>
-                                        {
-                                            Mods.getModElements(score.mods, 18)
-                                        }
+                                    <Box sx={{
+                                        height: '100%',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'left',
+                                        zIndex: 8
+                                    }}>
+                                        <Typography sx={{
+                                            display: 'flex',
+                                            justifyContent: 'flex-start',
+                                            alignItems: 'center',
+                                            ml: 1,
+                                            pl: 2,
+                                            transition: 'all 0.3s',
+                                            '& > *': {
+                                                ml: -2,
+                                                //offset to compensate for the margin
+                                                transition: 'margin-left 0.3s',
+                                            },
+                                            //on hover, all children no margin
+                                            '&:hover > *': {
+                                                ml: 0,
+                                                transition: 'margin-left 0.3s',
+                                            },
+                                            '&:hover': {
+                                                backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                                                borderRadius: '5px',
+                                                transition: 'all 0.3s',
+                                                pl: 0
+                                            }
+                                        }}>
+                                            {
+                                                Mods.valueOf(score.mods).map(mod => Mods.getModElement(mod, 20))
+                                            }
+                                        </Typography>
                                     </Box>
                                 </Grid2>
 
@@ -193,14 +224,20 @@ function ScoreRow(props) {
                                     <Box sx={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'left', pr: 1, color: grey[500] }}>
                                         {
                                             !score.is_fc && score.recalc['fc'] ?
-                                                <Typography variant="caption">If FC:<br/>{Math.round(score.recalc['fc']?.total).toLocaleString('en-US')}pp</Typography>
+                                                <Typography variant="caption">If FC:<br />{Math.round(score.recalc['fc']?.total).toLocaleString('en-US')}pp</Typography>
                                                 : <></>
                                         }
                                     </Box>
                                 </Grid2>
 
                                 <Grid2 size={1}>
-                                    <Box sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
+                                    <Box sx={{ 
+                                        height: '100%', 
+                                        display: 'flex', 
+                                        alignItems: 'center',
+                                        justifyContent: 'right',
+                                        pr: 1,
+                                        }}>
                                         {
                                             score.beatmap.difficulty_data.is_legacy ?
                                                 <Tooltip title="This score uses old star ratings and may cause incorrect mod and/or pp values">
@@ -208,7 +245,10 @@ function ScoreRow(props) {
                                                 </Tooltip>
                                                 : <></>
                                         }
-                                        <Box
+                                        <Typography variant="subtitle1">
+                                            {toFixedNumber(score.pp > 0 ? score.pp : score.estimated_pp, 2).toLocaleString('en-US')}pp
+                                        </Typography>
+                                        {/* <Box
                                             sx={{
                                                 width: '100%',
                                                 height: '100%',
@@ -218,12 +258,10 @@ function ScoreRow(props) {
                                                 bgcolor: theme.palette.background.paper,
                                                 borderRadius: theme.shape.borderRadius,
                                                 position: 'relative',
-                                                pr: 1
+                                                pr: 1,
+                                                zIndex: 7
                                             }}>
-                                            <Typography variant="subtitle1">
-                                                {toFixedNumber(score.pp > 0 ? score.pp : score.estimated_pp, 2).toLocaleString('en-US')}pp
-                                            </Typography>
-                                        </Box>
+                                        </Box> */}
                                     </Box>
                                 </Grid2>
                             </Grid2>

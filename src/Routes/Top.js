@@ -1,4 +1,4 @@
-import { Alert, Box, Card, CardActionArea, CardContent, Chip, Grid2, Paper, Skeleton, Stack, Tab, Tabs, Tooltip, Typography } from "@mui/material";
+import { Alert, Avatar, Box, Card, CardActionArea, CardContent, Chip, Grid2, Paper, Skeleton, Stack, Tab, Tabs, Tooltip, Typography } from "@mui/material";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -7,10 +7,12 @@ import { getBestScores } from "../Helpers/OsuAlt";
 import { prepareScores } from "../Helpers/ScoresProcessor";
 import { Helmet } from "react-helmet";
 import config from "../config.json";
-import { MassCalculatePerformance } from "../Helpers/Osu.js";
+import { getDiffColor, MassCalculatePerformance } from "../Helpers/Osu.js";
 import { grey } from "@mui/material/colors";
 import { getGradeIcon } from "../Helpers/Assets.js";
 import Mods from "../Helpers/Mods.js";
+import StarsLabel from "../Components/StarsLabel.js";
+import { transition } from "d3";
 
 const SCORES_TO_FETCH = 10;
 const PERIODS = [
@@ -44,6 +46,8 @@ function Top(props) {
                     const [pp_scores] = await MassCalculatePerformance(pp_scores_prep);
                     const [sc_scores] = await MassCalculatePerformance(sc_scores_prep);
 
+                    console.log(pp_scores);
+
                     pp_scores.sort((a, b) => {
                         if (a.pp > b.pp) { return -1; }
                         if (a.pp < b.pp) { return 1; }
@@ -68,6 +72,7 @@ function Top(props) {
                             significantStat: 'score'
                         },
                     }
+
                     setScores(_scores);
                 });
             } catch (err) {
@@ -127,9 +132,9 @@ function Top(props) {
                                                     return (
                                                         <Card
                                                             sx={{
-                                                                backgroundImage: `url(https://assets.ppy.sh/beatmaps/${score.beatmap.set_id}/covers/cover.jpg)`,
-                                                                backgroundSize: 'cover',
-                                                                backgroundPosition: 'center',
+                                                                // backgroundImage: `url(https://assets.ppy.sh/beatmaps/${score.beatmap.set_id}/covers/cover.jpg)`,
+                                                                // backgroundSize: 'cover',
+                                                                // backgroundPosition: 'center',
                                                                 borderRadius: '10px',
                                                                 height: SCORE_CARD_HEIGHT,
                                                             }}>
@@ -149,16 +154,53 @@ function Top(props) {
                                                                         justifyContent: 'space-between',
                                                                         width: '100%',
                                                                     }}>
-                                                                        <Stack direction='column' spacing={0} sx={{ width: '100%' }}>
-                                                                            <Tooltip title={`${score.beatmap.artist} - ${score.beatmap.title} [${score.beatmap.diffname}]`}>
-                                                                                <Typography textOverflow='ellipsis' noWrap variant='h6' sx={{ fontSize: '1em' }}>{score.beatmap.artist} - {score.beatmap.title} [{score.beatmap.diffname}]</Typography>
-                                                                            </Tooltip>
+                                                                        <Box sx={{
+                                                                            position: 'absolute',
+                                                                            top: 0,
+                                                                            left: 0,
+                                                                            width: '100%',
+                                                                            height: '100%',
+                                                                            backgroundImage: `url(https://assets.ppy.sh/beatmaps/${score.beatmap.set_id}/covers/cover.jpg)`,
+                                                                            backgroundSize: 'cover',
+                                                                            backgroundPosition: 'center',
+                                                                            borderRadius: '10px',
+                                                                        }} />
+                                                                        <Box sx={{
+                                                                            position: 'absolute',
+                                                                            top: 0,
+                                                                            left: 0,
+                                                                            width: '100%',
+                                                                            height: '100%',
+                                                                            backgroundColor: 'rgba(0, 0, 0, 0.75)',
+                                                                            borderRadius: '10px',
+                                                                        }} />
+                                                                        <Box sx={{
+                                                                            position: 'absolute',
+                                                                            top: 0,
+                                                                            left: 0,
+                                                                            width: '100%',
+                                                                            height: '100%',
+                                                                            // backgroundColor: `${getDiffColor(score.beatmap.difficulty_data?.star_rating ?? 0)}`,
+                                                                            backgroundImage: `linear-gradient(90deg, ${getDiffColor(score.beatmap.difficulty_data?.star_rating ?? 0)} 0%, rgba(0,0,0,0) 100%)`,
+                                                                            opacity: 0.6,
+                                                                            borderRadius: '10px',
+                                                                        }} />
+                                                                        <Stack direction='column' spacing={0} sx={{ width: '100%', zIndex: 2 }}>
+                                                                            <Box sx={{
+                                                                                display: 'flex',
+                                                                                alignItems: 'center',
+                                                                            }}>
+                                                                                <StarsLabel style={{ marginRight: '1em' }} stars={score.beatmap.difficulty_data?.star_rating} />
+                                                                                <Tooltip title={`${score.beatmap.artist} - ${score.beatmap.title} [${score.beatmap.diffname}]`}>
+                                                                                    <Typography textOverflow='ellipsis' noWrap variant='h6' sx={{ fontSize: '1em' }}>{score.beatmap.artist} - {score.beatmap.title} [{score.beatmap.diffname}]</Typography>
+                                                                                </Tooltip>
+                                                                            </Box>
                                                                             {/* <Marquee pauseOnHover={true} speed={40} gradient={false}> */}
                                                                             {/* </Marquee> */}
                                                                             <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                                                                                 <Box>
                                                                                     <Typography variant='body1'>
-                                                                                        By <Typography component={Link} variant='body1' sx={{ textDecoration: 'none' }} color='primary' to={`/user/${score.user_id}`}>{score.user.username}</Typography> <Tooltip title={moment(score.date_played).format('HH:mm MMMM Do, YYYY')}><Chip label={moment(score.date_played).fromNow()} color='primary' size='small' /></Tooltip>
+                                                                                        By <Typography component={Link} variant='body1' sx={{ textDecoration: 'none' }} color='primary' to={`/user/${score.user_id}`}>{score.user.username}</Typography> <Tooltip title={moment(score.date_played).format('HH:mm MMMM Do, YYYY')}>{moment(score.date_played).fromNow()}</Tooltip>
                                                                                     </Typography>
                                                                                     <Box sx={{
                                                                                         display: 'flex',
@@ -192,7 +234,25 @@ function Top(props) {
                                                                                             display: 'flex',
                                                                                             justifyContent: 'flex-start',
                                                                                             alignItems: 'center',
-                                                                                            pl: 1
+                                                                                            ml: 1,
+                                                                                            pl: 2,
+                                                                                            transition: 'all 0.3s',
+                                                                                            '& > *': {
+                                                                                                ml: -2,
+                                                                                                //offset to compensate for the margin
+                                                                                                transition: 'margin-left 0.3s',
+                                                                                            },
+                                                                                            //on hover, all children no margin
+                                                                                            '&:hover > *': {
+                                                                                                ml: 0,
+                                                                                                transition: 'margin-left 0.3s',
+                                                                                            },
+                                                                                            '&:hover': {
+                                                                                                backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                                                                                                borderRadius: '5px',
+                                                                                                transition: 'all 0.3s',
+                                                                                                pl: 0
+                                                                                            }
                                                                                         }} variant='h6'>
                                                                                             {Mods.valueOf(score.mods).map(mod => Mods.getModElement(mod, 20))}
                                                                                         </Typography>
@@ -205,11 +265,15 @@ function Top(props) {
                                                                                         {(scores[i].significantStat === 'pp' && !score.is_fc && score.recalc['fc']) ? `(${Math.round(score.recalc['fc']?.total).toLocaleString('en-US')}pp if FC)` : ''} {Math.round(score[scores[i].significantStat]).toLocaleString('en-US')}{scores[i].significantStat === 'pp' ? `pp` : ''}
                                                                                     </Typography>
                                                                                     <Typography sx={{ textAlign: 'right' }} variant='body1'>
-                                                                                        {score.is_fc ? 'FC' : ''} {Math.round(score.accuracy * 100) / 100}% {Math.round((score.beatmap.difficulty_data?.star_rating ?? 0) * 10) / 10}*
+                                                                                        {score.is_fc ? 'FC' : ''} {Math.round(score.accuracy * 100) / 100}%
                                                                                     </Typography>
                                                                                 </Box>
                                                                             </Box>
-                                                                            <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                                                                            <Box sx={{
+                                                                                display: 'flex',
+                                                                                justifyContent: 'space-between',
+                                                                                fontWeight: 100
+                                                                            }}>
                                                                                 {
                                                                                     score.beatmap.difficulty_data ? <>
                                                                                         <Typography variant='body1' sx={{ color: grey[500] }}>Aim: {score.beatmap.difficulty_data.aim_difficulty.toFixed(2)}* | Speed: {score.beatmap.difficulty_data.speed_difficulty.toFixed(2)}* | {score.beatmap.difficulty_data.flashlight_difficulty > 0 ? `Flashlight: ${score.beatmap.difficulty_data.flashlight_difficulty.toFixed(2)}* |` : ''} Speed Notes: {score.beatmap.difficulty_data.speed_note_count.toFixed(2)}</Typography>

@@ -7,23 +7,25 @@ import { MODAL_STYLE } from "../Helpers/Misc";
 ChartJS.register(ArcElement, ChartTooltip, Legend);
 
 function ScoreModal(props) {
+    const [targetProg, setTargetProg] = useState(0);
     const [open, setOpen] = useState(false);
-    const handleClose = () => setOpen(false);
+    const handleClose = async () => {
+        setTargetProg(0);
+        //sleep for 0.3s
+        await new Promise(r => setTimeout(r, 300));
+        setOpen(false);
+    }
 
     useEffect(() => {
         if (props.data !== undefined && props.data.score !== undefined) {
-            setOpen(props.data.active);
+            (async () => {
+                console.log(targetProg);
+                //sleep for 0.1s
+                setOpen(props.data.active);
+                await new Promise(r => setTimeout(r, 50));
+                setTargetProg(1);
+            })();
         }
-
-        //when pressing ESC key, close the modal
-        const handleKeyDown = (e) => {
-            if (e.key === 'Escape') {
-                handleClose();
-                //remove the event listener
-                window.removeEventListener('keydown', handleKeyDown);
-            }
-        };
-        window.addEventListener('keydown', handleKeyDown);
     }, [props.data]);
 
     return (
@@ -32,8 +34,11 @@ function ScoreModal(props) {
                 <Modal
                     open={open}
                     onClose={handleClose}
-                    aria-labelledby="modal-modal-title"
-                    aria-describedby="modal-modal-description"
+                    sx={{
+                        opacity: 0.5 + 0.5 * targetProg,
+                        transform: `translate(0%, ${(1-targetProg) * 100}%)`,
+                        transition: 'all 0.3s',
+                    }}
                 >
                     <ScoreView data={{
                         score: props.data.score, style: {...MODAL_STYLE}, pp_version: 'live'
