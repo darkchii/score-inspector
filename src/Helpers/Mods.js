@@ -244,7 +244,10 @@ class Mods {
                                 top: 0,
                                 bottom: 0,
                                 height: '100%',
-                                left: '1.45em',
+                                left: `${1.45 + (
+                                    //convert style.marginLeft to em (from px)
+                                    style.marginLeft !== undefined ? style.marginLeft / 16 : 0
+                                )}em`
                             }}>
                                 <ImageWithColor
                                     src={PNG_MOD_EXTENDER}
@@ -256,7 +259,11 @@ class Mods {
                             <Box sx={{
                                 position: 'absolute',
                                 top: 0,
-                                left: '1.5em',
+                                // left: '1.5em',
+                                left: `${1.5 + (
+                                    //convert style.marginLeft to em (from px)
+                                    style.marginLeft !== undefined ? style.marginLeft / 16 : 0
+                                )}em`,
                                 display: 'flex',
                                 justifyContent: 'center',
                                 alignItems: 'center',
