@@ -36,7 +36,7 @@ function ScoreViewStat(props) {
         },
         to: {
             //radians
-            pos: [(props.progress * 360) * (Math.PI / 180)] 
+            pos: [(props.progress * 360) * (Math.PI / 180)]
         },
         config: {
             duration: 1000,
@@ -46,7 +46,9 @@ function ScoreViewStat(props) {
 
     return (
         <Tooltip title={props.tooltip ?? ''}>
-            <div className={`score-stats__stat${props.small ? '-small' : ''}`}>
+            <div className={`score-stats__stat${props.small ? '-small' : ''}`} style={{
+                opacity: props.irrelevant ? '0.5' : undefined,
+            }}>
                 <div className={`score-stats__stat-row score-stats__stat-row--label${props.small ? '-small' : ''}`} style={{
                     color: props.labelColor ?? undefined,
                     display: 'flex',
@@ -111,14 +113,14 @@ function ScoreViewStat(props) {
                                 <g transform="translate(13,13)">
                                     {
                                         // pie([props.progress, 1 - props.progress]).map((d, i) => (
-                                            <animated.path
-                                                className={`score_dial_outer score_dial_outer-0`}
-                                                d={
-                                                    springData.pos.to((prog) => {
-                                                        return arc({ innerRadius: 10, outerRadius: 13, startAngle: 0, endAngle: prog })
-                                                    })
-                                                }
-                                            />
+                                        <animated.path
+                                            className={`score_dial_outer score_dial_outer-0`}
+                                            d={
+                                                springData.pos.to((prog) => {
+                                                    return arc({ innerRadius: 10, outerRadius: 13, startAngle: 0, endAngle: prog })
+                                                })
+                                            }
+                                        />
                                         // ))
                                     }
                                 </g>
@@ -195,12 +197,12 @@ function ScoreView(props) {
         accHits["80%"] = getHitsFromAccuracy(80, beatmap.objects, 0);
 
         const pp = [];
-        pp["100%"] = getCalculator(pp_version ?? 'live', { accuracy: 1, score: _score, combo: beatmap.maxcombo, count300: accHits["100%"].count300, count100: accHits["100%"].count100, count50: accHits["100%"].count50, countmiss: accHits["100%"].countmiss });
-        pp["99%"] = getCalculator(pp_version ?? 'live', { accuracy: 0.99, score: _score, combo: beatmap.maxcombo, count300: accHits["99%"].count300, count100: accHits["99%"].count100, count50: accHits["99%"].count50, countmiss: accHits["99%"].countmiss });
-        pp["98%"] = getCalculator(pp_version ?? 'live', { accuracy: 0.98, score: _score, combo: beatmap.maxcombo, count300: accHits["98%"].count300, count100: accHits["98%"].count100, count50: accHits["98%"].count50, countmiss: accHits["98%"].countmiss });
-        pp["95%"] = getCalculator(pp_version ?? 'live', { accuracy: 0.95, score: _score, combo: beatmap.maxcombo, count300: accHits["95%"].count300, count100: accHits["95%"].count100, count50: accHits["95%"].count50, countmiss: accHits["95%"].countmiss });
-        pp["90%"] = getCalculator(pp_version ?? 'live', { accuracy: 0.90, score: _score, combo: beatmap.maxcombo, count300: accHits["90%"].count300, count100: accHits["90%"].count100, count50: accHits["90%"].count50, countmiss: accHits["90%"].countmiss });
-        pp["80%"] = getCalculator(pp_version ?? 'live', { accuracy: 0.80, score: _score, combo: beatmap.maxcombo, count300: accHits["80%"].count300, count100: accHits["80%"].count100, count50: accHits["80%"].count50, countmiss: accHits["80%"].countmiss });
+        pp["100%"] = getCalculator(pp_version ?? 'live', { statistics: _score.maximum_statistics, accuracy: 1, score: _score, combo: beatmap.maxcombo, count300: accHits["100%"].count300, count100: accHits["100%"].count100, count50: accHits["100%"].count50, countmiss: accHits["100%"].countmiss });
+        pp["99%"] = getCalculator(pp_version ?? 'live', { statistics: _score.maximum_statistics, accuracy: 0.99, score: _score, combo: beatmap.maxcombo, count300: accHits["99%"].count300, count100: accHits["99%"].count100, count50: accHits["99%"].count50, countmiss: accHits["99%"].countmiss });
+        pp["98%"] = getCalculator(pp_version ?? 'live', { statistics: _score.maximum_statistics, accuracy: 0.98, score: _score, combo: beatmap.maxcombo, count300: accHits["98%"].count300, count100: accHits["98%"].count100, count50: accHits["98%"].count50, countmiss: accHits["98%"].countmiss });
+        pp["95%"] = getCalculator(pp_version ?? 'live', { statistics: _score.maximum_statistics, accuracy: 0.95, score: _score, combo: beatmap.maxcombo, count300: accHits["95%"].count300, count100: accHits["95%"].count100, count50: accHits["95%"].count50, countmiss: accHits["95%"].countmiss });
+        pp["90%"] = getCalculator(pp_version ?? 'live', { statistics: _score.maximum_statistics, accuracy: 0.90, score: _score, combo: beatmap.maxcombo, count300: accHits["90%"].count300, count100: accHits["90%"].count100, count50: accHits["90%"].count50, countmiss: accHits["90%"].countmiss });
+        pp["80%"] = getCalculator(pp_version ?? 'live', { statistics: _score.maximum_statistics, accuracy: 0.80, score: _score, combo: beatmap.maxcombo, count300: accHits["80%"].count300, count100: accHits["80%"].count100, count50: accHits["80%"].count50, countmiss: accHits["80%"].countmiss });
         _scoreData.pp = pp;
 
         console.log(_scoreData);
@@ -403,11 +405,11 @@ function ScoreView(props) {
                                                                 (scoreData.score.recalc['fc']?.total ?? 0) !== (scoreData.score.recalc[props.data.pp_version]?.total ?? 0) ?
                                                                     formatNumber(scoreData.score.recalc['fc']?.total ?? 0, 0) : undefined
                                                             }
-                                                            label='PP'
+                                                            label='Performance'
                                                             value={`${formatNumber(scoreData.score.recalc[props.data.pp_version]?.total ?? 0, 0)}`} />
                                                     </div>
                                                     <div className='score-stats__group-row'>
-                                                        <ScoreViewStat lineDecorator={true} label='Great' value={`${formatNumber(scoreData.score.count300)}`} labelColor='#69EE00' />
+                                                        <ScoreViewStat lineDecorator={true} label='Great' value={`${formatNumber(scoreData.score.count300)}`} labelColor='#66FFCC' />
                                                         <ScoreViewStat lineDecorator={true} label='Ok' value={`${formatNumber(scoreData.score.count100)}`} labelColor='#FAFF00' />
                                                         <ScoreViewStat lineDecorator={true} label='Meh' value={`${formatNumber(scoreData.score.count50)}`} labelColor='#FFB800' />
                                                         <ScoreViewStat lineDecorator={true} label='Miss' value={`${formatNumber(scoreData.score.countmiss)}`} labelColor={red[400]} />
@@ -441,8 +443,36 @@ function ScoreView(props) {
                                                     <div className='score-stats__group-row'>
                                                         <ScoreViewStat label='Aim PP' value={`${formatNumber(scoreData.score.recalc[props.data.pp_version]?.aim ?? 0, 1)}`} />
                                                         <ScoreViewStat label='Speed PP' value={`${formatNumber(scoreData.score.recalc[props.data.pp_version]?.speed ?? 0, 1)}`} />
-                                                        <ScoreViewStat label='Flashlight PP' value={`${formatNumber(scoreData.score.recalc[props.data.pp_version]?.flashlight ?? 0, 1)}`} />
+                                                        <ScoreViewStat label='Accuracy PP' value={`${formatNumber(scoreData.score.recalc[props.data.pp_version]?.acc ?? 0, 1)}`} />
+                                                        <ScoreViewStat label='Flashlight PP' irrelevant={!Mods.hasMod(scoreData.score.mods, "FL")} value={`${Mods.hasMod(scoreData.score.mods, "FL") ? (formatNumber(scoreData.score.recalc[props.data.pp_version]?.flashlight ?? 0, 1)) : '-'}`} />
                                                     </div>
+                                                    {
+                                                        scoreData.score.statistics != null && scoreData.score.maximum_statistics != null ?
+                                                            <>
+                                                                <div className='score-stats__group-row'>
+                                                                    <ScoreViewStat
+                                                                        label='Slider Tick'
+                                                                        irrelevant={Mods.getSetting(scoreData.score.mods, "no_slider_head_accuracy") === true || Mods.hasMod(scoreData.score.mods, "CL")}
+                                                                        originalValue={Mods.getSetting(scoreData.score.mods, "no_slider_head_accuracy") === true || Mods.hasMod(scoreData.score.mods, "CL") ? undefined : (scoreData.score.maximum_statistics.large_tick_hit ?? 'N/A')}
+                                                                        value={`${Mods.getSetting(scoreData.score.mods, "no_slider_head_accuracy") === true || Mods.hasMod(scoreData.score.mods, "CL") ? '-' : (scoreData.score.statistics.large_tick_hit ?? scoreData.score.maximum_statistics.large_tick_hit ?? 'N/A')}`} />
+                                                                    <ScoreViewStat
+                                                                        label='Slider End'
+                                                                        irrelevant={Mods.getSetting(scoreData.score.mods, "no_slider_head_accuracy") === true || Mods.hasMod(scoreData.score.mods, "CL")}
+                                                                        originalValue={Mods.getSetting(scoreData.score.mods, "no_slider_head_accuracy") === true || Mods.hasMod(scoreData.score.mods, "CL") ? undefined : (scoreData.score.maximum_statistics.slider_tail_hit ?? 'N/A')}
+                                                                        value={`${Mods.getSetting(scoreData.score.mods, "no_slider_head_accuracy") === true || Mods.hasMod(scoreData.score.mods, "CL") ? '-' : (scoreData.score.statistics.slider_tail_hit ?? scoreData.score.maximum_statistics.slider_tail_hit ?? 'N/A')}`} />
+                                                                    <ScoreViewStat
+                                                                        label='Spinner Bonus'
+                                                                        irrelevant={beatmapData.beatmap.spinners === 0 || (Mods.getSetting(scoreData.score.mods, "no_slider_head_accuracy") === true || Mods.hasMod(scoreData.score.mods, "CL"))}
+                                                                        originalValue={(Mods.getSetting(scoreData.score.mods, "no_slider_head_accuracy") === true || Mods.hasMod(scoreData.score.mods, "CL") || beatmapData.beatmap.spinners === 0) ? undefined : (scoreData.score.maximum_statistics.small_bonus ?? '0')}
+                                                                        value={`${((Mods.getSetting(scoreData.score.mods, "no_slider_head_accuracy") === true || Mods.hasMod(scoreData.score.mods, "CL")) || beatmapData.beatmap.spinners === 0) ? '-' : (scoreData.score.statistics.small_bonus ?? scoreData.score.maximum_statistics.small_bonus ?? '0')}`} />
+                                                                    <ScoreViewStat
+                                                                        label='Spinner Spin'
+                                                                        irrelevant={beatmapData.beatmap.spinners === 0 || (Mods.getSetting(scoreData.score.mods, "no_slider_head_accuracy") === true || Mods.hasMod(scoreData.score.mods, "CL"))}
+                                                                        originalValue={(Mods.getSetting(scoreData.score.mods, "no_slider_head_accuracy") === true || Mods.hasMod(scoreData.score.mods, "CL") || beatmapData.beatmap.spinners === 0) ? undefined : (scoreData.score.maximum_statistics.large_bonus ?? '0')}
+                                                                        value={`${((Mods.getSetting(scoreData.score.mods, "no_slider_head_accuracy") === true || Mods.hasMod(scoreData.score.mods, "CL")) || beatmapData.beatmap.spinners === 0) ? '-' : (scoreData.score.statistics.large_bonus ?? scoreData.score.maximum_statistics.large_bonus ?? '0')}`} />
+                                                                </div>
+                                                            </> : null
+                                                    }
                                                 </div>
                                                 <Box sx={{
                                                     //we want 2 children, one on the left and one on the right
@@ -560,15 +590,15 @@ function ScoreView(props) {
                                                         }
                                                     </Box>
                                                     {/* when we are overflowing, add an icon to indicate there is more */}
-                                                 </> : <Box sx={{
-                                                        width: '100%',
-                                                        height: '100%',
-                                                        display: 'flex',
-                                                        justifyContent: 'center',
-                                                        alignItems: 'center',
-                                                        flexDirection: 'column',
-                                                        color: grey[500]
-                                                    }}>
+                                                </> : <Box sx={{
+                                                    width: '100%',
+                                                    height: '100%',
+                                                    display: 'flex',
+                                                    justifyContent: 'center',
+                                                    alignItems: 'center',
+                                                    flexDirection: 'column',
+                                                    color: grey[500]
+                                                }}>
                                                     <EditNoteIcon sx={{ fontSize: '5em' }} />
                                                     <Typography variant='h6'>No mod settings applied</Typography>
                                                 </Box>

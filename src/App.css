@@ -300,13 +300,13 @@ a {
 }
 
 .score-stats__group {
-    grid-gap: 5px;
+    grid-gap: 4px;
     display: grid;
     width: 100%;
 }
 
 .score-stats__group--stats .score-stats__group-row {
-    grid-gap: 5px;
+    grid-gap: 4px;
     display: grid;
     grid-auto-columns: 1fr;
     grid-auto-flow: column;
@@ -319,7 +319,7 @@ a {
     display: flex;
     flex-direction: column;
     text-align: left;
-    padding: 8px;
+    padding: 6px;
 }
 
 .score-stats__stat-small {

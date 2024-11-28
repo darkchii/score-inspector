@@ -581,6 +581,84 @@ export function FilterStarratingArray(sr_arr, mods_enum) {
     return sr_arr.filter(sr => sr.mods_enum === mods_enum)?.[0];
 }
 
+export function computeAccuracy(score) {
+    let baseScore = 0;
+    Object.keys(score.statistics).forEach(key => {
+        if (affectsAccuracy(key)) {
+            baseScore += score.statistics[key] * GetBaseScoreForResult(key);
+        }
+    });
+    let maxBaseScore = 0;
+    Object.keys(score.maximum_statistics).forEach(key => {
+        if (affectsAccuracy(key)) {
+            maxBaseScore += score.maximum_statistics[key] * GetBaseScoreForResult(key);
+        }
+    });
+
+    return maxBaseScore === 0 ? 1 : baseScore / maxBaseScore;
+}
+
+function GetBaseScoreForResult(result) {
+    switch (result) {
+        default:
+            return 0;
+        case 'small_tick_hit':
+            return 10;
+        case 'large_tick_hit':
+            return 30;
+        case 'slider_tail_hit':
+            return 150;
+        case 'meh':
+            return 50;
+        case 'ok':
+            return 100;
+        case 'good':
+            return 200;
+        case 'great':
+        case 'perfect':
+            return 300;
+        case 'small_bonus':
+            return 10;
+        case 'large_bonus':
+            return 50;
+    }
+}
+
+function affectsAccuracy(result) {
+    switch (result) {
+        case "legacy_combo_increase":
+            return false;
+        case "combo_break":
+            return false;
+        default:
+            return isScorable(result) && !isBonus(result);
+    }
+}
+
+function isBonus(result) {
+    switch (result) {
+        case "small_bonus":
+        case "large_bonus":
+            return true;
+
+        default:
+            return false;
+    }
+}
+
+function isScorable(result) {
+    switch (result) {
+        case "legacy_combo_increase":
+            return true;
+        case "combo_break":
+            return true;
+        case "slider_tail_hit":
+            return true;
+        default:
+            return result !== "none" && result !== "ignore_miss";
+    }
+}
+
 export function getRankFromAccuracy(score, accuracy) {
     if (Mods.hasMod(score.mods, "CL")) {
         //legacy grading
@@ -640,12 +718,28 @@ export async function MassCalculatePerformance(scores) {
             {
                 name: 'ss',
                 checkRealism: true,
-                calc: getCalculator('live', { count300: score.count300 + score.countmiss + score.count100 + score.count50, count100: 0, count50: 0, countmiss: 0, combo: score.beatmap.maxcombo, score: score })
+                calc: getCalculator('live', {
+                    count300: score.count300 + score.countmiss + score.count100 + score.count50,
+                    count100: 0,
+                    count50: 0,
+                    countmiss: 0,
+                    combo: score.beatmap.maxcombo,
+                    score: score,
+                    statistics: score.maximum_statistics ?? null
+                })
             },
             {
                 name: 'fc',
                 checkRealism: true,
-                calc: getCalculator('live', { count300: score.count300 + score.countmiss, count100: score.count100, count50: score.count50, countmiss: 0, combo: score.beatmap.maxcombo, score: score })
+                calc: getCalculator('live', {
+                    count300: score.count300 + score.countmiss,
+                    count100: score.count100,
+                    count50: score.count50,
+                    countmiss: 0,
+                    combo: score.beatmap.maxcombo,
+                    score: score,
+                    statistics: score.maximum_statistics ?? null,
+                })
             },
         ]);
 

@@ -90,6 +90,15 @@ class Mods {
         return mods.mods_data.some(m => m.settings !== undefined && m.settings[setting] !== undefined);
     }
 
+    static getSetting(mods, setting) {
+        return mods.mods_data.find(m => m.settings !== undefined && m.settings[setting] !== undefined);
+    }
+
+    static getModSetting(mods, mod, setting) {
+        if(!Mods.hasMod(mods, mod)) return null;
+        return Mods.getMod(mods, mod).settings[setting] || null;
+    }
+
     //overload to return this.mods_data if this object is called without function
     static valueOf(mods) {
         return mods.mods_data;
@@ -122,7 +131,6 @@ class Mods {
             if (setting === 'speed_change') { originalValue = 0.75; }
         }
 
-        console.log(`[Mods.getModOriginalValue] Beatmap: ${beatmap} Acronym: ${acronym} Setting: ${setting}, Original Value: ${originalValue}, Invert Skill Handler: ${invertSkillHandler}`);
         return [originalValue, invertSkillHandler];
     }
 
@@ -216,8 +224,6 @@ class Mods {
         if (extra_data_string !== undefined) {
             width = height * 3;
         }
-        console.log(`[Mods.getModElement] Mod: ${mod.acronym} Data: ${extra_data_string}`);
-
         return (
             <Tooltip title={
                 <Box>

@@ -1,6 +1,6 @@
 import moment from "moment";
 import { GetAPI, sleep } from "./Misc";
-import { getLazerScore, getModString, MassCalculatePerformance, mods } from "./Osu";
+import { computeAccuracy, getLazerScore, getModString, MassCalculatePerformance, mods } from "./Osu";
 import { getSessions } from "./Session";
 import { getPeriodicData } from "./ScoresPeriodicProcessor.js";
 import axios from "axios";
@@ -165,7 +165,6 @@ export function prepareScore(score, user = null) {
         score.is_unique_fc = user.alt.unique_fc.includes(score.beatmap_id);
         score.is_unique_dt_fc = user.alt.unique_dt_fc.includes(score.beatmap_id);
     }
-    score.accuracy = parseFloat(score.accuracy);
     score.pp = Math.max(0, parseFloat(score.pp));
     score.date_played_moment = moment(score.date_played).local();
     //test string
@@ -203,6 +202,11 @@ export function prepareScore(score, user = null) {
         score.beatmap.difficulty_data.approach_rate = parseFloat(score.beatmap.difficulty_data.approach_rate);
         score.beatmap.difficulty_data.circle_size = parseFloat(score.beatmap.difficulty_data.circle_size);
         score.beatmap.difficulty_data.drain_rate = parseFloat(score.beatmap.difficulty_data.drain_rate);
+    }
+    score.accuracy = parseFloat(score.accuracy);
+
+    if(score.statistics && score.maximum_statistics) {
+        score.accuracy = computeAccuracy(score) * 100;
     }
 
     score.beatmap = prepareBeatmap(score.beatmap, score.enabled_mods);
@@ -344,7 +348,12 @@ function applyModdedAttributes(beatmap, parsed_mods) {
             ar_multiplier = 0.5;
         }
 
-        ar = beatmap.ar * ar_multiplier;
+        let original_ar = beatmap.ar;
+        if(Mods.hasMod(parsed_mods, "DA") && Mods.containsSetting(parsed_mods, "approach_rate")) {
+            original_ar = Mods.getSetting(parsed_mods, "DA", "approach_rate");
+        }
+
+        ar = original_ar * ar_multiplier;
 
         if (ar <= 5)
             ar_ms = ar0_ms - ar_ms_step1 * ar;
@@ -371,7 +380,12 @@ function applyModdedAttributes(beatmap, parsed_mods) {
             cs_multiplier = 0.5;
         }
 
-        cs = beatmap.cs * cs_multiplier;
+        let original_cs = beatmap.cs;
+        if(Mods.hasMod(parsed_mods, "DA") && Mods.containsSetting(parsed_mods, "circle_size")) {
+            original_cs = Mods.getModSetting(parsed_mods, "DA", "circle_size");
+        }
+
+        cs = original_cs * cs_multiplier;
 
         if (cs > 10) cs = 10;
 
@@ -389,7 +403,12 @@ function applyModdedAttributes(beatmap, parsed_mods) {
             od_multiplier = 0.5;
         }
 
-        od = beatmap.od * od_multiplier;
+        let original_od = beatmap.od;
+        if(Mods.hasMod(parsed_mods, "DA") && Mods.containsSetting(parsed_mods, "overall_difficulty")) {
+            original_od = Mods.getModSetting(parsed_mods, "DA", "overall_difficulty");
+        }
+
+        od = original_od * od_multiplier;
         odms = od0_ms - Math.ceil(od_ms_step * od);
         odms = Math.min(od0_ms, Math.max(od10_ms));
 
@@ -410,7 +429,12 @@ function applyModdedAttributes(beatmap, parsed_mods) {
             hp_multiplier = 0.5;
         }
 
-        hp = beatmap.hp * hp_multiplier;
+        let original_hp = beatmap.hp;
+        if(Mods.hasMod(parsed_mods, "DA") && Mods.containsSetting(parsed_mods, "drain_rate")) {
+            original_hp = Mods.getModSetting(parsed_mods, "DA", "drain_rate");
+        }
+
+        hp = original_hp * hp_multiplier;
 
         if (hp > 10) hp = 10;
 

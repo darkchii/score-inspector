@@ -7,7 +7,14 @@ const PERFORMANCE_BASE_MULTIPLIER = 1.15;
 export function getPerformanceLive(data, debug = false) {
     const sr_model = 'live';
     const score = data.score;
-    data.usingClassicSliderAccuracy = Mods.hasMod(data.score.mods, "CL");
+    data.statistics = data.statistics ?? score.statistics;
+    data.maximum_statistics = data.maximum_statistics ?? score.maximum_statistics;
+    // data.usingClassicSliderAccuracy = Mods.hasMod(data.score.mods, "CL");
+    data.usingClassicSliderAccuracy = false;
+    if(Mods.hasMod(data.score.mods, "CL")){
+        if(!Mods.containsSetting(data.score.mods, 'no_slider_head_accuracy') || Mods.getSetting(data.score.mods, 'no_slider_head_accuracy'))
+            data.usingClassicSliderAccuracy = true;
+    }
     data.countGreat = data.count300 ?? score.count300;
     data.countOk = data.count100 ?? score.count100;
     data.countMeh = data.count50 ?? score.count50;
@@ -17,12 +24,18 @@ export function getPerformanceLive(data, debug = false) {
     data.sliderCount = score.beatmap.sliders;
     data.totalHits = data.countGreat + data.countOk + data.countMeh + data.countMiss;
     data.accuracy = score.accuracy * 0.01;
-    data.effectiveMissCount = 0;
+    data.effectiveMissCount = data.countMiss;
     data.totalImperfectHits = data.countOk + data.countMeh + data.countMiss;
     data.difficulty_data = score.beatmap.difficulty_data;
     
-    data.countSliderEndsDropped = 0; //osualt only has classic scores for now
-    data.countSliderTickMiss = 0; //osualt only has classic scores for now
+    data.countSliderEndsDropped = 0;
+    data.countSliderTickMiss = 0;
+
+    if(data.statistics){
+        // data.countSliderEndsDropped = (data.beatmaps.slider - data.statistics.slider_tail_hit) ?? 0;
+        data.countSliderEndsDropped = data.statistics.slider_tail_hit ? (data.sliderCount - data.statistics.slider_tail_hit) : 0;
+        data.countSliderTickMiss = (data.statistics.large_tick_miss ?? 0);
+    }
     
     if (data.difficulty_data) {
         if (data.sliderCount > 0) {
@@ -34,7 +47,7 @@ export function getPerformanceLive(data, debug = false) {
             } else {
                 let fullComboThreshold = data.maxCombo - data.countSliderEndsDropped;
                 if (data.combo < fullComboThreshold)
-                    data.effectiveMissCount = data.maxCombo - data.countSliderEndsDropped;
+                    data.effectiveMissCount = fullComboThreshold / Math.max(1, data.combo);
                 data.effectiveMissCount = Math.min(data.effectiveMissCount, data.countSliderTickMiss + data.countMiss);
             }
         }
@@ -220,7 +233,6 @@ function getAccuracyValue(data) {
 
 function getFlashlightValue(data) {
     if (!Mods.hasMod(data.score.mods, "FL")){
-        console.log(`[PerformanceLive] getFlashlightValue: FL not found in mods`);
         return 0;
     }
 
