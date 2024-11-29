@@ -456,3 +456,35 @@ a {
     background-clip: text;
     -webkit-text-fill-color: transparent;
 }
+
+.osu-button-triangle {
+    width: '100%';
+    height: '100%,';
+    position: 'absolute';
+    top: 0;
+    left: 0;
+    overflow: hidden;
+}
+
+.osu-button-triangle::before {
+    content: '';
+    pointer-events: none;
+    opacity: 0.6;
+
+    width: 100%;
+    height: 300%;
+    top: 0;
+    left: 0;
+    position: absolute;
+    animation: triangles 5s linear infinite both;
+}
+
+@keyframes triangles {
+    from {
+        transform: translateY(33.0%);
+    }
+
+    to {
+        transform: translateY(-100%);
+    }
+}

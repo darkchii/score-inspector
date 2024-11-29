@@ -4,135 +4,20 @@ import { Chart as ChartJS, ArcElement, Tooltip as ChartTooltip, Legend } from 'c
 import moment from 'moment';
 import { useEffect, useRef } from 'react';
 import { useState } from 'react';
-import { Doughnut } from 'react-chartjs-2';
-import { getGradeIcon } from '../Helpers/Assets';
 import { toFixedNumber, formatNumber } from '../Helpers/Misc';
 import { getBeatmapMaxscore, getHitsFromAccuracy, getModString, mods, rankCutoffs } from '../Helpers/Osu';
 import { getCalculator } from '../Helpers/Performance/Performance';
-import { getBeatmapScores } from '../Helpers/OsuAlt';
 import { prepareBeatmap, prepareScore } from '../Helpers/ScoresProcessor';
-import { GetFormattedName } from '../Helpers/Account';
-import { Grid, List } from "react-virtualized";
 import { blue, green, grey, orange, red, yellow } from '@mui/material/colors';
-import WarningIcon from '@mui/icons-material/Warning';
 import Mods from '../Helpers/Mods';
 import ScoreDial from './ScoreDial';
 import StarsLabel from './StarsLabel';
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import StarIcon from '@mui/icons-material/Star';
-import * as d3 from 'd3';
 import * as htmlToImage from "html-to-image";
 import { useSpring, animated } from '@react-spring/web';
+import ScoreViewStat from './UI/ScoreViewStat';
 ChartJS.register(ArcElement, ChartTooltip, Legend);
-
-function ScoreViewStat(props) {
-    const theme = useTheme();
-    const arc = d3.arc();
-    const pie = d3.pie().sortValues(null);
-    const springData = useSpring({
-        from: {
-            pos: [0]
-        },
-        to: {
-            //radians
-            pos: [(props.progress * 360) * (Math.PI / 180)]
-        },
-        config: {
-            duration: 1000,
-            easing: d3.easeCubic
-        }
-    })
-
-    return (
-        <Tooltip title={props.tooltip ?? ''}>
-            <div className={`score-stats__stat${props.small ? '-small' : ''}`} style={{
-                opacity: props.irrelevant ? '0.5' : undefined,
-            }}>
-                <div className={`score-stats__stat-row score-stats__stat-row--label${props.small ? '-small' : ''}`} style={{
-                    color: props.labelColor ?? undefined,
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                }}>
-                    {props.labelIcon ?? null}
-                    {props.label}
-
-                    {/* add a colored horizontal line of 30px wide on the far right if props.lineDecorator is true */}
-                    {props.lineDecorator ? <div style={{
-                        width: '20px',
-                        height: '4px',
-                        backgroundColor: props.labelColor ?? theme.palette.text.primary,
-                        marginLeft: '1em',
-                        borderRadius: '20px',
-                    }}></div> : null}
-                </div>
-                <div className={`score-stats__stat-row${props.small ? '-small' : ''}`} style={{
-                    color: props.valueColor ?? undefined,
-                    display: 'flex',
-                    justifyContent: 'space-between',
-
-                }}>
-                    <span style={{
-                        //align the icon with the text
-                        display: 'flex',
-                        alignItems: 'center',
-                    }}>
-                        {
-                            props.originalValue ?
-                                //this should be slightly smaller and gray
-                                <span style={{
-                                    fontSize: '0.8em',
-                                    color: theme.palette.text.secondary,
-                                    display: 'flex',
-                                    alignItems: 'center',
-
-                                }}>
-                                    {props.originalValue}
-                                    <KeyboardArrowRightIcon sx={{ fontSize: '1em' }} />
-                                </span> : null
-                        }
-                        {props.value}
-                        {props.valueIcon ?? null}
-                    </span>
-
-                    {/* progress circle on the far right, use inline styling, theres no class */}
-                    {props.progress !== undefined ?
-                        <div style={{
-                            height: 'inherit',
-                            width: '1em',
-                            marginLeft: '1em',
-                        }}>
-                            <svg viewBox='0 0 26 26'>
-                                <defs>
-                                    <linearGradient gradientTransform='rotate(90)' id='dial-outer'>
-                                        <stop className='score-dial_outer_gradient_start' offset='0%' />
-                                        <stop className='score-dial_outer_gradient_end' offset='100%' />
-                                    </linearGradient>
-                                </defs>
-                                <g transform="translate(13,13)">
-                                    {
-                                        // pie([props.progress, 1 - props.progress]).map((d, i) => (
-                                        <animated.path
-                                            className={`score_dial_outer score_dial_outer-0`}
-                                            d={
-                                                springData.pos.to((prog) => {
-                                                    return arc({ innerRadius: 10, outerRadius: 13, startAngle: 0, endAngle: prog })
-                                                })
-                                            }
-                                        />
-                                        // ))
-                                    }
-                                </g>
-                            </svg>
-                        </div>
-                        : null
-                    }
-                </div>
-            </div>
-        </Tooltip>
-    );
-}
 
 function ScoreView(props) {
     const [scoreData, setScoreData] = useState(null);
@@ -316,7 +201,7 @@ function ScoreView(props) {
                                             <Typography variant='subtitle2'>Difficulty</Typography>
                                             <div className='score-stats__group-row'><ScoreViewStat valueIcon={<StarIcon sx={{ fontSize: '1em' }} />} label='Aim Rating' value={`${formatNumber(scoreData.difficulty_data?.aim_difficulty ?? 0, 2)}`} small={true} /></div>
                                             <div className='score-stats__group-row'><ScoreViewStat valueIcon={<StarIcon sx={{ fontSize: '1em' }} />} label='Speed Rating' value={`${formatNumber(scoreData.difficulty_data?.speed_difficulty ?? 0, 2)}`} small={true} /></div>
-                                            <div className='score-stats__group-row'><ScoreViewStat valueIcon={<StarIcon sx={{ fontSize: '1em' }} />} label='Flashlight Rating' value={`${formatNumber(scoreData.difficulty_data?.flashlight_difficulty ?? 0, 2)}`} small={true} /></div>
+                                            <div className='score-stats__group-row'><ScoreViewStat valueIcon={!Mods.hasMod(scoreData.score.mods, "FL") ? undefined : <StarIcon sx={{ fontSize: '1em' }} />} label='Flashlight Rating' irrelevant={!Mods.hasMod(scoreData.score.mods, "FL")} value={`${!Mods.hasMod(scoreData.score.mods, "FL") ? '-' : formatNumber(scoreData.difficulty_data?.flashlight_difficulty ?? 0, 2)}`} small={true} /></div>
                                             <div className='score-stats__group-row'><ScoreViewStat label='Speed note count' value={`${formatNumber(scoreData.difficulty_data?.speed_note_count ?? 0, 2)}`} small={true} /></div>
                                             <div className='score-stats__group-row'><ScoreViewStat label='Aim Difficult Strain Count' value={`${formatNumber(scoreData.difficulty_data?.aim_difficult_strain_count ?? 0, 2)}`} small={true} /></div>
                                             <div className='score-stats__group-row'><ScoreViewStat label='Speed Difficult Strain Count' value={`${formatNumber(scoreData.difficulty_data?.speed_difficult_strain_count ?? 0, 2)}`} small={true} /></div>
@@ -441,10 +326,23 @@ function ScoreView(props) {
                                                         />
                                                     </div>
                                                     <div className='score-stats__group-row'>
-                                                        <ScoreViewStat label='Aim PP' value={`${formatNumber(scoreData.score.recalc[props.data.pp_version]?.aim ?? 0, 1)}`} />
-                                                        <ScoreViewStat label='Speed PP' value={`${formatNumber(scoreData.score.recalc[props.data.pp_version]?.speed ?? 0, 1)}`} />
-                                                        <ScoreViewStat label='Accuracy PP' value={`${formatNumber(scoreData.score.recalc[props.data.pp_version]?.acc ?? 0, 1)}`} />
-                                                        <ScoreViewStat label='Flashlight PP' irrelevant={!Mods.hasMod(scoreData.score.mods, "FL")} value={`${Mods.hasMod(scoreData.score.mods, "FL") ? (formatNumber(scoreData.score.recalc[props.data.pp_version]?.flashlight ?? 0, 1)) : '-'}`} />
+                                                        <ScoreViewStat
+                                                            originalValue={(scoreData.score.recalc['fc'].aim === scoreData.score.recalc[props.data.pp_version].aim) ? undefined : formatNumber(scoreData.score.recalc['fc'].aim ?? 0, 1)}
+                                                            label='Aim PP'
+                                                            value={formatNumber(scoreData.score.recalc[props.data.pp_version]?.aim ?? 0, 1)} />
+                                                        <ScoreViewStat
+                                                            originalValue={(scoreData.score.recalc['fc'].speed === scoreData.score.recalc[props.data.pp_version].speed) ? undefined : formatNumber(scoreData.score.recalc['fc'].speed ?? 0, 1)}
+                                                            label='Speed PP'
+                                                            value={formatNumber(scoreData.score.recalc[props.data.pp_version]?.speed ?? 0, 1)} />
+                                                        <ScoreViewStat
+                                                            originalValue={(scoreData.score.recalc['fc'].acc === scoreData.score.recalc[props.data.pp_version].acc) ? undefined : formatNumber(scoreData.score.recalc['fc'].acc ?? 0, 1)}
+                                                            label='Accuracy PP'
+                                                            value={`${formatNumber(scoreData.score.recalc[props.data.pp_version]?.acc ?? 0, 1)}`} />
+                                                        <ScoreViewStat
+                                                            originalValue={(!Mods.hasMod(scoreData.score.mods, "FL") || scoreData.score.recalc['fc'].flashlight === scoreData.score.recalc[props.data.pp_version].flashlight) ? undefined : formatNumber(scoreData.score.recalc['fc'].flashlight ?? 0, 1)}
+                                                            label='Flashlight PP'
+                                                            irrelevant={!Mods.hasMod(scoreData.score.mods, "FL")}
+                                                            value={`${Mods.hasMod(scoreData.score.mods, "FL") ? (formatNumber(scoreData.score.recalc[props.data.pp_version]?.flashlight ?? 0, 1)) : '-'}`} />
                                                     </div>
                                                     {
                                                         scoreData.score.statistics != null && scoreData.score.maximum_statistics != null ?

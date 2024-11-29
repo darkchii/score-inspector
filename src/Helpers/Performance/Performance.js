@@ -20,7 +20,8 @@ export function getCalculator(version, data, debug = false) {
         flashlight: pp.flashlight,
         total: pp.total,
         version: pp.version,
-        model: pp.model
+        model: pp.model,
+        usingClassicSliderAccuracy: pp.usingClassicSliderAccuracy,
     }
 
     if (debug) {

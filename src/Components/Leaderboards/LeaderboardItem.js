@@ -7,8 +7,8 @@ export const LEADERBOARD_BORDER_RADIUS = '8px';
 export function LeaderboardItem(props) {
     return (
         <Box sx={{
-            height: LEADERBOARD_ITEM_HEIGHT,
-            maxHeight: LEADERBOARD_ITEM_HEIGHT,
+            height: props.height ?? LEADERBOARD_ITEM_HEIGHT,
+            maxHeight: props.height ?? LEADERBOARD_ITEM_HEIGHT,
             width: "100%",
             position: 'relative',
             borderRadius: LEADERBOARD_BORDER_RADIUS,

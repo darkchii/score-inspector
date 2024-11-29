@@ -5,16 +5,17 @@ let DefaultTheme = createTheme({
     palette: {
         mode: 'dark',
         primary: {
-            main: '#C8598A',
+            //hsl(330deg ,100%,70%)
+            main: '#FF66B3',
         },
         background: {
-            default: '#18171C',
+            default: '#1C171A',
             dark: '#fff',
-            paper: '#221F2Edd',
+            paper: '#2A2226',
         },
     },
     shape: {
-        borderRadius: 10
+        borderRadius: 10,
     },
     typography: {
         fontFamily: 'Torus',
@@ -24,14 +25,38 @@ let DefaultTheme = createTheme({
             fontSize: 22,
             fontWeight: 500,
         },
+        button: {
+            //add shadow to button text
+            textShadow: '0px 1px 2px #00000080',
+            //no force capitalization
+            textTransform: 'none',
+        }
     },
     components: {
+        MuiCard: {
+            styleOverrides: {
+                root: {
+                    boxShadow: '0px 0px 5px rgba(0,0,0,0.1)',
+                },
+            },
+        },
+        MuiTabs: {
+            styleOverrides: {
+                root: {
+                    boxShadow: 'none',
+                },
+            },
+        },
         MuiButton: {
             styleOverrides: {
                 root: {
-                    borderRadius: '9999px'
-                }
-            }
+                    borderRadius: '9999px',
+                },
+                sizeMedium: {
+                    paddingLeft: '40px',
+                    paddingRight: '40px',
+                },
+            },
         },
         MuiInput: {
             styleOverrides: {
@@ -45,7 +70,7 @@ let DefaultTheme = createTheme({
                     },
                 },
             },
-        },
+        }
     }
 });
 DefaultTheme = responsiveFontSizes(DefaultTheme);

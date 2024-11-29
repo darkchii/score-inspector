@@ -65,8 +65,8 @@ export function getPerformanceLive(data, debug = false) {
         }
 
         if (Mods.hasMod(data.score.mods, "RX")) {
-            let okMultiplier = Math.max(0.0, data.difficulty_data.od > 0 ? 1 - Math.pow(data.difficulty_data.od / 13.33, 1.8) : 1);
-            let mehMultiplier = Math.max(0.0, data.difficulty_data.od > 0 ? 1 - Math.pow(data.difficulty_data.od / 13.33, 5) : 1);
+            let okMultiplier = Math.max(0.0, data.difficulty_data.overall_difficulty > 0 ? 1 - Math.pow(data.difficulty_data.overall_difficulty / 13.33, 1.8) : 1);
+            let mehMultiplier = Math.max(0.0, data.difficulty_data.overall_difficulty > 0 ? 1 - Math.pow(data.difficulty_data.overall_difficulty / 13.33, 5) : 1);
 
             data.effectiveMissCount = Math.min(data.effectiveMissCount + data.countOk * okMultiplier + data.countMeh * mehMultiplier, data.totalHits);
         }
@@ -86,6 +86,7 @@ export function getPerformanceLive(data, debug = false) {
         acc: data.acc ?? 0,
         flashlight: data.flashlight ?? 0,
         total: data.total ?? 0,
+        usingClassicSliderAccuracy: data.usingClassicSliderAccuracy,
         version: 'live',
         model: sr_model,
         accuracy: data.accuracy,

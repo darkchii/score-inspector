@@ -7,7 +7,9 @@ function ClanLeaderboardItem(props) {
     const navigate = useNavigate();
     return (
         <LeaderboardItem
+            height={props.height ?? undefined}
             background={props.clan?.header_image_url ? `${encodeURI(props.clan.header_image_url)}` : ''}
+            backgroundColor={`#${props.clan?.color}`}
             onClick={() => {
                 navigate(`/clan/${props.clan?.id}`);
             }}
