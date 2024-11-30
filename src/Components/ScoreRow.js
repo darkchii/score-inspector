@@ -57,18 +57,19 @@ function ScoreRow(props) {
                                     {/* {getGradeIcon(score.rank)} */}
                                 </Grid2>
 
-                                <Grid2 size={props.small ? 5 : 4.3}>
+                                <Grid2 size={props.small ? 5.5 : 4.3}>
                                     <Box sx={{
                                         height: '100%',
-                                        display: 'flex',
                                         alignItems: 'center',
-                                        textOverflow: 'ellipsis',
+                                        maxWidth: '100%',
                                     }}>
-                                        <Tooltip title={`${score.beatmap.artist} - ${score.beatmap.title} [${score.beatmap.diffname}]`}>
-                                            <Typography sx={{ fontSize: '0.8rem', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                        <Tooltip
+                                            title={`${score.beatmap.artist} - ${score.beatmap.title} [${score.beatmap.diffname}]`}
+                                        >
+                                            <Typography noWrap sx={{ fontSize: '0.8rem', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                                                 {props.small ? undefined : `${score.beatmap.artist} -`} {score.beatmap.title}
                                             </Typography>
-                                            <Typography sx={{ fontSize: '0.7rem', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                            <Typography noWrap sx={{ fontSize: '0.7rem', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                                                 <span style={{ color: '#ea0' }}>{score.beatmap.diffname}</span> <span style={{ opacity: '0.7' }}>{score.date_played_moment.fromNow()}</span>
                                             </Typography>
                                         </Tooltip>
@@ -126,7 +127,7 @@ function ScoreRow(props) {
                                 }
 
 
-                                <Grid2 size={props.small ? 1 : 0.2}>
+                                <Grid2 size={props.small ? 0.5 : 0.2}>
                                     {
                                         score.beatmap.approved === 4 ?
                                             <>

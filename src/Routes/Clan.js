@@ -620,7 +620,11 @@ function ClanPage(props) {
                         {/* CLAN BUTTONS END */}
 
                         {/* CLAN CATEGORY TABS START*/}
-                        <OsuTabs size='small' value={activeTab} onChange={(event, newValue) => setActiveTab(newValue)}>
+                        <OsuTabs
+                            size='small'
+                            value={activeTab}
+                            onChange={(event, newValue) => setActiveTab(newValue)}
+                        >
                             <Tab label='Summary' a11yProps={0} />
                             <Tab label='Members' a11yProps={1} />
                             <Tab label='Logs' a11yProps={2} />
