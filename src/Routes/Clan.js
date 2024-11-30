@@ -5,7 +5,7 @@ import { fixedEncodeURIComponent, MODAL_STYLE, showNotification } from "../Helpe
 import { useEffect } from "react";
 import { GetFormattedName, GetLoginID, GetLoginToken, GetUser } from "../Helpers/Account";
 import { AcceptJoinRequestClan, CreateClan, DeleteClan, FormatClanLog, GetClan, GetClanList, GetTopClans, JoinRequestClan, LeaveClan, RejectJoinRequestClan, RemoveClanMember, TransferClanOwnership, UpdateClan } from "../Helpers/Clan";
-import { useNavigate, useParams } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 import Loader from "../Components/UI/Loader";
 import moment from "moment";
 import ClanLeaderboardItem from "../Components/Leaderboards/ClanLeaderboardItem";
@@ -650,7 +650,11 @@ function ClanPage(props) {
                                                 <GlowBarText sx={{ pb: 1 }}><Typography variant='body1'>Info</Typography></GlowBarText>
                                                 <div className='score-stats__group score-stats__group--stats'>
                                                     <div className='score-stats__group-row'>
-                                                        <ScoreViewStat label='Owner' value={GetFormattedName(clanData.owner?.user?.inspector_user ?? {})} />
+                                                        <ScoreViewStat label='Owner' value={
+                                                            <Link to={`/user/${clanData.owner?.user?.inspector_user?.osu_id}`} style={{ color: 'inherit' }}>
+                                                                {GetFormattedName(clanData.owner?.user?.inspector_user ?? {}, { is_link: true })}
+                                                            </Link>
+                                                        } />
                                                     </div>
                                                     <div className='score-stats__group-row'>
                                                         <ScoreViewStat label='Members' value={clanData.members.length} />
@@ -759,9 +763,11 @@ function ClanPage(props) {
                                                                                 }}>
                                                                                     Score by <span style={{ marginLeft: '1em' }}>{GetFormattedName(score.inspector_user)}</span>
                                                                                 </Box> */}
-                                                                                <PlayerTooltip user_id={score.user?.user_id}>
-                                                                                    <Avatar src={`https://a.ppy.sh/${score.user?.user_id}`} variant='rounded' />
-                                                                                </PlayerTooltip>
+                                                                                <Link to={`/user/${score.user?.user_id}`} style={{ textDecoration: 'none' }}>
+                                                                                    <PlayerTooltip user_id={score.user?.user_id}>
+                                                                                        <Avatar src={`https://a.ppy.sh/${score.user?.user_id}`} variant='rounded' />
+                                                                                    </PlayerTooltip>
+                                                                                </Link>
                                                                                 <ScoreRow data={{
                                                                                     score: score,
                                                                                 }} small={true} />
