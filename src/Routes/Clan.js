@@ -5,7 +5,7 @@ import { fixedEncodeURIComponent, MODAL_STYLE, showNotification } from "../Helpe
 import { useEffect } from "react";
 import { GetFormattedName, GetLoginID, GetLoginToken, GetUser } from "../Helpers/Account";
 import { AcceptJoinRequestClan, CreateClan, DeleteClan, FormatClanLog, GetClan, GetClanList, GetTopClans, JoinRequestClan, LeaveClan, RejectJoinRequestClan, RemoveClanMember, TransferClanOwnership, UpdateClan } from "../Helpers/Clan";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router";
 import Loader from "../Components/UI/Loader";
 import moment from "moment";
 import ClanLeaderboardItem from "../Components/Leaderboards/ClanLeaderboardItem";

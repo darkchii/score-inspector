@@ -1,6 +1,6 @@
 import { Divider, Grid2, Paper, Stack, Typography } from "@mui/material";
 import { GetFormattedName } from "../Helpers/Account.js";
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router';
 import Loader from "./UI/Loader.js";
 import Error from "./UI/Error.js";
 

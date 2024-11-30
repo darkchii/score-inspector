@@ -8,7 +8,6 @@ import Header from './Components/Header';
 import Error from './Routes/Error';
 import Footer from './Components/Footer';
 import Update from './Routes/Update';
-import { Route, Routes } from 'react-router-dom/dist';
 import User from './Routes/User';
 import Leaders from './Routes/Leaders';
 import { loadSettings } from './Helpers/Settings';
@@ -34,7 +33,7 @@ import Clan from './Routes/Clan.js';
 import Loader from './Components/UI/Loader.js';
 import Chat from './Routes/Chat.js';
 import Tournaments from './Routes/Tournaments.js';
-import Beatmap from './Routes/Beatmap.js';
+import { Route, Routes } from 'react-router';
 
 function App() {
   const [loginData, setLoginData] = useState(null);

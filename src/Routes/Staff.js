@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { GetRemoteRoles, GetRemoteUsersByRole, GetRoleIcon } from "../Helpers/Account";
 import { Card, CardContent, CardHeader, Chip, Grid2, Stack, Typography } from "@mui/material";
 import PlayerCard from "../Components/PlayerCard";
-import { useNavigate } from "react-router-dom/dist";
+import { useNavigate } from "react-router";
 import { getFullUser } from "../Helpers/Osu";
 import Loader from "../Components/UI/Loader";
 import { Helmet } from "react-helmet";

@@ -5,7 +5,7 @@ import { GetFormattedName, GetRoleIcon, GetRoles } from "../../Helpers/Account";
 import TwitterIcon from '@mui/icons-material/Twitter';
 import { DiscordIcon } from "../../Components/Icons";
 import { getBonusPerformance } from "../../Helpers/Osu";
-import { Link as VLink } from 'react-router-dom';
+import { Link as VLink } from 'react-router';
 import { getFlagIcon } from "../../Helpers/Assets";
 
 const MAX_VISITORS = 5;

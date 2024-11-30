@@ -1,5 +1,5 @@
 import { Alert, Box, Button, Card, CardActionArea, CardContent, CircularProgress, Divider, Grid2, Link, Modal, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from '@mui/material';
-import { Link as RouterLink, useSearchParams } from 'react-router-dom';
+import { Link as RouterLink, useSearchParams } from 'react-router';
 import React, { useEffect, useState } from 'react';
 import { formatNumberAsSize, GetAPI, MODAL_STYLE, parseReadableStreamToJson, showNotification } from '../Helpers/Misc';
 import { GetFormattedName, GetLoginIDUnsafe, GetTopVisited, LoginUser } from '../Helpers/Account';

@@ -4,7 +4,7 @@ import { forwardRef } from "react";
 import { useState } from "react";
 import { GetFormattedName, GetVisited } from "../../Helpers/Account";
 import moment from "moment";
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router';
 import { arr_sum } from "../../Helpers/Misc";
 
 const style = {

@@ -7,7 +7,7 @@ import axios from 'axios';
 import { GetAPI, MILESTONES_FORMATTER } from '../Helpers/Misc';
 import moment from 'moment';
 import { GetFormattedName } from '../Helpers/Account';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router';
 import { Helmet } from 'react-helmet';
 import config from "../config.json";
 

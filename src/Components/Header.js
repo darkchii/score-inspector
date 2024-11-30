@@ -1,7 +1,7 @@
 import { AppBar, Avatar, Box, Button, Divider, Drawer, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Menu, MenuItem, Stack, Toolbar, Tooltip, Typography, alpha, styled } from '@mui/material';
 import React from 'react';
 import { useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import UserSearchModal from './Modals/UserSearchModal';
 import SearchIcon from '@mui/icons-material/Search';
 import LeaderboardIcon from '@mui/icons-material/Leaderboard';

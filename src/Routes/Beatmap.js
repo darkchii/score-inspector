@@ -3,7 +3,7 @@ import config from "../config.json";
 import { Alert, Box, Button, Card, CardContent, Chip, Container, Grid2, Modal, Paper, Slider, Stack, TextField, Tooltip, Typography, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
 import Loader from "../Components/UI/Loader";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router";
 import { GetAPI, MODAL_STYLE, showNotification } from "../Helpers/Misc";
 import axios from "axios";
 import { OsuModeIcon } from "../Components/Icons";

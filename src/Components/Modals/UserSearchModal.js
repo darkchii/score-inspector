@@ -3,7 +3,7 @@ import { useEffect, useImperativeHandle, useRef } from "react";
 import { forwardRef } from "react";
 import { useState } from "react";
 import { findUsers } from "../../Helpers/OsuAlt";
-import { useNavigate } from "react-router-dom/dist";
+import { useNavigate } from "react-router";
 import PlayerCard from "../PlayerCard";
 import SearchIcon from '@mui/icons-material/Search';
 import { sleep } from "../../Helpers/Misc.js";

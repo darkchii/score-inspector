@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect } from "react";
 import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router";
 import Loader from "../Components/UI/Loader";
 import axios from "axios";
 import { GetAPI, formatNumberAsSize } from "../Helpers/Misc";

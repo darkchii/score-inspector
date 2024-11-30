@@ -3,7 +3,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import LogoutIcon from '@mui/icons-material/Logout';
 import FilterIcon from '@mui/icons-material/Filter';
 import PersonSearchIcon from '@mui/icons-material/PersonSearch';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import PlayerCard from "../PlayerCard";
 
 function AccountDropdown(props) {

@@ -1,7 +1,7 @@
 import { Box, Tooltip, Typography } from "@mui/material";
 import GlowBar from "../UI/GlowBar";
 import { LeaderboardItem } from "./LeaderboardItem";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 function ClanLeaderboardItem(props) {
     const navigate = useNavigate();

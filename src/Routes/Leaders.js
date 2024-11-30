@@ -2,7 +2,7 @@ import { Alert, AlertTitle, Box, Button, ButtonGroup, CircularProgress, FormCont
 import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router';
 import { getLeaderboard } from '../Helpers/OsuAlt';
 import moment from 'moment/moment';
 import momentDurationFormatSetup from "moment-duration-format";

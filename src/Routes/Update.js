@@ -3,7 +3,7 @@ import moment from 'moment/moment';
 import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router';
 import { CHANGETYPES, PLATFORMTYPES, updates } from '../Data/Updates';
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';

@@ -17,7 +17,7 @@ import SectionDaily from "./SectionDaily";
 import styled from "@emotion/styled";
 import SectionCompletion from "./SectionCompletion";
 import SectionPacks from "./SectionPacks";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import _ from "lodash";
 import SectionSessions from "./SectionSessions";
 

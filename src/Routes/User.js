@@ -2,7 +2,6 @@ import { Alert, Box, CircularProgress, Link, Stack, Typography } from '@mui/mate
 import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
-import { useLocation, useParams } from 'react-router-dom/dist';
 import { getUserScores, isUserRegistered } from '../Helpers/OsuAlt';
 import { getFullUser } from '../Helpers/Osu';
 import SectionHeader from '../Components/UserPage/SectionHeader';
@@ -13,6 +12,7 @@ import config from '../config.json';
 import { GetVisitors, UpdateVisitor } from '../Helpers/Account';
 import { GetAPI, formatBytes } from '../Helpers/Misc';
 import axios from 'axios';
+import { useLocation, useParams } from 'react-router';
 
 function User() {
     const [user, setUser] = useState(null);

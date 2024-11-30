@@ -11,7 +11,7 @@ import "@fontsource/ubuntu/400.css";
 import "@fontsource/ubuntu/500.css";
 import "@fontsource/ubuntu/700.css";
 import App from './App';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter } from 'react-router';
 import 'react-virtualized/styles.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

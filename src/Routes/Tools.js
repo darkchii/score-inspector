@@ -1,6 +1,6 @@
 import { Button, ButtonGroup, Grid2 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router";
 import ToolCommandHelper from "../Components/Tools/ToolCommandHelper";
 import ToolLevelCalculator from "../Components/Tools/ToolLevelCalculator";
 import ToolMissingBeatmaps from "../Components/Tools/ToolMissingBeatmaps";

@@ -1,7 +1,7 @@
 import { Alert, Avatar, Box, Card, CardActionArea, CardContent, Chip, Grid2, Paper, Skeleton, Stack, Tab, Tabs, Tooltip, Typography } from "@mui/material";
 import moment from "moment";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import ScoreModal from "../Components/ScoreModal";
 import { getBestScores } from "../Helpers/OsuAlt";
 import { prepareScores } from "../Helpers/ScoresProcessor";

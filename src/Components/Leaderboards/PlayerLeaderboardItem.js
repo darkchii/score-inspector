@@ -6,7 +6,7 @@ import LevelIcon from "../UI/LevelIcon";
 import { LEADERBOARD_BORDER_RADIUS, LEADERBOARD_ITEM_HEIGHT, LeaderboardItem } from "./LeaderboardItem";
 import { GetRoleIcons } from "../../Helpers/Account";
 import NotInterestedIcon from '@mui/icons-material/NotInterested';
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { green, grey, red } from "@mui/material/colors";
 import FiberNewIcon from '@mui/icons-material/FiberNew';
 import HorizontalRuleIcon from '@mui/icons-material/HorizontalRule';
