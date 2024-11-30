@@ -45,7 +45,7 @@ function ScoreRow(props) {
                                 }
                             }} >
                             <Grid2 container>
-                                <Grid2 size={0.3}>
+                                <Grid2 size={props.small ? 1 : 0.3}>
                                     <Box sx={{
                                         height: '100%',
                                         display: 'flex',
@@ -57,7 +57,7 @@ function ScoreRow(props) {
                                     {/* {getGradeIcon(score.rank)} */}
                                 </Grid2>
 
-                                <Grid2 size={4}>
+                                <Grid2 size={props.small ? 5 : 4.3}>
                                     <Box sx={{
                                         height: '100%',
                                         display: 'flex',
@@ -66,7 +66,7 @@ function ScoreRow(props) {
                                     }}>
                                         <Tooltip title={`${score.beatmap.artist} - ${score.beatmap.title} [${score.beatmap.diffname}]`}>
                                             <Typography sx={{ fontSize: '0.8rem', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                                {score.beatmap.artist} - {score.beatmap.title}
+                                                {props.small ? undefined : `${score.beatmap.artist} -`} {score.beatmap.title}
                                             </Typography>
                                             <Typography sx={{ fontSize: '0.7rem', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                                                 <span style={{ color: '#ea0' }}>{score.beatmap.diffname}</span> <span style={{ opacity: '0.7' }}>{score.date_played_moment.fromNow()}</span>
@@ -75,62 +75,58 @@ function ScoreRow(props) {
                                     </Box>
                                 </Grid2>
 
-                                <Grid2 size={0.3}>
-                                    <Box sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
-                                        <Typography sx={{ fontSize: '0.8rem', maxWidth: '100%', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
-                                            {score.top_score?.pos ? `#${score.top_score?.pos.toLocaleString('en-US')}` : ''}
-                                        </Typography>
-                                    </Box>
-                                </Grid2>
+                                {
+                                    !props.small ?
+                                        <>
+                                            <Grid2 size={1}>
+                                                <Box sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
+                                                    <Box>
+                                                        <Typography sx={{ fontSize: '0.9rem', maxWidth: '100%', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
+                                                            {score.score.toLocaleString('en-US')}
+                                                        </Typography>
+                                                        <Typography sx={{ fontSize: '0.75rem', maxWidth: '100%', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
+                                                            {score.scoreLazerStandardised.toLocaleString('en-US')} (lazer)
+                                                        </Typography>
+                                                    </Box>
+                                                </Box>
+                                            </Grid2>
+                                            <Grid2 size={0.8}>
+                                                <Box sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
+                                                    <Typography sx={{ fontSize: '0.8rem', maxWidth: '100%', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
+                                                        {score.combo}/{beatmap.maxcombo}x
+                                                    </Typography>
+                                                </Box>
+                                            </Grid2>
+                                            <Grid2 size={0.3}>
+                                                <Box sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
+                                                    <Box>
+                                                        <Typography sx={{ fontSize: '0.8rem', maxWidth: '100%', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
+                                                            AR: {toFixedNumber(beatmap.difficulty_data.approach_rate ?? -1, 1)}
+                                                        </Typography>
+                                                        <Typography sx={{ fontSize: '0.8rem', maxWidth: '100%', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
+                                                            CS: {toFixedNumber(beatmap.difficulty_data.circle_size ?? -1, 1)}
+                                                        </Typography>
+                                                    </Box>
+                                                </Box>
+                                            </Grid2>
+                                            <Grid2 size={0.3}>
+                                                <Box sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
+                                                    <Box>
+                                                        <Typography sx={{ fontSize: '0.8rem', maxWidth: '100%', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
+                                                            OD: {toFixedNumber(beatmap.difficulty_data.overall_difficulty ?? -1, 1)}
+                                                        </Typography>
+                                                        <Typography sx={{ fontSize: '0.8rem', maxWidth: '100%', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
+                                                            HP: {toFixedNumber(beatmap.difficulty_data.drain_rate ?? -1, 1)}
+                                                        </Typography>
+                                                    </Box>
+                                                </Box>
+                                            </Grid2>
+                                        </>
+                                        : <> </>
+                                }
 
-                                <Grid2 size={1}>
-                                    <Box sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
-                                        <Box>
-                                            <Typography sx={{ fontSize: '0.9rem', maxWidth: '100%', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
-                                                {score.score.toLocaleString('en-US')}
-                                            </Typography>
-                                            <Typography sx={{ fontSize: '0.75rem', maxWidth: '100%', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
-                                                {score.scoreLazerStandardised.toLocaleString('en-US')} (lazer)
-                                            </Typography>
-                                        </Box>
-                                    </Box>
-                                </Grid2>
 
-                                <Grid2 size={0.8}>
-                                    <Box sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
-                                        <Typography sx={{ fontSize: '0.8rem', maxWidth: '100%', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
-                                            {score.combo}/{beatmap.maxcombo}x
-                                        </Typography>
-                                    </Box>
-                                </Grid2>
-
-                                <Grid2 size={0.3}>
-                                    <Box sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
-                                        <Box>
-                                            <Typography sx={{ fontSize: '0.8rem', maxWidth: '100%', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
-                                                AR: {toFixedNumber(beatmap.difficulty_data.approach_rate ?? -1, 1)}
-                                            </Typography>
-                                            <Typography sx={{ fontSize: '0.8rem', maxWidth: '100%', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
-                                                CS: {toFixedNumber(beatmap.difficulty_data.circle_size ?? -1, 1)}
-                                            </Typography>
-                                        </Box>
-                                    </Box>
-                                </Grid2>
-
-                                <Grid2 size={0.3}>
-                                    <Box sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
-                                        <Box>
-                                            <Typography sx={{ fontSize: '0.8rem', maxWidth: '100%', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
-                                                OD: {toFixedNumber(beatmap.difficulty_data.overall_difficulty ?? -1, 1)}
-                                            </Typography>
-                                            <Typography sx={{ fontSize: '0.8rem', maxWidth: '100%', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
-                                                HP: {toFixedNumber(beatmap.difficulty_data.drain_rate ?? -1, 1)}
-                                            </Typography>
-                                        </Box>
-                                    </Box>
-                                </Grid2>
-
-                                <Grid2 size={0.2}>
+                                <Grid2 size={props.small ? 1 : 0.2}>
                                     {
                                         score.beatmap.approved === 4 ?
                                             <>
@@ -143,29 +139,35 @@ function ScoreRow(props) {
                                     }
                                 </Grid2>
 
-                                <Grid2 size={0.4}>
-                                    <Box sx={{ height: '100%', alignContent: 'right', display: 'flex', alignItems: 'center', justifyContent: 'right', pr: 0.3 }}>
-                                        {
-                                            score.beatmap.difficulty_data.star_rating && (Math.round(score.beatmap.difficulty_data.star_rating * 100) / 100) !== (Math.round(score.beatmap.stars * 100) / 100) ?
-                                                <>
-                                                    <Typography variant="subtitle2" sx={{ opacity: 0.4 }}>
-                                                        {score.beatmap.stars.toFixed(2)}*
-                                                    </Typography>
-                                                </> : <></>
-                                        }
-                                    </Box>
-                                </Grid2>
-                                <Grid2 size={0.1}>
-                                    <Box sx={{ height: '100%', alignContent: 'right', display: 'flex', alignItems: 'center' }}>
-                                        {
-                                            score.beatmap.difficulty_data.star_rating && (Math.round(score.beatmap.difficulty_data.star_rating * 100) / 100) !== (Math.round(score.beatmap.stars * 100) / 100) ?
-                                                <>
-                                                    <Typography variant="subtitle2" sx={{ opacity: 0.4 }}>{"-> "}</Typography>
-                                                </> : <></>
-                                        }
-                                    </Box>
-                                </Grid2>
-                                <Grid2 size={0.4}>
+                                {
+                                    !props.small ?
+                                        <>
+                                            <Grid2 size={0.4}>
+                                                <Box sx={{ height: '100%', alignContent: 'right', display: 'flex', alignItems: 'center', justifyContent: 'right', pr: 0.3 }}>
+                                                    {
+                                                        score.beatmap.difficulty_data.star_rating && (Math.round(score.beatmap.difficulty_data.star_rating * 100) / 100) !== (Math.round(score.beatmap.stars * 100) / 100) ?
+                                                            <>
+                                                                <Typography variant="subtitle2" sx={{ opacity: 0.4 }}>
+                                                                    {score.beatmap.stars.toFixed(2)}*
+                                                                </Typography>
+                                                            </> : <></>
+                                                    }
+                                                </Box>
+                                            </Grid2>
+                                            <Grid2 size={0.1}>
+                                                <Box sx={{ height: '100%', alignContent: 'right', display: 'flex', alignItems: 'center' }}>
+                                                    {
+                                                        score.beatmap.difficulty_data.star_rating && (Math.round(score.beatmap.difficulty_data.star_rating * 100) / 100) !== (Math.round(score.beatmap.stars * 100) / 100) ?
+                                                            <>
+                                                                <Typography variant="subtitle2" sx={{ opacity: 0.4 }}>{"-> "}</Typography>
+                                                            </> : <></>
+                                                    }
+                                                </Box>
+                                            </Grid2>
+                                        </>
+                                        : <></>
+                                }
+                                <Grid2 size={props.small ? 0.7 : 0.4}>
                                     <Box sx={{ height: '100%', alignContent: 'right', display: 'flex', alignItems: 'center', justifyContent: 'left' }}>
                                         <Tooltip title={
                                             `Aim: ${score.beatmap.difficulty_data.aim_difficulty.toFixed(2)}, Speed: ${score.beatmap.difficulty_data.speed_difficulty.toFixed(2)}, Flashlight: ${(score.beatmap.difficulty_data.flashlight_rating ?? 0).toFixed(2)}*`
@@ -175,7 +177,7 @@ function ScoreRow(props) {
                                     </Box>
                                 </Grid2>
 
-                                <Grid2 size={1.7}>
+                                <Grid2 size={props.small ? 1.5 : 1.7}>
                                     <Box sx={{
                                         height: '100%',
                                         display: 'flex',
@@ -214,30 +216,34 @@ function ScoreRow(props) {
                                     </Box>
                                 </Grid2>
 
-                                <Grid2 size={0.6}>
+                                <Grid2 size={props.small ? 1.1 : 0.6}>
                                     <Box sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
                                         <Typography variant="subtitle2">{score.accuracy.toFixed(2)}%</Typography>
                                     </Box>
                                 </Grid2>
 
-                                <Grid2 size={0.6}>
-                                    <Box sx={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'left', pr: 1, color: grey[500] }}>
-                                        {
-                                            !score.is_fc && score.recalc['fc'] ?
-                                                <Typography variant="caption">If FC:<br />{Math.round(score.recalc['fc']?.total).toLocaleString('en-US')}pp</Typography>
-                                                : <></>
-                                        }
-                                    </Box>
-                                </Grid2>
+                                {
+                                    !props.small ?
+                                        <Grid2 size={0.6}>
+                                            <Box sx={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'left', pr: 1, color: grey[500] }}>
+                                                {
+                                                    !score.is_fc && score.recalc['fc'] ?
+                                                        <Typography variant="caption">If FC:<br />{Math.round(score.recalc['fc']?.total).toLocaleString('en-US')}pp</Typography>
+                                                        : <></>
+                                                }
+                                            </Box>
+                                        </Grid2>
+                                        : <></>
+                                }
 
-                                <Grid2 size={1}>
-                                    <Box sx={{ 
-                                        height: '100%', 
-                                        display: 'flex', 
+                                <Grid2 size={props.small ? 1.4 : 1}>
+                                    <Box sx={{
+                                        height: '100%',
+                                        display: 'flex',
                                         alignItems: 'center',
                                         justifyContent: 'right',
                                         pr: 1,
-                                        }}>
+                                    }}>
                                         {
                                             score.beatmap.difficulty_data.is_legacy ?
                                                 <Tooltip title="This score uses old star ratings and may cause incorrect mod and/or pp values">

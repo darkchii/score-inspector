@@ -3,24 +3,11 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { cloneElement } from "react";
 import { GetLoginIDUnsafe, IsUserLoggedInUnsafe } from "../../Helpers/Account.js";
-import Loader from "./Loader.js";
-import { getFullUser } from "../../Helpers/Osu.js";
-import PlayerCard from "../PlayerCard.js";
-
-const PlayerTooltip = styled(({ className, ...props }) => (
-    <Tooltip {...props} componentsProps={{ tooltip: { className: className } }} />
-))(`
-    background-color: transparent;
-    max-width: none;
-`);
+import PlayerTooltip from "./PlayerTooltip.js";
 
 function PlayerChip(props) {
     const theme = useTheme();
     const [matchesLoggedInUser, setMatchesLoggedInUser] = useState(false);
-    const [isHovering, setIsHovering] = useState(false);
-    const [isWorking, setIsWorking] = useState(false);
-    const [playerData, setPlayerData] = useState(null);
-    const [abortController, setAbortController] = useState(null);
 
     const AvatarClone = cloneElement(props.avatar, {
         sx: {
@@ -36,64 +23,8 @@ function PlayerChip(props) {
         }
     }, [props]);
 
-    useEffect(() => {
-        if (!isHovering) {
-            if (abortController !== null) {
-                abortController.abort();
-                setAbortController(null);
-            }
-        }
-        if (isWorking) {
-            return;
-        }
-        if (isHovering) {
-            if (playerData === null) {
-                setIsWorking(true);
-                (async () => {
-                    const _abortController = new AbortController();
-                    setAbortController(_abortController);
-                    let _playerData = null;
-                    try {
-                        _playerData = await getFullUser(props.user_id, {
-                            skipAltData: true
-                        }, null, _abortController.signal);
-                        if (_playerData.length > 0) {
-                            setPlayerData(_playerData[0]);
-                        }
-                    } catch (err) {
-                        console.error(err);
-                    }
-
-                    setIsWorking(false);
-                })();
-            }
-        }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isHovering]);
-
     return <>
-        <PlayerTooltip
-            onOpen={() => setIsHovering(true)}
-            onClose={() => setIsHovering(false)}
-            title={isWorking ?
-                <Box sx={{ height: '150px', width: '400px' }}>
-                    <Loader />
-                </Box>
-                : <>
-                    {
-                        playerData === null ? <>
-                            <Alert severity='error'>
-                                <Typography variant='body1'>Failed to load player data.</Typography>
-                            </Alert>
-                        </> : <>
-                            <Box sx={{ height: '150px', width: '400px' }}>
-                                <PlayerCard user={playerData} />
-                            </Box>
-                        </>
-                    }
-                </>}
-            placement="top"
-            >
+        <PlayerTooltip user_id={props.user_id}>
             <Box sx={{
                 display: 'flex',
                 // borderRadius: '5px',

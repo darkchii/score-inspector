@@ -2,6 +2,8 @@ import axios from "axios";
 import { GetAPI, parseReadableStreamToJson } from "./Misc";
 import { GetFormattedName } from "./Account";
 import { Box } from "@mui/material";
+import { prepareScores } from "./ScoresProcessor";
+import { MassCalculatePerformance } from "./Osu";
 
 export async function CreateClan(data) {
     const response = await fetch(`${GetAPI()}clans/create`, {
@@ -30,11 +32,25 @@ export async function UpdateClan(data) {
 
 export async function GetClan(id, login_user_id = null, login_user_token = null) {
     // const response = await fetch(`${GetAPI()}clans/get/${id}`);
-    const response = await axios.post(`${GetAPI()}clans/get/${id}`, {
+    const response = await axios.post(`${GetAPI()}clans/get/${id}?activities=true`, {
         login_user_id: login_user_id,
         login_user_token: login_user_token
     });
-    return response.data;
+
+    const data = response.data;
+
+    if(data.activities?.scores !== undefined && data.activities?.scores.length > 0) {
+        data.activities.scores = prepareScores(null, data.activities?.scores, true);
+        let [_scores, _performance] = await MassCalculatePerformance(data.activities.scores);
+        data.activities.scores = _scores;
+
+        //order by date_played_moment
+        data.activities.scores.sort((a, b) => b.date_played_moment - a.date_played_moment);
+    }
+
+    console.log(data);
+
+    return data;
 }
 
 export async function DeleteClan(data) {

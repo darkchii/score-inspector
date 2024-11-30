@@ -51,6 +51,7 @@ let DefaultTheme = createTheme({
             styleOverrides: {
                 root: {
                     borderRadius: '9999px',
+                    color: '#fff',
                 },
                 sizeMedium: {
                     paddingLeft: '40px',

@@ -110,7 +110,7 @@ function App() {
             <Route path="population" element={<Population />} />
             <Route path="completionists" element={<Completionists />} />
             <Route path="logout" element={<Logout />} />
-            <Route path="clan/:id?" element={<Clan />} />
+            <Route path="clan/:id?/:page?" element={<Clan />} />
             <Route path="tournaments/:id?" element={<Tournaments />} />
             <Route path="bancho" element={<Chat />} />
             {/* <Route path="beatmaps/:id?" element={<Beatmap />} />

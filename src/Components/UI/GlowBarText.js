@@ -10,7 +10,7 @@ function GlowBarText(props){
             position: 'relative',
             ...props.sx
         }}>
-            <GlowBar direction='left' />
+            <GlowBar offset={12} direction='left' />
             {props.children}
         </Box>
     )
