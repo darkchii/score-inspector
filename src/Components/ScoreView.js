@@ -162,6 +162,7 @@ function ScoreView(props) {
                                     backgroundSize: 'cover',
                                     backgroundPosition: 'center',
                                     filter: 'blur(10px)',
+                                    transform: 'scale(1.1)',
                                 }}></Box>
                             <Box sx={{
                                 position: 'absolute',
