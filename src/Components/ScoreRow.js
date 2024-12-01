@@ -4,7 +4,7 @@ import { getGradeIcon, getModIcon } from "../Helpers/Assets.js";
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { grey, orange, red } from "@mui/material/colors";
 import { getModString, mod_strings_long, mods } from "../Helpers/Osu.js";
-import { toFixedNumber } from "../Helpers/Misc.js";
+import { formatNumber, toFixedNumber } from "../Helpers/Misc.js";
 import Mods from "../Helpers/Mods.js";
 import WarningIcon from '@mui/icons-material/Warning';
 import ScoreModal from "./ScoreModal.js";
@@ -14,6 +14,7 @@ function ScoreRow(props) {
     const [score, setScore] = useState(null);
     const [beatmap, setBeatmap] = useState(null);
     const [modalData, setModalData] = useState({ active: false });
+    const [isHovering, setIsHovering] = useState(false);
 
     useEffect(() => {
         setScore(props.data.score);
@@ -33,6 +34,8 @@ function ScoreRow(props) {
                         <ScoreModal data={modalData} />
                         <Box
                             onClick={onClick}
+                            onMouseEnter={() => setIsHovering(true)}
+                            onMouseLeave={() => setIsHovering(false)}
                             sx={{
                                 margin: 0,
                                 width: '100%',
@@ -42,9 +45,44 @@ function ScoreRow(props) {
                                 '&:hover': {
                                     bgcolor: theme.palette.background.paper,
                                     cursor: 'pointer'
-                                }
+                                },
+                                position: 'relative',
+                                overflow: 'hidden',
                             }} >
-                            <Grid2 container>
+                            <Box
+                                sx={{
+                                    width: '100%',
+                                    height: '100%',
+                                    top: 0,
+                                    left: 0,
+                                    position: 'absolute',
+                                    backgroundImage: `url(https://assets.ppy.sh/beatmaps/${score.beatmap.set_id}/covers/cover.jpg)`,
+                                    backgroundSize: 'cover',
+                                    backgroundPosition: 'center',
+                                    filter: 'blur(5px)',
+                                    borderRadius: theme.shape.borderRadius,
+                                    transform: 'scale(1.1)',
+                                }}
+                            />
+                            <Box sx={{
+                                width: '100%',
+                                height: '100%',
+                                top: 0,
+                                left: 0,
+                                position: 'absolute',
+                                // backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                                backgroundColor: `rgba(0, 0, 0, ${isHovering ? 0.85 : 0.7})`,
+                                transition: 'all 0.2s',
+                                borderRadius: theme.shape.borderRadius,
+                            }} />
+                            <Grid2 container sx={{
+                                zIndex: 10,
+                                //force zIndex on all children
+                                '& > *': {
+                                    zIndex: 10
+                                },
+                                borderRadius: theme.shape.borderRadius,
+                            }}>
                                 <Grid2 size={props.small ? 1 : 0.3}>
                                     <Box sx={{
                                         height: '100%',
@@ -178,13 +216,14 @@ function ScoreRow(props) {
                                     </Box>
                                 </Grid2>
 
-                                <Grid2 size={props.small ? 1.5 : 1.7}>
+                                <Grid2 size={props.small ? 1.5 : 1.7} sx={{
+                                    zIndex: 12,
+                                }}>
                                     <Box sx={{
                                         height: '100%',
                                         display: 'flex',
                                         alignItems: 'center',
                                         justifyContent: 'left',
-                                        zIndex: 8
                                     }}>
                                         <Typography sx={{
                                             display: 'flex',
@@ -194,13 +233,16 @@ function ScoreRow(props) {
                                             pl: 2,
                                             transition: 'all 0.3s',
                                             '& > *': {
-                                                ml: -2,
+                                                ml: -2.5,
+                                                opacity: 0.8,
                                                 //offset to compensate for the margin
                                                 transition: 'margin-left 0.3s',
                                             },
                                             //on hover, all children no margin
                                             '&:hover > *': {
                                                 ml: 0,
+                                                opacity: 1,
+                                                zIndex: 12,
                                                 transition: 'margin-left 0.3s',
                                             },
                                             '&:hover': {
@@ -219,7 +261,10 @@ function ScoreRow(props) {
 
                                 <Grid2 size={props.small ? 1.1 : 0.6}>
                                     <Box sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
-                                        <Typography variant="subtitle2">{score.accuracy.toFixed(2)}%</Typography>
+                                        <Typography variant="subtitle2">
+                                            {/* {score.accuracy.toFixed(2)}% */}
+                                            {formatNumber(score.accuracy, 2)}%
+                                        </Typography>
                                     </Box>
                                 </Grid2>
 
@@ -253,7 +298,8 @@ function ScoreRow(props) {
                                                 : <></>
                                         }
                                         <Typography variant="subtitle1">
-                                            {toFixedNumber(score.pp > 0 ? score.pp : score.estimated_pp, 2).toLocaleString('en-US')}pp
+                                            {/* {toFixedNumber(score.pp > 0 ? score.pp : score.estimated_pp, 2).toLocaleString('en-US')}pp */}
+                                            {formatNumber(score.pp > 0 ? score.pp : score.estimated_pp, props.small ? 0 : 1)}pp
                                         </Typography>
                                         {/* <Box
                                             sx={{

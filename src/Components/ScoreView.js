@@ -17,6 +17,7 @@ import StarIcon from '@mui/icons-material/Star';
 import * as htmlToImage from "html-to-image";
 import { useSpring, animated } from '@react-spring/web';
 import ScoreViewStat from './UI/ScoreViewStat';
+import { Link as RLink } from "react-router";
 ChartJS.register(ArcElement, ChartTooltip, Legend);
 
 function ScoreView(props) {
@@ -380,15 +381,20 @@ function ScoreView(props) {
                                                     width: '100%',
                                                     mt: 1,
                                                 }}>
-                                                    <Box sx={{
-                                                        display: 'flex',
-                                                        justifyContent: 'left',
-                                                        alignItems: 'center',
-                                                        gap: 1,
+                                                    <RLink to={`/user/${scoreData.score.user_id}`} style={{
+                                                        textDecoration: 'none',
+                                                        color: 'inherit'
                                                     }}>
-                                                        <Avatar variant="rounded" src={`https://a.ppy.sh/${scoreData.score.user_id}`} />
-                                                        <Typography variant='subtitle1'>{scoreData.score.user.username}</Typography>
-                                                    </Box>
+                                                        <Box sx={{
+                                                            display: 'flex',
+                                                            justifyContent: 'left',
+                                                            alignItems: 'center',
+                                                            gap: 1,
+                                                        }}>
+                                                            <Avatar variant="rounded" src={`https://a.ppy.sh/${scoreData.score.user_id}`} />
+                                                            <Typography variant='subtitle1'>{scoreData.score.user.username}</Typography>
+                                                        </Box>
+                                                    </RLink>
                                                     <Box>
                                                         <Typography variant='caption'>Achieved on</Typography>
                                                         <Typography variant='subtitle2'>{moment(scoreData.score.date_played).format('LLL')}</Typography>
