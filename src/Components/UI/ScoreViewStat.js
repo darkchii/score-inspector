@@ -26,6 +26,7 @@ function ScoreViewStat(props) {
         <Tooltip title={props.tooltip ?? ''}>
             <div className={`score-stats__stat${props.small ? '-small' : ''}`} style={{
                 opacity: props.irrelevant ? '0.5' : undefined,
+                backgroundColor: props.backgroundColor ?? undefined,
             }}>
                 <div className={`score-stats__stat-row score-stats__stat-row--label${props.small ? '-small' : ''}`} style={{
                     color: props.labelColor ?? undefined,
