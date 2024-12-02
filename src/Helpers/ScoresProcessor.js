@@ -167,23 +167,13 @@ export function prepareScore(score, user = null) {
     }
     score.pp = Math.max(0, parseFloat(score.pp));
     score.date_played_moment = moment(score.date_played).local();
-    //test string
-    score.date_played_moment_string = score.date_played_moment.format('YYYY-MM-DD HH:mm:ss');
-    score.enabled_mods = parseInt(score.enabled_mods);
-
-    //convert the enum to an array of mods in following format: 
-    // [
-    //     {
-    //         acronym: 'HD',
-    //     }
-    // ]
-    // this follows whatever osu api provides nowadays, but osualt uses the legacy enum format
-    // futureproofing
 
     //only if score.mods isnt of type Mods
     if (!(score.mods instanceof Mods)) {
-        score.mods = new Mods(score.enabled_mods, score.mods);
+        score.mods = new Mods(parseInt(score.enabled_mods), score.mods);
     }
+    delete score.enabled_mods;
+
 
     if (score.beatmap.difficulty_data) {
         score.beatmap.difficulty_data = applyModdedAttributes(score.beatmap, score.mods);
@@ -205,13 +195,12 @@ export function prepareScore(score, user = null) {
     }
     score.accuracy = parseFloat(score.accuracy);
 
-    if(score.statistics && score.maximum_statistics) {
-        score.accuracy = computeAccuracy(score) * 100;
+    if (score.statistics && score.maximum_statistics) {
+        score.accuracy = computeAccuracy(score) * 100; //for some reason, osualt sometimes has wrong accuracy values
     }
 
-    score.beatmap = prepareBeatmap(score.beatmap, score.enabled_mods);
+    score.beatmap = prepareBeatmap(score.beatmap, score.mods);
 
-    score.modString = getModString(score.enabled_mods).toString();
     score.totalhits = score.count300 + score.count100 + score.count50;
 
     score.is_fc = isScoreFullcombo(score);
@@ -229,20 +218,18 @@ export function prepareScore(score, user = null) {
     return score;
 }
 
-export function prepareBeatmap(beatmap, enabled_mods = null) {
-    enabled_mods = enabled_mods ?? mods.None;
+export function prepareBeatmap(beatmap, parsed_mods = null) {
+    parsed_mods = parsed_mods ?? new Mods(0);
 
     beatmap.stars = parseFloat(beatmap.stars);
     beatmap.objects = beatmap.sliders + beatmap.circles + beatmap.spinners;
     beatmap.modded_length = beatmap.length;
     beatmap.modded_bpm = beatmap.bpm;
     beatmap.date_approved_moment = moment(beatmap.date_approved);
-    if (enabled_mods & mods.DT || enabled_mods & mods.NC) {
-        beatmap.modded_length /= 1.5;
-        beatmap.modded_bpm *= 1.5;
-    } else if (enabled_mods & mods.HT) {
-        beatmap.modded_length /= 0.75;
-        beatmap.modded_bpm *= 0.75;
+
+    if (parsed_mods) {
+        beatmap.modded_length /= parsed_mods.speed;
+        beatmap.modded_bpm *= parsed_mods.speed;
     }
 
     return beatmap;
@@ -262,7 +249,7 @@ function getBestScores(scores) {
                 if (_scores.best_pp === null || score.pp > _scores.best_pp.pp) {
                     _scores.best_pp = score;
                 }
-                if ((score.enabled_mods & mods.NF) === 0) {
+                if (!Mods.hasMod(score.mods, "NF")) {
                     if ((_scores.best_sr === null || (score.beatmap.difficulty_data?.star_rating ?? 0) > (_scores.best_sr.beatmap.difficulty_data?.star_rating ?? 0))) {
                         _scores.best_sr = score;
                     }
@@ -334,9 +321,9 @@ const od0_ms = 79.5;
 const od10_ms = 19.5;
 function applyModdedAttributes(beatmap, parsed_mods) {
     let difficulty_data = JSON.parse(JSON.stringify(beatmap.difficulty_data));
-    if(difficulty_data.is_corrected) return difficulty_data;
+    if (difficulty_data.is_corrected) return difficulty_data;
     let speed = parsed_mods.speed;
-    
+
     if (!difficulty_data.approach_rate) {
         let ar_multiplier = 1;
         let ar;
@@ -349,7 +336,7 @@ function applyModdedAttributes(beatmap, parsed_mods) {
         }
 
         let original_ar = beatmap.ar;
-        if(Mods.hasMod(parsed_mods, "DA") && Mods.containsSetting(parsed_mods, "approach_rate")) {
+        if (Mods.hasMod(parsed_mods, "DA") && Mods.containsSetting(parsed_mods, "approach_rate")) {
             original_ar = Mods.getSetting(parsed_mods, "DA", "approach_rate");
         }
 
@@ -381,7 +368,7 @@ function applyModdedAttributes(beatmap, parsed_mods) {
         }
 
         let original_cs = beatmap.cs;
-        if(Mods.hasMod(parsed_mods, "DA") && Mods.containsSetting(parsed_mods, "circle_size")) {
+        if (Mods.hasMod(parsed_mods, "DA") && Mods.containsSetting(parsed_mods, "circle_size")) {
             original_cs = Mods.getModSetting(parsed_mods, "DA", "circle_size");
         }
 
@@ -404,7 +391,7 @@ function applyModdedAttributes(beatmap, parsed_mods) {
         }
 
         let original_od = beatmap.od;
-        if(Mods.hasMod(parsed_mods, "DA") && Mods.containsSetting(parsed_mods, "overall_difficulty")) {
+        if (Mods.hasMod(parsed_mods, "DA") && Mods.containsSetting(parsed_mods, "overall_difficulty")) {
             original_od = Mods.getModSetting(parsed_mods, "DA", "overall_difficulty");
         }
 
@@ -430,7 +417,7 @@ function applyModdedAttributes(beatmap, parsed_mods) {
         }
 
         let original_hp = beatmap.hp;
-        if(Mods.hasMod(parsed_mods, "DA") && Mods.containsSetting(parsed_mods, "drain_rate")) {
+        if (Mods.hasMod(parsed_mods, "DA") && Mods.containsSetting(parsed_mods, "drain_rate")) {
             original_hp = Mods.getModSetting(parsed_mods, "DA", "drain_rate");
         }
 

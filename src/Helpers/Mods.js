@@ -14,7 +14,7 @@ class Mods {
         this.mods_data = [];
         this.modern_mods = modern_mods;
 
-        this.speed = 0;
+        this.speed = 1;
 
         if (modern_mods === null || modern_mods === undefined) {
             this.mods_data.push({
@@ -48,12 +48,12 @@ class Mods {
 
         if (Mods.hasMod(this, "DT") || Mods.hasMod(this, "NC")) {
             const mod = Mods.getMod(this, "DT") || Mods.getMod(this, "NC");
-            this.speed = mod.settings?.speed_change || 1.5;
+            this.speed = mod?.settings?.speed_change || 1.5;
         }
 
-        if (Mods.hasMod(this, "HT")) {
-            const mod = Mods.getMod(this, "HT");
-            this.speed = mod.settings?.speed_change || 0.75;
+        if (Mods.hasMod(this, "HT") || Mods.hasMod(this, "DC")) {
+            const mod = Mods.getMod(this, "HT") || Mods.getMod(this, "DC");
+            this.speed = mod?.settings?.speed_change || 0.75;
         }
 
 
