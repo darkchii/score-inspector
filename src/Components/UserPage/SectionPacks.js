@@ -2,10 +2,11 @@
 import React, { useEffect, useRef } from "react";
 import { useState } from "react";
 import { getBeatmapPackDetails, getBeatmapPacks, getBeatmaps } from "../../Helpers/Osu";
-import { Box, Grid2, Paper, Tooltip, Typography, useTheme } from "@mui/material";
+import { Alert, Box, Container, Grid2, Paper, Tooltip, Typography, useTheme } from "@mui/material";
 import { is_numeric, lerpColor } from "../../Helpers/Misc";
 import PackCompletionModal from "../Modals/PackCompletionModal";
 import Loader from "../UI/Loader";
+import CompletionModeNotice from "../UI/CompletionModeNotice";
 
 function SectionPacks(props) {
     const theme = useTheme();
@@ -13,9 +14,13 @@ function SectionPacks(props) {
     const [selectedPack, setSelectedPack] = useState(null);
     const [selectedPackData, setSelectedPackData] = useState(null);
     const [themeColor] = useState(theme.typography.title.color);
+    const [isCompletionMode, setIsCompletionMode] = useState(false);
     const packInfoModalElement = useRef(null);
 
     useEffect(() => {
+        if(props.user.inspector_user.is_completion_mode){
+            return;
+        }
         (async () => {
             let packs = await getBeatmapPacks();
             let packDetails = await getBeatmapPackDetails();
@@ -125,6 +130,14 @@ function SectionPacks(props) {
         setSelectedPackData(null);
         packInfoModalElement.current.setOpen(true);
         setSelectedPack(pack);
+    }
+
+    if(props.user.inspector_user.is_completion_mode){
+        return (
+            <Container>
+                <CompletionModeNotice />
+            </Container>
+        )
     }
 
     return (

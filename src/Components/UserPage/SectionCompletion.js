@@ -1,10 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Button, Chip, Divider, Grid2, Paper, Table, TableBody, TableCell, TableContainer, TableRow, Typography, useTheme } from "@mui/material";
+import { Button, Chip, Container, Divider, Grid2, Paper, Table, TableBody, TableCell, TableContainer, TableRow, Typography, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
 import { capitalize } from "../../Helpers/Misc";
 import { getCompletionData } from "../../Helpers/OsuAlt";
 import Loader from "../UI/Loader";
 import ChartWrapper from "../../Helpers/ChartWrapper.js";
+import CompletionModeNotice from "../UI/CompletionModeNotice.js";
 
 const KEY_NAMES = {
     'stars': 'Stars',
@@ -20,6 +21,10 @@ function SectionCompletion(props) {
 
     useEffect(() => {
         if (props.user == null) return;
+
+        if(props.user.inspector_user.is_completion_mode){
+            return;
+        }
 
         (async () => {
             if (!props.user.data.completion) {
@@ -44,6 +49,14 @@ function SectionCompletion(props) {
             // eslint-disable-next-line react-hooks/exhaustive-deps
         })();
     }, [props.user]);
+
+    if(props.user.inspector_user.is_completion_mode){
+        return (
+            <Container>
+                <CompletionModeNotice />
+            </Container>
+        )
+    }
 
     if (props.user == null) return (<></>);
     if (isWorking) return (<>

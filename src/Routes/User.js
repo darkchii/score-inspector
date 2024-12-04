@@ -9,7 +9,7 @@ import { processScores } from '../Helpers/ScoresProcessor';
 import { Helmet } from 'react-helmet';
 import UserDataContainer from '../Components/UserPage/UserDataContainer';
 import config from '../config.json';
-import { GetVisitors, UpdateVisitor } from '../Helpers/Account';
+import { GetLoginID, GetVisitors, IsUserLoggedIn, UpdateVisitor } from '../Helpers/Account';
 import { GetAPI, formatBytes } from '../Helpers/Misc';
 import axios from 'axios';
 import { useLocation, useParams } from 'react-router';
@@ -61,6 +61,21 @@ function User() {
                     setIsLoading(false);
                     setErrorMessage("User is probably restricted from osu! or the osu! api is having issues.");
                     return;
+                }
+
+                if (user_out.inspector_user?.is_private) {
+                    let skip = false;
+                    if (await IsUserLoggedIn()) {
+                        if(((await GetLoginID()).toString() === user_out.inspector_user.osu_id.toString())) {
+                            skip = true;
+                        }
+                    }
+                    if(!skip){
+                        setUser(null);
+                        setIsLoading(false);
+                        setErrorMessage("User has set their profile to private.");
+                        return;
+                    }
                 }
 
                 const onScoreDownloadProgress = (progress) => {
@@ -220,6 +235,11 @@ function User() {
                                 This user is not live tracked and the data is most likely inaccurate or even non-existent.
                                 If you are this user, join <Link href='https://discord.gg/VZWRZZXcW4' target='_blank'>osu!alt discord</Link> and follow the guide there to get your scores available.
                             </Alert>
+                        }
+                        {
+                            user.inspector_user?.is_private ? <Alert severity='warning'>
+                                This profile is in private mode.
+                            </Alert> : <></>
                         }
                         <SectionHeader user={user} />
                         <UserDataContainer user={user} />

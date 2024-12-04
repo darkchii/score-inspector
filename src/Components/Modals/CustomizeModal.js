@@ -1,4 +1,4 @@
-import { Box, Card, CardContent, Grid2, Modal, Stack, TextField, Typography } from "@mui/material";
+import { Box, Card, CardContent, Divider, FormControl, FormControlLabel, FormGroup, FormLabel, Grid2, Modal, Stack, Switch, TextField, Typography } from "@mui/material";
 import { useEffect, useImperativeHandle } from "react";
 import { forwardRef } from "react";
 import { useState } from "react";
@@ -19,6 +19,8 @@ function CustomizeModal(props, ref) {
     const [open, setOpen] = useState(false);
     const [isWorking, setIsWorking] = useState(false);
     const [optionBackgroundUrl, setOptionBackgroundUrl] = useState('');
+    const [optionIsPrivateMode, setOptionIsPrivateMode] = useState(false);
+    const [optionIsCompletionMode, setOptionIsCompletionMode] = useState(false);
 
     useImperativeHandle(ref, () => ({
         setOpen(value) {
@@ -40,6 +42,8 @@ function CustomizeModal(props, ref) {
                 setOpen(false);
             }
             setOptionBackgroundUrl(user.background_image);
+            setOptionIsPrivateMode(user.is_private);
+            setOptionIsCompletionMode(user.is_completion_mode);
         })();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [open]);
@@ -60,6 +64,8 @@ function CustomizeModal(props, ref) {
             try {
                 const res = await UpdateProfile({
                     background_image: optionBackgroundUrl,
+                    is_private: optionIsPrivateMode,
+                    is_completion_mode: optionIsCompletionMode
                 });
 
                 console.log(res);
@@ -119,6 +125,15 @@ function CustomizeModal(props, ref) {
                                                 label="Background Image (URL)"
                                                 variant="standard" />
                                             <Typography variant='caption'>Feel free to use suggestive content, just don't go over the top with full on naked anime girls.</Typography>
+                                            <Divider sx={{ mt: 2, mb: 2 }} />
+                                            <Grid2>
+                                                <FormGroup component="fieldset" variant="standard">
+                                                    {/* <FormControlLabel control={<Switch defaultChecked />} label="Private Mode" />
+                                                    <FormControlLabel control={<Switch defaultChecked />} label="Completion Mode" /> */}
+                                                    <FormControlLabel control={<Switch checked={optionIsPrivateMode} onChange={(e) => setOptionIsPrivateMode(e.target.checked)} />} label="Private Mode" />
+                                                    <FormControlLabel disabled={optionIsPrivateMode} control={<Switch checked={optionIsCompletionMode} onChange={(e) => setOptionIsCompletionMode(e.target.checked)} />} label="Completion Mode" />
+                                                </FormGroup>
+                                            </Grid2>
                                         </Stack>
                                     </Grid2>
                                 </Grid2>
