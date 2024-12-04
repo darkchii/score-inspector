@@ -74,12 +74,27 @@ class Mods {
         }
     }
 
+    static isNoMod(mods){
+        return mods.mods_data.length === 1 && mods.mods_data[0].acronym === "NM";
+    }
+
     static hasMod(mods, mod) {
         return mods.mods_data.find(m => m.acronym === mod) !== undefined;
     }
 
+    static hasMods(mods, acronyms) {
+        //return true if all the mods are present
+        return acronyms.every(acronym => mods.mods_data.find(m => m.acronym === acronym) !== undefined);
+    }
+
     static getMod(mods, mod) {
         return mods.mods_data.find(m => m.acronym === mod);
+    }
+
+    static hasExactMods(mods, acronyms){
+        //return true if the mods are exactly the same
+        if(mods.mods_data.length !== acronyms.length) return false;
+        return mods.mods_data.every(m => acronyms.includes(m.acronym));
     }
 
     static containsSettings(mods) {
@@ -297,6 +312,10 @@ class Mods {
                 </Box>
             </Tooltip>
         )
+    }
+
+    static getAllMods() {
+        return ModData[0].Mods.filter(m => m.UserPlayable);
     }
 }
 

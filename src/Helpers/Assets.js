@@ -51,24 +51,6 @@ function getModIcon(acronym, is_type = false) {
     return null;
 }
 
-export function getPossibleMods() {
-    return [
-        "EZ",
-        "NF",
-        "HT",
-        "HR",
-        "SD",
-        "PF",
-        "DT",
-        "NC",
-        "HD",
-        "FL",
-        "TD",
-        "SO",
-        "None"
-    ]
-}
-
 const _GRADE_ICONS = [];
 _GRADE_ICONS['XH'] = <SVG_GRADE_XH />;
 _GRADE_ICONS['X'] = <SVG_GRADE_X />;

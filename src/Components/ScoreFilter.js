@@ -10,6 +10,7 @@ import ImageToggle from "./ImageToggle";
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { countries } from 'countries-list';
+import Mods from "../Helpers/Mods";
 
 const FILTER_FIELD_SIZE = 12 / 3;
 const MIN_DATE = moment('6 Oct 2007');
@@ -79,7 +80,7 @@ const sorters = [
 ]
 
 const defaultFilterData = {
-    enabledMods: 0,
+    enabledMods: [],
     enabledNomod: false,
     modsUsage: 'any',
     enabledGrades: ['XH', 'X', 'SH', 'S', 'A', 'B', 'C', 'D'],
@@ -110,7 +111,6 @@ const defaultFilterData = {
     maxApprovedDate: MAX_DATE,
     minPlayedDate: MIN_DATE,
     maxPlayedDate: MAX_DATE,
-    country: ['world'],
     sorter: 'PP_desc',
     _sorter: sorters[0],
     query: ''
@@ -120,8 +120,6 @@ function ScoreFilter(props) {
     //-1 in range values are simply ignored and no limit is set
     //null is ignored too
     const [filterData, setFilterData] = useState(null);
-    const [countryList, setCountryList] = useState([]);
-
 
     const setFilterValue = (key, value) => {
         var newFilterData = { ...filterData };
@@ -134,23 +132,29 @@ function ScoreFilter(props) {
         setFilterData(newFilterData);
     }
 
+    const setFilterValues = (key_values) => {
+        var newFilterData = { ...filterData };
+        Object.keys(key_values).forEach(key => {
+            newFilterData[key] = key_values[key];
+        });
+        setFilterData(newFilterData);
+    }
+
     const handleModStateChange = (event) => {
-        // setModsState(event.target.value);
-        setFilterValue('modsUsage', event.target.value);
+        setFilterValues({
+            modsUsage: event.target.value,
+            enabledMods: []
+        });            
     };
 
     const toggleMod = (mod, checked) => {
-        if (mod === 'None') {
-            setFilterValue('enabledNomod', checked);
+        let mods = filterData.enabledMods;
+        if (checked) {
+            mods.push(mod);
         } else {
-            var updatedMods = filterData.enabledMods;
-            if (checked) {
-                updatedMods += mods[mod];
-            } else {
-                updatedMods -= mods[mod];
-            }
-            setFilterValue('enabledMods', updatedMods);
+            mods.splice(mods.indexOf(mod), 1);
         }
+        setFilterValue('enabledMods', mods);
     }
 
     const toggleGrade = (grade, checked) => {
@@ -229,12 +233,6 @@ function ScoreFilter(props) {
     }
 
     useEffect(() => {
-        const _c = [];
-        for (const key in countries) {
-            _c.push({ code: key.toLowerCase(), name: countries[key].name });
-        }
-        setCountryList([{ code: 'world', name: 'Worldwide' }, ..._c]);
-
         let _filterData = null;
         if (props.filterData !== null) {
             _filterData = props.filterData;
@@ -268,18 +266,25 @@ function ScoreFilter(props) {
                 <Grid2 container>
                     <Grid2 size={{ xs: 12, md: 8, lg: 8 }}>
                         {
-                            getPossibleMods().map(mod => (
+                            Mods.getAllMods().map(mod => (
                                 <>
-
-                                    <Tooltip title={mod_strings_long[mods[mod]]} arrow>
+                                    <Tooltip title={mod.Name} arrow>
                                         <Box display="inline">
                                             <ImageToggle
-                                                checkedDefault={mod === 'None' ? filterData.enabledNomod : (filterData.enabledMods & mods[mod]) === mods[mod]}
-                                                onClick={(checked) => toggleMod(mod, checked)}
+                                                // checkedDefault={mod === 'None' ? filterData.enabledNomod : (filterData.enabledMods & mods[mod]) === mods[mod]}
+                                                checkedDefault={filterData.enabledMods.includes(mod.Acronym)}
+                                                onClick={(checked) => toggleMod(mod.Acronym, checked)}
                                                 sx={{ pr: 0.5 }}
                                                 height="34px"
-                                                src={getModIcon(mod)}
-                                                alt={mod} />
+                                                src={getModIcon(mod.Acronym)}
+                                                alt={mod}
+
+                                                //if any of the enabled mods is in the current mod.IncompatibleMods, disable the button (ignore if IncompatibleMods is contains its own acronym for some reason)
+                                                disabled={filterData.modsUsage === 'all' ? 
+                                                    (filterData.enabledMods.some(enabledMod => mod.IncompatibleMods.includes(enabledMod) && enabledMod !== mod.Acronym)
+                                                    || mod.IncompatibleMods.some(incompatibleMod => filterData.enabledMods.includes(incompatibleMod) && incompatibleMod !== mod.Acronym)
+                                                ) : false}
+                                            />
                                         </Box>
                                     </Tooltip>
                                 </>
@@ -288,7 +293,7 @@ function ScoreFilter(props) {
                         <FormControl sx={{ ml: 2 }}>
                             <RadioGroup onChange={handleModStateChange} value={filterData.modsUsage} row>
                                 <FormControlLabel control={<Radio size='small' />} value='any' label='Any' />
-                                <FormControlLabel control={<Radio size='small' />} value='all' label='All' />
+                                <FormControlLabel control={<Radio size='small' />} value='all' label='Equals' />
                             </RadioGroup>
                         </FormControl>
                     </Grid2>
@@ -463,39 +468,6 @@ function ScoreFilter(props) {
                                 <MenuItem value={4}>Loved</MenuItem>
                             </Select>
                         </FormControl>
-                    </Grid2>
-                    <Grid2 size={{ xs: 6, md: FILTER_FIELD_SIZE, lg: FILTER_FIELD_SIZE }}>
-                        {
-                            countryList.length > 0 ?
-                                <FormControl variant="standard" sx={{ width: '100%' }} size='small'>
-                                    <InputLabel size='small' id={`country_dropdown_label`}>Country</InputLabel>
-                                    <Select
-                                        size='small'
-                                        value={filterData.country}
-                                        // onChange={e => setCountry(e.target.value)}
-                                        onChange={e => setFilterValue('country', e.target.value)}
-                                        labelId={`country_dropdown_label`}
-                                        label='Country'
-                                        multiple
-                                    >
-                                        {
-                                            countryList.map((value) => {
-                                                return (
-                                                    <MenuItem key={value.code} value={value.code}>
-                                                        {
-                                                            value.code !== 'world' ?
-                                                                <img src={getFlagIcon(value.code)} alt={value.code} style={{ height: '1em', borderRadius: '5px', marginRight: '0.4em' }} />
-                                                                : <></>
-                                                        }
-                                                        &nbsp;{value.name}
-                                                    </MenuItem>
-                                                )
-                                            })
-                                        }
-                                    </Select>
-                                </FormControl>
-                                : <></>
-                        }
                     </Grid2>
                 </Grid2>
                 <Grid2 sx={{ alignContent: 'center' }}>

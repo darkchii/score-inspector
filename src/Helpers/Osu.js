@@ -812,20 +812,36 @@ export function FilterScores(full_scores, filter) {
     });
 
     //mods
-    if (filter.enabled_mods > 0 || filter.enabledMods) {
+    if(filter.enabledMods.length > 0) {
+        if(filter.modsUsage === 'any'){
+            scores = scores.filter(score => {
+                return Mods.hasMods(score.mods, filter.enabledMods);
+            });
+        }else{
+            scores = scores.filter(score => {
+                return Mods.hasExactMods(score.mods, filter.enabledMods);
+            });
+        }
+    }else{
+        //nomod only
         scores = scores.filter(score => {
-            if (filter.modsUsage === 'any') {
-                if (score.enabled_mods === 0 && filter.enabledNomod) {
-                    return true;
-                }
-                return (filter.enabledMods & score.enabled_mods) !== 0;
-            }
-            if (filter.enabledNomod) {
-                return score.enabled_mods === 0;
-            }
-            return filter.enabledMods === score.enabled_mods;
+            return Mods.isNoMod(score.mods);
         });
     }
+    // if (filter.enabled_mods > 0 || filter.enabledMods) {
+    //     scores = scores.filter(score => {
+    //         if (filter.modsUsage === 'any') {
+    //             if (score.enabled_mods === 0 && filter.enabledNomod) {
+    //                 return true;
+    //             }
+    //             return (filter.enabledMods & score.enabled_mods) !== 0;
+    //         }
+    //         if (filter.enabledNomod) {
+    //             return score.enabled_mods === 0;
+    //         }
+    //         return filter.enabledMods === score.enabled_mods;
+    //     });
+    // }
 
     //grades
     scores = scores.filter(score => {
