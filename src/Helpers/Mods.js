@@ -5,6 +5,7 @@ import ModData from "../Data/ModData";
 import { isEmpty } from "lodash";
 import { formatNumber, getHueRotate, ImageWithColor } from "./Misc";
 import Color from "color";
+import OsuTooltip from "../Components/OsuTooltip";
 
 let _MOD_ICON_CACHE = {};
 
@@ -74,7 +75,7 @@ class Mods {
         }
     }
 
-    static isNoMod(mods){
+    static isNoMod(mods) {
         return mods.mods_data.length === 1 && mods.mods_data[0].acronym === "NM";
     }
 
@@ -91,9 +92,9 @@ class Mods {
         return mods.mods_data.find(m => m.acronym === mod);
     }
 
-    static hasExactMods(mods, acronyms){
+    static hasExactMods(mods, acronyms) {
         //return true if the mods are exactly the same
-        if(mods.mods_data.length !== acronyms.length) return false;
+        if (mods.mods_data.length !== acronyms.length) return false;
         return mods.mods_data.every(m => acronyms.includes(m.acronym));
     }
 
@@ -110,7 +111,7 @@ class Mods {
     }
 
     static getModSetting(mods, mod, setting) {
-        if(!Mods.hasMod(mods, mod)) return null;
+        if (!Mods.hasMod(mods, mod)) return null;
         return Mods.getMod(mods, mod).settings[setting] || null;
     }
 
@@ -172,12 +173,12 @@ class Mods {
         }
     }
 
-    static getModElements(mods, height = 20, style = {}, show_extra_mod_info = false, gap = 5) {
+    static getModElements(mods, height = 20, style = {}, show_extra_mod_info = false, gap = 5, showIncompatible = true) {
         // return Mods.valueOf(mods).map((mod, i) => Mods.getModElement(mod, height, i === 0 ? { marginLeft: 0 } : {}));
         return Mods.valueOf(mods).map((mod, i) => Mods.getModElement(mod, height, {
             marginLeft: i === 0 ? 0 : gap,
             ...style
-        }, show_extra_mod_info));
+        }, show_extra_mod_info, showIncompatible));
     }
 
     static getModTypeColor(mod) {
@@ -192,7 +193,52 @@ class Mods {
         }
     }
 
-    static getModElement(mod, height = 24, style = {}, show_extra_mod_info = false) {
+    static getIncompatibleMods(mod) {
+        //return as a new Mods object
+        let _modern_mods = [];
+        if (mod.data.IncompatibleMods !== undefined) {
+            _modern_mods = mod.data.IncompatibleMods.map(acronym => {
+                return {
+                    acronym: acronym,
+                    data: Mods.getModData(acronym)
+                }
+            });
+        }
+
+        return new Mods(0, _modern_mods);
+    }
+
+    static getTooltipContent(mod, tooltip_extra_data = null, showIncompatible = true) {
+        return (
+            mod.acronym !== "NM" ?
+                <Box>
+                    <Box>
+                        <Typography variant='h6'>{mod.data.Name}</Typography>
+                        <Typography variant='body2'>{mod.data.Description}</Typography>
+                        {tooltip_extra_data !== null ? `(${tooltip_extra_data})` : ''}
+                    </Box>
+                    {
+                        showIncompatible ? <Box sx={{ mt: 2 }}>
+                            <Box>Incompatible with:</Box>
+                            <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
+                                {
+                                    mod.data.IncompatibleMods !== undefined && mod.data.IncompatibleMods.length > 0 ?
+                                        <>{
+                                            Mods.getModElements(Mods.getIncompatibleMods(mod), 25, { marginRight: 5 }, false, 0, false)
+                                        }</>
+                                        : <Typography sx={{ color: 'gray' }}>
+                                            Compatible with all mods
+                                        </Typography>
+                                }
+                            </Box>
+                        </Box> : null
+                    }
+                </Box>
+                : "No mod"
+        )
+    }
+
+    static getModElement(mod, height = 24, style = {}, show_extra_mod_info = false, showIncompatible = true) {
         if (mod.data === undefined) {
             console.error(`Mod ${mod.acronym} does not have data`);
             return null;
@@ -240,13 +286,7 @@ class Mods {
             width = height * 3;
         }
         return (
-            <Tooltip title={
-                <Box>
-                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                        {mod.data.Name} {tooltip_extra_data !== null ? `(${tooltip_extra_data})` : ''}
-                    </Box>
-                </Box>
-            }>
+            <OsuTooltip title={Mods.getTooltipContent(mod, tooltip_extra_data, showIncompatible)}>
                 <Box sx={{
                     display: 'flex',
                     position: 'relative',
@@ -310,12 +350,21 @@ class Mods {
                         // </Box>
                         : null}
                 </Box>
-            </Tooltip>
+            </OsuTooltip>
         )
     }
 
     static getAllMods() {
-        return ModData[0].Mods.filter(m => m.UserPlayable);
+        // return ModData[0].Mods.filter(m => m.UserPlayable);
+        const playable = ModData[0].Mods.filter(m => m.UserPlayable);
+        const mod_objects = playable.map(m => {
+            return {
+                acronym: m.Acronym,
+                data: m
+            }
+        });
+
+        return new Mods(0, mod_objects);
     }
 }
 

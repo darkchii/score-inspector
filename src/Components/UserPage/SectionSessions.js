@@ -93,12 +93,10 @@ function SectionSessions(props) {
             stats.average_break_time = moment.duration(stats.total_break_time.asSeconds() / session.breaks.length, 'seconds');
         }
 
-        console.log(stats);
         _setSelectedSession(stats);
     }
 
     useEffect(() => {
-        console.log(props.user.data.sessions);
         const _sessions = props.user.data.sessions.map((session) => {
             const start = moment(session.start * 1000);
             const end = moment(session.end * 1000);

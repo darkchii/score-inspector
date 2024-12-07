@@ -70,7 +70,6 @@ function ScoreView(props) {
         _score.beatmap = JSON.parse(JSON.stringify(beatmap));
 
         _scoreData.difficulty_data = _score.beatmap.difficulty_data;
-        console.log(_score);
         // _score = prepareScore(_score, null);
         _scoreData.score = _score;
 
@@ -90,8 +89,6 @@ function ScoreView(props) {
         pp["90%"] = getCalculator(pp_version ?? 'live', { statistics: _score.maximum_statistics, accuracy: 0.90, score: _score, combo: beatmap.maxcombo, count300: accHits["90%"].count300, count100: accHits["90%"].count100, count50: accHits["90%"].count50, countmiss: accHits["90%"].countmiss });
         pp["80%"] = getCalculator(pp_version ?? 'live', { statistics: _score.maximum_statistics, accuracy: 0.80, score: _score, combo: beatmap.maxcombo, count300: accHits["80%"].count300, count100: accHits["80%"].count100, count50: accHits["80%"].count50, countmiss: accHits["80%"].countmiss });
         _scoreData.pp = pp;
-
-        console.log(_scoreData);
 
         setScoreData(_scoreData);
     }
@@ -243,10 +240,27 @@ function ScoreView(props) {
                                                 <div className='score-info__item score-info__item--dial'>
                                                     <ScoreDial accuracy={scoreData.score.accuracy * 0.01} rank={scoreData.score.rank} score={scoreData.score} />
                                                 </div>
-                                                <span className='lazer-text-gradient' style={{
-                                                    fontFamily: 'Torus',
-                                                    fontSize: '3em',
-                                                }}>{toFixedNumber(scoreData.score.score, 0).toLocaleString('en-US')}</span>
+                                                <Box sx={{
+                                                    display: 'flex',
+                                                    justifyContent: 'center',
+                                                    alignItems: 'center',
+                                                    width: '100%',
+                                                    //they are rows
+                                                    flexDirection: 'column',
+                                                }}>
+                                                    <span className='lazer-text-gradient' style={{
+                                                        fontFamily: 'Torus',
+                                                        fontSize: '2.8em',
+                                                    }}>
+                                                        {toFixedNumber(scoreData.score.score, 0).toLocaleString('en-US')}
+                                                    </span>
+                                                    <span className='lazer-text-gradient' style={{
+                                                        fontFamily: 'Torus',
+                                                        fontSize: '0.8em',
+                                                    }}>
+                                                        {toFixedNumber(scoreData.score.scoreLazerStandardised, 0).toLocaleString('en-US')}
+                                                    </span>
+                                                </Box>
                                                 <Box sx={{
                                                     display: 'flex',
                                                     justifyContent: 'center',
@@ -465,8 +479,6 @@ function ScoreView(props) {
                                                                                             }
                                                                                         }
                                                                                     }
-
-                                                                                    console.log(originalValue, invertSkillHandler);
 
                                                                                     return (
                                                                                         <div className='score-stats__group-row'>

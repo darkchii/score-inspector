@@ -46,8 +46,6 @@ function Top(props) {
                     const [pp_scores] = await MassCalculatePerformance(pp_scores_prep);
                     const [sc_scores] = await MassCalculatePerformance(sc_scores_prep);
 
-                    console.log(pp_scores);
-
                     pp_scores.sort((a, b) => {
                         if (a.pp > b.pp) { return -1; }
                         if (a.pp < b.pp) { return 1; }
@@ -224,7 +222,7 @@ function Top(props) {
                                                                                             {
                                                                                                 scores[i].significantStat === 'pp' ?
                                                                                                     Math.round(score.score).toLocaleString('en-US')
-                                                                                                    : `${Math.round(score.pp).toLocaleString('en-US')}pp ${(!score.is_fc && score.recalc['fc']) ? `(${Math.round(score.recalc['fc']?.total).toLocaleString('en-US')}pp if FC)` : ''}`
+                                                                                                    : `${Math.round(score.recalc['live'].total).toLocaleString('en-US')}pp ${(!score.is_fc && score.recalc['fc']) ? `(${Math.round(score.recalc['fc']?.total).toLocaleString('en-US')}pp if FC)` : ''}`
                                                                                             }
                                                                                             {' | '}
 

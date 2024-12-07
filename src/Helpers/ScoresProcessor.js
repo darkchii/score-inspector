@@ -33,7 +33,7 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
             acc: 0,
             length: 0,
             star_rating: 0,
-            scoreLazerClassic: 0,
+            // scoreLazerClassic: 0,
             scoreLazerStandardised: 0,
             is_fc: 0,
         },
@@ -65,7 +65,7 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
         data.total.acc += score.accuracy ?? 0;
         data.total.length += score.beatmap.modded_length ?? 0;
         data.total.star_rating += score.beatmap.difficulty_data?.star_rating ?? 0;
-        data.total.scoreLazerClassic += score.scoreLazerClassic ?? 0;
+        // data.total.scoreLazerClassic += score.scoreLazerClassic ?? 0;
         data.total.scoreLazerStandardised += score.scoreLazerStandardised ?? 0;
         data.total.is_fc += score.is_fc ?? 0;
     }
@@ -139,8 +139,6 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
     scores.sort((a, b) => b.date_played_moment.valueOf() - a.date_played_moment.valueOf());
     data.latest_scores = scores.slice(0, 20);
 
-    console.log(data.latest_scores);
-
     return data;
 }
 
@@ -151,9 +149,6 @@ export function prepareScores(user, scores, calculateOtherPP = true) {
 
     //sort by time
     scores.sort((a, b) => a.date_played_moment.valueOf() - b.date_played_moment.valueOf());
-
-    console.log(`[SCORES] Latest score:`);
-    console.log(scores[scores.length - 1]);
 
     return scores;
 }
@@ -196,7 +191,7 @@ export function prepareScore(score, user = null) {
     score.accuracy = parseFloat(score.accuracy);
 
     if (score.statistics && score.maximum_statistics) {
-        score.accuracy = computeAccuracy(score) * 100; //for some reason, osualt sometimes has wrong accuracy values
+        score.accuracy = computeAccuracy(score, score.beatmap_id === 1811527) * 100; //for some reason, osualt sometimes has wrong accuracy values
     }
 
     score.beatmap = prepareBeatmap(score.beatmap, score.mods);
@@ -204,8 +199,8 @@ export function prepareScore(score, user = null) {
     score.totalhits = score.count300 + score.count100 + score.count50;
 
     score.is_fc = isScoreFullcombo(score);
-    score.scoreLazerClassic = Math.floor(getLazerScore(score));
-    score.scoreLazerStandardised = Math.floor(getLazerScore(score, false));
+    // score.scoreLazerClassic = Math.floor(getLazerScore(score));
+    score.scoreLazerStandardised = Math.floor(getLazerScore(score));
 
     score.estimated_pp = getCalculator('live', {
         score: score,
@@ -285,7 +280,7 @@ function getActiveDays(scores) {
 }
 
 function isScoreFullcombo(score) {
-    const is_fc = (score.countmiss === 0 && ((score.beatmap.maxcombo - score.maxcombo) <= score.count100)) || score.perfect === 1 || score.rank === 'X' || score.rank === 'XH';
+    const is_fc = (score.countmiss === 0 && ((score.beatmap.maxcombo - score.combo) <= score.count100)) || score.perfect === 1 || score.rank === 'X' || score.rank === 'XH';
     return is_fc;
 }
 

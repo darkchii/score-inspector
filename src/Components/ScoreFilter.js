@@ -11,6 +11,8 @@ import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { countries } from 'countries-list';
 import Mods from "../Helpers/Mods";
+import OsuTooltip from "./OsuTooltip";
+import { produce } from "immer";
 
 const FILTER_FIELD_SIZE = 12 / 3;
 const MIN_DATE = moment('6 Oct 2007');
@@ -71,8 +73,8 @@ const sorters = [
     {
         name: 'PP if FC',
         sort: (a, b) => {
-            let a_pp = !a.is_fc && a.recalc['fc'] > 0 ? a.recalc['fc'] : (a.pp > 0 ? a.pp : a.estimated_pp);
-            let b_pp = !b.is_fc && b.recalc['fc'] > 0 ? b.recalc['fc'] : (b.pp > 0 ? b.pp : b.estimated_pp);
+            let a_pp = !a.is_fc && a.recalc['fc']?.total > 0 ? a.recalc['fc']?.total : (a.pp > 0 ? a.pp : a.estimated_pp);
+            let b_pp = !b.is_fc && b.recalc['fc']?.total > 0 ? b.recalc['fc']?.total : (b.pp > 0 ? b.pp : b.estimated_pp);
             return b_pp - a_pp;
         },
         internalName: 'pp_fc'
@@ -112,124 +114,52 @@ const defaultFilterData = {
     minPlayedDate: MIN_DATE,
     maxPlayedDate: MAX_DATE,
     sorter: 'PP_desc',
-    _sorter: sorters[0],
-    query: ''
+    _sorter: sorters[0]
 }
 
 function ScoreFilter(props) {
-    //-1 in range values are simply ignored and no limit is set
-    //null is ignored too
     const [filterData, setFilterData] = useState(null);
 
     const setFilterValue = (key, value) => {
-        var newFilterData = { ...filterData };
-        newFilterData[key] = value;
+        setFilterData(produce((draft) => {
+            draft[key] = value;
 
-        if (key === 'sorter') {
-            newFilterData._sorter = sorters.find(sorter => sorter.name === value.split('_')[0]);
-            newFilterData._sorter.reverse = value.split('_')[1] === 'asc';
-        }
-        setFilterData(newFilterData);
-    }
-
-    const setFilterValues = (key_values) => {
-        var newFilterData = { ...filterData };
-        Object.keys(key_values).forEach(key => {
-            newFilterData[key] = key_values[key];
-        });
-        setFilterData(newFilterData);
+            if (key === 'sorter') {
+                draft._sorter = sorters.find(sorter => sorter.name === value.split('_')[0]);
+                draft._sorter.reverse = value.split('_')[1] === 'asc';
+            }
+        }));
     }
 
     const handleModStateChange = (event) => {
-        setFilterValues({
-            modsUsage: event.target.value,
-            enabledMods: []
-        });            
+        setFilterData(produce((draft) => {
+            draft.modsUsage = event.target.value;
+            draft.enabledMods = [];
+        }));
     };
 
     const toggleMod = (mod, checked) => {
-        let mods = filterData.enabledMods;
-        if (checked) {
-            mods.push(mod);
-        } else {
-            mods.splice(mods.indexOf(mod), 1);
-        }
-        setFilterValue('enabledMods', mods);
+        setFilterData(produce((draft) => {
+            if (checked) {
+                draft.enabledMods.push(mod);
+            } else {
+                draft.enabledMods.splice(draft.enabledMods.indexOf(mod), 1);
+            }
+        }));
     }
 
     const toggleGrade = (grade, checked) => {
-        // const updatedMods = enabledMods + mods[mod] * (checked ? 1 : -1);
-        // setEnabledMods(updatedMods);
-        var updatedGrades = filterData.enabledGrades;
-        if (checked) {
-            if (!updatedGrades.includes(grade)) {
-                updatedGrades.push(grade);
-            }
-        } else {
-            if (updatedGrades.includes(grade)) {
-                updatedGrades.splice(updatedGrades.indexOf(grade), 1);
-            }
-        }
-        setFilterValue('enabledGrades', updatedGrades);
-    }
-
-    const generateQuery = () => {
-        let query = '';
-
-        if (filterData.enabledMods !== 0) {
-            if (filterData.modsUsage === 'any') {
-
+        setFilterData(produce((draft) => {
+            if (checked) {
+                if (!draft.enabledGrades.includes(grade)) {
+                    draft.enabledGrades.push(grade);
+                }
             } else {
-                query += `-m ${filterData.enabledMods} `;
+                if (draft.enabledGrades.includes(grade)) {
+                    draft.enabledGrades.splice(draft.enabledGrades.indexOf(grade), 1);
+                }
             }
-        }
-
-        if (filterData.enabledGrades.length < 8) {
-            query += `-letter `;
-            query += filterData.enabledGrades.join(',');
-            query += ' ';
-        }
-
-        if (filterData.minScore !== null && filterData.minScore !== '' && filterData.minScore >= 0) { query += `-score-min ${filterData.minScore} `; }
-        if (filterData.maxScore !== null && filterData.maxScore !== '' && filterData.maxScore >= 0) { query += `-score-max ${filterData.maxScore} `; }
-
-        if (filterData.minStars !== null && filterData.minStars !== '' && filterData.minStars >= 0) { query += `-min ${filterData.minStars} `; }
-        if (filterData.maxStars !== null && filterData.maxStars !== '' && filterData.maxStars >= 0) { query += `-max ${filterData.maxStars} `; }
-
-        if (filterData.minPP !== null && filterData.minPP !== '' && filterData.minPP >= 0) { query += `-pp-min ${filterData.minPP} `; }
-        if (filterData.maxPP !== null && filterData.maxPP !== '' && filterData.maxPP >= 0) { query += `-pp-max ${filterData.maxPP} `; }
-
-        if (filterData.minAcc !== null && filterData.minAcc !== '' && filterData.minAcc >= 0) { query += `-acc-min ${filterData.minAcc} `; }
-        if (filterData.maxAcc !== null && filterData.maxAcc !== '' && filterData.maxAcc >= 0) { query += `-acc-max ${filterData.maxAcc} `; }
-
-        if (filterData.minCombo !== null && filterData.minCombo !== '' && filterData.minCombo >= 0) { query += `-combo-min ${filterData.minCombo} `; }
-        if (filterData.maxCombo !== null && filterData.maxCombo !== '' && filterData.maxCombo >= 0) { query += `-combo-max ${filterData.maxCombo} `; }
-
-        if (filterData.minAR !== null && filterData.minAR !== '' && filterData.minAR >= 0) { query += `-ar-min ${filterData.minAR} `; }
-        if (filterData.maxAR !== null && filterData.maxAR !== '' && filterData.maxAR >= 0) { query += `-ar-max ${filterData.maxAR} `; }
-
-        if (filterData.minOD !== null && filterData.minOD !== '' && filterData.minOD >= 0) { query += `-od-min ${filterData.minOD} `; }
-        if (filterData.maxOD !== null && filterData.maxOD !== '' && filterData.maxOD >= 0) { query += `-od-max ${filterData.maxOD} `; }
-
-        if (filterData.minCS !== null && filterData.minCS !== '' && filterData.minCS >= 0) { query += `-cs-min ${filterData.minCS} `; }
-        if (filterData.maxCS !== null && filterData.maxCS !== '' && filterData.maxCS >= 0) { query += `-cs-max ${filterData.maxCS} `; }
-
-        if (filterData.minHP !== null && filterData.minHP !== '' && filterData.minHP >= 0) { query += `-hp-min ${filterData.minHP} `; }
-        if (filterData.maxHP !== null && filterData.maxHP !== '' && filterData.maxHP >= 0) { query += `-hp-max ${filterData.maxHP} `; }
-
-        if (filterData.minLength !== null && filterData.minLength !== '' && filterData.minLength >= 0) { query += `-length-min ${filterData.minLength} `; }
-        if (filterData.maxLength !== null && filterData.maxLength !== '' && filterData.maxLength >= 0) { query += `-length-max ${filterData.maxLength} `; }
-
-        query += `-start ${moment(filterData.minApprovedDate).format('YYYY-MM-DD')} `;
-        query += `-end ${moment(filterData.maxApprovedDate).format('YYYY-MM-DD')} `;
-
-        query += `-played-start ${moment(filterData.minPlayedDate).format('YYYY-MM-DD')} `;
-        query += `-played-end ${moment(filterData.maxPlayedDate).format('YYYY-MM-DD')} `;
-
-        query += `-order ${filterData._sorter.internalName.toLowerCase()} -dir ${filterData._sorter.reverse ? 'asc' : 'desc'} `;
-
-        query += '-modded true';
-        return query;
+        }));
     }
 
     useEffect(() => {
@@ -252,7 +182,6 @@ function ScoreFilter(props) {
     const onApply = () => {
         let _filterData = { ...filterData };
         _filterData.order = filterData._sorter.internalName.toLowerCase();
-        _filterData.query = generateQuery();
         props.onApply(_filterData);
     }
 
@@ -266,27 +195,27 @@ function ScoreFilter(props) {
                 <Grid2 container>
                     <Grid2 size={{ xs: 12, md: 8, lg: 8 }}>
                         {
-                            Mods.getAllMods().map(mod => (
+                            Mods.getAllMods().mods_data.map(mod => (
                                 <>
-                                    <Tooltip title={mod.Name} arrow>
+                                    <OsuTooltip title={Mods.getTooltipContent(mod, null, true)}>
                                         <Box display="inline">
                                             <ImageToggle
                                                 // checkedDefault={mod === 'None' ? filterData.enabledNomod : (filterData.enabledMods & mods[mod]) === mods[mod]}
-                                                checkedDefault={filterData.enabledMods.includes(mod.Acronym)}
-                                                onClick={(checked) => toggleMod(mod.Acronym, checked)}
+                                                checkedDefault={filterData.enabledMods.includes(mod.acronym)}
+                                                onClick={(checked) => toggleMod(mod.acronym, checked)}
                                                 sx={{ pr: 0.5 }}
                                                 height="34px"
-                                                src={getModIcon(mod.Acronym)}
+                                                src={getModIcon(mod.acronym)}
                                                 alt={mod}
 
                                                 //if any of the enabled mods is in the current mod.IncompatibleMods, disable the button (ignore if IncompatibleMods is contains its own acronym for some reason)
-                                                disabled={filterData.modsUsage === 'all' ? 
-                                                    (filterData.enabledMods.some(enabledMod => mod.IncompatibleMods.includes(enabledMod) && enabledMod !== mod.Acronym)
-                                                    || mod.IncompatibleMods.some(incompatibleMod => filterData.enabledMods.includes(incompatibleMod) && incompatibleMod !== mod.Acronym)
-                                                ) : false}
+                                                disabled={filterData.modsUsage === 'all' ?
+                                                    (filterData.enabledMods.some(enabledMod => mod.data.IncompatibleMods.includes(enabledMod) && enabledMod !== mod.acronym)
+                                                        || mod.data.IncompatibleMods.some(incompatibleMod => filterData.enabledMods.includes(incompatibleMod) && incompatibleMod !== mod.acronym)
+                                                    ) : false}
                                             />
                                         </Box>
-                                    </Tooltip>
+                                    </OsuTooltip>
                                 </>
                             ))
                         }
@@ -299,46 +228,30 @@ function ScoreFilter(props) {
                     </Grid2>
                     <Grid2 size={{ xs: 12, md: 4, lg: 4 }}>
                         <Grid2>
-                            <Tooltip title='Silver SS' arrow>
-                                <Box display="inline">
-                                    <ImageToggle checkedDefault={filterData.enabledGrades.includes('XH')} onClick={(checked) => toggleGrade('XH', checked)} sx={{ pr: 0.5 }} height="26px" src={IMG_SVG_GRADE_XH} />
-                                </Box>
-                            </Tooltip>
-                            <Tooltip title='Silver S' arrow>
-                                <Box display="inline">
-                                    <ImageToggle checkedDefault={filterData.enabledGrades.includes('SH')} onClick={(checked) => toggleGrade('SH', checked)} sx={{ pr: 0.5 }} height="26px" src={IMG_SVG_GRADE_SH} />
-                                </Box>
-                            </Tooltip>
-                            <Tooltip title='Gold SS' arrow>
-                                <Box display="inline">
-                                    <ImageToggle checkedDefault={filterData.enabledGrades.includes('X')} onClick={(checked) => toggleGrade('X', checked)} sx={{ pr: 0.5 }} height="26px" src={IMG_SVG_GRADE_X} />
-                                </Box>
-                            </Tooltip>
-                            <Tooltip title='Gold S' arrow>
-                                <Box display="inline">
-                                    <ImageToggle checkedDefault={filterData.enabledGrades.includes('S')} onClick={(checked) => toggleGrade('S', checked)} sx={{ pr: 0.5 }} height="26px" src={IMG_SVG_GRADE_S} />
-                                </Box>
-                            </Tooltip>
-                            <Tooltip title='A' arrow>
-                                <Box display="inline">
-                                    <ImageToggle checkedDefault={filterData.enabledGrades.includes('A')} onClick={(checked) => toggleGrade('A', checked)} sx={{ pr: 0.5 }} height="26px" src={IMG_SVG_GRADE_A} />
-                                </Box>
-                            </Tooltip>
-                            <Tooltip title='B' arrow>
-                                <Box display="inline">
-                                    <ImageToggle checkedDefault={filterData.enabledGrades.includes('B')} onClick={(checked) => toggleGrade('B', checked)} sx={{ pr: 0.5 }} height="26px" src={IMG_SVG_GRADE_B} />
-                                </Box>
-                            </Tooltip>
-                            <Tooltip title='C' arrow>
-                                <Box display="inline">
-                                    <ImageToggle checkedDefault={filterData.enabledGrades.includes('C')} onClick={(checked) => toggleGrade('C', checked)} sx={{ pr: 0.5 }} height="26px" src={IMG_SVG_GRADE_C} />
-                                </Box>
-                            </Tooltip>
-                            <Tooltip title='D' arrow>
-                                <Box display="inline">
-                                    <ImageToggle checkedDefault={filterData.enabledGrades.includes('D')} onClick={(checked) => toggleGrade('D', checked)} sx={{ pr: 0.5 }} height="26px" src={IMG_SVG_GRADE_D} />
-                                </Box>
-                            </Tooltip>
+                            <Box display="inline">
+                                <ImageToggle checkedDefault={filterData.enabledGrades.includes('XH')} onClick={(checked) => toggleGrade('XH', checked)} sx={{ pr: 0.5 }} height="26px" src={IMG_SVG_GRADE_XH} />
+                            </Box>
+                            <Box display="inline">
+                                <ImageToggle checkedDefault={filterData.enabledGrades.includes('SH')} onClick={(checked) => toggleGrade('SH', checked)} sx={{ pr: 0.5 }} height="26px" src={IMG_SVG_GRADE_SH} />
+                            </Box>
+                            <Box display="inline">
+                                <ImageToggle checkedDefault={filterData.enabledGrades.includes('X')} onClick={(checked) => toggleGrade('X', checked)} sx={{ pr: 0.5 }} height="26px" src={IMG_SVG_GRADE_X} />
+                            </Box>
+                            <Box display="inline">
+                                <ImageToggle checkedDefault={filterData.enabledGrades.includes('S')} onClick={(checked) => toggleGrade('S', checked)} sx={{ pr: 0.5 }} height="26px" src={IMG_SVG_GRADE_S} />
+                            </Box>
+                            <Box display="inline">
+                                <ImageToggle checkedDefault={filterData.enabledGrades.includes('A')} onClick={(checked) => toggleGrade('A', checked)} sx={{ pr: 0.5 }} height="26px" src={IMG_SVG_GRADE_A} />
+                            </Box>
+                            <Box display="inline">
+                                <ImageToggle checkedDefault={filterData.enabledGrades.includes('B')} onClick={(checked) => toggleGrade('B', checked)} sx={{ pr: 0.5 }} height="26px" src={IMG_SVG_GRADE_B} />
+                            </Box>
+                            <Box display="inline">
+                                <ImageToggle checkedDefault={filterData.enabledGrades.includes('C')} onClick={(checked) => toggleGrade('C', checked)} sx={{ pr: 0.5 }} height="26px" src={IMG_SVG_GRADE_C} />
+                            </Box>
+                            <Box display="inline">
+                                <ImageToggle checkedDefault={filterData.enabledGrades.includes('D')} onClick={(checked) => toggleGrade('D', checked)} sx={{ pr: 0.5 }} height="26px" src={IMG_SVG_GRADE_D} />
+                            </Box>
                         </Grid2>
                     </Grid2>
                 </Grid2>

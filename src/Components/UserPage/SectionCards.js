@@ -3,7 +3,7 @@ import moment from "moment";
 import BestScoreCard from "./BestScoreCard";
 import GlowBar from "../UI/GlowBar";
 import ChartWrapper from "../../Helpers/ChartWrapper.js";
-import { MILESTONES_FORMATTER } from "../../Helpers/Misc.js";
+import { formatNumber, MILESTONES_FORMATTER } from "../../Helpers/Misc.js";
 import ScoreRow from "../ScoreRow.js";
 import ScoreViewStat from "../UI/ScoreViewStat.js";
 
@@ -14,22 +14,22 @@ function SectionCards(props) {
     const _cards = [
         {
             title: 'Clears',
-            value: props.user.scores?.length.toLocaleString('en-US') ?? 0,
+            value: formatNumber(props.user.data.clears ?? 0),
             row: 0,
         },
         {
             title: 'Play Count',
-            value: props.user.osu.statistics.play_count.toLocaleString('en-US'),
+            value: formatNumber(props.user.osu.statistics.play_count ?? 0),
             row: 0,
         },
         {
             title: 'Avg PP',
-            value: (Math.round((props.user.data?.average.pp ?? 0) * 100) / 100).toLocaleString('en-US'),
+            value: formatNumber(props.user.data?.average.pp) + 'pp',
             row: 0,
         },
         {
             title: 'Avg Acc',
-            value: (Math.round((props.user.data?.average.acc ?? 0) * 100) / 100).toLocaleString('en-US') + '%',
+            value: formatNumber(props.user.data?.average.acc, 2) + '%',
             row: 0,
         },
         {
@@ -39,62 +39,62 @@ function SectionCards(props) {
         },
         {
             title: 'Avg Stars',
-            value: (Math.round((props.user.data?.average.star_rating ?? 0) * 100) / 100).toLocaleString('en-US') + '*',
+            value: formatNumber(props.user.data?.average.star_rating, 1) + '*',
             row: 0,
         },
         {
             title: 'Fullcombo\'d',
-            value: (((Math.round(props.user.data?.fcRate * 1000) ?? 0) / 10).toLocaleString('en-US') ?? 0) + '%',
+            value: formatNumber((props.user.data?.fcRate ?? 0) * 100, 2) + '%',
             row: 0,
         },
         {
             title: 'Score per clear',
-            value: Math.round(props.user.data?.average.score)?.toLocaleString('en-US') ?? 0,
+            value: formatNumber(props.user.data?.average.score, 0),
             row: 0,
         },
         {
             title: 'Ranked Score',
-            value: props.user.data.total.score.toLocaleString('en-US'),
+            value: formatNumber(props.user.data.total.score, 0),
             row: 0,
         },
         {
             title: 'Total Score',
-            value: props.user.osu.statistics.total_score?.toLocaleString('en-US') ?? 'N/A',
+            value: formatNumber(props.user.osu.statistics.total_score, 0) ?? 'N/A',
             row: 0,
         },
         {
             title: 'Unique SS',
-            value: (props.user.alt.unique_ss?.length ?? 0).toLocaleString('en-US'),
+            value: formatNumber(props.user.alt.unique_ss?.length ?? 0, 0),
             row: 1,
         },
         {
             title: 'Unique FC',
-            value: (props.user.alt.unique_fc?.length ?? 0).toLocaleString('en-US'),
+            value: formatNumber(props.user.alt.unique_fc?.length ?? 0, 0),
             row: 1,
         },
         {
             title: 'Unique DT FC',
-            value: (props.user.alt.unique_dt_fc?.length ?? 0).toLocaleString('en-US'),
+            value: formatNumber(props.user.alt.unique_dt_fc?.length ?? 0, 0),
             row: 1,
         },
         {
             title: 'Score Length',
-            value: Math.round(moment.duration(props.user.data.total.length, 'seconds').asHours()) + ' hours',
+            value: formatNumber(moment.duration(props.user.data.total.length, 'seconds').asHours(), 0) + ' hours',
             row: 1,
         },
         {
             title: 'Profile playtime',
-            value: Math.round(moment.duration(props.user.osu?.statistics.play_time ?? 0, 'seconds').asHours()) + ' hours',
+            value: formatNumber(moment.duration(props.user.osu?.statistics.play_time ?? 0, 'seconds').asHours(), 0) + ' hours',
             row: 1,
         },
         {
             title: 'Approx playtime',
-            value: Math.round(moment.duration(props.user.data.approximatePlaytime ?? 0, 'seconds').asHours()) + ' hours',
+            value: formatNumber(moment.duration(props.user.data.approximatePlaytime ?? 0, 'seconds').asHours(), 0) + ' hours',
             row: 1,
         },
         {
             title: 'Total sessions',
-            value: (props.user.data.sessions.length ?? 0).toLocaleString('en-US'),
+            value: formatNumber(props.user.data.sessions.length ?? 0, 0),
             row: 1,
         },
         {

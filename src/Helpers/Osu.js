@@ -244,20 +244,30 @@ export async function getBeatmapMaxscore(beatmap_id) {
 
 const STANDARDISED_ACCURACY_PORTION = 0.5;
 const STANDARDISED_COMBO_PORTION = 0.5;
-export function getLazerScore(score, classic = true) {
-    const legacyModMultiplier = getModMultiplier(score.enabled_mods);
-    const mul = legacyModMultiplier * 0.96;
+export function getLazerScore(score) {
+    if(Mods.hasMod(score.mods, "CL")){
+        const legacyModMultiplier = getModMultiplier(score.enabled_mods);
+        const mul = legacyModMultiplier * 0.96;
+    
+        const standardised_acc = (Math.pow((50 * score.count50 + 100 * score.count100 + 300 * score.count300) / (300 * score.count50 + 300 * score.count100 + 300 * score.count300 + 300 * score.countmiss), 5) * 1000000 * STANDARDISED_ACCURACY_PORTION);
+        const standardised_combo = (Math.pow(score.combo / score.beatmap.maxcombo, 0.75) * 1000000 * STANDARDISED_COMBO_PORTION);
+        const standardised = (standardised_acc + standardised_combo) * mul;
+        return standardised;
+        // const lazerscore = Math.round((score.beatmap.objects * score.beatmap.objects) * 36 + 100000 * standardised / (MAX_SCORE * mul))
+        // const lazerscore = Math.round(36 * Math.pow((standardised / 1000000) * score.beatmap.objects, 2))
+        // return lazerscore ?? 0;
+    }else{
+        // classic = 32.57 * standardized/1000000 * (0.1 + objects^2)
+        // above but solve for standardized, where classic is score.score
+        let classic = score.score;
+        let objects = score.beatmap.objects;
+        let standardised = 1000000 * (classic / (32.57 * (0.1 + Math.pow(objects, 2))));
+        return standardised;
+    }
+}
 
-    const standardised_acc = (Math.pow((50 * score.count50 + 100 * score.count100 + 300 * score.count300) / (300 * score.count50 + 300 * score.count100 + 300 * score.count300 + 300 * score.countmiss), 5) * 1000000 * STANDARDISED_ACCURACY_PORTION);
-    const standardised_combo = (Math.pow(score.combo / score.beatmap.maxcombo, 0.75) * 1000000 * STANDARDISED_COMBO_PORTION);
-    const standardised = (standardised_acc + standardised_combo) * mul;
-
-    if (!classic)
-        return standardised ?? 0;
-
-    // const lazerscore = Math.round((score.beatmap.objects * score.beatmap.objects) * 36 + 100000 * standardised / (MAX_SCORE * mul))
-    const lazerscore = Math.round(36 * Math.pow((standardised / 1000000) * score.beatmap.objects, 2))
-    return lazerscore ?? 0;
+export function convertToClassic(standardised, objects){
+    return 32.57 * (standardised / 1000000) * (0.1 + Math.pow(objects, 2));
 }
 
 export function getModMultiplier(enabled_mods) {
@@ -581,7 +591,7 @@ export function FilterStarratingArray(sr_arr, mods_enum) {
     return sr_arr.filter(sr => sr.mods_enum === mods_enum)?.[0];
 }
 
-export function computeAccuracy(score) {
+export function computeAccuracy(score, debug = false) {
     let baseScore = 0;
     Object.keys(score.statistics).forEach(key => {
         if (affectsAccuracy(key)) {
@@ -594,6 +604,18 @@ export function computeAccuracy(score) {
             maxBaseScore += score.maximum_statistics[key] * GetBaseScoreForResult(key);
         }
     });
+
+    if (debug) {
+        console.log(`-------------------------------------------------------`);
+        console.log(`Statistics:`);
+        console.log(score.statistics);
+        console.log(`Max Statistics:`);
+        console.log(score.maximum_statistics);
+        console.log(`Base Score: ${baseScore}`);
+        console.log(`Max Base Score: ${maxBaseScore}`);
+        console.log(`Accuracy: ${baseScore / maxBaseScore}`);
+        console.log(`-------------------------------------------------------`);
+    }
 
     return maxBaseScore === 0 ? 1 : baseScore / maxBaseScore;
 }
@@ -806,84 +828,63 @@ export async function MassCalculatePerformance(scores) {
 export function FilterScores(full_scores, filter) {
     var scores = [];
 
-    //approved status
     scores = full_scores.filter(score => {
-        return filter.approved.includes(score.beatmap.approved);
-    });
+        //do all the filtering here instead of chaining
+        if(!filter.approved.includes(score.beatmap.approved)) return false;
 
-    //mods
-    if(filter.enabledMods.length > 0) {
-        if(filter.modsUsage === 'any'){
-            scores = scores.filter(score => {
-                return Mods.hasMods(score.mods, filter.enabledMods);
-            });
+        if(filter.enabledMods.length > 0){
+            if(filter.modsUsage === 'any'){
+                if(!Mods.hasMods(score.mods, filter.enabledMods)) return false;
+            }else{
+                if(!Mods.hasExactMods(score.mods, filter.enabledMods)) return false;
+            }
         }else{
-            scores = scores.filter(score => {
-                return Mods.hasExactMods(score.mods, filter.enabledMods);
-            });
+            if(filter.modsUsage === 'all'){
+                if(!Mods.isNoMod(score.mods)) return false;
+            }
         }
-    }else{
-        //nomod only
-        scores = scores.filter(score => {
-            return Mods.isNoMod(score.mods);
-        });
-    }
-    // if (filter.enabled_mods > 0 || filter.enabledMods) {
-    //     scores = scores.filter(score => {
-    //         if (filter.modsUsage === 'any') {
-    //             if (score.enabled_mods === 0 && filter.enabledNomod) {
-    //                 return true;
-    //             }
-    //             return (filter.enabledMods & score.enabled_mods) !== 0;
-    //         }
-    //         if (filter.enabledNomod) {
-    //             return score.enabled_mods === 0;
-    //         }
-    //         return filter.enabledMods === score.enabled_mods;
-    //     });
-    // }
 
-    //grades
-    scores = scores.filter(score => {
-        return filter.enabledGrades.includes(score.rank);
-    });
+        if(!filter.enabledGrades.includes(score.rank)) return false;
 
-    if (filter.minScore !== null && filter.minScore !== '' && filter.minScore >= 0) { scores = scores.filter(score => score.score >= filter.minScore); }
-    if (filter.maxScore !== null && filter.maxScore !== '' && filter.maxScore >= 0) { scores = scores.filter(score => score.score <= filter.maxScore); }
+        if (filter.minScore !== null && filter.minScore !== '' && filter.minScore >= 0) { if (score.score < filter.minScore) return false; }
+        if (filter.maxScore !== null && filter.maxScore !== '' && filter.maxScore >= 0) { if (score.score > filter.maxScore) return false; }
 
-    if (filter.minStars !== null && filter.minStars !== '' && filter.minStars >= 0) { scores = scores.filter(score => score.beatmap.difficulty_data.star_rating >= filter.minStars); }
-    if (filter.maxStars !== null && filter.maxStars !== '' && filter.maxStars >= 0) { scores = scores.filter(score => score.beatmap.difficulty_data.star_rating <= filter.maxStars); }
+        if (filter.minStars !== null && filter.minStars !== '' && filter.minStars >= 0) { if (score.beatmap.difficulty_data.star_rating < filter.minStars) return false; }
+        if (filter.maxStars !== null && filter.maxStars !== '' && filter.maxStars >= 0) { if (score.beatmap.difficulty_data.star_rating > filter.maxStars) return false; }
 
-    if (filter.minPP !== null && filter.minPP !== '' && filter.minPP >= 0) { scores = scores.filter(score => score.pp >= filter.minPP); }
-    if (filter.maxPP !== null && filter.maxPP !== '' && filter.maxPP >= 0) { scores = scores.filter(score => score.pp <= filter.maxPP); }
+        if (filter.minPP !== null && filter.minPP !== '' && filter.minPP >= 0) { if (score.pp < filter.minPP) return false; }
+        if (filter.maxPP !== null && filter.maxPP !== '' && filter.maxPP >= 0) { if (score.pp > filter.maxPP) return false; }
 
-    if (filter.minAcc !== null && filter.minAcc !== '' && filter.minAcc >= 0) { scores = scores.filter(score => score.accuracy >= filter.minAcc); }
-    if (filter.maxAcc !== null && filter.maxAcc !== '' && filter.maxAcc >= 0) { scores = scores.filter(score => score.accuracy <= filter.maxAcc); }
+        if (filter.minAcc !== null && filter.minAcc !== '' && filter.minAcc >= 0) { if (score.accuracy < filter.minAcc) return false; }
+        if (filter.maxAcc !== null && filter.maxAcc !== '' && filter.maxAcc >= 0) { if (score.accuracy > filter.maxAcc) return false; }
 
-    if (filter.minCombo !== null && filter.minCombo !== '' && filter.minCombo >= 0) { scores = scores.filter(score => score.combo >= filter.minCombo); }
-    if (filter.maxCombo !== null && filter.maxCombo !== '' && filter.maxCombo >= 0) { scores = scores.filter(score => score.combo <= filter.maxCombo); }
+        if (filter.minCombo !== null && filter.minCombo !== '' && filter.minCombo >= 0) { if (score.combo < filter.minCombo) return false; }
+        if (filter.maxCombo !== null && filter.maxCombo !== '' && filter.maxCombo >= 0) { if (score.combo > filter.maxCombo) return false; }
 
-    if (filter.minAR !== null && filter.minAR !== '' && filter.minAR >= 0) { scores = scores.filter(score => score.beatmap.difficulty_data.modded_ar >= filter.minAR); }
-    if (filter.maxAR !== null && filter.maxAR !== '' && filter.maxAR >= 0) { scores = scores.filter(score => score.beatmap.difficulty_data.modded_ar <= filter.maxAR); }
+        if (filter.minAR !== null && filter.minAR !== '' && filter.minAR >= 0) { if (score.beatmap.difficulty_data.modded_ar < filter.minAR) return false; }
+        if (filter.maxAR !== null && filter.maxAR !== '' && filter.maxAR >= 0) { if (score.beatmap.difficulty_data.modded_ar > filter.maxAR) return false; }
 
-    if (filter.minOD !== null && filter.minOD !== '' && filter.minOD >= 0) { scores = scores.filter(score => score.beatmap.difficulty_data.modded_od >= filter.minOD); }
-    if (filter.maxOD !== null && filter.maxOD !== '' && filter.maxOD >= 0) { scores = scores.filter(score => score.beatmap.difficulty_data.modded_od <= filter.maxOD); }
+        if (filter.minOD !== null && filter.minOD !== '' && filter.minOD >= 0) { if (score.beatmap.difficulty_data.modded_od < filter.minOD) return false; }
+        if (filter.maxOD !== null && filter.maxOD !== '' && filter.maxOD >= 0) { if (score.beatmap.difficulty_data.modded_od > filter.maxOD) return false; }
 
-    if (filter.minCS !== null && filter.minCS !== '' && filter.minCS >= 0) { scores = scores.filter(score => score.beatmap.difficulty_data.modded_cs >= filter.minCS); }
-    if (filter.maxCS !== null && filter.maxCS !== '' && filter.maxCS >= 0) { scores = scores.filter(score => score.beatmap.difficulty_data.modded_cs <= filter.maxCS); }
+        if (filter.minCS !== null && filter.minCS !== '' && filter.minCS >= 0) { if (score.beatmap.difficulty_data.modded_cs < filter.minCS) return false; }
+        if (filter.maxCS !== null && filter.maxCS !== '' && filter.maxCS >= 0) { if (score.beatmap.difficulty_data.modded_cs > filter.maxCS) return false; }
 
-    if (filter.minHP !== null && filter.minHP !== '' && filter.minHP >= 0) { scores = scores.filter(score => score.beatmap.difficulty_data.modded_hp >= filter.minHP); }
-    if (filter.maxHP !== null && filter.maxHP !== '' && filter.maxHP >= 0) { scores = scores.filter(score => score.beatmap.difficulty_data.modded_hp <= filter.maxHP); }
+        if (filter.minHP !== null && filter.minHP !== '' && filter.minHP >= 0) { if (score.beatmap.difficulty_data.modded_hp < filter.minHP) return false; }
+        if (filter.maxHP !== null && filter.maxHP !== '' && filter.maxHP >= 0) { if (score.beatmap.difficulty_data.modded_hp > filter.maxHP) return false; }
 
-    if (filter.minLength !== null && filter.minLength !== '' && filter.minLength >= 0) { scores = scores.filter(score => score.beatmap.modded_length >= filter.minLength); }
-    if (filter.maxLength !== null && filter.maxLength !== '' && filter.maxLength >= 0) { scores = scores.filter(score => score.beatmap.modded_length <= filter.maxLength); }
+        if (filter.minLength !== null && filter.minLength !== '' && filter.minLength >= 0) { if (score.beatmap.modded_length < filter.minLength) return false; }
+        if (filter.maxLength !== null && filter.maxLength !== '' && filter.maxLength >= 0) { if (score.beatmap.modded_length > filter.maxLength) return false; }
 
-    scores = scores.filter(score => {
-        return moment(score.beatmap.approved_date).isBetween(filter.minApprovedDate, filter.maxApprovedDate, undefined, '[]');
-    });
+        //approved date
+        if (filter.minApprovedDate !== null && filter.minApprovedDate !== '' && filter.minApprovedDate >= 0) { if (moment(score.beatmap.approved_date).isBefore(filter.minApprovedDate)) return false; }
+        if (filter.maxApprovedDate !== null && filter.maxApprovedDate !== '' && filter.maxApprovedDate >= 0) { if (moment(score.beatmap.approved_date).isAfter(filter.maxApprovedDate)) return false; }
 
-    scores = scores.filter(score => {
-        return moment(score.date_played).isBetween(filter.minPlayedDate, filter.maxPlayedDate, undefined, '[]');
+        //played date
+        if (filter.minPlayedDate !== null && filter.minPlayedDate !== '' && filter.minPlayedDate >= 0) { if (moment(score.date_played).isBefore(filter.minPlayedDate)) return false; }
+        if (filter.maxPlayedDate !== null && filter.maxPlayedDate !== '' && filter.maxPlayedDate >= 0) { if (moment(score.date_played).isAfter(filter.maxPlayedDate)) return false; }
+    
+        return true;
     });
 
     scores.sort(filter._sorter.sort);

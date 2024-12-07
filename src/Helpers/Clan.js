@@ -48,8 +48,6 @@ export async function GetClan(id, login_user_id = null, login_user_token = null)
         data.activities.scores.sort((a, b) => b.date_played_moment - a.date_played_moment);
     }
 
-    console.log(data);
-
     return data;
 }
 

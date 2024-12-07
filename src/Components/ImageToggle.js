@@ -13,8 +13,9 @@ function ImageToggle(props) {
     }
 
     useEffect(() => {
+        setChecked(props.checkedDefault);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [props.checkedDefault]);
 
     return (
         <>

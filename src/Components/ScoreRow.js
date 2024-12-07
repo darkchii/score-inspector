@@ -19,7 +19,6 @@ function ScoreRow(props) {
     useEffect(() => {
         setScore(props.data.score);
         setBeatmap(props.data.score.beatmap);
-        console.log(props.data.score);
     }, [props.data]);
 
     const onClick = () => {

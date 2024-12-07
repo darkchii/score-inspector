@@ -256,7 +256,6 @@ const GROUPED_STATS = {
             description: 'List of beatmaps sorted by longest time from submission to ranked',
             customFormat: (value) => moment.duration(value, 'seconds').format('y[y] M[m] d[d]'),
             extraFormatter: (value) => {
-                console.log(value);
                 if (value === undefined || value === null) return '';
                 let _date = moment(new Date(value[0])).utc().format('DD MMMM YYYY');
                 return `${_date}`;

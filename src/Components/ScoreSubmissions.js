@@ -70,7 +70,6 @@ function ScoreSubmissions(props) {
                 setIsWorking(true);
 
                 //get the key based on period index
-                console.log(period);
                 const _period = Object.keys(chart_period_data)[period];
                 const _interval = chart_period_data[_period].intervals[interval];
                 setActivePeriodObject(chart_period_data[_period]);

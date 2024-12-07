@@ -68,7 +68,6 @@ function CustomizeModal(props, ref) {
                     is_completion_mode: optionIsCompletionMode
                 });
 
-                console.log(res);
                 if (res !== null && res.status === 200) {
                     showNotification('Success', 'Profile updated', 'success');
                     // setOpen(false);

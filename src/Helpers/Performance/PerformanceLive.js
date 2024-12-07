@@ -11,8 +11,8 @@ export function getPerformanceLive(data, debug = false) {
     data.maximum_statistics = data.maximum_statistics ?? score.maximum_statistics;
     // data.usingClassicSliderAccuracy = Mods.hasMod(data.score.mods, "CL");
     data.usingClassicSliderAccuracy = false;
-    if(Mods.hasMod(data.score.mods, "CL")){
-        if(!Mods.containsSetting(data.score.mods, 'no_slider_head_accuracy') || Mods.getSetting(data.score.mods, 'no_slider_head_accuracy'))
+    if (Mods.hasMod(data.score.mods, "CL")) {
+        if (!Mods.containsSetting(data.score.mods, 'no_slider_head_accuracy') || Mods.getSetting(data.score.mods, 'no_slider_head_accuracy') === false)
             data.usingClassicSliderAccuracy = true;
     }
     data.countGreat = data.count300 ?? score.count300;
@@ -27,16 +27,16 @@ export function getPerformanceLive(data, debug = false) {
     data.effectiveMissCount = data.countMiss;
     data.totalImperfectHits = data.countOk + data.countMeh + data.countMiss;
     data.difficulty_data = score.beatmap.difficulty_data;
-    
+
     data.countSliderEndsDropped = 0;
     data.countSliderTickMiss = 0;
 
-    if(data.statistics){
+    if (data.statistics) {
         // data.countSliderEndsDropped = (data.beatmaps.slider - data.statistics.slider_tail_hit) ?? 0;
         data.countSliderEndsDropped = data.statistics.slider_tail_hit ? (data.sliderCount - data.statistics.slider_tail_hit) : 0;
         data.countSliderTickMiss = (data.statistics.large_tick_miss ?? 0);
     }
-    
+
     if (data.difficulty_data) {
         if (data.sliderCount > 0) {
             if (data.usingClassicSliderAccuracy) {
@@ -116,7 +116,8 @@ function getTotalValue(data) {
 function getAimValue(data) {
     let aimValue = difficultyToPerformance(data.difficulty_data.aim_difficulty);
 
-    let lengthBonus = 0.95 + 0.4 * Math.min(1, data.totalHits / 2000.0) + (data.totalHits > 2000 ? Math.log10(data.totalHits / 2000.0) * 0.5 : 0.0);
+    let lengthBonus = 0.95 + 0.4 * Math.min(1, data.totalHits / 2000.0) +
+        (data.totalHits > 2000 ? Math.log10(data.totalHits / 2000.0) * 0.5 : 0.0);
 
     aimValue *= lengthBonus;
 
@@ -156,7 +157,7 @@ function getAimValue(data) {
     }
 
     aimValue *= data.accuracy;
-    aimValue *= 0.98 + Math.pow(data.difficulty_data.overall_difficulty, 2) * 0.0004;
+    aimValue *= 0.98 + Math.pow(data.difficulty_data.overall_difficulty, 2) / 2500;
 
     return aimValue;
 }
@@ -233,7 +234,7 @@ function getAccuracyValue(data) {
 }
 
 function getFlashlightValue(data) {
-    if (!Mods.hasMod(data.score.mods, "FL")){
+    if (!Mods.hasMod(data.score.mods, "FL")) {
         return 0;
     }
 

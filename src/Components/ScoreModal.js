@@ -19,8 +19,6 @@ function ScoreModal(props) {
     useEffect(() => {
         if (props.data !== undefined && props.data.score !== undefined) {
             (async () => {
-                console.log(targetProg);
-                //sleep for 0.1s
                 setOpen(props.data.active);
                 await new Promise(r => setTimeout(r, 50));
                 setTargetProg(1);

@@ -22,7 +22,6 @@ function Tournaments() {
                     tournaments[key.charAt(0).toUpperCase() + key.slice(1)] = res.data.tournaments[key];
                 }
                 setTournaments(tournaments);
-                console.log(res.data);
             } catch (e) {
                 console.error(e);
                 showNotification('Oops', 'Cannot get tournaments data', 'error');
