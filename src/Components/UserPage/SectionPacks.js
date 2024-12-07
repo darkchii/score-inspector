@@ -2,11 +2,13 @@
 import React, { useEffect, useRef } from "react";
 import { useState } from "react";
 import { getBeatmapPackDetails, getBeatmapPacks, getBeatmaps } from "../../Helpers/Osu";
-import { Alert, Box, Container, Grid2, Paper, Tooltip, Typography, useTheme } from "@mui/material";
+import { Alert, Box, Container, FormControlLabel, Grid2, Paper, Switch, Tooltip, Typography, useTheme } from "@mui/material";
 import { is_numeric, lerpColor } from "../../Helpers/Misc";
 import PackCompletionModal from "../Modals/PackCompletionModal";
 import Loader from "../UI/Loader";
 import CompletionModeNotice from "../UI/CompletionModeNotice";
+import { green, pink } from "@mui/material/colors";
+import OsuTooltip from "../OsuTooltip";
 
 function SectionPacks(props) {
     const theme = useTheme();
@@ -14,11 +16,11 @@ function SectionPacks(props) {
     const [selectedPack, setSelectedPack] = useState(null);
     const [selectedPackData, setSelectedPackData] = useState(null);
     const [themeColor] = useState(theme.typography.title.color);
-    const [isCompletionMode, setIsCompletionMode] = useState(false);
+    const [hideCompleted, setHideCompleted] = useState(false);
     const packInfoModalElement = useRef(null);
 
     useEffect(() => {
-        if(props.user.inspector_user.is_completion_mode){
+        if (props.user.inspector_user.is_completion_mode) {
             return;
         }
         (async () => {
@@ -85,6 +87,7 @@ function SectionPacks(props) {
                 packType.packs.forEach(pack => {
                     let progressPercentage = Math.round(pack.played / pack.total * 100);
                     pack.color = lerpColor('#3c3c3c', themeColor, progressPercentage / 100);
+                    pack.completed = progressPercentage === 100;
                 });
             });
 
@@ -120,7 +123,7 @@ function SectionPacks(props) {
                 scores: scores,
             }
 
-            if(selectedPack){
+            if (selectedPack) {
                 setSelectedPackData(_selectedPackData);
             }
         })()
@@ -132,7 +135,7 @@ function SectionPacks(props) {
         setSelectedPack(pack);
     }
 
-    if(props.user.inspector_user.is_completion_mode){
+    if (props.user.inspector_user.is_completion_mode) {
         return (
             <Container>
                 <CompletionModeNotice />
@@ -144,6 +147,7 @@ function SectionPacks(props) {
         <>
             <PackCompletionModal data={selectedPackData} ref={packInfoModalElement} />
             <Grid2 sx={{ p: 2 }}>
+                <FormControlLabel control={<Switch checked={hideCompleted} onChange={(e) => setHideCompleted(e.target.checked)} />} label="Hide completed packs" />
                 {
                     packData.map((packType, index) => {
                         return (
@@ -156,9 +160,10 @@ function SectionPacks(props) {
                                 }}>
                                     {
                                         packType.packs && packType.packs.length > 0 ? packType.packs.map(pack => {
+                                            if (hideCompleted && pack.completed) return null;
                                             let progressPercentage = Math.round(pack.played / pack.total * 100);
                                             return (
-                                                <Tooltip title={
+                                                <OsuTooltip title={
                                                     <React.Fragment>
                                                         <Typography variant='body1'>{pack.pack_id} {pack.name ? `(${pack.name})` : ''}</Typography>
                                                         <Typography variant='body2'>Completion: {progressPercentage}%</Typography>
@@ -172,16 +177,26 @@ function SectionPacks(props) {
                                                             height: '12px',
                                                             position: 'relative',
                                                             width: '12px',
-                                                            backgroundColor: `${pack.color}`,
+                                                            backgroundColor: `${pack.completed ? 'gold' : pack.color}`,
                                                             margin: '2px',
                                                             '&:hover': {
                                                                 cursor: 'pointer',
                                                                 opacity: 0.5
-                                                            }
+                                                            },
                                                         }}>
-
+                                                        {/* {
+                                                                pack.completed && <Box sx={{
+                                                                    position: 'absolute',
+                                                                    top: '50%',
+                                                                    left: '50%',
+                                                                    transform: 'translate(-50%, -50%)',
+                                                                    color: green[900],
+                                                                    fontSize: '10px',
+                                                                    fontWeight: 'bold'
+                                                                }}>✓</Box>
+                                                            } */}
                                                     </Box>
-                                                </Tooltip>
+                                                </OsuTooltip>
                                             )
                                         }) : <Loader />
                                     }
