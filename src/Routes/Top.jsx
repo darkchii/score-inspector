@@ -1,4 +1,4 @@
-import { Alert, Avatar, Box, Card, CardActionArea, CardContent, Chip, Grid2, Paper, Skeleton, Stack, Tab, Tabs, Tooltip, Typography } from "@mui/material";
+import { Alert, Box, Card, CardActionArea, CardContent, Grid2, Paper, Skeleton, Stack, Tab, Tabs, Tooltip, Typography } from "@mui/material";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
@@ -12,7 +12,6 @@ import { grey } from "@mui/material/colors";
 import { getGradeIcon } from "../Helpers/Assets";
 import Mods from "../Helpers/Mods";
 import StarsLabel from "../Components/StarsLabel";
-import { transition } from "d3";
 
 const SCORES_TO_FETCH = 10;
 const PERIODS = [
@@ -27,7 +26,7 @@ const SCORE_CARD_HEIGHT = '8em';
 const SCORE_TYPES = 2;
 const SCORE_TYPE_NAMES = ['Performance', 'Score'];
 
-function Top(props) {
+function Top() {
     const [isWorking, setIsWorking] = useState(false);
     const [scores, setScores] = useState([]);
     const [selected_period, setSelectedPeriod] = useState(PERIODS[0]);
@@ -96,15 +95,7 @@ function Top(props) {
             </Helmet>
             <ScoreModal data={modalData} />
             <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", width: "100%" }}>
-                {/* <ButtonGroup disabled={isWorking}>
-                    {PERIODS.map((period) => (
-                        <Button variant={period.value === selected_period.value ? 'contained' : 'outlined'} onClick={() => setSelectedPeriod(period)}>{period.label}</Button>
-                    ))}
-                </ButtonGroup> */}
                 <Tabs value={selected_period.value} onChange={(e, v) => setSelectedPeriod(PERIODS.find(p => p.value === v))}>
-                    {/* <Tab label="Rankings" {...a11yProps(0)} />
-                    <Tab label="Listing" {...a11yProps(1)} />
-                    <Tab label="History" {...a11yProps(2)} /> */}
                     {
                         PERIODS.map((period) => (
                             <Tab disabled={isWorking} value={period.value} label={period.label} />

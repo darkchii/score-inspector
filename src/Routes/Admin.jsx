@@ -13,7 +13,7 @@ import BlockIcon from '@mui/icons-material/Block';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
 const NAV_WIDTH = 2;
-function Admin(props) {
+function Admin() {
     const [isAdmin, setIsAdmin] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const params = useParams();

@@ -5,7 +5,7 @@ import { GetAPI } from "../Helpers/Misc";
 import { GetFormattedName } from "../Helpers/Account";
 import { osu_modes } from "../Helpers/Osu";
 
-function Completionists(props) {
+function Completionists() {
     const [completionists, setCompletionists] = useState([]);
 
     useEffect(() => {

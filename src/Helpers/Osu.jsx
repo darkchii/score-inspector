@@ -126,7 +126,7 @@ export async function getFullUser(user_ids = [], skipped = {}, force_array = fal
     try {
         const _user = await axios.get(`${GetAPI()}users/full/${id_string}?force_array=${force_array}&${skipQuery}&force_alt_data=${force_alt_data ? 'true' : 'false'}`, { signal: signal });
         user = _user.data;
-    } catch (e) { }
+    } catch (e) { /* empty */ }
 
     if (user === null || user === undefined || user.error !== undefined) {
         return null;
@@ -140,8 +140,7 @@ export async function getUser(user_id) {
     try {
         const _user = await axios.get(`${GetAPI()}users/osu/id/${user_id}`);
         user = _user.data;
-    } catch (e) {
-    }
+    } catch (e) { /* empty */ }
 
     return user;
 }
@@ -402,72 +401,6 @@ export const mod_strings_long = {
     8388608: "Target Practice",
     536870912: "Score V2",
     1073741824: "Mirror"
-}
-
-export function calculatePPifFC(scores) {
-    scores.sort((a, b) => {
-        return b.pp_fc.total - a.pp_fc.total;
-    });
-
-    var index = 0;
-    scores.forEach(score => { if (!score.is_loved && isScoreRealistic(score) && !isNaN(score.pp_fc.total)) { score.pp_fc.weight = Math.pow(0.95, index); index++; } else { score.pp_fc.weight = 0 } });
-
-    return scores;
-}
-
-export function calculatePPifSS(scores) {
-    scores.sort((a, b) => {
-        return b.pp_ss.total - a.pp_ss.total;
-    });
-
-    var index = 0;
-    scores.forEach(score => { if (!score.is_loved && isScoreRealistic(score) && !isNaN(score.pp_ss.total)) { score.pp_ss.weight = Math.pow(0.95, index); index++; } else { score.pp_ss.weight = 0 } });
-
-    return scores;
-}
-
-export function calculatePP2016(scores) {
-    scores.sort((a, b) => {
-        return b.pp_2016.total - a.pp_2016.total;
-    });
-
-    var index = 0;
-    scores.forEach(score => { if (!score.is_loved && !isNaN(score.pp_2016.total)) { score.pp_2016.weight = Math.pow(0.95, index); index++; } else { score.pp_2016.weight = 0 } });
-
-    return scores;
-}
-
-export function calculatePP2014(scores) {
-    scores.sort((a, b) => {
-        return b.pp_2014.total - a.pp_2014.total;
-    });
-
-    var index = 0;
-    scores.forEach(score => { if (!score.is_loved && !isNaN(score.pp_2014.total)) { score.pp_2014.weight = Math.pow(0.95, index); index++; } else { score.pp_2014.weight = 0 } });
-
-    return scores;
-}
-
-export function calculatePP2020(scores) {
-    scores.sort((a, b) => {
-        return b.pp_2020.total - a.pp_2020.total;
-    });
-
-    var index = 0;
-    scores.forEach(score => { if (!score.is_loved && !isNaN(score.pp_2020.total)) { score.pp_2020.weight = Math.pow(0.95, index); index++; } else { score.pp_2020.weight = 0 } });
-
-    return scores;
-}
-
-export function calculatePPLazer(scores) {
-    scores.sort((a, b) => {
-        return b.pp_lazer.total - a.pp_lazer.total;
-    });
-
-    var index = 0;
-    scores.forEach(score => { if (!score.is_loved && !isNaN(score.pp_lazer.total)) { score.pp_lazer.weight = Math.pow(0.95, index); index++; } else { score.pp_lazer.weight = 0 } });
-
-    return scores;
 }
 
 export function isScoreRealistic(score) {

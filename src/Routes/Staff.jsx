@@ -8,7 +8,7 @@ import Loader from "../Components/UI/Loader";
 import { Helmet } from "react-helmet";
 import config from "../config.json";
 
-function Staff(props) {
+function Staff() {
     const [roles, setRoles] = useState(null);
     const navigate = useNavigate();
 

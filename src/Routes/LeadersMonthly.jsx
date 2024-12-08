@@ -26,7 +26,7 @@ const value_types = {
     },
 }
 
-function LeadersMonthly(props) {
+function LeadersMonthly() {
     const theme = useTheme();
 
     const [isLoading, setIsLoading] = useState(true);

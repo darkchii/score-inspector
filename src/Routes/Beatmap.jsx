@@ -9,16 +9,14 @@ import axios from "axios";
 import { OsuModeIcon } from "../Components/Icons";
 import PlayerCard from "../Components/PlayerCard";
 import { getDifficultyColor } from "../Helpers/Osu";
-import DangerousIcon from '@mui/icons-material/Dangerous';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import { AdminValidate, GetFormattedName } from "../Helpers/Account";
 
-function Beatmap(props) {
+function Beatmap() {
     const [isWorking, setIsWorking] = useState(false);
     const [userHasEditAccess, setUserHasEditAccess] = useState(false);
     const params = useParams();
-    const theme = useTheme();
 
     useEffect(() => {
         (async () => {
