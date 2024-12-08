@@ -57,7 +57,7 @@ function Staff() {
                     roles ?
                         roles.map((role, i) => {
                             return (
-                                <Grid2>
+                                <Grid2 key={i}>
                                     <Card>
                                         <CardHeader title={<Chip sx={{ m: 0.2, backgroundColor: `#${role.color}aa` }} icon={GetRoleIcon(role)} label={role.title} />} />
                                         <CardContent>
@@ -67,7 +67,7 @@ function Staff() {
                                                 {
                                                     role.users && role.users.length > 0 ?
                                                         role.users?.map((user, index) => (
-                                                            <Grid2 size={{ xs: 12, md: 4, lg: 3 }} sx={{ height: '160px', mt: 1 }}>
+                                                            <Grid2 key={index} size={{ xs: 12, md: 4, lg: 3 }} sx={{ height: '160px', mt: 1 }}>
                                                                 <PlayerCard onClick={() => { navigate(`/user/${user.osu.id}`); }} user={user} />
                                                             </Grid2>
                                                         )) : <>

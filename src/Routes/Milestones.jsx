@@ -95,7 +95,7 @@ function Milestones() {
                                             }
 
                                             return (
-                                                <TableRow>
+                                                <TableRow key={index}>
                                                     <TableCell width='15%'>{moment(milestone.time).fromNow()}</TableCell>
                                                     <TableCell width='15%'>
                                                         <Link to={`/user/${milestone.user_id}`}>

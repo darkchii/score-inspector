@@ -1,6 +1,5 @@
 import { Box, Button, Chip, Grid2, Link, Stack, Table, TableBody, TableCell, TableRow, Typography } from '@mui/material';
 import moment from 'moment/moment';
-import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
@@ -63,6 +62,7 @@ function Update() {
                                 const id = index + 1;
                                 return (
                                     <Button
+                                        key={id}
                                         size='small'
                                         variant={id === Number(params.id) ? 'contained' : 'outlined'}
                                         onClick={() => navigate(`/update/${id}`)}>{update.version}</Button>

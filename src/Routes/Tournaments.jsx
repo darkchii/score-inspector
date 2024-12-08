@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Loader from '../Components/UI/Loader';
 import { GetAPI, showNotification } from '../Helpers/Misc';
 import axios from 'axios';
@@ -52,9 +52,11 @@ function Tournaments() {
                             {
                                 Object.keys(tournaments).map((key, index) => {
                                     return (
-                                        <Box sx={{
-                                            mb: 2
-                                        }}>
+                                        <Box
+                                            key={index}
+                                            sx={{
+                                                mb: 2
+                                            }}>
                                             <Typography key={index} variant='h6'>{key}</Typography>
                                             <Divider sx={{ mt: 1, mb: 1 }} />
                                             <ButtonGroup orientation="vertical" color='primary' fullWidth size='small'>

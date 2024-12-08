@@ -97,8 +97,8 @@ function Top() {
             <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", width: "100%" }}>
                 <Tabs value={selected_period.value} onChange={(e, v) => setSelectedPeriod(PERIODS.find(p => p.value === v))}>
                     {
-                        PERIODS.map((period) => (
-                            <Tab disabled={isWorking} value={period.value} label={period.label} />
+                        PERIODS.map((period, index) => (
+                            <Tab disabled={isWorking} value={period.value} label={period.label} key={index} />
                         ))
                     }
                 </Tabs>
@@ -107,7 +107,7 @@ function Top() {
                 {
                     Array.from(Array(SCORE_TYPES).keys()).map((i) => {
                         return (
-                            <Grid2 size={{ xs: 12, md: 6 }}>
+                            <Grid2 size={{ xs: 12, md: 6 }} key={i}>
                                 <Paper elevation={2}>
                                     <Stack sx={{ p: 1, mx: 'auto' }} direction='column' spacing={1}>
                                         <Typography variant='title'>{SCORE_TYPE_NAMES[i]}</Typography>
@@ -120,6 +120,7 @@ function Top() {
                                                     </>);
                                                     return (
                                                         <Card
+                                                            key={j}
                                                             sx={{
                                                                 // backgroundImage: `url(https://assets.ppy.sh/beatmaps/${score.beatmap.set_id}/covers/cover.jpg)`,
                                                                 // backgroundSize: 'cover',
@@ -276,11 +277,10 @@ function Top() {
                                                                 </CardContent>
                                                             </CardActionArea>
                                                         </Card>
-
                                                     )
                                                 } else {
                                                     return (
-                                                        <Skeleton animation='wave' variant='rectangular' height={SCORE_CARD_HEIGHT} />
+                                                        <Skeleton key={j} animation='wave' variant='rectangular' height={SCORE_CARD_HEIGHT} />
                                                     )
                                                 }
                                             })
@@ -295,7 +295,7 @@ function Top() {
             <Box sx={{ pt: 1 }}>
                 <Stack direction='column' spacing={2}>
                     <Alert severity='info'>
-                        Getting this data can take a minute sometimes, it most likely isn't broken. If you think it is, check the browser console for any errors and forward them to me (Amayakase).
+                        Getting this data can take a minute sometimes, it most likely isn&apos;t broken. If you think it is, check the browser console for any errors and forward them to me (Amayakase).
                     </Alert>
                     <Alert severity='warning'>
                         These scores are ones from tracked osu!alternative users. If theres a missing score, it likely gets added when the monthly data dump is released.

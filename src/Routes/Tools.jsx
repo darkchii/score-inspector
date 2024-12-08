@@ -55,7 +55,7 @@ function Tools() {
                         {
                             TOOL_OBJECTS.map((tool, index) => {
                                 return (
-                                    <Button component={Link} to={`/tools/${tool.url}`} variant={index === currentTool ? 'contained' : 'outlined'}>{tool.name}</Button>
+                                    <Button key={index} component={Link} to={`/tools/${tool.url}`} variant={index === currentTool ? 'contained' : 'outlined'}>{tool.name}</Button>
                                 )
                             })
                         }

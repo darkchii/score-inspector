@@ -128,7 +128,7 @@ function Population() {
                 datasets: [{
                     label: 'Countries',
                     outline: fixed_countries,
-                    data: fixed_countries.map((d) => ({ feature: d, value: Number(d.value) ?? NaN })),
+                    data: fixed_countries.map((d) => ({ feature: d, value: Number(d.value ?? 0) })),
                 }]
             },
             options: {
@@ -333,8 +333,8 @@ function Population() {
                         </Box>
                         <Grid2 sx={{ display: 'inline-block' }}>
                             {
-                                chartTypes.map((t) => (
-                                    <Button sx={{
+                                chartTypes.map((t, i) => (
+                                    <Button key={i} sx={{
                                         m: 0.3
                                     }} onClick={() => {
                                         setActiveChartType(t.value);
@@ -369,10 +369,10 @@ function Population() {
                             </TableHead>
                             <TableBody>
                                 {
-                                    orderedCountries.map((c) => {
+                                    orderedCountries.map((c, i) => {
                                         let value = chartTypes.find((t) => t.value === activeChartType).output ? chartTypes.find((t) => t.value === activeChartType).output(c.value ?? 0) : c.value;
                                         return (
-                                            <TableRow>
+                                            <TableRow key={i}>
                                                 <TableCell>
                                                     <img src={getFlagIcon(c.code)} alt={c.code} style={{ height: '1.4em', borderRadius: '5px' }} />
                                                 </TableCell>

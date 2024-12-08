@@ -230,7 +230,7 @@ function Root() {
                                                                     {
                                                                         GUIDE_NEW_USERS.map((note, index) => {
                                                                             return (
-                                                                                <BetterAlert sx={{
+                                                                                <BetterAlert key={index} sx={{
                                                                                     padding: '2px'
                                                                                 }} severity='primary'>
                                                                                     <Typography variant='body2'>{note}</Typography>
@@ -355,7 +355,7 @@ function Root() {
                                         {
                                             info.map((v, i) => {
                                                 return (
-                                                    <Grid2 size={{ xs: 12, md: 6 }}>
+                                                    <Grid2 key={i} size={{ xs: 12, md: 6 }}>
                                                         <Typography variant='title' sx={{ fontSize: '18px' }}>{v.question}</Typography>
                                                         <Typography variant='body2'>{v.answer}</Typography>
                                                     </Grid2>
@@ -376,7 +376,7 @@ function Root() {
                                     <Typography variant='title'>Most visited</Typography>
                                     <Stack spacing={0.5} sx={{ pl: 1 }}>
                                         {
-                                            visitorStats ? (visitorStats.most_visited?.error ? <Error /> : visitorStats.most_visited?.map((v, i) => {
+                                            visitorStats ? (visitorStats.most_visited?.error ? <Error /> : visitorStats.most_visited?.map((v) => {
                                                 return (
                                                     <>
                                                         <Grid2 container>
@@ -404,7 +404,7 @@ function Root() {
                                     <Typography variant='title'>Recent visited</Typography>
                                     <Stack spacing={0.5} sx={{ pl: 1 }}>
                                         {
-                                            visitorStats ? (visitorStats.last_visited?.error ? <Error /> : visitorStats.last_visited?.map((v, i) => {
+                                            visitorStats ? (visitorStats.last_visited?.error ? <Error /> : visitorStats.last_visited?.map((v) => {
                                                 return (
                                                     <>
                                                         <Grid2 container>
@@ -453,8 +453,9 @@ function Root() {
                                     src={`https://ptb.discord.com/widget?id=${config.DISCORD_SERVER_ID}&theme=dark`}
                                     width="100%"
                                     height="400"
-                                    allowtransparency="true"
-                                    frameborder="0"
+                                    style={{
+                                        border: 'none'
+                                    }}
                                     sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
                             </Box>
                         </Grid2>

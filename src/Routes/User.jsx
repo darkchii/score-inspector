@@ -1,5 +1,4 @@
 import { Alert, Box, CircularProgress, Link, Stack, Typography } from '@mui/material';
-import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { getUserScores, isUserRegistered } from '../Helpers/OsuAlt';
@@ -146,6 +145,7 @@ function User() {
                     const milestones = (await axios.get(`${GetAPI()}scores/milestones/user/${user_out.osu.id}`))?.data;
                     user_out.milestones = milestones;
                 } catch (e) {
+                    console.warn(e);
                     //ignore
                     user_out.milestones = [];
                 }
@@ -192,7 +192,7 @@ function User() {
                     </Box>
                 </> : user === null || !user ? <>
                     <Stack spacing={2} direction='column'>
-                        <Typography variant='h4'>Whoops, couldn't show profile</Typography>
+                        <Typography variant='h4'>Whoops, couldn&apos;t show profile</Typography>
                         <Typography variant='subtitle1'>What went wrong: {errorMessage}</Typography>
                         {/* if errorMessage contains 'user_out.alt is undefined' */}
                         {extraErrorMessages !== null ? <Alert severity='warning'>{extraErrorMessages}</Alert> : <></>}

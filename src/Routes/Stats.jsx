@@ -37,8 +37,8 @@ const MISC_STATS = [
     { name: 'scores_b', label: (<img src={IMG_SVG_GRADE_B} alt='B' />), format: (value) => parseInt(value).toLocaleString('en-US') },
     { name: 'scores_c', label: (<img src={IMG_SVG_GRADE_C} alt='C' />), format: (value) => parseInt(value).toLocaleString('en-US') },
     { name: 'scores_d', label: (<img src={IMG_SVG_GRADE_D} alt='D' />), format: (value) => parseInt(value).toLocaleString('en-US') },
-    { name: '', label: '', format: (value) => '' }, //empty row
-    { name: '', label: 'Averages', format: (value) => '' }, //title row
+    { name: '', label: '', format: () => '' }, //empty row
+    { name: '', label: 'Averages', format: () => '' }, //title row
     { name: 'avg_stars', label: 'Stars', format: (value) => `${(Math.round(100 * value) / 100).toLocaleString('en-US')}*` },
     { name: 'avg_combo', label: 'Combo', format: (value) => `${(Math.round(value)).toLocaleString('en-US')}x` },
     { name: 'avg_length', label: 'Length', format: (value) => (Math.round(value)).toLocaleString('en-US') + ' sec' },
@@ -46,18 +46,18 @@ const MISC_STATS = [
     { name: 'avg_pp', label: 'PP', format: (value) => `${(Math.round(value)).toLocaleString('en-US')}pp` },
     { name: 'average_map_age', label: 'Map age', format: (value) => (moment(value).fromNow(true)) + ' old' },
     { name: 'fc_rate', label: 'FC rate', format: (value) => (Math.round(10000 * value) / 100).toLocaleString('en-US') + '%' },
-    { name: '', label: '', format: (value) => '' }, //empty row
-    { name: '', label: 'Users', format: (value) => '' }, //title row
+    { name: '', label: '', format: () => '' }, //empty row
+    { name: '', label: 'Users', format: () => '' }, //title row
     { name: 'user_most_scores', label: 'Clears', format: (value) => USER_STAT(value) },
     { name: 'user_most_pp', label: 'Total PP', format: (value) => (USER_STAT(value, '', 'pp')) },
     { name: 'user_top_pp', label: 'Top PP', format: (value) => (USER_STAT(value, '', 'pp')) },
     { name: 'user_most_score', label: 'Score', format: (value) => (USER_STAT(value)) },
     { name: 'user_top_score', label: 'Top Score', format: (value) => (USER_STAT(value)) },
-    { name: '', label: '', format: (value) => '' }, //empty row
+    { name: '', label: '', format: () => '' }, //empty row
     { name: 'updated_at', label: 'Last updated', format: (value) => moment(value).fromNow() }, //empty row
 ]
 
-function Stats(props) {
+function Stats() {
     const [scoreStats, setScoreStats] = useState(undefined);
     const [statsTime, setStatsTime] = useState(-1);
 
@@ -152,14 +152,14 @@ function Stats(props) {
                                         </TableHead>
                                         <TableBody>
                                             {
-                                                scoreStats ? scoreStats.pp_distribution.map((pp_dis) => {
+                                                scoreStats ? scoreStats.pp_distribution.map((pp_dis, index) => {
                                                     const pp_low = Number(pp_dis.pp_range);
                                                     const pp_high = pp_low + 100;
                                                     const scores = Number(pp_dis.count);
                                                     const user = pp_dis.most_common_user;
                                                     const user_count = Number(pp_dis.most_common_user_id_count);
                                                     return (
-                                                        <TableRow>
+                                                        <TableRow key={index}>
                                                             <TableCell>{pp_low}pp - {pp_high}pp</TableCell>
                                                             <TableCell>{scores.toLocaleString('en-US')}</TableCell>
                                                             <TableCell></TableCell>
@@ -181,9 +181,9 @@ function Stats(props) {
                             <CardContent>
                                 <Grid2 container spacing={2}>
                                     {
-                                        scoreStats && TIME_PERIODS.map((period) => {
+                                        scoreStats && TIME_PERIODS.map((period, index) => {
                                             return (
-                                                <Grid2 size={{ xs: 12, md: 6 }}>
+                                                <Grid2 size={{ xs: 12, md: 6 }} key={index}>
                                                     <Typography key={period.name} variant='body1'>{period.label}</Typography>
                                                     <TableContainer key={period.name} style={{ marginBottom: 20 }}>
                                                         <Table size='small' sx={{
