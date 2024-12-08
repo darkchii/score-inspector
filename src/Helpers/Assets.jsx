@@ -1,15 +1,15 @@
-import IMG_SVG_GRADE_XH from "../Assets/Grades/Grade-XH.svg?react";
-import IMG_SVG_GRADE_X from "../Assets/Grades/Grade-X.svg?react";
-import IMG_SVG_GRADE_SH from "../Assets/Grades/Grade-SH.svg?react";
-import IMG_SVG_GRADE_S from "../Assets/Grades/Grade-S.svg?react";
-import IMG_SVG_GRADE_A from "../Assets/Grades/Grade-A.svg?react";
-import IMG_SVG_GRADE_B from "../Assets/Grades/Grade-B.svg?react";
-import IMG_SVG_GRADE_C from "../Assets/Grades/Grade-C.svg?react";
-import IMG_SVG_GRADE_D from "../Assets/Grades/Grade-D.svg?react";
+import IMG_SVG_GRADE_XH from "../Assets/Grades/Grade-XH.svg?url";
+import IMG_SVG_GRADE_X from "../Assets/Grades/Grade-X.svg?url";
+import IMG_SVG_GRADE_SH from "../Assets/Grades/Grade-SH.svg?url";
+import IMG_SVG_GRADE_S from "../Assets/Grades/Grade-S.svg?url";
+import IMG_SVG_GRADE_A from "../Assets/Grades/Grade-A.svg?url";
+import IMG_SVG_GRADE_B from "../Assets/Grades/Grade-B.svg?url";
+import IMG_SVG_GRADE_C from "../Assets/Grades/Grade-C.svg?url";
+import IMG_SVG_GRADE_D from "../Assets/Grades/Grade-D.svg?url";
 
 import IMG_CLANS_BG from "../Assets/Other/clans.jpg";
 
-import IMG_TRIANGLES from "../Assets/Triangles.svg?react";
+import IMG_TRIANGLES from "../Assets/Triangles.svg?url";
 
 import PNG_GUEST from "../Assets/Guest.png";
 
