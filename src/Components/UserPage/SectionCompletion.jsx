@@ -1,4 +1,4 @@
-/* eslint-disable react-hooks/exhaustive-deps */
+ 
 import { Button, Chip, Container, Divider, Grid2, Paper, Table, TableBody, TableCell, TableContainer, TableRow, Typography, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
 import { capitalize } from "../../Helpers/Misc";
@@ -46,7 +46,7 @@ function SectionCompletion(props) {
             });
             setGraphs(_graphs);
             setIsWorking(false);
-            // eslint-disable-next-line react-hooks/exhaustive-deps
+             
         })();
     }, [props.user]);
 

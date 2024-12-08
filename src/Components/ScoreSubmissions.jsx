@@ -119,7 +119,7 @@ function ScoreSubmissions(props) {
                 setIsWorking(false);
             }
         })();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+         
     }, [interval, random]);
 
     return (

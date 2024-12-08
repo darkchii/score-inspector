@@ -166,7 +166,7 @@ function SectionDaily(props) {
             setGraphData(data);
         };
         updateGraph();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+         
     }, [scores, props.user.scores, heightDefiner]);
 
     useEffect(() => {
@@ -242,7 +242,7 @@ function SectionDaily(props) {
             setWorkingState(false);
         };
         handleDayChange();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+         
     }, [selectedDayRange, MAX_DATE]);
 
     useEffect(() => {
