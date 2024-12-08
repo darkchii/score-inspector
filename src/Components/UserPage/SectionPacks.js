@@ -7,8 +7,9 @@ import { is_numeric, lerpColor } from "../../Helpers/Misc";
 import PackCompletionModal from "../Modals/PackCompletionModal";
 import Loader from "../UI/Loader";
 import CompletionModeNotice from "../UI/CompletionModeNotice";
-import { green, pink } from "@mui/material/colors";
+import { green, pink, red } from "@mui/material/colors";
 import OsuTooltip from "../OsuTooltip";
+import DoneIcon from '@mui/icons-material/Done';
 
 function SectionPacks(props) {
     const theme = useTheme();
@@ -33,8 +34,9 @@ function SectionPacks(props) {
                 let obj = {
                     pack_id: packs[i].pack_id,
                     name: details?.name,
-                    total: packs[i].count,
-                    played: 0
+                    total: parseInt(packs[i].count),
+                    played: 0,
+                    full_combos: 0
                 }
                 if (packs[i].pack_id.charAt(0) === 'S' && is_numeric(packs[i].pack_id.charAt(1))) {
                     _standardPacks.push(obj);
@@ -63,11 +65,17 @@ function SectionPacks(props) {
                         _standardPacks.forEach(_pack => {
                             if (_pack.pack_id === pack) {
                                 _pack.played++;
+                                if (score.is_fc) {
+                                    _pack.full_combos++;
+                                }
                             }
                         });
                         _otherPacks.forEach(_pack => {
                             if (_pack.pack_id === pack) {
                                 _pack.played++;
+                                if (score.is_fc) {
+                                    _pack.full_combos++;
+                                }
                             }
                         });
                     })
@@ -88,8 +96,11 @@ function SectionPacks(props) {
                     let progressPercentage = Math.round(pack.played / pack.total * 100);
                     pack.color = lerpColor('#3c3c3c', themeColor, progressPercentage / 100);
                     pack.completed = progressPercentage === 100;
+                    pack.completed_full_combo = pack.full_combos === pack.total;
                 });
             });
+
+            console.log(_packData);
 
             setPackData(_packData);
         })();
@@ -184,17 +195,22 @@ function SectionPacks(props) {
                                                                 opacity: 0.5
                                                             },
                                                         }}>
-                                                        {/* {
-                                                                pack.completed && <Box sx={{
-                                                                    position: 'absolute',
-                                                                    top: '50%',
-                                                                    left: '50%',
-                                                                    transform: 'translate(-50%, -50%)',
-                                                                    color: green[900],
-                                                                    fontSize: '10px',
-                                                                    fontWeight: 'bold'
-                                                                }}>✓</Box>
-                                                            } */}
+                                                        {
+                                                            pack.completed_full_combo && <Box sx={{
+                                                                position: 'absolute',
+                                                                top: '50%',
+                                                                left: '50%',
+                                                                transform: 'translate(-50%, -50%)',
+                                                            }}>
+                                                                <DoneIcon
+                                                                    sx={{
+                                                                        color: 'black',
+                                                                        fontSize: 12,
+                                                                        fontWeight: 'bold'
+                                                                    }}
+                                                                />
+                                                            </Box>
+                                                        }
                                                     </Box>
                                                 </OsuTooltip>
                                             )
