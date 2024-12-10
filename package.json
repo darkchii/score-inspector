@@ -27,7 +27,6 @@
     "buffer": "^6.0.3",
     "chart.js": "^4.4.4",
     "chartjs-adapter-moment": "^1.0.1",
-    "chartjs-chart-geo": "^4.3.1",
     "chartjs-plugin-zoom": "^2.0.1",
     "color": "^4.2.3",
     "countries-list": "^3.1.1",

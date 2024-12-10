@@ -25,7 +25,8 @@
                 "UserPlayable": true,
                 "ValidForMultiplayer": true,
                 "ValidForMultiplayerAsFreeMod": true,
-                "AlwaysValidForSubmission": false
+                "AlwaysValidForSubmission": false,
+                "ScoreMultiplier": 0.5
             },
             {
                 "Acronym": "NF",
@@ -43,7 +44,8 @@
                 "UserPlayable": true,
                 "ValidForMultiplayer": true,
                 "ValidForMultiplayerAsFreeMod": true,
-                "AlwaysValidForSubmission": false
+                "AlwaysValidForSubmission": false,
+                "ScoreMultiplier": 0.5
             },
             {
                 "Acronym": "HT",
@@ -122,7 +124,8 @@
                 "UserPlayable": true,
                 "ValidForMultiplayer": true,
                 "ValidForMultiplayerAsFreeMod": true,
-                "AlwaysValidForSubmission": false
+                "AlwaysValidForSubmission": false,
+                "ScoreMultiplier": 1.06
             },
             {
                 "Acronym": "SD",
@@ -442,7 +445,8 @@
                 "UserPlayable": true,
                 "ValidForMultiplayer": true,
                 "ValidForMultiplayerAsFreeMod": true,
-                "AlwaysValidForSubmission": false
+                "AlwaysValidForSubmission": false,
+                "ScoreMultiplier": 0.5
             },
             {
                 "Acronym": "CL",
@@ -488,7 +492,8 @@
                 "UserPlayable": true,
                 "ValidForMultiplayer": true,
                 "ValidForMultiplayerAsFreeMod": true,
-                "AlwaysValidForSubmission": false
+                "AlwaysValidForSubmission": false,
+                "ScoreMultiplier": 0.96
             },
             {
                 "Acronym": "RD",
@@ -647,7 +652,8 @@
                 "UserPlayable": true,
                 "ValidForMultiplayer": true,
                 "ValidForMultiplayerAsFreeMod": true,
-                "AlwaysValidForSubmission": false
+                "AlwaysValidForSubmission": false,
+                "ScoreMultiplier": 0.1
             },
             {
                 "Acronym": "AP",
@@ -843,7 +849,8 @@
                 "UserPlayable": true,
                 "ValidForMultiplayer": true,
                 "ValidForMultiplayerAsFreeMod": false,
-                "AlwaysValidForSubmission": false
+                "AlwaysValidForSubmission": false,
+                "ScoreMultiplier": 0.5
             },
             {
                 "Acronym": "WD",
@@ -882,7 +889,8 @@
                 "UserPlayable": true,
                 "ValidForMultiplayer": true,
                 "ValidForMultiplayerAsFreeMod": false,
-                "AlwaysValidForSubmission": false
+                "AlwaysValidForSubmission": false,
+                "ScoreMultiplier": 0.5
             },
             {
                 "Acronym": "TC",
@@ -1115,7 +1123,8 @@
                 "UserPlayable": true,
                 "ValidForMultiplayer": false,
                 "ValidForMultiplayerAsFreeMod": false,
-                "AlwaysValidForSubmission": false
+                "AlwaysValidForSubmission": false,
+                "ScoreMultiplier": 0.5
             },
             {
                 "Acronym": "FR",
@@ -1162,7 +1171,8 @@
                 "UserPlayable": true,
                 "ValidForMultiplayer": true,
                 "ValidForMultiplayerAsFreeMod": true,
-                "AlwaysValidForSubmission": false
+                "AlwaysValidForSubmission": false,
+                "ScoreMultiplier": 0.8
             },
             {
                 "Acronym": "DP",

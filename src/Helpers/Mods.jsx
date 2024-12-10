@@ -73,6 +73,21 @@ class Mods {
                 },
             });
         }
+
+        for (const mod of this.mods_data) {
+            mod.scoreMultiplier = 1;
+            if (mod.data.ScoreMultiplier !== undefined) {
+                // multiplier *= mod.data.ScoreMultiplier;
+                mod.scoreMultiplier = mod.data.ScoreMultiplier;
+            } else {
+                //if the mod has a speed change setting
+                if (mod.data.Settings !== undefined && mod.data.Settings.find(s => s.Name === 'speed_change') !== undefined) {
+                    mod.scoreMultiplier = Mods.calculateRateChangeScoreModifier(mod.settings?.speed_change ?? Mods.getDefaultSpeedChange(mod));
+                }
+            }
+        }
+
+        this.scoreMultiplier = Mods.getMultiplier(this);
     }
 
     static isNoMod(mods) {
@@ -127,6 +142,29 @@ class Mods {
 
     static getModData(acronym) {
         return ModData[0].Mods.find(m => m.Acronym === acronym);
+    }
+
+    static getMultiplier(mods) {
+        let multiplier = 1;
+
+        for (const mod of mods.mods_data){
+            multiplier *= mod.scoreMultiplier;
+        }
+
+        return multiplier;
+    }
+
+    static calculateRateChangeScoreModifier(speed_change) {
+        //round to 1 decimal place
+        let value = Math.round(speed_change * 10) / 10;
+
+        value -= 1;
+
+        if (speed_change >= 1) {
+            return 1 + value / 5;
+        } else {
+            return 0.6 + value;
+        }
     }
 
     static getModOriginalValue(beatmap, acronym, setting) {

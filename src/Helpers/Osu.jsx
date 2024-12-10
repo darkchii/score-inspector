@@ -129,7 +129,7 @@ export async function getFullUser(user_ids = [], skipped = {}, force_array = fal
     try {
         const _user = await axios.get(`${GetAPI()}users/full/${id_string}?force_array=${force_array}&${skipQuery}&force_alt_data=${force_alt_data ? 'true' : 'false'}`, { signal: signal });
         user = _user.data;
-    } catch (e) { 
+    } catch (e) {
         console.warn(e);
     }
 
@@ -145,7 +145,7 @@ export async function getUser(user_id) {
     try {
         const _user = await axios.get(`${GetAPI()}users/osu/id/${user_id}`);
         user = _user.data;
-    } catch (e) { 
+    } catch (e) {
         console.warn(e);
     }
 
@@ -250,23 +250,34 @@ export async function getBeatmapMaxscore(beatmap_id) {
     return beatmap.data;
 }
 
-const STANDARDISED_ACCURACY_PORTION = 0.5;
-const STANDARDISED_COMBO_PORTION = 0.5;
+const STANDARDISED_ACCURACY_PORTION = 0.3;
 export function getLazerScore(score) {
-    if(Mods.hasMod(score.mods, "CL")){
-        const legacyModMultiplier = getModMultiplier(score.enabled_mods);
-        const mul = legacyModMultiplier * 0.96;
-    
-        const standardised_acc = (Math.pow((50 * score.count50 + 100 * score.count100 + 300 * score.count300) / (300 * score.count50 + 300 * score.count100 + 300 * score.count300 + 300 * score.countmiss), 5) * 1000000 * STANDARDISED_ACCURACY_PORTION);
-        const standardised_combo = (Math.pow(score.combo / score.beatmap.maxcombo, 0.75) * 1000000 * STANDARDISED_COMBO_PORTION);
-        const standardised = (standardised_acc + standardised_combo) * mul;
-        return standardised;
-        // const lazerscore = Math.round((score.beatmap.objects * score.beatmap.objects) * 36 + 100000 * standardised / (MAX_SCORE * mul))
-        // const lazerscore = Math.round(36 * Math.pow((standardised / 1000000) * score.beatmap.objects, 2))
-        // return lazerscore ?? 0;
-    }else{
-        // classic = 32.57 * standardized/1000000 * (0.1 + objects^2)
-        // above but solve for standardized, where classic is score.score
+    if (Mods.hasMod(score.mods, "CL")) {
+        const mul = score.mods.scoreMultiplier;
+        if (score.statistics) {
+            let accuracyScore = 0;
+            Object.keys(score.statistics).forEach(key => { if (affectsAccuracy(key)) { accuracyScore += score.statistics[key] * numericScoreFor(key); } });
+
+            let accuracyScoreMax = 0;
+            Object.keys(score.maximum_statistics).forEach(key => { if (affectsAccuracy(key)) { accuracyScoreMax += score.maximum_statistics[key] * numericScoreFor(key); } });
+            accuracyScore = accuracyScore / accuracyScoreMax;
+
+            let comboScore = 0;
+            Object.keys(score.maximum_statistics).forEach(key => { if (affectsCombo(key)) { comboScore += score.maximum_statistics[key]; } });
+            comboScore = score.combo / comboScore;
+
+            let bonusScore = 0;
+            Object.keys(score.statistics).forEach(key => { if (isBonus(key)) { bonusScore += score.maximum_statistics[key] * numericScoreFor(key); } });
+
+            return Math.round((1000000 * (STANDARDISED_ACCURACY_PORTION * accuracyScore + (1 - STANDARDISED_ACCURACY_PORTION) * comboScore) + bonusScore) * mul);
+        } else {
+            const standardised_acc = (Math.pow((50 * score.count50 + 100 * score.count100 + 300 * score.count300) / (300 * score.count50 + 300 * score.count100 + 300 * score.count300 + 300 * score.countmiss), 5) * 1000000 * STANDARDISED_ACCURACY_PORTION);
+            const standardised_combo = (Math.pow(score.combo / score.beatmap.maxcombo, 0.75) * 1000000 * (1 - STANDARDISED_ACCURACY_PORTION));
+            const standardised = (standardised_acc + standardised_combo) * mul;
+            return standardised;
+        }
+
+    } else {
         let classic = score.score;
         let objects = score.beatmap.objects;
         let standardised = 1000000 * (classic / (32.57 * (0.1 + Math.pow(objects, 2))));
@@ -274,34 +285,8 @@ export function getLazerScore(score) {
     }
 }
 
-export function convertToClassic(standardised, objects){
+export function convertToClassic(standardised, objects) {
     return 32.57 * (standardised / 1000000) * (0.1 + Math.pow(objects, 2));
-}
-
-export function getModMultiplier(enabled_mods) {
-    let multiplier = 1.0;
-    if (enabled_mods & mods.HD) {
-        multiplier *= 1.06;
-    }
-    if (enabled_mods & mods.FL) {
-        multiplier *= 1.12;
-    }
-    if (enabled_mods & mods.EZ) {
-        multiplier *= 0.50;
-    }
-    if (enabled_mods & mods.NF) {
-        multiplier *= 0.90;
-    }
-    if (enabled_mods & mods.HT) {
-        multiplier *= 0.30;
-    }
-    if (enabled_mods & mods.HR) {
-        multiplier *= 1.12;
-    }
-    if (enabled_mods & mods.DT || enabled_mods & mods.NC) {
-        multiplier *= 1.06;
-    }
-    return multiplier;
 }
 
 export const mod_strings = {
@@ -355,61 +340,6 @@ export const mods = {
     //TRACEABLE
     TR: 33554432,
     CL: 67108864,
-}
-
-export function getGrade(score) {
-    var grade = 'D';
-
-    const totalhits = score.count300 + score.count100 + score.count50 + score.countmiss;
-
-    const perc300 = 100 / totalhits * score.count300;
-    const perc50 = 100 / totalhits * score.count50;
-
-
-    if (score.accuracy === 100) {
-        grade = "X";
-    } else if (perc300 > 90 && perc50 <= 1 && score.countmiss === 0) {
-        grade = "S";
-    } else if (perc300 > 80 && (score.countmiss === 0 || perc300 > 90)) {
-        grade = "A";
-    } else if (perc300 > 70 && (score.countmiss === 0 || perc300 > 80)) {
-        grade = "B";
-    } else if (perc300 > 60) {
-        grade = "C";
-    } else {
-        grade = "D";
-    }
-
-    if (grade === "X" || grade === "S") {
-        if (score.enabled_mods & mods.HD || score.enabled_mods & mods.FL) {
-            grade += "H";
-        }
-    }
-    return grade;
-}
-
-export const mod_strings_long = {
-    0: "Nomod",
-    1: "NoFail",
-    2: "Easy",
-    4: "Touch Device",
-    8: "Hidden",
-    16: "Hardrock",
-    32: "Sudden Death",
-    64: "Double Time",
-    128: "Relax",
-    256: "Half Time",
-    512: "Nightcore",
-    1024: "Flashlight",
-    2048: "Autoplay",
-    4096: "Spin-out",
-    16384: "Perfect",
-    1048576: "Fade In",
-    2097152: "Random",
-    4194304: "Cinema",
-    8388608: "Target Practice",
-    536870912: "Score V2",
-    1073741824: "Mirror"
 }
 
 export function isScoreRealistic(score) {
@@ -520,7 +450,7 @@ export function getDiffColor(rating) {
     return difficultyColourSpectrum(rating);
 }
 
-export function computeAccuracy(score, debug = false) {
+export function computeAccuracy(score) {
     let baseScore = 0;
     Object.keys(score.statistics).forEach(key => {
         if (affectsAccuracy(key)) {
@@ -533,18 +463,6 @@ export function computeAccuracy(score, debug = false) {
             maxBaseScore += score.maximum_statistics[key] * GetBaseScoreForResult(key);
         }
     });
-
-    if (debug) {
-        console.log(`-------------------------------------------------------`);
-        console.log(`Statistics:`);
-        console.log(score.statistics);
-        console.log(`Max Statistics:`);
-        console.log(score.maximum_statistics);
-        console.log(`Base Score: ${baseScore}`);
-        console.log(`Max Base Score: ${maxBaseScore}`);
-        console.log(`Accuracy: ${baseScore / maxBaseScore}`);
-        console.log(`-------------------------------------------------------`);
-    }
 
     return maxBaseScore === 0 ? 1 : baseScore / maxBaseScore;
 }
@@ -586,6 +504,50 @@ function affectsAccuracy(result) {
     }
 }
 
+function affectsCombo(result) {
+    switch (result) {
+        default:
+            return false;
+        case "miss":
+        case "meh":
+        case "ok":
+        case "good":
+        case "great":
+        case "perfect":
+        case "large_tick_hit":
+        case "small_tick_hit":
+        case "legacy_combo_increase":
+        case "combo_break":
+        case "slider_tail_hit":
+            return true;
+    }
+}
+
+function numericScoreFor(result) {
+    switch (result) {
+        default:
+            return 0;
+        case 'small_tick_hit':
+            return 10;
+        case 'large_tick_hit':
+            return 30;
+        case 'meh':
+            return 50;
+        case 'ok':
+            return 100;
+        case 'good':
+            return 200;
+        case 'great':
+            return 300;
+        case 'perfect':
+            return 315;
+        case 'small_bonus':
+            return 10;
+        case 'large_bonus':
+            return 50;
+    }
+}
+
 function isBonus(result) {
     switch (result) {
         case "small_bonus":
@@ -611,25 +573,12 @@ function isScorable(result) {
 }
 
 export function getRankFromAccuracy(score, accuracy) {
-    if (Mods.hasMod(score.mods, "CL")) {
-        //legacy grading
-        if (accuracy === 1 && isHiddenRank(score.mods)) return 'XH';
-        if (accuracy === 1) return 'X';
-        if (accuracy > 0.90 && score.countmiss === 0 && (score.count50 / (score.count300 + score.count100 + score.count50) <= 0.01)) { return isHiddenRank(score.mods) ? 'SH' : 'S'; }
-        if ((accuracy > 0.80 && score.countmiss === 0) || (accuracy > 0.90)) { return 'A'; }
-        if ((accuracy > 0.70 && score.countmiss === 0) || (accuracy > 0.80)) { return 'B'; }
-        if (accuracy > 0.60) { return 'C'; }
-        return 'D';
-    } else {
-        //lazer grading
-        if (accuracy === 1 && isHiddenRank(score.mods)) return 'XH';
-        if (accuracy === 1) return 'X';
-        if (accuracy > 0.95 && score.countmiss === 0) { return isHiddenRank(score.mods) ? 'SH' : 'S'; }
-        if (accuracy > 0.90) { return 'A'; }
-        if (accuracy > 0.80) { return 'B'; }
-        if (accuracy > 0.70) { return 'C'; }
-        return 'D';
-    }
+    if (accuracy === 1) { return isHiddenRank(score.mods) ? 'XH' : 'X'; }
+    if (accuracy > 0.95 && score.countmiss === 0) { return isHiddenRank(score.mods) ? 'SH' : 'S'; }
+    if (accuracy > 0.90) { return 'A'; }
+    if (accuracy > 0.80) { return 'B'; }
+    if (accuracy > 0.70) { return 'C'; }
+    return 'D';
 }
 
 export function isHiddenRank(mods) {
@@ -759,21 +708,21 @@ export function FilterScores(full_scores, filter) {
 
     scores = full_scores.filter(score => {
         //do all the filtering here instead of chaining
-        if(!filter.approved.includes(score.beatmap.approved)) return false;
+        if (!filter.approved.includes(score.beatmap.approved)) return false;
 
-        if(filter.enabledMods.length > 0){
-            if(filter.modsUsage === 'any'){
-                if(!Mods.hasMods(score.mods, filter.enabledMods)) return false;
-            }else{
-                if(!Mods.hasExactMods(score.mods, filter.enabledMods)) return false;
+        if (filter.enabledMods.length > 0) {
+            if (filter.modsUsage === 'any') {
+                if (!Mods.hasMods(score.mods, filter.enabledMods)) return false;
+            } else {
+                if (!Mods.hasExactMods(score.mods, filter.enabledMods)) return false;
             }
-        }else{
-            if(filter.modsUsage === 'all'){
-                if(!Mods.isNoMod(score.mods)) return false;
+        } else {
+            if (filter.modsUsage === 'all') {
+                if (!Mods.isNoMod(score.mods)) return false;
             }
         }
 
-        if(!filter.enabledGrades.includes(score.rank)) return false;
+        if (!filter.enabledGrades.includes(score.rank)) return false;
 
         if (filter.minScore !== null && filter.minScore !== '' && filter.minScore >= 0) { if (score.score < filter.minScore) return false; }
         if (filter.maxScore !== null && filter.maxScore !== '' && filter.maxScore >= 0) { if (score.score > filter.maxScore) return false; }
@@ -812,7 +761,7 @@ export function FilterScores(full_scores, filter) {
         //played date
         if (filter.minPlayedDate !== null && filter.minPlayedDate !== '' && filter.minPlayedDate >= 0) { if (moment(score.date_played).isBefore(filter.minPlayedDate)) return false; }
         if (filter.maxPlayedDate !== null && filter.maxPlayedDate !== '' && filter.maxPlayedDate >= 0) { if (moment(score.date_played).isAfter(filter.maxPlayedDate)) return false; }
-    
+
         return true;
     });
 

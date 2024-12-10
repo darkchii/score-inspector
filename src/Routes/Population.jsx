@@ -88,7 +88,8 @@ function Population() {
                 _c.value = 0;
                 _c.valuePercent = 0;
             } else {
-                console.warn(c.properties["a3"] + ' not found');
+                // console.warn(c.properties["a3"] + ' /  not found');
+                console.warn(`${c.properties["a3"]} / ${c.properties["name"]} not found`);
             }
             fixed_countries.push(_c);
         });

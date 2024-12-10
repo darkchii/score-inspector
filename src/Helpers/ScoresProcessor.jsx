@@ -139,6 +139,9 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
     scores.sort((a, b) => b.date_played_moment.valueOf() - a.date_played_moment.valueOf());
     data.latest_scores = scores.slice(0, 20);
 
+    //log first score
+    console.log('First score:', scores[0]);
+
     return data;
 }
 
@@ -191,7 +194,7 @@ export function prepareScore(score, user = null) {
     score.accuracy = parseFloat(score.accuracy);
 
     if (score.statistics && score.maximum_statistics) {
-        score.accuracy = computeAccuracy(score, score.beatmap_id === 1811527) * 100; //for some reason, osualt sometimes has wrong accuracy values
+        score.accuracy = computeAccuracy(score) * 100; //for some reason, osualt sometimes has wrong accuracy values
     }
 
     score.beatmap = prepareBeatmap(score.beatmap, score.mods);

@@ -257,7 +257,7 @@ function ScoreView(props) {
                                                         fontFamily: 'Torus',
                                                         fontSize: '0.8em',
                                                     }}>
-                                                        {toFixedNumber(scoreData.score.scoreLazerStandardised, 0).toLocaleString('en-US')}
+                                                        {toFixedNumber(scoreData.score.scoreLazerStandardised, 0).toLocaleString('en-US')} ({scoreData.score.mods.scoreMultiplier}x)
                                                     </span>
                                                 </Box>
                                                 <Box sx={{
