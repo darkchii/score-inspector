@@ -1,6 +1,6 @@
 import moment from "moment";
 import { GetAPI, sleep } from "./Misc";
-import { computeAccuracy, getLazerScore, getModString, MassCalculatePerformance, mods } from "./Osu";
+import { computeAccuracy, getLazerScore, MassCalculatePerformance } from "./Osu";
 import { getSessions } from "./Session";
 import { getPeriodicData } from "./ScoresPeriodicProcessor";
 import axios from "axios";
@@ -142,10 +142,10 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
     return data;
 }
 
-export function prepareScores(user, scores, calculateOtherPP = true) {
-    scores.forEach((score, index) => {
-        score = prepareScore(score, user);
-    });
+export function prepareScores(user, scores) {
+    for (let i = 0; i < scores.length; i++) {
+        scores[i] = prepareScore(scores[i], user);
+    }
 
     //sort by time
     scores.sort((a, b) => a.date_played_moment.valueOf() - b.date_played_moment.valueOf());
@@ -310,7 +310,6 @@ const ar_ms_step2 = 150;
 
 const ar0_ms = 1800;
 const ar5_ms = 1200;
-const ar10_ms = 450;
 
 const od_ms_step = 6;
 const od0_ms = 79.5;

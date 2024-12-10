@@ -110,7 +110,7 @@ function Header(props) {
         setAnchorElDropDown(event.currentTarget);
     };
 
-    const handleHeaderMenuClose = (index) => {
+    const handleHeaderMenuClose = () => {
         setActiveDropDownIndex(null);
         setShowDropDown(false);
         setAnchorElDropDown(null);
@@ -162,7 +162,7 @@ function Header(props) {
                 {
                     headerNavItems[activeDropDownIndex] !== undefined ? headerNavItems[activeDropDownIndex].dropDown.map((item, index) => {
                         return (
-                            <MenuItem key={`${item.name}-${index}`} onClick={(e) => {
+                            <MenuItem key={`${item.name}-${index}`} onClick={() => {
                                 item.onClick();
                                 handleHeaderMenuClose();
                             }} component={item.linkTo ? Link : null} to={item.linkTo ?? null}>
@@ -197,7 +197,7 @@ function Header(props) {
                                     {
                                         headerNavItems.map((item, index) => {
                                             return (
-                                                <Stack direction="row">
+                                                <Stack key={index} direction="row">
                                                     <Tooltip title={item.tooltip ?? ''}>
                                                         <Button
                                                             key={index}

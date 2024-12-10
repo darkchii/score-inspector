@@ -1,9 +1,8 @@
-import { Box, Grid2, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Tooltip, Typography, useTheme } from "@mui/material";
+import { Grid2, Paper, Stack, Typography, useTheme } from "@mui/material";
 import moment from "moment";
 import BestScoreCard from "./BestScoreCard";
-import GlowBar from "../UI/GlowBar";
 import ChartWrapper from "../../Helpers/ChartWrapper";
-import { formatNumber, MILESTONES_FORMATTER } from "../../Helpers/Misc";
+import { formatNumber } from "../../Helpers/Misc";
 import ScoreRow from "../ScoreRow";
 import ScoreViewStat from "../UI/ScoreViewStat";
 
@@ -131,13 +130,14 @@ function SectionCards(props) {
                 <div className='score-stats__group score-stats__group--stats'>
                     {
                         //map by row
-                        Array.from(new Set(_cards.map(card => card.row))).map((row) => {
+                        Array.from(new Set(_cards.map(card => card.row))).map((row, index) => {
                             return (
-                                <div className='score-stats__group-row'>
+                                <div key={index} className='score-stats__group-row'>
                                     {
-                                        _cards.filter(card => card.row === row).map((card) => {
+                                        _cards.filter(card => card.row === row).map((card, j) => {
                                             return (
                                                 <ScoreViewStat
+                                                    key={j}
                                                     label={card.title}
                                                     value={card.value}
                                                     tooltip={card.tooltip}
@@ -195,7 +195,7 @@ function SectionCards(props) {
                             {
                                 props?.user?.data?.latest_scores.map((score, index) => {
                                     return (
-                                        <ScoreRow data={{
+                                        <ScoreRow key={index} data={{
                                             score: score,
                                         }} />
                                     )

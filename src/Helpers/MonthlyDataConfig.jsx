@@ -3,7 +3,7 @@ import { mods } from "./Osu";
 export const dataToList = [
     {
         outputValue: "count_scores",
-        exec: function (output, score) {
+        exec: function (output) {
             return output + 1;
         }
     },
@@ -118,7 +118,7 @@ export const dataToList = [
     {
         outputValue: "total_base_score",
         exec: function (output, score) {
-            return output + ((score.count300 + score.count100 * 0.3333 + score.count50 * 0.1667) ?? 0);
+            return output + (score.count300 + score.count100 * 0.3333 + score.count50 * 0.1667);
         }
     },
     {

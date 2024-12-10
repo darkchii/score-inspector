@@ -2,12 +2,11 @@
 import React, { useEffect, useRef } from "react";
 import { useState } from "react";
 import { getBeatmapPackDetails, getBeatmapPacks, getBeatmaps } from "../../Helpers/Osu";
-import { Alert, Box, Container, FormControlLabel, Grid2, Paper, Switch, Tooltip, Typography, useTheme } from "@mui/material";
+import { Box, Container, FormControlLabel, Grid2, Paper, Switch, Typography, useTheme } from "@mui/material";
 import { is_numeric, lerpColor } from "../../Helpers/Misc";
 import PackCompletionModal from "../Modals/PackCompletionModal";
 import Loader from "../UI/Loader";
 import CompletionModeNotice from "../UI/CompletionModeNotice";
-import { green, pink, red } from "@mui/material/colors";
 import OsuTooltip from "../OsuTooltip";
 import DoneIcon from '@mui/icons-material/Done';
 
@@ -174,7 +173,7 @@ function SectionPacks(props) {
                                             if (hideCompleted && pack.completed) return null;
                                             let progressPercentage = Math.round(pack.played / pack.total * 100);
                                             return (
-                                                <OsuTooltip title={
+                                                <OsuTooltip key={index} title={
                                                     <React.Fragment>
                                                         <Typography variant='body1'>{pack.pack_id} {pack.name ? `(${pack.name})` : ''}</Typography>
                                                         <Typography variant='body2'>Completion: {progressPercentage}%</Typography>

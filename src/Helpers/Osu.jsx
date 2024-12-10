@@ -1,3 +1,6 @@
+/* eslint-disable react-refresh/only-export-components */
+// ^^^^ the async functions somehow trigger this eslint rule, so I disabled it for this file
+
 import axios from "axios";
 import { GetAPI } from "./Misc";
 import { getCalculator } from "./Performance/Performance";
@@ -126,7 +129,9 @@ export async function getFullUser(user_ids = [], skipped = {}, force_array = fal
     try {
         const _user = await axios.get(`${GetAPI()}users/full/${id_string}?force_array=${force_array}&${skipQuery}&force_alt_data=${force_alt_data ? 'true' : 'false'}`, { signal: signal });
         user = _user.data;
-    } catch (e) { /* empty */ }
+    } catch (e) { 
+        console.warn(e);
+    }
 
     if (user === null || user === undefined || user.error !== undefined) {
         return null;
@@ -140,7 +145,9 @@ export async function getUser(user_id) {
     try {
         const _user = await axios.get(`${GetAPI()}users/osu/id/${user_id}`);
         user = _user.data;
-    } catch (e) { /* empty */ }
+    } catch (e) { 
+        console.warn(e);
+    }
 
     return user;
 }
@@ -151,6 +158,7 @@ export async function getUsers(user_ids) {
         const _users = await axios.get(`${GetAPI()}users/osu/ids?id[]=${user_ids.join('&id[]=')}`);
         users = _users.data;
     } catch (e) {
+        console.warn(e);
         return null;
     }
     return users;
@@ -233,6 +241,7 @@ export async function getBeatmapMaxscore(beatmap_id) {
         const url = `${GetAPI()}beatmaps/${beatmap_id}/maxscore`;
         beatmap = await axios.get(url, { headers: { "Access-Control-Allow-Origin": "*" } });
     } catch (err) {
+        console.warn(err);
         return null;
     }
     if (beatmap === undefined || beatmap.data === undefined || beatmap.data.length === 0) {
@@ -431,6 +440,7 @@ export async function getBeatmaps(urlCfg = {}) {
         let stringConfig = new URLSearchParams(urlCfg).toString();
         beatmaps = await axios.get(`${GetAPI()}beatmaps/all?${stringConfig}`, { headers: { "Access-Control-Allow-Origin": "*" } });
     } catch (err) {
+        console.warn(err);
         return null;
     }
 
@@ -442,6 +452,7 @@ export async function getBeatmap(beatmap_id, mods_enum = null) {
     try {
         beatmap = await axios.get(`${GetAPI()}beatmaps/${beatmap_id}${mods_enum && `?mods=${mods_enum}`}`, { headers: { "Access-Control-Allow-Origin": "*" } });
     } catch (err) {
+        console.warn(err);
         return null;
     }
 
@@ -453,6 +464,7 @@ export async function getBeatmapPacks() {
     try {
         beatmapPacks = await axios.get(`${GetAPI()}beatmaps/packs`, { headers: { "Access-Control-Allow-Origin": "*" } });
     } catch (err) {
+        console.warn(err);
         return null;
     }
 
@@ -464,6 +476,7 @@ export async function getBeatmapPackDetails() {
     try {
         beatmapPackDetails = await axios.get(`${GetAPI()}beatmaps/pack_details`, { headers: { "Access-Control-Allow-Origin": "*" } });
     } catch (err) {
+        console.warn(err);
         return null;
     }
 
@@ -505,23 +518,6 @@ export function getDiffColor(rating) {
     if (rating < 0.1) return '#AAAAAA';
     if (rating >= 9) return '#000000';
     return difficultyColourSpectrum(rating);
-}
-
-const excluded_mods = [
-    1, //NF
-    8, //HD
-    32, //SD
-    128, //RX
-    512, //NC
-    2048, //AP
-    4096, //SO
-    16384, //PF
-];
-
-export function FilterStarratingArray(sr_arr, mods_enum) {
-    mods_enum = parseInt(mods_enum);
-    mods_enum &= ~excluded_mods.reduce((a, b) => a | b, 0);
-    return sr_arr.filter(sr => sr.mods_enum === mods_enum)?.[0];
 }
 
 export function computeAccuracy(score, debug = false) {
@@ -640,7 +636,7 @@ export function isHiddenRank(mods) {
     return Mods.hasMod(mods, "HD") || Mods.hasMod(mods, "FL") || Mods.hasMod(mods, "FI");
 }
 
-export function rankCutoffs(is_legacy, get_absolute = false) {
+export function rankCutoffs(is_legacy) {
     let absoluteCutoffs;
     if (is_legacy) {
         absoluteCutoffs = [0, 0.6, 0.8, 0.867, 0.933, 0.99, 1];

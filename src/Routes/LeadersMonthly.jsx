@@ -222,7 +222,7 @@ function LeadersMonthly() {
 
                                         <Grid2 container spacing={1}>
                                             {
-                                                dataMostAppearances.map((item, index) => {
+                                                dataMostAppearances.map((item) => {
                                                     return (
                                                         <Grid2 size={12 / 8} key={item.user_id}>
                                                             <Paper elevation={3} sx={{ p: 1 }}>

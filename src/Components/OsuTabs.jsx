@@ -1,4 +1,3 @@
-import { Height } from "@mui/icons-material";
 import { styled, Tabs } from "@mui/material";
 
 const OsuTabs = styled((props) => <Tabs disableRipple {...props} />)(

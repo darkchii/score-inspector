@@ -15,7 +15,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 
-function Chat(props) {
+function Chat() {
     const [isWorking, setIsWorking] = useState(false);
     const [chatStats, setChatStats] = useState(null);
     const [chatHistory, setChatHistory] = useState(null);
@@ -148,9 +148,9 @@ function Chat(props) {
                                                         <Table size="small">
                                                             <TableBody>
                                                                 {
-                                                                    activeUsers?.map((user) => {
+                                                                    activeUsers?.map((user, i) => {
                                                                         return (
-                                                                            <TableRow>
+                                                                            <TableRow key={i}>
                                                                                 <TableCell>{user.user ? GetFormattedName(user.user.inspector_user) : user.id}</TableCell>
                                                                                 <TableCell>{user.message_count}</TableCell>
                                                                             </TableRow>

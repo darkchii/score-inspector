@@ -30,6 +30,7 @@ function ToolScoreRank() {
             const { data } = await axios.get(`https://score.respektive.pw/rank/${rank}?m=0`);
             setRankToScoreOutput(data[0].score + 1);
         } catch (e) {
+            console.error(e);
             showNotification('Error', 'An unknown error occured', 'error');
         }
 

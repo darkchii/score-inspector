@@ -137,14 +137,16 @@ function BeatmapLeaderboardItem(props) {
                     {
                         props.values?.map((value, index) => {
                             return (
-                                <Box sx={{
-                                    display: 'flex',
-                                    justifyContent: value.alignment,
-                                    alignItems: 'center',
-                                    width: `${100 / props.values.length}%`,
-                                    pl: 1,
-                                    pr: 1,
-                                }}>
+                                <Box
+                                    key={index}
+                                    sx={{
+                                        display: 'flex',
+                                        justifyContent: value.alignment,
+                                        alignItems: 'center',
+                                        width: `${100 / props.values.length}%`,
+                                        pl: 1,
+                                        pr: 1,
+                                    }}>
                                     <Typography
                                         sx={{
                                             color: value.color ?? 'inherit',

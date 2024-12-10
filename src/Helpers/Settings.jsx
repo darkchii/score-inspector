@@ -15,7 +15,7 @@ export function loadSettings() {
     }
     // _settings = Object.assign(_settings, _defaultSettings);
     Object.keys(_defaultSettings).forEach(key => {
-        if (!_settings.hasOwnProperty(key)) {
+        if (!Object.prototype.hasOwnProperty.call(_settings, key)) {
             _settings[key] = _defaultSettings[key];
         }
     });

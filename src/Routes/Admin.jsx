@@ -67,7 +67,7 @@ function Admin() {
                                                 {
                                                     ADMIN_TOOLS.map((tool, index) => {
                                                         return (
-                                                            <Button component={Link} to={`/admin/${tool.url}`} variant={index === currentTool ? 'contained' : 'outlined'}>{tool.name}</Button>
+                                                            <Button key={index} component={Link} to={`/admin/${tool.url}`} variant={index === currentTool ? 'contained' : 'outlined'}>{tool.name}</Button>
                                                         )
                                                     })
                                                 }
@@ -87,7 +87,7 @@ function Admin() {
     );
 }
 
-function AdminRoles(props) {
+function AdminRoles() {
     const [roles, setRoles] = useState([]);
 
     useEffect(() => {
@@ -106,9 +106,9 @@ function AdminRoles(props) {
                             <Table>
                                 <TableBody>
                                     {
-                                        roles.map((role) => {
+                                        roles.map((role, index) => {
                                             return (
-                                                <TableRow>
+                                                <TableRow key={index}>
                                                     <TableCell>{role.id}</TableCell>
                                                     <TableCell>{role.title}</TableCell>
                                                     <TableCell>{role.description}</TableCell>
@@ -128,7 +128,7 @@ function AdminRoles(props) {
     )
 }
 
-function AdminUsers(props) {
+function AdminUsers() {
     const [users, setUsers] = useState([]);
 
     useEffect(() => {
@@ -149,7 +149,7 @@ function AdminUsers(props) {
                         }}>
                             <Typography variant='h6'>Inspector Users</Typography>
                             {/* active users have a global_rank */}
-                            <Typography variant='subtitle1'>Registered: {(users?.length).toLocaleString('en-US')}, active: {(users.filter(u => u.osu_user?.global_rank).length).toLocaleString('en-US')}</Typography>
+                            <Typography variant='subtitle1'>Registered: {(users?.length ?? 0).toLocaleString('en-US')}, active: {(users.filter(u => u.osu_user?.global_rank).length).toLocaleString('en-US')}</Typography>
                             <Box sx={{
                                 mt: 2
                             }} />

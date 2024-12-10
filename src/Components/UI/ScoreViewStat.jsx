@@ -7,7 +7,6 @@ import * as d3 from 'd3';
 function ScoreViewStat(props) {
     const theme = useTheme();
     const arc = d3.arc();
-    const pie = d3.pie().sortValues(null);
     const springData = useSpring({
         from: {
             pos: [0]

@@ -186,6 +186,7 @@ function LeadersScore() {
                                             const ranked_score_diff = item.old_ranked_score !== null ? (item.ranked_score - item.old_ranked_score) : 0;
                                             return (
                                                 <PlayerLeaderboardItem
+                                                    key={index}
                                                     rankGain={rank_diff}
                                                     canBeNewEntry={isPreviousDayRecorded}
                                                     values={

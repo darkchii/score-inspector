@@ -33,11 +33,11 @@ function SectionCompletion(props) {
             }
 
             const _graphs = {};
-            Object.keys(props.user.data.completion).forEach((key, index) => {
+            Object.keys(props.user.data.completion).forEach((key) => {
                 const _key = KEY_NAMES[key] ? KEY_NAMES[key] : key;
                 const data = props.user.data.completion[key];
-                const labels = data.map((item, index) => item.range);
-                const values = data.map((item, index) => (Math.round(item.completion * 100) / 100));
+                const labels = data.map((item) => item.range);
+                const values = data.map((item) => (Math.round(item.completion * 100) / 100));
 
                 _graphs[key] = {};
                 _graphs[key].labels = labels;
@@ -105,7 +105,7 @@ function SectionCompletion(props) {
                         const stylizedKey = _key.length === 2 ? _key.toUpperCase() : capitalize(_key);
                         return (
                             //<Typography variant='subtitle1' sx={{ cursor: 'pointer', display: 'inline-block', mr: 1 }} onClick={() => setSelectedGraph(key)}>{stylizedKey}</Typography>
-                            (<Button variant={selectedGraph === key ? 'contained' : 'outlined'} sx={{ cursor: 'pointer', display: 'inline-block', mr: 1 }} onClick={() => setSelectedGraph(key)}>{stylizedKey}</Button>)
+                            (<Button key={index} variant={selectedGraph === key ? 'contained' : 'outlined'} sx={{ cursor: 'pointer', display: 'inline-block', mr: 1 }} onClick={() => setSelectedGraph(key)}>{stylizedKey}</Button>)
                         );
                     })
                 }
@@ -118,7 +118,7 @@ function SectionCompletion(props) {
                     let _key = KEY_NAMES[key] ? KEY_NAMES[key] : key;
                     const stylizedKey = _key.length === 2 ? _key.toUpperCase() : capitalize(_key);
                     return (
-                        <Grid2 size={3}>
+                        <Grid2 key={index} size={3}>
                             <Paper sx={{ p: 0.5 }}>
                                 <Typography variant='title' sx={{ fontSize: '0.85em' }}>{stylizedKey} completion</Typography>
                                 <TableContainer>
@@ -130,7 +130,7 @@ function SectionCompletion(props) {
                                                     const _completion = item.completion / 100;
                                                     const color = `rgb(${Math.round(175 - (_completion * 175))}, ${Math.round(_completion * 175)}, 0)`;
                                                     return (
-                                                        <TableRow>
+                                                        <TableRow key={index}>
                                                             <TableCell sx={{ fontWeight: 'bold' }}>{item.range}</TableCell>
                                                             <TableCell>
                                                                 <Chip sx={{ backgroundColor: color, color: 'white' }} size='small' label={`${Math.round(item.completion * 10) / 10}%`} />

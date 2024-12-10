@@ -1,6 +1,6 @@
 import { mods } from "../Osu";
 
-export function getPerformanceLive(data, debug = false) {
+export function getPerformanceLive(data) {
     const sr_model = 'live';
     const score = data.score;
     data.count300 = data.count300 ?? score.count300;

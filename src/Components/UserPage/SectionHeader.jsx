@@ -75,7 +75,7 @@ function SectionHeader(props) {
                                         {props.user.osu.username}{
                                             props.user.inspector_user !== undefined ? <>
                                                 {
-                                                    GetRoles(props.user.inspector_user)?.map((role, index) => {
+                                                    GetRoles(props.user.inspector_user)?.map((role) => {
                                                         //const _role = ROLES.find(r => r.id === role);
                                                         //if (_role === undefined) return <></>;
                                                         //if(!role.is_visible) return <></>
@@ -102,7 +102,7 @@ function SectionHeader(props) {
                                     {
                                         props.user.osu.groups.length > 0 ? <>
                                             {
-                                                props.user.osu.groups.map((group, index) => {
+                                                props.user.osu.groups.map((group) => {
                                                     return (
                                                         <>
                                                             <Tooltip title={group.name}>

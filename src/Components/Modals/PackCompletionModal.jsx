@@ -47,6 +47,7 @@ function PackCompletionModal(props, ref) {
                                                         const hasScore = props.data?.scores.find(x => x.beatmap_id === beatmap?.beatmap_id) !== undefined;
                                                         return (
                                                             <LeaderboardItem
+                                                                key={index}
                                                                 background={`https://assets.ppy.sh/beatmaps/${beatmap?.set_id}/covers/cover.jpg`}
                                                                 onClick={() => {
                                                                     window.open(`https://osu.ppy.sh/beatmaps/${beatmap?.beatmap_id}`, "_blank");

@@ -1,10 +1,9 @@
 import { clamp } from "lodash";
-import { mods } from "../Osu";
 import Mods from "../Mods";
 
 const PERFORMANCE_BASE_MULTIPLIER = 1.15;
 
-export function getPerformanceLive(data, debug = false) {
+export function getPerformanceLive(data) {
     const sr_model = 'live';
     const score = data.score;
     data.statistics = data.statistics ?? score.statistics;

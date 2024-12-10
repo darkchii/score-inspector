@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Alert, Avatar, Box, Button, ButtonGroup, Card, CardActionArea, CardContent, CardMedia, Chip, Container, Divider, FormControl, Grid2, IconButton, InputAdornment, InputLabel, Menu, MenuItem, Modal, OutlinedInput, Pagination, Paper, Select, Stack, Switch, Tab, Table, TableBody, TableCell, TableContainer, TableRow, Tabs, TextField, Tooltip, Typography, styled, tableCellClasses, useTheme } from "@mui/material";
+import { Alert, Avatar, Box, Button, ButtonGroup, Card, CardContent, CardMedia, Chip, Container, Divider, FormControl, Grid2, IconButton, InputAdornment, InputLabel, Menu, MenuItem, Modal, OutlinedInput, Pagination, Paper, Select, Stack, Switch, Tab, Table, TableBody, TableCell, TableContainer, TableRow, Tabs, TextField, Tooltip, Typography, styled, tableCellClasses, useTheme } from "@mui/material";
 import { useState } from "react";
-import { fixedEncodeURIComponent, MODAL_STYLE, showNotification } from "../Helpers/Misc";
+import { MODAL_STYLE, showNotification } from "../Helpers/Misc";
 import { useEffect } from "react";
 import { GetFormattedName, GetLoginID, GetLoginToken, GetUser } from "../Helpers/Account";
 import { AcceptJoinRequestClan, CreateClan, DeleteClan, FormatClanLog, GetClan, GetClanList, GetTopClans, JoinRequestClan, LeaveClan, RejectJoinRequestClan, RemoveClanMember, TransferClanOwnership, UpdateClan } from "../Helpers/Clan";
@@ -25,7 +25,6 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import DoneIcon from '@mui/icons-material/Done';
 import ClearIcon from '@mui/icons-material/Clear';
-import { IMG_TRIANGLES } from "../Helpers/Assets";
 import { DiscordIcon } from "../Components/Icons";
 import OsuTabs from "../Components/OsuTabs";
 import { LEADERBOARD_ITEM_HEIGHT } from "../Components/Leaderboards/LeaderboardItem";
@@ -178,7 +177,7 @@ const CLAN_STATS = [
     }
 ]
 
-function Clan(props) {
+function Clan() {
     const [clanCreatorModalOpen, setClanCreatorModalOpen] = useState(false);
     const [loggedInUser, setLoggedInUser] = useState(null);
     const [isLoadingUser, setIsLoadingUser] = useState(true);
@@ -299,7 +298,7 @@ function ClanPage(props) {
         setAnchorEl(null);
     };
 
-    const loadClan = (id, force_reload_user = false) => {
+    const loadClan = (id) => {
         setClanData(null);
 
         (async () => {
@@ -345,6 +344,7 @@ function ClanPage(props) {
                 await loadClan(props.id, true);
             }
         } catch (err) {
+            console.error(err);
             showNotification('Error', 'An error occurred while requesting to join the clan.', 'error');
         }
     }
@@ -359,6 +359,7 @@ function ClanPage(props) {
                 await loadClan(props.id, true);
             }
         } catch (err) {
+            console.error(err);
             showNotification('Error', 'An error occurred while leaving the clan.', 'error');
         }
     }
@@ -392,6 +393,7 @@ function ClanPage(props) {
                 await loadClan(props.id, true);
             }
         } catch (err) {
+            console.error(err);
             showNotification('Error', 'An error occurred while rejecting the join request.', 'error');
         }
     }
@@ -406,6 +408,7 @@ function ClanPage(props) {
                 await loadClan(props.id, true);
             }
         } catch (err) {
+            console.error(err);
             showNotification('Error', 'An error occurred while removing the member.', 'error');
         }
     }
@@ -423,13 +426,6 @@ function ClanPage(props) {
             showNotification('Error', 'An error occurred while transferring ownership.', 'error');
             showNotification('Error', err.message, 'error');
         }
-    }
-
-    const a11yProps = (index) => {
-        return {
-            id: `clan-tab-${index}`,
-            'aria-controls': `clan-tabpanel-${index}`,
-        };
     }
 
     useEffect(() => {
@@ -751,9 +747,9 @@ function ClanPage(props) {
                                                         <>
                                                             <Stack direction="column" justifyContent="center" alignItems="center" sx={{ mt: 2 }} spacing={0.5}>
                                                                 {
-                                                                    clanData.activities?.scores.map((score, index) => {
+                                                                    clanData.activities?.scores.map((score, i) => {
                                                                         return (
-                                                                            <Box sx={{
+                                                                            <Box key={i} sx={{
                                                                                 width: '100%',
                                                                                 display: 'flex',
                                                                                 gap: '0.5em',
@@ -796,9 +792,9 @@ function ClanPage(props) {
                                                         onChange={(e) => setSorter(e.target.value)}
                                                     >
                                                         {
-                                                            CLAN_STATS.filter((stat) => stat.user !== false).map((stat) => {
+                                                            CLAN_STATS.filter((stat) => stat.user !== false).map((stat, i) => {
                                                                 return (
-                                                                    <MenuItem value={stat.key}>{stat.name}</MenuItem>
+                                                                    <MenuItem key={i} value={stat.key}>{stat.name}</MenuItem>
                                                                 )
                                                             })
                                                         }
@@ -935,19 +931,19 @@ function ClanPage(props) {
                                                             {
                                                                 clanData.pending_members?.length > 0 ?
                                                                     //for testing, duplicate the requests multiple times
-                                                                    clanData.pending_members.map((request, index) => {
+                                                                    clanData.pending_members.map((request, i) => {
                                                                         const _member = request.user.osu ?? request.user.alt;
                                                                         const _username = _member?.username ?? request.user.inspector_user?.known_username;
                                                                         const _user_id = _member?.id ?? request.user.inspector_user?.osu_id;
                                                                         return (
-                                                                            <Box display='flex' alignItems='center'>
+                                                                            <Box key={i} display='flex' alignItems='center'>
                                                                                 <Box flexGrow={1}>
                                                                                     <PlayerLeaderboardItem
                                                                                         remote_profile={true}
                                                                                         user={{
                                                                                             osu_user: _member,
                                                                                             username: _username,
-                                                                                            rank: index + 1,
+                                                                                            rank: i + 1,
                                                                                             user_id: _user_id,
                                                                                         }}
                                                                                     />
@@ -958,7 +954,7 @@ function ClanPage(props) {
                                                                                         <Box>
                                                                                             <Tooltip title='Accept'>
                                                                                                 <IconButton
-                                                                                                    onClick={(e) => eventAcceptJoinRequest(request)}
+                                                                                                    onClick={() => eventAcceptJoinRequest(request)}
                                                                                                     color='primary'
                                                                                                     size="small"
                                                                                                     sx={{
@@ -974,7 +970,7 @@ function ClanPage(props) {
                                                                                             </Tooltip>
                                                                                             <Tooltip title='Reject'>
                                                                                                 <IconButton
-                                                                                                    onClick={(e) => eventRejectJoinRequest(request)}
+                                                                                                    onClick={() => eventRejectJoinRequest(request)}
                                                                                                     color='error'
                                                                                                     size="small"
                                                                                                     sx={{
@@ -1305,7 +1301,7 @@ function ClanPage(props) {
 }
 
 const CLANS_PER_PAGE = 20;
-function ClanList(props) {
+function ClanList() {
     const [clanListData, setClanListData] = useState(null);
     const [sorter, setSorter] = useState('average_pp');
     const [page, setPage] = useState(1);
@@ -1365,6 +1361,7 @@ function ClanList(props) {
                                         clanListData.clans.map((clan, index) => {
                                             return (
                                                 <ClanLeaderboardItem
+                                                    key={index}
                                                     index={index + 1 + (clanListData.current_page - 1) * CLANS_PER_PAGE}
                                                     clan={clan}
                                                     onClick={() => navigate(`/clan/${clan.id}`)}
@@ -1448,9 +1445,10 @@ function ClanList(props) {
                                 <Divider sx={{ mt: 1, mb: 1 }} />
                                 <ButtonGroup sx={{ mt: 1 }} orientation="vertical" color='primary' fullWidth>
                                     {
-                                        CLAN_STATS.filter((stat) => stat.clanlist !== false).map((stat) => {
+                                        CLAN_STATS.filter((stat) => stat.clanlist !== false).map((stat, index) => {
                                             return (
                                                 <Button
+                                                    key={index}
                                                     onClick={() => setSorter(stat.key)}
                                                     variant={sorter === stat.key ? 'contained' : 'outlined'}
                                                 >
@@ -1468,10 +1466,6 @@ function ClanList(props) {
     )
 }
 
-const TOP_CLAN_HEIGHT = 140;
-const GOLD_HEIGHT_EXTRA = 30;
-const TOP_CLAN_HEIGHT_OFFSET = 50;
-const TOP_CLAN_COLORS = ['#ffd700', '#C0C0C0', '#cd7f32'];
 const ClanPlayTooltip = styled(({ className, ...props }) => (
     <Tooltip {...props} componentsProps={{ tooltip: { className: className } }} />
 ))(`
@@ -1559,14 +1553,13 @@ const CLAN_RANKING_STATS = {
     }
 }
 
-function ClanTop(props) {
+function ClanTop() {
     //todo; special leaderboards (monthly top scores etc)
     //these are seperate from regular all-time leaderboards
     //this is meant for short time competition
     const [data, setData] = useState(null);
     const [activeStatIndex, setActiveStatIndex] = useState(0);
     const [activeStat, setActiveStat] = useState(Object.keys(CLAN_RANKING_STATS)[activeStatIndex]);
-    const navigate = useNavigate();
 
     useEffect(() => {
         setActiveStat(Object.keys(CLAN_RANKING_STATS)[activeStatIndex]);
@@ -1597,97 +1590,6 @@ function ClanTop(props) {
 
     if (!data) return <Loader />
 
-    //inline component for the top 3 clan card
-    const TopClanCard = (props) => {
-        return <ClanPlayTooltip title={CLAN_RANKING_STATS[activeStat].tooltip ? CLAN_RANKING_STATS[activeStat].tooltip(props.data) : ''}>
-            <Box sx={{
-                height: TOP_CLAN_HEIGHT + (GOLD_HEIGHT_EXTRA * (2 - props.pos)),
-                position: 'relative',
-                mt: `${GOLD_HEIGHT_EXTRA * props.pos}px`,
-            }}>
-                <Box sx={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    height: '100%',
-                    borderRadius: '10px',
-                    overflow: 'hidden',
-                    backgroundImage: `url(${IMG_TRIANGLES})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    backgroundRepeat: 'no-repeat',
-                    filter: 'brightness(0.5)',
-                }}>
-
-                </Box>
-                <Card
-                    elevation={3}
-                    sx={{
-                        width: '100%',
-                        height: '100%',
-                        background: `linear-gradient(#${props.data.color}77, #${props.data.color}00)`,
-                    }}>
-                    <CardActionArea
-                        onClick={() => navigate(`/clan/${props.data.id}`)}
-                        sx={{
-                            height: '100%',
-                        }}
-                    >
-                        <CardContent sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'center',
-                            height: '100%',
-                            alignItems: 'center',
-                            mt: '2em',
-                        }}>
-                            <Typography sx={{
-                                color: '#' + props.data.color
-                            }} variant='h6'>[{props.data.tag}]</Typography>
-                            <Typography variant='body2'>{props.data.name}</Typography>
-                            <Typography variant='body1'>{CLAN_RANKING_STATS[activeStat].formatter(props.data)}</Typography>
-                        </CardContent>
-                    </CardActionArea>
-                </Card>
-                <Avatar
-                    sx={{
-                        position: 'absolute',
-                        top: `${-TOP_CLAN_HEIGHT_OFFSET}px`,
-                        left: '50%',
-                        transform: 'translateX(-50%)',
-                        width: `${TOP_CLAN_HEIGHT_OFFSET * 2}px`,
-                        height: `${TOP_CLAN_HEIGHT_OFFSET * 2}px`,
-                        border: `5px solid ${TOP_CLAN_COLORS[props.pos]}`,
-                        backgroundImage: props.data.header_image_url ? `url(${fixedEncodeURIComponent(props.data.header_image_url)})` : undefined,
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center',
-                        backgroundRepeat: 'no-repeat',
-                    }}
-                >
-                    <img src='broken-image.jpg' alt='icon' style={{
-                        opacity: 0
-                    }} />
-                </Avatar>
-                {/* add to the bottom of avatar, show a small box with the position */}
-                <Box sx={{
-                    position: 'absolute',
-                    top: `${TOP_CLAN_HEIGHT_OFFSET - 25 / 2}px`,
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    display: 'flex',
-                    width: '25px',
-                    height: '25px',
-                    borderRadius: '50%',
-                    justifyContent: 'center',
-                    backgroundColor: TOP_CLAN_COLORS[props.pos],
-                }}>
-                    <Typography variant='body1'>{props.pos + 1}</Typography>
-                </Box>
-            </Box>
-        </ClanPlayTooltip>
-    }
-
     return <Box>
         <Container maxWidth='lg'>
             <Box sx={{
@@ -1705,9 +1607,9 @@ function ClanTop(props) {
             }}>
                 <OsuTabs value={activeStatIndex} onChange={(e, value) => setActiveStatIndex(value)}>
                     {
-                        Object.keys(CLAN_RANKING_STATS).map((stat) => {
+                        Object.keys(CLAN_RANKING_STATS).map((stat, i) => {
                             return (
-                                <Tab label={CLAN_RANKING_STATS[stat].name} />
+                                <Tab key={i} label={CLAN_RANKING_STATS[stat].name} />
                             )
                         })
                     }
@@ -1736,7 +1638,7 @@ function ClanTop(props) {
                     {
                         data.data[activeStat].map((clan, index) => {
                             return (
-                                <ClanPlayTooltip title={CLAN_RANKING_STATS[activeStat].tooltip ? CLAN_RANKING_STATS[activeStat].tooltip(clan) : ''}>
+                                <ClanPlayTooltip key={index} title={CLAN_RANKING_STATS[activeStat].tooltip ? CLAN_RANKING_STATS[activeStat].tooltip(clan) : ''}>
                                     <Grid2>
                                         <ClanLeaderboardItem
                                             height={
@@ -2049,9 +1951,9 @@ function ClanFormFields(props) {
                                                         disabled={isWorking}
                                                     >
                                                         {
-                                                            CLAN_STATS.filter((stat) => stat.user !== false).map((stat) => {
+                                                            CLAN_STATS.filter((stat) => stat.user !== false).map((stat, i) => {
                                                                 return (
-                                                                    <MenuItem value={stat.key}>{stat.name}</MenuItem>
+                                                                    <MenuItem key={i} value={stat.key}>{stat.name}</MenuItem>
                                                                 )
                                                             })
                                                         }

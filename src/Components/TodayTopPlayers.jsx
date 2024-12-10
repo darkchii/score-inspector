@@ -18,13 +18,13 @@ function TodayTopPlayers(props) {
             {
                 Object.keys(props.data).map((key, index) => {
                     return (
-                        <Grid2 size={{ xs: 12, md: 12 / Object.keys(props.data).length }}>
+                        <Grid2 key={index} size={{ xs: 12, md: 12 / Object.keys(props.data).length }}>
                             <Paper sx={{ p: 0.5, m: 0.5 }}>
                                 {/* {key} */}
                                 <Typography variant='subtitle1' sx={{ mb: 1 }}>{key}</Typography>
                                 <Stack spacing={0.5} sx={{ pl: 1 }}>
                                     {
-                                        props.data[key].map((v, i) => {
+                                        props.data[key].map((v) => {
                                             return (
                                                 <>
                                                     {

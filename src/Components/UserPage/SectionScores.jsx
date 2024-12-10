@@ -33,7 +33,7 @@ function SectionScores(props) {
     const handleFilter = (filter) => {
         if (filter !== null) {
             // eslint-disable-next-line no-unused-vars
-            let { scores, _filter} = FilterScores(props.user.scores, filter);
+            let { scores, _filter } = FilterScores(props.user.scores, filter);
 
             _setFilteredScores(scores);
             setCachedFilterData(filter);
@@ -69,7 +69,7 @@ function SectionScores(props) {
                             {
                                 filteredScores.slice((page - 1) * SCORES_PER_PAGE, (page) * SCORES_PER_PAGE).map((score, index) => {
                                     return (
-                                        <ScoreRow data={{
+                                        <ScoreRow key={index} data={{
                                             score: score,
                                         }} />
                                     )

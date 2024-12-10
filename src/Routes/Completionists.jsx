@@ -20,9 +20,9 @@ function Completionists() {
             <Grid2 container spacing={2}>
                 {
                     //just map 0-4 (osu modes)
-                    [...Array(4).keys()].map((mode) => {
+                    [...Array(4).keys()].map((mode, i) => {
                         return (
-                            (<Grid2 size={{ xs: 12, md: 6, lg: 3 }}>
+                            (<Grid2 key={i} size={{ xs: 12, md: 6, lg: 3 }}>
                                 <Card>
                                     <CardContent>
                                         {

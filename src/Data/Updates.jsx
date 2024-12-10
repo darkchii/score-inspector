@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 const CHANGETYPES = {
     NEW: 0,
     FIX: 1,
@@ -18,7 +19,7 @@ const updates = [
             [PLATFORMTYPES.WEB | PLATFORMTYPES.API, CHANGETYPES.NEW, 'Lazer mods, star ratings now supported (request refetch to update all old scores)', 'c260d917b1d0a9bb2ff8100bf3f0a6ae686b72a2'],
             [PLATFORMTYPES.WEB | PLATFORMTYPES.API, CHANGETYPES.MISC, 'Performance calculator updated to Combo Scaling Removal', '1c4c351171fe4aa520a5d38bd6012b4797c59b4c'],
             [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Added private and completion mode settings to profile to hide entire or parts of profile', 'd2c3d1d78aaf388278bbf15096c31bc8777b736d'],
-            [PLATFORMTYPES.WEB, CHANGETYPES.MISC, 'Highlighting completed and fully full-combo\d beatmap packs', '373861c26653282d029157ae1dec917daeb9c9a7'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.MISC, 'Highlighting completed and fully full-combo\'d beatmap packs', '373861c26653282d029157ae1dec917daeb9c9a7'],
             [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Added longest approval times beatmap leaderboard', '5ed4aa9460cffdfbfb3aefdf1f599c28fae356e4'],
             [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Design overhauls'],
             [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Added clan share URL which can embed in places like Discord', '19cd2df76dca4a7ee5cdebb282aa7ed12b7a8911'],

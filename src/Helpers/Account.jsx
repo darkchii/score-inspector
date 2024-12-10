@@ -211,7 +211,7 @@ export async function IsUserLoggedIn() {
     }
 }
 
-export async function GetUser(osu_id, session_token = null) {
+export async function GetUser(osu_id) {
     try {
         const res = await axios.get(`${GetAPI()}login/get/${osu_id}`);
         if (res.data !== null && res.data?.osu_id?.toString() === osu_id.toString()) {
@@ -272,7 +272,9 @@ export async function UpdateVisitor(target_id) {
                 token: login_token
             })
         });
-    } catch (e) { }
+    } catch (e) {
+        console.error(e);
+    }
     const body = await parseReadableStreamToJson(res.body);
     return body;
 }
@@ -281,7 +283,9 @@ export async function GetVisitors(osu_id) {
     let res = null;
     try {
         res = await axios.get(`${GetAPI()}login/visitors/get/${osu_id}`);
-    } catch (e) { }
+    } catch (e) {
+        console.error(e);
+    }
     if (res === null) return null;
     return res?.data;
 }
@@ -311,7 +315,9 @@ export async function GetTopVisited(order_by = 'count', limit = 10) {
     let res = null;
     try {
         res = await axios.get(`${GetAPI()}login/visitors/get?order_by=${order_by}&limit=${limit}`);
-    } catch (e) { }
+    } catch (e) {
+        console.error(e);
+    }
     if (res === null) return null;
     return res?.data;
 }
@@ -338,7 +344,9 @@ export async function GetRemoteUsersByRole(role) {
     let res = null;
     try {
         res = await axios.get(`${GetAPI()}roles/${role}`);
-    } catch (e) { }
+    } catch (e) {
+        console.error(e);
+    }
     if (res === null) return null;
     return res?.data;
 }
@@ -347,7 +355,9 @@ export async function GetRemoteRoles() {
     let res = null;
     try {
         res = await axios.get(`${GetAPI()}roles`);
-    } catch (e) { }
+    } catch (e) {
+        console.error(e);
+    }
     if (res === null) return null;
     return res?.data;
 }

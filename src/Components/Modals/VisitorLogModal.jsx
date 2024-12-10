@@ -55,7 +55,7 @@ function VisitorLogModal(props, ref) {
                                             {
                                                 visitedList && visitedList.map((item, index) => {
                                                     return (
-                                                        <TableRow>
+                                                        <TableRow key={index}>
                                                             <TableCell>
                                                                 <RouterLink to={`user/${item.target_user.inspector_user.osu_id}`}>
                                                                     {GetFormattedName(item.target_user.inspector_user, {

@@ -1,6 +1,6 @@
 import { animated, useSpring } from '@react-spring/web';
 import * as d3 from 'd3';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { getRankFromAccuracy, rankCutoffs } from '../Helpers/Osu';
 import Mods from '../Helpers/Mods';
 
@@ -32,7 +32,7 @@ function ScoreDial(props) {
             duration: 1250,
             easing: d3.easeQuadInOut,
         },
-        onChange: (result, spring, item) => {
+        onChange: (result) => {
             // setDisplayedRank(rankCutoffs(Mods.hasMod(props.mods, "CL")));
             const rad = result.value.pos[0];
             const progress = rad / (2 * Math.PI);

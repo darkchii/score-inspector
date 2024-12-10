@@ -320,7 +320,7 @@ function ToolCommandHelper() {
                     {
                         COMMANDS.map((command, index) => {
                             return (
-                                <Tooltip title={command.desc}>
+                                <Tooltip key={index} title={command.desc}>
                                     <Button sx={{ m: 0.5 }} variant={selectedCommand?.cmd === command.cmd ? 'contained' : 'outlined'} onClick={() => { setSelectedCommand(command); resetArgumentData(); }}>{command.cmd}</Button>
                                 </Tooltip>
                             )
@@ -336,7 +336,7 @@ function ToolCommandHelper() {
                                 // const compatible = argument.compatibleWith.includes(selectedCommand?.cmd);
                                 const compatible = true;
                                 return (
-                                    <Grid2 size={argument.width ?? 3}>
+                                    <Grid2 key={index} size={argument.width ?? 3}>
                                         <Tooltip title={argument.desc}>
                                             <Box>
                                                 <>

@@ -1,4 +1,4 @@
-import { Box, Card, CardContent, Divider, FormControl, FormControlLabel, FormGroup, FormLabel, Grid2, Modal, Stack, Switch, TextField, Typography } from "@mui/material";
+import { Box, Card, CardContent, Divider, FormControlLabel, FormGroup, Grid2, Modal, Stack, Switch, TextField, Typography } from "@mui/material";
 import { useEffect, useImperativeHandle } from "react";
 import { forwardRef } from "react";
 import { useState } from "react";
@@ -75,6 +75,7 @@ function CustomizeModal(props, ref) {
                     showNotification('Error', 'Failed to update profile', 'error');
                 }
             } catch (err) {
+                console.error(err);
                 showNotification('Error', 'Failed to update profile', 'error');
             }
 
@@ -123,7 +124,7 @@ function CustomizeModal(props, ref) {
                                                 value={optionBackgroundUrl}
                                                 label="Background Image (URL)"
                                                 variant="standard" />
-                                            <Typography variant='caption'>Feel free to use suggestive content, just don't go over the top with full on naked anime girls.</Typography>
+                                            <Typography variant='caption'>Feel free to use suggestive content, just don&apos;t go over the top with full on naked anime girls.</Typography>
                                             <Divider sx={{ mt: 2, mb: 2 }} />
                                             <Grid2>
                                                 <FormGroup component="fieldset" variant="standard">

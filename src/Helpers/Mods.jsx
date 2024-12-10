@@ -1,9 +1,9 @@
-import { Box, Tooltip, Typography } from "@mui/material";
-import { getModString, mods } from "./Osu";
+import { Box, Typography } from "@mui/material";
+import { mods } from "./Osu";
 import { getModIcon, PNG_MOD_EXTENDER } from "./Assets";
 import ModData from "../Data/ModData";
 import { isEmpty } from "lodash";
-import { formatNumber, getHueRotate, ImageWithColor } from "./Misc";
+import { formatNumber, ImageWithColor } from "./Misc";
 import Color from "color";
 import OsuTooltip from "../Components/OsuTooltip";
 

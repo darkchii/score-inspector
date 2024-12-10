@@ -1,5 +1,4 @@
 import { Alert, AlertTitle, Box, Button, ButtonGroup, CircularProgress, FormControl, InputLabel, Link, MenuItem, Pagination, Paper, Select, Stack, Tooltip, Typography } from '@mui/material';
-import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
@@ -377,18 +376,18 @@ function Leaders() {
             </Helmet>
             <Box sx={{ pb: 2 }}>
                 {
-                    Object.keys(GROUPED_STATS).map((group) => {
+                    Object.keys(GROUPED_STATS).map((group, i) => {
                         return (
-                            <Paper elevation={3} sx={{ m: 0.2, p: 0.6, display: 'inline-block' }}>
+                            <Paper key={i} elevation={3} sx={{ m: 0.2, p: 0.6, display: 'inline-block' }}>
                                 <Typography variant='body2' sx={{
                                     fontSize: '0.8em',
                                     color: grey[500],
                                 }}>{group}</Typography>
                                 <ButtonGroup sx={{ display: 'flex', flexWrap: 'wrap' }} size='small' variant='outlined'>
                                     {
-                                        GROUPED_STATS[group].map((stat) => {
+                                        GROUPED_STATS[group].map((stat, j) => {
                                             return (
-                                                <Tooltip title={stat.description ?? ''}>
+                                                <Tooltip key={j} title={stat.description ?? ''}>
                                                     <Button sx={{ m: 0.1 }} disabled={isLoading} size='small' variant={stat.name === statistic.name ? 'contained' : 'outlined'} onClick={() => navigate(`stat/${stat.name}/page/1/country/${country ?? 'world'}`)}>{stat.title}</Button>
                                                 </Tooltip>
                                             );
@@ -452,7 +451,7 @@ function Leaders() {
                     leaderboard !== null && leaderboard !== undefined && Array.isArray(leaderboard) ? <>
                         <Stack direction='column' spacing={0.6}>
                             {
-                                leaderboard.map((entry) => {
+                                leaderboard.map((entry, i) => {
                                     const reformat = (value) => {
                                         if (statistic?.customFormat !== undefined && statistic?.customFormat != null) {
                                             return statistic?.customFormat(value);
@@ -462,6 +461,7 @@ function Leaders() {
                                     if (leaderboardType === 'users') {
                                         return (
                                             <PlayerLeaderboardItem
+                                                key={i}
                                                 values={
                                                     [
                                                         {
@@ -504,6 +504,7 @@ function Leaders() {
                                     if (leaderboardType === 'beatmaps' || leaderboardType === 'beatmapsets') {
                                         return (
                                             <BeatmapLeaderboardItem
+                                                key={i}
                                                 statistic={statistic}
                                                 map={entry}
                                                 type={leaderboardType}
@@ -545,7 +546,7 @@ function Leaders() {
                                 })
                             }
                         </Stack>
-                    </> : <><p>Couldn't get data. Try later...</p></>
+                    </> : <><p>Couldn&apos;t get data. Try later...</p></>
             }
             <Alert severity='info' sx={{ marginTop: 2 }}>
                 <AlertTitle>Information</AlertTitle>

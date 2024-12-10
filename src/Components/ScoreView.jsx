@@ -1,21 +1,20 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Avatar, Box, Button, Card, CardContent, CardMedia, Chip, Divider, Grid2, Link, ListItem, Stack, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableHead, TableRow, Tooltip, Typography, useTheme } from '@mui/material';
+import { Avatar, Box, Button, Card, Divider, Grid2, Stack, Typography } from '@mui/material';
 import { Chart as ChartJS, ArcElement, Tooltip as ChartTooltip, Legend } from 'chart.js';
 import moment from 'moment';
 import { useEffect, useRef } from 'react';
 import { useState } from 'react';
 import { toFixedNumber, formatNumber } from '../Helpers/Misc';
-import { getBeatmapMaxscore, getHitsFromAccuracy, getModString, mods, rankCutoffs } from '../Helpers/Osu';
+import { getBeatmapMaxscore, getHitsFromAccuracy } from '../Helpers/Osu';
 import { getCalculator } from '../Helpers/Performance/Performance';
-import { prepareBeatmap, prepareScore } from '../Helpers/ScoresProcessor';
-import { blue, green, grey, orange, red, yellow } from '@mui/material/colors';
+import { prepareBeatmap } from '../Helpers/ScoresProcessor';
+import { green, grey, red } from '@mui/material/colors';
 import Mods from '../Helpers/Mods';
 import ScoreDial from './ScoreDial';
 import StarsLabel from './StarsLabel';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import StarIcon from '@mui/icons-material/Star';
 import * as htmlToImage from "html-to-image";
-import { useSpring, animated } from '@react-spring/web';
 import ScoreViewStat from './UI/ScoreViewStat';
 import { Link as RLink } from "react-router";
 ChartJS.register(ArcElement, ChartTooltip, Legend);
@@ -434,7 +433,7 @@ function ScoreView(props) {
                                                             Mods.getModsWithSettings(scoreData.score.mods).map((mod, i) => {
                                                                 const settings = mod.settings;
                                                                 return (
-                                                                    <Box>
+                                                                    <Box key={i}>
                                                                         <div key={mod.acronym} className='score-stats__group score-stats__group--stats'>
                                                                             <Box sx={{ display: 'flex', justifyContent: 'left', alignItems: 'center' }}>
                                                                                 <Box sx={{ mr: 1 }}>
@@ -481,7 +480,7 @@ function ScoreView(props) {
                                                                                     }
 
                                                                                     return (
-                                                                                        <div className='score-stats__group-row'>
+                                                                                        <div key={i} className='score-stats__group-row'>
                                                                                             <ScoreViewStat
                                                                                                 tooltip={data.Description}
                                                                                                 label={data.Label}

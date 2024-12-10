@@ -1,6 +1,6 @@
 import { Alert, Box, CardContent, CssBaseline, Paper, Typography } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
 import Theme from './Data/Theme';
 import Root from './Routes/Root';

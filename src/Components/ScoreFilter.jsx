@@ -1,4 +1,4 @@
-import { Box, Button, FormControl, FormControlLabel, Grid2, InputLabel, ListItemIcon, ListItemText, MenuItem, Radio, RadioGroup, Select, TextField, Tooltip } from "@mui/material";
+import { Box, Button, FormControl, FormControlLabel, Grid2, InputLabel, ListItemIcon, ListItemText, MenuItem, Radio, RadioGroup, Select, TextField } from "@mui/material";
 import moment from "moment";
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
@@ -343,15 +343,15 @@ function ScoreFilter(props) {
                                 }}
                             >
                                 {
-                                    sorters.map(sorter => {
+                                    sorters.map((sorter, index) => {
                                         return [
-                                            <MenuItem value={`${sorter.name}_desc`}>
+                                            <MenuItem key={index * 2} value={`${sorter.name}_desc`}>
                                                 <ListItemIcon>
                                                     <ArrowDownwardIcon fontSize="small" />
                                                 </ListItemIcon >
                                                 <ListItemText primary={sorter.name} />
                                             </MenuItem>,
-                                            <MenuItem value={`${sorter.name}_asc`}>
+                                            <MenuItem key={(index * 2) + 1} value={`${sorter.name}_asc`}>
                                                 <ListItemIcon>
                                                     <ArrowUpwardIcon fontSize="small" />
                                                 </ListItemIcon>

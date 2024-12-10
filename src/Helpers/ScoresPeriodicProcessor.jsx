@@ -39,7 +39,7 @@ function getScoresPeriodicData(user, scores, dates, beatmaps, period = 'm') {
     }
 
     data = processCurrentData(scores, data, period);
-    data = processAverageData(scores, data, period);
+    data = processAverageData(data, period);
     data = processScoreRankData(user.score_rank_history, data, period);
 
     //convert data to array and sort by date asc
@@ -58,7 +58,7 @@ function getScoresPeriodicData(user, scores, dates, beatmaps, period = 'm') {
     }
 
     data_array = processCumulativeData(data_array, period);
-    data_array = processAverageData(scores, data_array, period);
+    data_array = processAverageData(data_array, period);
     data_array = processCompletionData(_beatmaps, data_array, period);
 
     const graph_data = generateGraphData(user, data_array, period);
@@ -92,7 +92,7 @@ function processCurrentData(scores, data, period = 'm') {
     return data;
 }
 
-function processCumulativeData(data_array, period = 'm') {
+function processCumulativeData(data_array) {
     for (let i = 0; i < data_array.length; i++) {
         let previous_data = data_array[i - 1];
         let current_data = data_array[i];
@@ -128,7 +128,7 @@ function processCumulativeData(data_array, period = 'm') {
     return data_array;
 }
 
-function processAverageData(scores, data, period = 'm') {
+function processAverageData(data) {
     for (let date in data) {
         if (data[date].gained_clears === 0 || data[date].scores.length === 0) {
             continue;
@@ -157,7 +157,7 @@ function processAverageData(scores, data, period = 'm') {
     return data;
 }
 
-function processCompletionData(beatmaps, data_array, period = 'm') {
+function processCompletionData(beatmaps, data_array) {
     for (let i = 0; i < data_array.length; i++) {
         const previous_data = data_array[i - 1];
         data_array[i].total_completion_clears = 100 / (beatmaps[data_array[i].date]?.amount_total ?? 0) * data_array[i].total_clears;

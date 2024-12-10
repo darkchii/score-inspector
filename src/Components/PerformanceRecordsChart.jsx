@@ -106,7 +106,7 @@ function PerformanceRecordsChart(props) {
                             }),
                         },
                         tooltip: {
-                            custom: function ({ series, seriesIndex, dataPointIndex, w }) {
+                            custom: function ({ seriesIndex, dataPointIndex, w }) {
                                 var data = w.globals.initialSeries[seriesIndex].data[dataPointIndex];
                                 const score = data.data.score;
                                 const beatmap = score.beatmap;

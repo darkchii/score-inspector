@@ -64,7 +64,7 @@ function SectionGraphs(props) {
                     }
                 }}
                 series={
-                    props.dataset[period][selectedGraphIndex].data.map((data, i) => {
+                    props.dataset[period][selectedGraphIndex].data.map((data) => {
                         let _graphData = data.graph_data;
                         if(props.dataset[period][selectedGraphIndex].filterNull){
                             _graphData = _graphData.filter((data) => {
@@ -89,7 +89,7 @@ function SectionGraphs(props) {
             {
                 //props.dataset, is array of objects, each object has a category. split by that
 
-                Object.keys(categorizedButtonIds).map((category, i) => {
+                Object.keys(categorizedButtonIds).map((category) => {
                     return (
                         <>
                             <Box>
@@ -97,7 +97,7 @@ function SectionGraphs(props) {
                                 <ButtonGroup variant='outlined' size='small' color='primary'>
                                     {
                                         categorizedButtonIds[category].map((index, j) => {
-                                            return <Button
+                                            return <Button key={j}
                                                 variant={selectedGraphIndex === index ? 'contained' : 'outlined'}
                                                 onClick={() => setSelectedGraphIndex(index)}
                                                 disabled={props.dataset[period][index].disabled ?? false}

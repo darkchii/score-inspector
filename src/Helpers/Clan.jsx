@@ -39,9 +39,9 @@ export async function GetClan(id, login_user_id = null, login_user_token = null)
 
     const data = response.data;
 
-    if(data.activities?.scores !== undefined && data.activities?.scores.length > 0) {
+    if (data.activities?.scores !== undefined && data.activities?.scores.length > 0) {
         data.activities.scores = prepareScores(null, data.activities?.scores, true);
-        let [_scores, _performance] = await MassCalculatePerformance(data.activities.scores);
+        let [_scores] = await MassCalculatePerformance(data.activities.scores);
         data.activities.scores = _scores;
 
         //order by date_played_moment
@@ -134,13 +134,15 @@ export function FormatClanLog(clan, log) {
         case 'clan_create':
             return 'Clan created';
         case 'member_join':
-            let joined_user = clan.logs_user_data.find(log => log.osu_id === log_data.user_id);
-            return <Box sx={{
-                display: 'flex'
-            }}>
-                <Box sx={{ ml: 1 }}> {GetFormattedName(joined_user ?? {})} </Box>
-                <Box sx={{ ml: 1 }}> joined the clan </Box>
-            </Box>;
+            {
+                let joined_user = clan.logs_user_data.find(log => log.osu_id === log_data.user_id);
+                return <Box sx={{
+                    display: 'flex'
+                }}>
+                    <Box sx={{ ml: 1 }}> {GetFormattedName(joined_user ?? {})} </Box>
+                    <Box sx={{ ml: 1 }}> joined the clan </Box>
+                </Box>;
+            }
         case 'member_remove':
             // return `${log_data.user_id} left the clan`;
             left_user = clan.logs_user_data.find(log => log.osu_id === log_data.user_id);
@@ -160,42 +162,46 @@ export function FormatClanLog(clan, log) {
                 <Box sx={{ ml: 1 }}> left the clan </Box>
             </Box>;
         case 'owner_transfer':
-            const old_owner = clan.logs_user_data.find(log => log.osu_id === log_data.old_owner);
-            const new_owner = clan.logs_user_data.find(log => log.osu_id === log_data.new_owner);
-            //force single line (GetFormattedName causes a new line after it)
-            return <Box sx={{
-                display: 'flex'
-            }}>
-                <Box sx={{ ml: 1 }}> {GetFormattedName(old_owner ?? {})} </Box>
-                <Box sx={{ ml: 1 }}> transferred ownership to </Box>
-                <Box sx={{ ml: 1 }}> {GetFormattedName(new_owner ?? {})} </Box>
-            </Box>;
-        case 'clan_update':
-            const old_data = JSON.parse(log_data.old_data);
-            const new_data = JSON.parse(log_data.new_data);
-
-            // Create a 3rd object to store the differences (omit keys with same values)
-            const diff = Object.keys(new_data).reduce((acc, key) => {
-                if (old_data[key] !== new_data[key]) {
-                    acc[key] = new_data[key];
-                }
-                return acc;
-            }, {});
-
-            //if diff is empty, return null
-            if (Object.keys(diff).length === 0) {
-                return null;
+            {
+                const old_owner = clan.logs_user_data.find(log => log.osu_id === log_data.old_owner);
+                const new_owner = clan.logs_user_data.find(log => log.osu_id === log_data.new_owner);
+                //force single line (GetFormattedName causes a new line after it)
+                return <Box sx={{
+                    display: 'flex'
+                }}>
+                    <Box sx={{ ml: 1 }}> {GetFormattedName(old_owner ?? {})} </Box>
+                    <Box sx={{ ml: 1 }}> transferred ownership to </Box>
+                    <Box sx={{ ml: 1 }}> {GetFormattedName(new_owner ?? {})} </Box>
+                </Box>;
             }
+        case 'clan_update':
+            {
+                const old_data = JSON.parse(log_data.old_data);
+                const new_data = JSON.parse(log_data.new_data);
 
-            //convert boolean values to string (on old_data and new_data)
-            Object.keys(diff).forEach(key => {
-                if (typeof old_data[key] === 'boolean') { old_data[key] = old_data[key] ? 'true' : 'false'; }
-                if (typeof new_data[key] === 'boolean') { new_data[key] = new_data[key] ? 'true' : 'false'; }
-            });
+                // Create a 3rd object to store the differences (omit keys with same values)
+                const diff = Object.keys(new_data).reduce((acc, key) => {
+                    if (old_data[key] !== new_data[key]) {
+                        acc[key] = new_data[key];
+                    }
+                    return acc;
+                }, {});
 
-            //return `Clan updated:\n{list of changes in table fashion}`, no need to show the values
-            // return `Clan updated:\n\n${Object.keys(diff).map(key => `${key}: ${old_data[key]} > ${new_data[key]}`).join('\n')}`;
-            return <><span>Clan updated:</span>{Object.keys(diff).map(key => <><br /><span><b>{key}:</b> {old_data[key]} <b>&rarr;</b> {new_data[key]}</span></>)}</>
+                //if diff is empty, return null
+                if (Object.keys(diff).length === 0) {
+                    return null;
+                }
+
+                //convert boolean values to string (on old_data and new_data)
+                Object.keys(diff).forEach(key => {
+                    if (typeof old_data[key] === 'boolean') { old_data[key] = old_data[key] ? 'true' : 'false'; }
+                    if (typeof new_data[key] === 'boolean') { new_data[key] = new_data[key] ? 'true' : 'false'; }
+                });
+
+                //return `Clan updated:\n{list of changes in table fashion}`, no need to show the values
+                // return `Clan updated:\n\n${Object.keys(diff).map(key => `${key}: ${old_data[key]} > ${new_data[key]}`).join('\n')}`;
+                return <><span>Clan updated:</span>{Object.keys(diff).map(key => <><br /><span><b>{key}:</b> {old_data[key]} <b>&rarr;</b> {new_data[key]}</span></>)}</>
+            }
         default:
             return `Unknown log type: ${log.type}, please contact the developer`;
     }

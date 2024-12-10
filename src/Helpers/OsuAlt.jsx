@@ -8,6 +8,7 @@ export async function findUsers(query) {
         const _users = await axios.get(`${GetAPI()}users/alt/find/${query}`);
         users = _users.data;
     } catch (e) {
+        console.warn(e);
     }
     return users;
 }
@@ -19,6 +20,7 @@ export async function isUserRegistered(id) {
         const res = await axios.get(url, { headers: { "Access-Control-Allow-Origin": "*" } });
         _registered = res.data.registered;
     } catch (err) {
+        console.warn(err);
         _registered = false;
     }
     return _registered;
@@ -31,6 +33,7 @@ export async function getLeaderboard(stat, limit, offset, country) {
         const res = await axios.get(url, { headers: { "Access-Control-Allow-Origin": "*" } });
         leaderboard = res.data;
     } catch (err) {
+        console.warn(err);
         return null;
     }
     return leaderboard;
@@ -42,6 +45,7 @@ export async function getUser(user_id) {
         const _user = await axios.get(`${GetAPI()}users/find/${user_id}?single=true`);
         user = _user.data;
     } catch (e) {
+        console.warn(e);
     }
     return user;
 }
@@ -58,6 +62,7 @@ export async function getUserScores(user_id, allowLoved, onScoreDownloadProgress
         const res = await axios.get(url, { headers: { "Access-Control-Allow-Origin": "*" }, ...config });
         _scores = res.data;
     } catch (err) {
+        console.warn(err);
         return null;
     }
     return _scores;
@@ -70,6 +75,7 @@ export async function getPopulation(){
         const res = await axios.get(url, { headers: { "Access-Control-Allow-Origin": "*" }, ...config });
         _pop = res.data;
     } catch (err) {
+        console.warn(err);
         return null;
     }
     return _pop;
@@ -82,6 +88,7 @@ export async function getBeatmapScores(beatmap_id, limit = 500, offset = 0){
         const res = await axios.get(url, { headers: { "Access-Control-Allow-Origin": "*" }, ...config });
         _scores = res.data;
     } catch (err) {
+        console.warn(err);
         return null;
     }
     return _scores;
@@ -118,6 +125,7 @@ export async function getScoreActivity(interval = 72, period = 'h') {
         activity = res?.data?.[0];
         return activity;
     } catch (e) {
+        console.warn(e);
         return null;
     }
 }

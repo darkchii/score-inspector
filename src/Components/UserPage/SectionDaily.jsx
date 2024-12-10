@@ -104,7 +104,7 @@ function SectionDaily(props) {
                 let activities = getSessions(scores, true);
                 if (activities.length > 0) {
                     let len = 0;
-                    activities.forEach((activity, index) => {
+                    activities.forEach((activity) => {
                         annotations.push({
                             type: 'box',
                             x: activity.start * 1000,
@@ -329,7 +329,7 @@ function SectionDaily(props) {
                                 {
                                     //add empty spots if first day is not sunday
                                     yearGraphData && Array.from(Array(moment(yearGraphData[0].date).day()).keys()).map((day) => {
-                                        return <Box></Box>
+                                        return <Box key={`empty-${day}`}></Box>
                                     })
                                 }
                                 {
@@ -348,7 +348,7 @@ function SectionDaily(props) {
                                         }
                                         //lets just do a border instead, but bit darker than the color
                                         return (
-                                            <MUITooltip title={
+                                            <MUITooltip key={index} title={
                                                 <Typography variant="body2">
                                                     {`${day.date}: ${_clears} clears`}
                                                 </Typography>
@@ -420,8 +420,8 @@ function SectionDaily(props) {
                 <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                     <Grid2 sx={{ my: 2 }}>
                         <ButtonGroup size='small'>
-                            {heightDefiners.map((definer) => (
-                                <Button onClick={() => setHeightDefiner(definer)} variant={heightDefiner.value === definer.value ? 'contained' : 'outlined'}>
+                            {heightDefiners.map((definer, index) => (
+                                <Button key={index} onClick={() => setHeightDefiner(definer)} variant={heightDefiner.value === definer.value ? 'contained' : 'outlined'}>
                                     {definer.label}
                                 </Button>
                             ))
@@ -468,6 +468,7 @@ function SectionDaily(props) {
                                                 }
                                             },
                                             tooltip: {
+                                                // eslint-disable-next-line no-unused-vars
                                                 custom: function ({ series, seriesIndex, dataPointIndex, w }) {
                                                     var data = w.globals.initialSeries[seriesIndex].data[dataPointIndex];
 

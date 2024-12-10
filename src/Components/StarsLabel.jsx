@@ -1,7 +1,5 @@
-import { Box, Typography } from "@mui/material";
-import { red } from "@mui/material/colors";
 import StarIcon from '@mui/icons-material/Star';
-import { classWithModifiers, formatNumber } from "../Helpers/Misc";
+import { formatNumber } from "../Helpers/Misc";
 import { getDiffColor } from "../Helpers/Osu";
 
 function StarsLabel(props) {

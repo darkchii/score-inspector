@@ -39,7 +39,7 @@ const chart_types = [
     'grades', 'score', 'clears'
 ]
 
-function ScoreSubmissions(props) {
+function ScoreSubmissions() {
     const theme = useTheme();
 
     //period are INDICES,
@@ -115,6 +115,7 @@ function ScoreSubmissions(props) {
                 setData(newData);
                 setIsWorking(false);
             } catch (err) {
+                console.error(err);
                 setError(true);
                 setIsWorking(false);
             }

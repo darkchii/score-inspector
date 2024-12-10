@@ -1,9 +1,8 @@
 import { Box, Grid2, Tooltip, Typography, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
-import { getGradeIcon, getModIcon } from "../Helpers/Assets";
+import { getGradeIcon } from "../Helpers/Assets";
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { grey, orange, red } from "@mui/material/colors";
-import { getModString, mod_strings_long, mods } from "../Helpers/Osu";
 import { formatNumber, toFixedNumber } from "../Helpers/Misc";
 import Mods from "../Helpers/Mods";
 import WarningIcon from '@mui/icons-material/Warning';

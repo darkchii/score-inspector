@@ -168,7 +168,7 @@ function ToolMissingBeatmaps() {
                     Upload the <code>osu!.db</code> file that is inside your osu! installation folder
                 </Alert>
                 <Alert severity="warning">
-                    Don't be alarmed if the web page freezes for a while. It takes longer to process larger files.
+                    Don&apos;t be alarmed if the web page freezes for a while. It takes longer to process larger files.
                 </Alert>
                 <Grid2 container spacing={1}>
                     {

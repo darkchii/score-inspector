@@ -22,6 +22,7 @@ export async function SubmitVote(map_id) {
         const res = await axios.post(url, { map_id, login, token });
         return res.data;
     } catch (err) {
+        console.warn(err);
         return null;
     }
 }
