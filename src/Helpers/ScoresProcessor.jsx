@@ -75,6 +75,7 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
     if (data.clears > 0) {
         data.average.pp = data.total.pp / data.clears;
         data.average.score = data.total.score / data.clears;
+        data.average.scoreLazerStandardised = data.total.scoreLazerStandardised / data.clears;
         data.average.acc = data.total.acc / data.clears;
         data.average.length = data.total.length / data.clears;
         data.average.star_rating = data.total.star_rating / data.clears;

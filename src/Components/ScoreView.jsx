@@ -44,18 +44,8 @@ function ScoreView(props) {
         if (score.score === -1) { //if we get -1, we approximate the score of this play
             if (_score !== null && _score !== null) {
                 _score = await getBeatmapMaxscore(score.beatmap_id);
-                var mul = 1;
-
-                if (Mods.hasMod(_score.mods, "EZ")) { mul *= 0.5; }
-                if (Mods.hasMod(_score.mods, "NF")) { mul *= 0.5; }
-                if (Mods.hasMod(_score.mods, "HT")) { mul *= 0.3; }
-                if (Mods.hasMod(_score.mods, "HR")) { mul *= 1.12; }
-                if (Mods.hasMod(_score.mods, "DT")) { mul *= 1.06; }
-                if (Mods.hasMod(_score.mods, "NC")) { mul *= 1.06; }
-                if (Mods.hasMod(_score.mods, "HD")) { mul *= 1.06; }
-
+                var mul = _score.mods.scoreMultiplier;
                 const real_score = _score * mul;
-
                 score.score = (real_score * (score.accuracy * 0.01)).toFixed(0);
             }
         }
@@ -451,12 +441,11 @@ function ScoreView(props) {
                                                                                     let color = undefined;
 
 
-                                                                                    value = settings[setting];
+                                                                                    // value = settings[setting];
+                                                                                    value = Mods.getModSettingValue(mod, setting);
                                                                                     if (data.Type === 'number') {
-                                                                                        value = formatNumber(value, 2);
                                                                                         valueTyped = parseFloat(value);
                                                                                     } else if (data.Type === 'boolean') {
-                                                                                        value = value ? 'Yes' : 'No';
                                                                                         valueTyped = value;
                                                                                     }
 

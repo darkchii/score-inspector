@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Table, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
 import { mods } from "./Osu";
 import { getModIcon, PNG_MOD_EXTENDER } from "./Assets";
 import ModData from "../Data/ModData";
@@ -147,7 +147,7 @@ class Mods {
     static getMultiplier(mods) {
         let multiplier = 1;
 
-        for (const mod of mods.mods_data){
+        for (const mod of mods.mods_data) {
             multiplier *= mod.scoreMultiplier;
         }
 
@@ -246,14 +246,60 @@ class Mods {
         return new Mods(0, _modern_mods);
     }
 
-    static getTooltipContent(mod, tooltip_extra_data = null, showIncompatible = true) {
+    static getModSettingValue(mod, setting) {
+        if (mod.settings === undefined) return null;
+        let data = Mods.getModSettingsData(mod.acronym, setting);
+
+        let value = mod.settings[setting];
+        switch (data.Type) {
+            default:
+            case "number":
+                value = formatNumber(value, 2);
+                break;
+            case "string":
+                value = mod.settings[setting];
+                break;
+            case "boolean":
+                value = mod.settings[setting] ? "Yes" : "No";
+                break;
+        }
+
+        return value;
+    }
+
+    static getTooltipContent(mod, display_settings = false, showIncompatible = true) {
         return (
             mod.acronym !== "NM" ?
                 <Box>
                     <Box>
                         <Typography variant='h6'>{mod.data.Name}</Typography>
                         <Typography variant='body2'>{mod.data.Description}</Typography>
-                        {tooltip_extra_data !== null ? `(${tooltip_extra_data})` : ''}
+                        {/* {tooltip_extra_data !== null ? `(${tooltip_extra_data})` : ''} */}
+                        {
+                            display_settings ? <>
+                                <TableContainer>
+                                    <Table size='small'>
+                                        {
+                                            mod.settings !== undefined ? Object.keys(mod.settings).map(setting => {
+                                                let data = Mods.getModSettingsData(mod.acronym, setting);
+                                                return (
+                                                    <TableRow key={setting}>
+                                                        <TableCell>{data.Label}</TableCell>
+                                                        {/* <TableCell>{mod.settings[setting]}</TableCell> */}
+                                                        <TableCell>{Mods.getModSettingValue(mod, setting)}</TableCell>
+                                                    </TableRow>
+                                                )
+                                            }) : null
+                                            // for (const setting in mod.settings) {
+                                            //     let data = Mods.getModSettingsData(mod.acronym, setting);
+                                            //     //str += `${data.Name}: ${mod.settings[setting]}\n`;
+                                            //     str.push(`${data.Label}: ${mod.settings[setting]}`);
+                                            // }
+                                        }
+                                    </Table>
+                                </TableContainer>
+                            </> : null
+                        }
                     </Box>
                     {
                         showIncompatible ? <Box sx={{ mt: 2 }}>
@@ -293,20 +339,6 @@ class Mods {
             superimpose_acronym = true;
         }
 
-        // console.log(`Mod: ${mod.acronym} Icon: ${mod_icon}`);
-
-        let tooltip_extra_data = null;
-
-        if (mod.settings !== undefined) {
-            let str = [];
-            for (const setting in mod.settings) {
-                let data = Mods.getModSettingsData(mod.acronym, setting);
-                //str += `${data.Name}: ${mod.settings[setting]}\n`;
-                str.push(`${data.Label}: ${mod.settings[setting]}`);
-            }
-            tooltip_extra_data = str.join(", ");
-        }
-
         // let width = undefined;
         //   width: calc($height * unit(@mod-width) / unit(@mod-height));
         let width = undefined;
@@ -324,7 +356,7 @@ class Mods {
             width = height * 3;
         }
         return (
-            <OsuTooltip title={Mods.getTooltipContent(mod, tooltip_extra_data, showIncompatible)}>
+            <OsuTooltip title={Mods.getTooltipContent(mod, true, showIncompatible)}>
                 <Box sx={{
                     display: 'flex',
                     position: 'relative',

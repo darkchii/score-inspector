@@ -1610,22 +1610,6 @@ function ClanTop() {
                 </OsuTabs>
             </Box>
             <Box>
-                {/* <Grid2 container sx={{
-                    mt: `${TOP_CLAN_HEIGHT_OFFSET + 10}px`
-                }}
-                    spacing={1}
-                >
-                    <Grid2 size={{ xs: 4, md: 4 }}>
-                        <TopClanCard pos={1} data={data.data[activeStat][1]} />
-                    </Grid2>
-                    <Grid2 size={{ xs: 4, md: 4 }}>
-                        <TopClanCard pos={0} data={data.data[activeStat][0]} />
-                    </Grid2>
-                    <Grid2 size={{ xs: 4, md: 4 }}>
-                        <TopClanCard pos={2} data={data.data[activeStat][2]} />
-                    </Grid2>
-                </Grid2> */}
-                {/* the rest are index 3 - 9 clans, using leaderboard items */}
                 <Stack spacing={1} sx={{
                     mt: 2
                 }}>

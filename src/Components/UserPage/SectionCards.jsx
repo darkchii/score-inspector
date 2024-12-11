@@ -48,32 +48,37 @@ function SectionCards(props) {
         },
         {
             title: 'Score per clear',
-            value: formatNumber(props.user.data?.average.score, 0),
+            value: (
+                <span>{formatNumber(props.user.data?.average.score, 0)}</span>
+            ),
             row: 0,
         },
         {
             title: 'Ranked Score',
-            value: formatNumber(props.user.data.total.score, 0),
+            value: (
+                <span>{formatNumber(props.user.data.total.score, 0)}</span>
+            ),
+            row: 0,
+        },
+        {
+            title: 'Standardised Score',
+            value: (
+                <span>{formatNumber(props.user.data?.total.scoreLazerStandardised, 0)}</span>
+            ),
             row: 0,
         },
         {
             title: 'Total Score',
-            value: formatNumber(props.user.osu.statistics.total_score, 0) ?? 'N/A',
+            // value: formatNumber(props.user.osu.statistics.total_score, 0) ?? 'N/A',
+            value: (
+                <span>{formatNumber(props.user.osu.statistics.total_score, 0)}</span>
+            ),
             row: 0,
         },
         {
-            title: 'Unique SS',
-            value: formatNumber(props.user.alt.unique_ss?.length ?? 0, 0),
-            row: 1,
-        },
-        {
-            title: 'Unique FC',
-            value: formatNumber(props.user.alt.unique_fc?.length ?? 0, 0),
-            row: 1,
-        },
-        {
-            title: 'Unique DT FC',
-            value: formatNumber(props.user.alt.unique_dt_fc?.length ?? 0, 0),
+            title: 'Unique SS / FC / DT FC',
+            // value: formatNumber(props.user.alt.unique_ss?.length ?? 0, 0),
+            value: `${formatNumber(props.user.alt.unique_ss?.length ?? 0, 0)} / ${formatNumber(props.user.alt.unique_fc?.length ?? 0, 0)} / ${formatNumber(props.user.alt.unique_dt_fc?.length ?? 0, 0)}`,
             row: 1,
         },
         {
@@ -120,6 +125,18 @@ function SectionCards(props) {
         {
             title: 'Highest Combo',
             value: (props.user.alt.maximum_combo ?? 0).toLocaleString('en-US') + 'x',
+            row: 1,
+        },
+        {
+            title: 'Daily Challenge',
+            // value: (props.user.osu.daily_challenge_user_stats?.daily_streak_current ?? 0)+ ' streak / ' + (props.user.osu.daily_challenge_user_stats?.playcount ?? 0) + ' total',
+            value: (
+                <>
+                    <span>
+                        {(props.user.osu.daily_challenge_user_stats?.daily_streak_current ?? 0)} <span style={{ color: theme.palette.text.secondary, fontSize: '0.7rem' }}>streak,</span> {(props.user.osu.daily_challenge_user_stats?.playcount ?? 0)} <span style={{ color: theme.palette.text.secondary, fontSize: '0.7rem' }}>total</span>
+                    </span>
+                </>
+            ),
             row: 1,
         }
     ];

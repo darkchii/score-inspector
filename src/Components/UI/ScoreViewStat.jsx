@@ -2,6 +2,7 @@ import { Tooltip, useTheme } from "@mui/material";
 import { useSpring, animated } from '@react-spring/web';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import * as d3 from 'd3';
+import OsuTooltip from "../OsuTooltip";
 
 
 function ScoreViewStat(props) {
@@ -22,7 +23,7 @@ function ScoreViewStat(props) {
     })
 
     return (
-        <Tooltip title={props.tooltip ?? ''}>
+        <OsuTooltip title={props.tooltip ?? ''}>
             <div className={`score-stats__stat${props.small ? '-small' : ''}`} style={{
                 opacity: props.irrelevant ? '0.5' : undefined,
                 backgroundColor: props.backgroundColor ?? undefined,
@@ -108,7 +109,7 @@ function ScoreViewStat(props) {
                     }
                 </div>
             </div>
-        </Tooltip>
+        </OsuTooltip>
     );
 }
 
