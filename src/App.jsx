@@ -34,6 +34,7 @@ import Loader from './Components/UI/Loader';
 import Chat from './Routes/Chat';
 import Tournaments from './Routes/Tournaments';
 import { Route, Routes } from 'react-router';
+import Wiki from './Routes/Wiki';
 
 function App() {
   const [loginData, setLoginData] = useState(null);
@@ -94,7 +95,7 @@ function App() {
         <Header account={loginData} />
       </Box>
       <Paper sx={{
-        backgroundColor: `${Theme.palette.background.paper}dd`, 
+        backgroundColor: `${Theme.palette.background.paper}dd`,
         //no top border-radius
         borderRadius: 0,
       }}>
@@ -113,6 +114,8 @@ function App() {
             <Route path="clan/:id?/:page?" element={<Clan />} />
             <Route path="tournaments/:id?" element={<Tournaments />} />
             <Route path="bancho" element={<Chat />} />
+            {/* wiki can have multiple "subdirectories" which we are unaware off (thats how its supposed to work), Wiki should deal with it */}
+            <Route path="wiki/*" element={<Wiki />} />
             {/* <Route path="beatmaps/:id?" element={<Beatmap />} />
             <Route path="beatmaps/query/:query?" element={<Beatmap />} /> */}
             <Route path="milestones" element={<Milestones />}>
