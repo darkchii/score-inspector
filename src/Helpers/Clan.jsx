@@ -2,7 +2,7 @@ import axios from "axios";
 import { GetAPI, parseReadableStreamToJson } from "./Misc";
 import { GetFormattedName } from "./Account";
 import { Box } from "@mui/material";
-import { prepareScores } from "./ScoresProcessor";
+import { prepareScore, prepareScores } from "./ScoresProcessor";
 import { MassCalculatePerformance } from "./Osu";
 
 export async function CreateClan(data) {
@@ -209,5 +209,21 @@ export function FormatClanLog(clan, log) {
 
 export async function GetTopClans() {
     const response = await axios.get(`${GetAPI()}clans/rankings`);
+    const top_data = response.data.data;
+
+    Object.keys(top_data).forEach(key => {
+        // top_data[key].scores = prepareScores(null, top_data[key].scores, true);
+        if(Array.isArray(top_data[key])){
+            top_data[key].forEach(clan => {
+                // clan.scores = prepareScores(null, clan.scores, true);
+                //if object
+                if(clan.ranking_prepared?.[key] !== undefined && clan.ranking_prepared?.[key]?.beatmap_id !== undefined){
+                    // clan.ranking_prepared[key].scores = prepareScores(null, clan.ranking_prepared[key].scores, true);
+                    clan.ranking_prepared[key] = prepareScore(clan.ranking_prepared[key], null);
+                }
+            });
+        }
+    });
+
     return response.data;
 }

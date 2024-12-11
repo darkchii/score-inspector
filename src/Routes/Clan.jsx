@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Alert, Avatar, Box, Button, ButtonGroup, Card, CardContent, CardMedia, Chip, Container, Divider, FormControl, Grid2, IconButton, InputAdornment, InputLabel, Menu, MenuItem, Modal, OutlinedInput, Pagination, Paper, Select, Stack, Switch, Tab, Table, TableBody, TableCell, TableContainer, TableRow, Tabs, TextField, Tooltip, Typography, styled, tableCellClasses, useTheme } from "@mui/material";
 import { useState } from "react";
-import { MODAL_STYLE, showNotification } from "../Helpers/Misc";
+import { formatNumber, MODAL_STYLE, showNotification } from "../Helpers/Misc";
 import { useEffect } from "react";
 import { GetFormattedName, GetLoginID, GetLoginToken, GetUser } from "../Helpers/Account";
 import { AcceptJoinRequestClan, CreateClan, DeleteClan, FormatClanLog, GetClan, GetClanList, GetTopClans, JoinRequestClan, LeaveClan, RejectJoinRequestClan, RemoveClanMember, TransferClanOwnership, UpdateClan } from "../Helpers/Clan";
@@ -32,6 +32,7 @@ import GlowBarText from "../Components/UI/GlowBarText";
 import ScoreViewStat from "../Components/UI/ScoreViewStat";
 import ScoreRow from "../Components/ScoreRow";
 import PlayerTooltip from "../Components/UI/PlayerTooltip";
+import Mods from "../Helpers/Mods";
 
 function CustomTabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -1472,6 +1473,43 @@ const ClanPlayTooltip = styled(({ className, ...props }) => (
     background-color: transparent;
     max-width: none;
 `);
+
+function ClanPlayTooltipContent({ clan, type }) {
+    return (
+        <Card>
+            <CardMedia
+                component="img"
+                height="140"
+                image={`https://assets.ppy.sh/beatmaps/${clan.ranking_prepared?.top_play?.beatmap?.set_id}/covers/cover.jpg`}
+            />
+            <CardContent>
+                {
+                    clan.ranking_prepared?.[type] ?
+                        <>
+                            <Typography variant='body1'>{clan.ranking_prepared?.[type]?.beatmap?.artist} - {clan.ranking_prepared?.[type]?.beatmap?.title} [{clan.ranking_prepared?.[type]?.beatmap?.diffname}]</Typography>
+                            <Typography variant='body2'>{clan.ranking_prepared?.[type]?.beatmap?.version}</Typography>
+                            <Typography variant='body2'>{formatNumber(clan.ranking_prepared?.[type]?.pp, 1)}pp</Typography>
+                            <Typography variant='body2'>{formatNumber(clan.ranking_prepared?.[type]?.score, 0)} score</Typography>
+                            <Typography variant='body2'>{formatNumber(clan.ranking_prepared?.[type]?.accuracy, 2)}%</Typography>
+                            <Box sx={{
+                                display: 'flex',
+                                justifyContent: 'start',
+                                alignItems: 'center',
+                                flexWrap: 'wrap',
+                            }}>
+                                {Mods.valueOf(clan.ranking_prepared?.[type]?.mods).map(mod => Mods.getModElement(mod, 20))}
+                            </Box>
+                            {/* <Typography variant='body2'>{clan.ranking_prepared?.top_play?.enabled_mods !== '0' ? getModString(clan.ranking_prepared?.top_play?.enabled_mods) : 'No mods'}</Typography> */}
+                            <Divider sx={{ mt: 1, mb: 1 }} />
+                            <Typography variant='body1'>{GetFormattedName(clan.ranking_prepared?.[type]?.user)}</Typography>
+                        </>
+                        : <Typography variant='body1'>Score data unavailable somehow</Typography>
+                }
+            </CardContent>
+        </Card>
+    )
+}
+
 const CLAN_RANKING_STATS = {
     'weighted_pp': {
         name: 'Weighted PP',
@@ -1497,58 +1535,14 @@ const CLAN_RANKING_STATS = {
         name: 'Top PP play',
         formatter: (clan) => `${(Math.round((clan.ranking_prepared?.top_play?.pp ?? 0) * 100) / 100).toLocaleString('en-US')}pp`,
         tooltip: (clan) => (
-            <Card>
-                <CardMedia
-                    component="img"
-                    height="140"
-                    image={`https://assets.ppy.sh/beatmaps/${clan.ranking_prepared?.top_play?.beatmap?.set_id}/covers/cover.jpg`}
-                />
-                <CardContent>
-                    {
-                        clan.ranking_prepared?.top_play ?
-                            <>
-                                <Typography variant='body1'>{clan.ranking_prepared?.top_play?.beatmap?.artist} - {clan.ranking_prepared?.top_play?.beatmap?.title} [{clan.ranking_prepared?.top_play?.beatmap?.diffname}]</Typography>
-                                <Typography variant='body2'>{clan.ranking_prepared?.top_play?.beatmap?.version}</Typography>
-                                <Typography variant='body2'>{clan.ranking_prepared?.top_play?.pp.toLocaleString('en-US')}pp</Typography>
-                                <Typography variant='body2'>{clan.ranking_prepared?.top_play?.score.toLocaleString('en-US')} score</Typography>
-                                <Typography variant='body2'>{clan.ranking_prepared?.top_play?.accuracy}%</Typography>
-                                <Typography variant='body2'>{clan.ranking_prepared?.top_play?.enabled_mods !== '0' ? getModString(clan.ranking_prepared?.top_play?.enabled_mods) : 'No mods'}</Typography>
-                                <Divider />
-                                <Typography variant='body1'>{GetFormattedName(clan.ranking_prepared?.top_play?.user)}</Typography>
-                            </>
-                            : <Typography variant='body1'>Score data unavailable somehow</Typography>
-                    }
-                </CardContent>
-            </Card>
+            <ClanPlayTooltipContent clan={clan} type='top_play' />
         )
     },
     'top_score': {
         name: 'Top Score play',
         formatter: (clan) => `${(clan.ranking_prepared?.top_score?.score ?? 0).toLocaleString('en-US')}`,
         tooltip: (clan) => (
-            <Card>
-                <CardMedia
-                    component="img"
-                    height="140"
-                    image={`https://assets.ppy.sh/beatmaps/${clan.ranking_prepared?.top_score?.beatmap?.set_id}/covers/cover.jpg`}
-                />
-                <CardContent>
-                    {
-                        clan.ranking_prepared?.top_score ?
-                            <>
-                                <Typography variant='body1'>{clan.ranking_prepared?.top_score?.beatmap?.artist} - {clan.ranking_prepared?.top_score?.beatmap?.title} [{clan.ranking_prepared?.top_score?.beatmap?.diffname}]</Typography>
-                                <Typography variant='body2'>{clan.ranking_prepared?.top_score?.beatmap?.version}</Typography>
-                                <Typography variant='body2'>{clan.ranking_prepared?.top_score?.pp.toLocaleString('en-US')}pp</Typography>
-                                <Typography variant='body2'>{clan.ranking_prepared?.top_score?.score.toLocaleString('en-US')} score</Typography>
-                                <Typography variant='body2'>{clan.ranking_prepared?.top_score?.accuracy}%</Typography>
-                                <Typography variant='body2'>{clan.ranking_prepared?.top_score?.enabled_mods !== '0' ? getModString(clan.ranking_prepared?.top_score?.enabled_mods) : 'No mods'}</Typography>
-                                <Divider />
-                                <Typography variant='body1'>{GetFormattedName(clan.ranking_prepared?.top_score?.user)}</Typography>
-                            </>
-                            : <Typography variant='body1'>Score data unavailable somehow</Typography>
-                    }
-                </CardContent>
-            </Card>
+            <ClanPlayTooltipContent clan={clan} type='top_score' />
         )
     }
 }
