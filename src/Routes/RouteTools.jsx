@@ -9,7 +9,7 @@ import { Helmet } from "react-helmet";
 import config from "../config.json";
 
 const NAV_WIDTH = 3;
-function Tools() {
+function RouteTools() {
     const params = useParams();
     const [currentTool, setTool] = useState(0);
 
@@ -69,4 +69,4 @@ function Tools() {
     );
 }
 
-export default Tools;
+export default RouteTools;

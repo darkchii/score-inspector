@@ -32,7 +32,7 @@ const GUIDE_NEW_USERS = [
     'Wait for a couple hours. When done, you generally don\'t need to run it anymore, the live tracker takes over',
 ];
 
-function Root() {
+function RouteIndex() {
     const [isModalOpen, setIsModalOpen] = useState(true);
     const [osuAuthCode, setOsuAuthCode] = useState(null);
     const [searchParams] = useSearchParams();
@@ -45,10 +45,10 @@ function Root() {
     useEffect(() => {
         const _osuAuthCode = searchParams.get("code");
 
-        if (_osuAuthCode !== null) {
-            setOsuAuthCode(_osuAuthCode);
+        (async () => {
+            if (_osuAuthCode !== null) {
+                setOsuAuthCode(_osuAuthCode);
 
-            (async () => {
                 const res = await LoginUser(_osuAuthCode);
                 const body = await parseReadableStreamToJson(res.body);
                 if (body !== null && body !== undefined) {
@@ -73,39 +73,39 @@ function Root() {
                     setIsModalOpen(false);
                     showNotification('Error', 'Something went wrong while logging in. Please try again.', 'error');
                 }
-            })();
-        }
+            }
 
-        try {
-            Promise.all([
-                GetTopVisited('count', 5),
-                GetTopVisited('last_visit', 5)
-            ]).then(([most_visited, last_visited]) => {
-                setVisitorStats({
-                    most_visited: most_visited,
-                    last_visited: last_visited
+            try {
+                Promise.all([
+                    GetTopVisited('count', 5),
+                    GetTopVisited('last_visit', 5)
+                ]).then(([most_visited, last_visited]) => {
+                    setVisitorStats({
+                        most_visited: most_visited,
+                        last_visited: last_visited
+                    });
+                }).catch((err) => {
+                    console.error(err);
                 });
-            }).catch((err) => {
-                console.error(err);
-            });
-        } catch (_err) {
-            console.error(_err);
-        }
+            } catch (_err) {
+                console.error(_err);
+            }
 
-        try {
-            Promise.all([
-                axios.get(`${GetAPI()}system`),
-                axios.get(`${GetAPI()}scores/today?user_id=${GetLoginIDUnsafe()}`)
-            ]).then(([system, today_data]) => {
-                system.data !== null && system.data !== undefined ? setServerInfo({ ...system.data }) : setServerInfo(null);
-                today_data.data !== null && today_data.data !== undefined ? setTodayData({ ...today_data.data }) : setTodayData({ error: true });
-            }).catch((err) => {
-                setTodayData({ error: true });
-                console.error(err);
-            });
-        } catch (_err) {
-            console.error(_err);
-        }
+            try {
+                Promise.all([
+                    axios.get(`${GetAPI()}system`),
+                    axios.get(`${GetAPI()}scores/today?user_id=${GetLoginIDUnsafe()}`)
+                ]).then(([system, today_data]) => {
+                    system.data !== null && system.data !== undefined ? setServerInfo({ ...system.data }) : setServerInfo(null);
+                    today_data.data !== null && today_data.data !== undefined ? setTodayData({ ...today_data.data }) : setTodayData({ error: true });
+                }).catch((err) => {
+                    setTodayData({ error: true });
+                    console.error(err);
+                });
+            } catch (_err) {
+                console.error(_err);
+            }
+        })();
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -487,4 +487,4 @@ function Root() {
     );
 }
 
-export default Root;
+export default RouteIndex;

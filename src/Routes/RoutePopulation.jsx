@@ -31,7 +31,7 @@ ChartJS.register(
     ChartGeo.GeoFeature
 );
 
-function Population() {
+function RoutePopulation() {
     const theme = useTheme();
     const [population, setPopulation] = useState(null);
     const [chartData, setChartData] = useState(null);
@@ -400,4 +400,4 @@ function Population() {
     );
 }
 
-export default Population;
+export default RoutePopulation;

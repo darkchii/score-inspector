@@ -9,7 +9,7 @@ import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArro
 import { Helmet } from 'react-helmet';
 import config from "../config.json";
 
-function Update() {
+function RouteUpdate() {
     const [update, setUpdate] = useState(null);
     const [canMove, setCanMove] = useState([false, false]);
     const [reversedUpdates] = useState(updates.slice().reverse());
@@ -143,4 +143,4 @@ function Update() {
     );
 }
 
-export default Update;
+export default RouteUpdate;

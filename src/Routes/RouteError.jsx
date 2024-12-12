@@ -1,6 +1,6 @@
 import { Typography } from '@mui/material';
 
-function Error() {
+function RouteError() {
     return (
         <>
             <Typography variant="h5" component="h5">Error</Typography>
@@ -16,4 +16,4 @@ function Error() {
     );
 }
 
-export default Error;
+export default RouteError;

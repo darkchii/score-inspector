@@ -13,7 +13,7 @@ import { GetAPI, formatBytes } from '../Helpers/Misc';
 import axios from 'axios';
 import { useLocation, useParams } from 'react-router';
 
-function User() {
+function RouteUser() {
     const [user, setUser] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [loadingState, setLoadingState] = useState('Test message');
@@ -251,4 +251,4 @@ function User() {
     );
 }
 
-export default User;
+export default RouteUser;

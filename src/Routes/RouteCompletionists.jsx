@@ -5,7 +5,7 @@ import { GetAPI } from "../Helpers/Misc";
 import { GetFormattedName } from "../Helpers/Account";
 import { osu_modes } from "../Helpers/Osu";
 
-function Completionists() {
+function RouteCompletionists() {
     const [completionists, setCompletionists] = useState([]);
 
     useEffect(() => {
@@ -88,4 +88,4 @@ function Completionists() {
     );
 }
 
-export default Completionists;
+export default RouteCompletionists;

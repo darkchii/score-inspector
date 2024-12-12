@@ -15,7 +15,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 
-function Chat() {
+function RouteChat() {
     const [isWorking, setIsWorking] = useState(false);
     const [chatStats, setChatStats] = useState(null);
     const [chatHistory, setChatHistory] = useState(null);
@@ -402,4 +402,4 @@ function Chat() {
     );
 }
 
-export default Chat;
+export default RouteChat;

@@ -4,7 +4,7 @@ import { GetAPI, showNotification } from '../Helpers/Misc';
 import axios from 'axios';
 import { Box, Button, ButtonGroup, Card, CardContent, Divider, Grid2, Typography } from '@mui/material';
 
-function Tournaments() {
+function RouteTournaments() {
     const [tournaments, setTournaments] = useState(null);
     const [isWorking, setIsWorking] = useState(false);
 
@@ -83,4 +83,4 @@ function Tournaments() {
     );
 }
 
-export default Tournaments;
+export default RouteTournaments;

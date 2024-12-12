@@ -57,7 +57,7 @@ const MISC_STATS = [
     { name: 'updated_at', label: 'Last updated', format: (value) => moment(value).fromNow() }, //empty row
 ]
 
-function Stats() {
+function RouteStats() {
     const [scoreStats, setScoreStats] = useState(undefined);
     const [statsTime, setStatsTime] = useState(-1);
 
@@ -265,4 +265,4 @@ function Stats() {
     )
 }
 
-export default Stats;
+export default RouteStats;

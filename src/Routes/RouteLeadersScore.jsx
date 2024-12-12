@@ -21,7 +21,7 @@ const PAGES = Math.ceil(MAX_TOTAL_USERS / USERS_PER_PAGE);
 
 const VALID_SORTING = ['rank', 'rank_gain', 'score_gain'];
 
-function LeadersScore() {
+function RouteLeadersScore() {
     const theme = useTheme();
     const params = useParams();
     const navigate = useNavigate();
@@ -325,4 +325,4 @@ function LeadersScore() {
     );
 }
 
-export default LeadersScore;
+export default RouteLeadersScore;

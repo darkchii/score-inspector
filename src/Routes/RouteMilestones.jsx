@@ -13,7 +13,7 @@ import config from "../config.json";
 
 const MILESTONES_PER_PAGE = 50;
 
-function Milestones() {
+function RouteMilestones() {
     const params = useParams();
     const navigate = useNavigate();
 
@@ -119,4 +119,4 @@ function Milestones() {
     );
 }
 
-export default Milestones;
+export default RouteMilestones;

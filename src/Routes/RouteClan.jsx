@@ -10,7 +10,7 @@ import Loader from "../Components/UI/Loader";
 import moment from "moment";
 import ClanLeaderboardItem from "../Components/Leaderboards/ClanLeaderboardItem";
 import { blue, grey } from "@mui/material/colors";
-import { getLevelForScore, getModString } from "../Helpers/Osu";
+import { getLevelForScore } from "../Helpers/Osu";
 import PlayerLeaderboardItem from '../Components/Leaderboards/PlayerLeaderboardItem';
 import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
@@ -178,7 +178,7 @@ const CLAN_STATS = [
     }
 ]
 
-function Clan() {
+function RouteClan() {
     const [clanCreatorModalOpen, setClanCreatorModalOpen] = useState(false);
     const [loggedInUser, setLoggedInUser] = useState(null);
     const [isLoadingUser, setIsLoadingUser] = useState(true);
@@ -1981,4 +1981,4 @@ function ClanFormFields(props) {
     );
 }
 
-export default Clan;
+export default RouteClan;

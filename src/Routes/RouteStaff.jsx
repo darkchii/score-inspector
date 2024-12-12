@@ -8,7 +8,7 @@ import Loader from "../Components/UI/Loader";
 import { Helmet } from "react-helmet";
 import config from "../config.json";
 
-function Staff() {
+function RouteStaff() {
     const [roles, setRoles] = useState(null);
     const navigate = useNavigate();
 
@@ -89,4 +89,4 @@ function Staff() {
     );
 }
 
-export default Staff;
+export default RouteStaff;

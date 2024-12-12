@@ -26,7 +26,7 @@ const value_types = {
     },
 }
 
-function LeadersMonthly() {
+function RouteLeadersMonthly() {
     const theme = useTheme();
 
     const [isLoading, setIsLoading] = useState(true);
@@ -293,4 +293,4 @@ function LeadersMonthly() {
     );
 }
 
-export default LeadersMonthly;
+export default RouteLeadersMonthly;

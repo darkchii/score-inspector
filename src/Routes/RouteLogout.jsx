@@ -2,7 +2,7 @@ import { Box, CircularProgress } from "@mui/material";
 import { useEffect } from "react";
 import { LogoutUser } from "../Helpers/Account";
 
-function Logout() {
+function RouteLogout() {
 
     useEffect(() => {
         (async () => {
@@ -27,4 +27,4 @@ function Logout() {
     )
 }
 
-export default Logout;
+export default RouteLogout;

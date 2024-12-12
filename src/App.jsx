@@ -1,48 +1,51 @@
+import './App.css';
+import 'react-toastify/dist/ReactToastify.css';
+
 import { Alert, Box, CardContent, CssBaseline, Paper, Typography } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import { useEffect, useState } from 'react';
-import './App.css';
 import Theme from './Data/Theme';
-import Root from './Routes/Root';
 import Header from './Components/Header';
-import Error from './Routes/Error';
 import Footer from './Components/Footer';
-import Update from './Routes/Update';
-import User from './Routes/User';
-import Leaders from './Routes/Leaders';
 import { loadSettings } from './Helpers/Settings';
-import Top from './Routes/Top';
-import Stats from './Routes/Stats';
 import { IsUserLoggedIn } from './Helpers/Account';
 import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { GetAPI, showNotification } from './Helpers/Misc';
-import Logout from './Routes/Logout';
 import config from './config';
-import Tools from './Routes/Tools';
 import { Helmet } from 'react-helmet';
 import { getFullUser } from './Helpers/Osu';
-import Population from './Routes/Population';
-import Staff from './Routes/Staff';
-import Admin from './Routes/Admin';
-import LeadersScore from './Routes/LeadersScore';
-import Milestones from './Routes/Milestones';
-import LeadersMonthly from './Routes/LeadersMonthly';
-import Completionists from './Routes/Completionists';
-import Clan from './Routes/Clan';
 import Loader from './Components/UI/Loader';
-import Chat from './Routes/Chat';
-import Tournaments from './Routes/Tournaments';
 import { Route, Routes } from 'react-router';
-import Wiki from './Routes/Wiki';
+
+import RouteIndex from './Routes/RouteIndex';
+import RouteError from './Routes/RouteError';
+import RouteUpdate from './Routes/RouteUpdate';
+import RouteUser from './Routes/RouteUser';
+import RouteLeaders from './Routes/RouteLeaders';
+import RouteTop from './Routes/RouteTop';
+import RouteStats from './Routes/RouteStats';
+import RouteLogout from './Routes/RouteLogout';
+import RouteTools from './Routes/RouteTools';
+import RoutePopulation from './Routes/RoutePopulation';
+import RouteStaff from './Routes/RouteStaff';
+import RouteAdmin from './Routes/RouteAdmin';
+import RouteLeadersScore from './Routes/RouteLeadersScore';
+import RouteMilestones from './Routes/RouteMilestones';
+import RouteLeadersMonthly from './Routes/RouteLeadersMonthly';
+import RouteCompletionists from './Routes/RouteCompletionists';
+import RouteClan from './Routes/RouteClan';
+import RouteChat from './Routes/RouteChat';
+import RouteTournaments from './Routes/RouteTournaments';
 
 function App() {
   const [loginData, setLoginData] = useState(null);
   const [, setRefresher] = useState(0);
   const [isServerAccessible, setIsServerAccessible] = useState(null);
+  const [isWorking, setIsWorking] = useState(false);
 
   useEffect(() => {
     (async () => {
+      setIsWorking(true);
       //ping the server to see if it's accessible
       try {
         const res = await fetch(`${GetAPI()}ping`);
@@ -52,6 +55,7 @@ function App() {
       } catch (e) {
         console.error(e);
         setIsServerAccessible(false);
+        setIsWorking(false);
         return;
       }
 
@@ -80,6 +84,7 @@ function App() {
           setLoginData(loginData);
         }
       }
+      setIsWorking(false);
     })();
 
     loadSettings();
@@ -90,7 +95,6 @@ function App() {
 
   const basePage = (
     <>
-
       <Box>
         <Header account={loginData} />
       </Box>
@@ -101,56 +105,52 @@ function App() {
       }}>
         <CardContent>
           <Routes>
-            <Route path="/" element={<Root />} />
-            <Route path="update/:id" element={<Update />} />
-            <Route path="*" element={<Error />} />
-            <Route path="user/:id/:page?" element={<User />} />
-            <Route path="top" element={<Top />} />
-            <Route path="stats" element={<Stats />} />
-            <Route path="staff" element={<Staff />} />
-            <Route path="population" element={<Population />} />
-            <Route path="completionists" element={<Completionists />} />
-            <Route path="logout" element={<Logout />} />
-            <Route path="clan/:id?/:page?" element={<Clan />} />
-            <Route path="tournaments/:id?" element={<Tournaments />} />
-            <Route path="bancho" element={<Chat />} />
-            {/* wiki can have multiple "subdirectories" which we are unaware off (thats how its supposed to work), Wiki should deal with it */}
-            <Route path="wiki/*" element={<Wiki />} />
-            {/* <Route path="beatmaps/:id?" element={<Beatmap />} />
-            <Route path="beatmaps/query/:query?" element={<Beatmap />} /> */}
-            <Route path="milestones" element={<Milestones />}>
-              <Route index element={<Milestones />} />
-              <Route path="page/:page" element={<Milestones />} />
+            <Route path="/" element={<RouteIndex />} />
+            <Route path="update/:id" element={<RouteUpdate />} />
+            <Route path="*" element={<RouteError />} />
+            <Route path="user/:id/:page?" element={<RouteUser />} />
+            <Route path="top" element={<RouteTop />} />
+            <Route path="stats" element={<RouteStats />} />
+            <Route path="staff" element={<RouteStaff />} />
+            <Route path="population" element={<RoutePopulation />} />
+            <Route path="completionists" element={<RouteCompletionists />} />
+            <Route path="logout" element={<RouteLogout />} />
+            <Route path="clan/:id?/:page?" element={<RouteClan />} />
+            <Route path="tournaments/:id?" element={<RouteTournaments />} />
+            <Route path="bancho" element={<RouteChat />} />
+            <Route path="milestones" element={<RouteMilestones />}>
+              <Route index element={<RouteMilestones />} />
+              <Route path="page/:page" element={<RouteMilestones />} />
             </Route>
-            <Route path="admin" element={<Admin />}>
-              <Route index element={<Admin />} />
-              <Route path=":tool" element={<Admin />} />
+            <Route path="admin" element={<RouteAdmin />}>
+              <Route index element={<RouteAdmin />} />
+              <Route path=":tool" element={<RouteAdmin />} />
             </Route>
-            <Route path="tools" element={<Tools />}>
-              <Route index element={<Tools />} />
-              <Route path=":tool" element={<Tools />} />
+            <Route path="tools" element={<RouteTools />}>
+              <Route index element={<RouteTools />} />
+              <Route path=":tool" element={<RouteTools />} />
             </Route>
-            <Route path="month_score" element={<LeadersMonthly />} />
-            <Route path="score" element={<LeadersScore />}>
-              <Route index element={<LeadersScore />} />
-              <Route path="page/:page" element={<LeadersScore />}>
-                <Route index element={<LeadersScore />} />
-                <Route path="date/:date" element={<LeadersScore />}>
-                  <Route index element={<LeadersScore />} />
-                  <Route path="sort/:sort" element={<LeadersScore />}>
-                    <Route index element={<LeadersScore />} />
-                    <Route path="mode/:mode" element={<LeadersScore />} />
+            <Route path="month_score" element={<RouteLeadersMonthly />} />
+            <Route path="score" element={<RouteLeadersScore />}>
+              <Route index element={<RouteLeadersScore />} />
+              <Route path="page/:page" element={<RouteLeadersScore />}>
+                <Route index element={<RouteLeadersScore />} />
+                <Route path="date/:date" element={<RouteLeadersScore />}>
+                  <Route index element={<RouteLeadersScore />} />
+                  <Route path="sort/:sort" element={<RouteLeadersScore />}>
+                    <Route index element={<RouteLeadersScore />} />
+                    <Route path="mode/:mode" element={<RouteLeadersScore />} />
                   </Route>
                 </Route>
               </Route>
             </Route>
-            <Route path="leaderboard" element={<Leaders />}>
-              <Route index element={<Leaders />} />
-              <Route path="stat/:stat" element={<Leaders />}>
-                <Route index element={<Leaders />} />
-                <Route path="page/:page" element={<Leaders />}>
-                  <Route index element={<Leaders />} />
-                  <Route path="country/:country" element={<Leaders />} />
+            <Route path="leaderboard" element={<RouteLeaders />}>
+              <Route index element={<RouteLeaders />} />
+              <Route path="stat/:stat" element={<RouteLeaders />}>
+                <Route index element={<RouteLeaders />} />
+                <Route path="page/:page" element={<RouteLeaders />}>
+                  <Route index element={<RouteLeaders />} />
+                  <Route path="country/:country" element={<RouteLeaders />} />
                 </Route>
               </Route>
             </Route>
@@ -180,41 +180,46 @@ function App() {
           </style>
         </Helmet>
         {
-          config.USE_DEV_API && <>
-            <Alert severity="warning">
-              <Typography variant="h6" component="div">
-                <Box fontWeight="fontWeightBold">
-                  WARNING: You are using the development API!
-                </Box>
-              </Typography>
-            </Alert>
-          </>
-        }
-        <ToastContainer hideProgressBar />
-        {/* <RouterProvider router={router} /> */}
-        {
-          isServerAccessible === null ?
-            <Box sx={{
-              //expand height to fill the screen
-              height: '100vh',
-              display: 'flex',
-            }}>
-              <Loader />
-            </Box> : (
-              isServerAccessible === false ? (
-                <Box sx={{ p: 2 }}>
-                  <Alert severity="error">
+          isWorking ? <Loader /> :
+            <>
+              {
+                config.USE_DEV_API && <>
+                  <Alert severity="warning">
                     <Typography variant="h6" component="div">
                       <Box fontWeight="fontWeightBold">
-                        The server is currently not accessible. Please try again later.
-                        <br />
-                        osu!alternative Discord: <a href="https://discord.gg/VZWRZZXcW4" target="_blank" rel="noreferrer">https://discord.gg/VZWRZZXcW4</a>
+                        WARNING: You are using the development API!
                       </Box>
                     </Typography>
                   </Alert>
-                </Box>
-              ) : basePage
-            )
+                </>
+              }
+              <ToastContainer hideProgressBar />
+              {/* <RouterProvider router={router} /> */}
+              {
+                isServerAccessible === null ?
+                  <Box sx={{
+                    //expand height to fill the screen
+                    height: '100vh',
+                    display: 'flex',
+                  }}>
+                    <Loader />
+                  </Box> : (
+                    isServerAccessible === false ? (
+                      <Box sx={{ p: 2 }}>
+                        <Alert severity="error">
+                          <Typography variant="h6" component="div">
+                            <Box fontWeight="fontWeightBold">
+                              The server is currently not accessible. Please try again later.
+                              <br />
+                              osu!alternative Discord: <a href="https://discord.gg/VZWRZZXcW4" target="_blank" rel="noreferrer">https://discord.gg/VZWRZZXcW4</a>
+                            </Box>
+                          </Typography>
+                        </Alert>
+                      </Box>
+                    ) : basePage
+                  )
+              }
+            </>
         }
       </ThemeProvider>
     </>

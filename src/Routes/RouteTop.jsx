@@ -26,7 +26,7 @@ const SCORE_CARD_HEIGHT = '8em';
 const SCORE_TYPES = 2;
 const SCORE_TYPE_NAMES = ['Performance', 'Score'];
 
-function Top() {
+function RouteTop() {
     const [isWorking, setIsWorking] = useState(false);
     const [scores, setScores] = useState([]);
     const [selected_period, setSelectedPeriod] = useState(PERIODS[0]);
@@ -306,4 +306,4 @@ function Top() {
     );
 }
 
-export default Top;
+export default RouteTop;

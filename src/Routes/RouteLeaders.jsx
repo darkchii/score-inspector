@@ -286,7 +286,7 @@ const GROUPED_STATS = {
 }
 
 const ROWS_PER_PAGE = 50;
-function Leaders() {
+function RouteLeaders() {
     const params = useParams();
 
     const [isLoading, setIsLoading] = useState(false);
@@ -558,4 +558,4 @@ function Leaders() {
     );
 }
 
-export default Leaders;
+export default RouteLeaders;
