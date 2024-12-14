@@ -1,4 +1,4 @@
-import { Alert, Box, Card, CardActionArea, CardContent, Grid2, Paper, Skeleton, Stack, Tab, Tabs, Tooltip, Typography } from "@mui/material";
+import { Alert, Box, Card, CardActionArea, CardContent, Grid2, Paper, Skeleton, Stack, Tab, Tabs, Typography } from "@mui/material";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
@@ -12,6 +12,7 @@ import { grey } from "@mui/material/colors";
 import { getGradeIcon } from "../Helpers/Assets";
 import Mods from "../Helpers/Mods";
 import StarsLabel from "../Components/StarsLabel";
+import OsuTooltip from "../Components/OsuTooltip";
 
 const SCORES_TO_FETCH = 10;
 const PERIODS = [
@@ -181,16 +182,16 @@ function RouteTop() {
                                                                                 alignItems: 'center',
                                                                             }}>
                                                                                 <StarsLabel style={{ marginRight: '1em' }} stars={score.beatmap.difficulty_data?.star_rating} />
-                                                                                <Tooltip title={`${score.beatmap.artist} - ${score.beatmap.title} [${score.beatmap.diffname}]`}>
+                                                                                <OsuTooltip title={`${score.beatmap.artist} - ${score.beatmap.title} [${score.beatmap.diffname}]`}>
                                                                                     <Typography textOverflow='ellipsis' noWrap variant='h6' sx={{ fontSize: '1em' }}>{score.beatmap.artist} - {score.beatmap.title} [{score.beatmap.diffname}]</Typography>
-                                                                                </Tooltip>
+                                                                                </OsuTooltip>
                                                                             </Box>
                                                                             {/* <Marquee pauseOnHover={true} speed={40} gradient={false}> */}
                                                                             {/* </Marquee> */}
                                                                             <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                                                                                 <Box>
                                                                                     <Typography variant='body1'>
-                                                                                        By <Typography component={Link} variant='body1' sx={{ textDecoration: 'none' }} color='primary' to={`/user/${score.user_id}`}>{score.user.username}</Typography> <Tooltip title={moment(score.date_played).format('HH:mm MMMM Do, YYYY')}>{moment(score.date_played).fromNow()}</Tooltip>
+                                                                                        By <Typography component={Link} variant='body1' sx={{ textDecoration: 'none' }} color='primary' to={`/user/${score.user_id}`}>{score.user.username}</Typography> <OsuTooltip title={moment(score.date_played).format('HH:mm MMMM Do, YYYY')}>{moment(score.date_played).fromNow()}</OsuTooltip>
                                                                                     </Typography>
                                                                                     <Box sx={{
                                                                                         display: 'flex',

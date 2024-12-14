@@ -1,10 +1,11 @@
 import { GetAPI, GetOsuApiRedirect, parseReadableStreamToJson } from "./Misc";
 import config from '../config.json';
 import axios from "axios";
-import { Avatar, Box, Tooltip } from "@mui/material";
+import { Avatar, Box } from "@mui/material";
 import * as Muicon from "@mui/icons-material";
 import PlayerChip from "../Components/UI/PlayerChip";
 import PlayerChipIcon from "../Components/UI/PlayerChipIcon";
+import OsuTooltip from "../Components/OsuTooltip";
 
 const ROLE_PADDING = 0.2;
 
@@ -53,7 +54,7 @@ export function GetFormattedName(inspector_user, settings = null) {
 
     return (
         <>
-            <Tooltip title={_settings.custom_tooltip ?? ''} placement='top'>
+            <OsuTooltip title={_settings.custom_tooltip ?? ''} placement='top'>
                 {
                     _settings.icon_only ? <>
                         <PlayerChipIcon sx={{
@@ -87,7 +88,7 @@ export function GetFormattedName(inspector_user, settings = null) {
                             size={_settings.size} />
                     </>
                 }
-            </Tooltip>
+            </OsuTooltip>
         </>
     );
 }
@@ -113,9 +114,9 @@ export function GetRoleIcons(roles, chips = false) {
     return roles?.filter(role => role.is_visible).map(role => {
         return (
             <>
-                <Tooltip title={role.name}>
+                <OsuTooltip title={role.name}>
                     {chips ? wrapIcon(GetRoleIcon(role)) : GetRoleIcon(role)}
-                </Tooltip>
+                </OsuTooltip>
             </>)
     });
 }

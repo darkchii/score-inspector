@@ -1,4 +1,4 @@
-import { Box, Card, CardContent, Modal, Stack, Tooltip, Typography } from "@mui/material";
+import { Box, Card, CardContent, Modal, Stack, Typography } from "@mui/material";
 import { useImperativeHandle } from "react";
 import { forwardRef } from "react";
 import { useState } from "react";
@@ -7,6 +7,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { green, red } from "@mui/material/colors";
 import Loader from "../UI/Loader";
+import OsuTooltip from "../OsuTooltip";
 
 const style = {
     position: 'absolute',
@@ -64,7 +65,7 @@ function PackCompletionModal(props, ref) {
                                                                     width: '5%',
                                                                     p: 2
                                                                 }}>
-                                                                    <Tooltip title={
+                                                                    <OsuTooltip title={
                                                                         hasScore ?
                                                                             'Completed'
                                                                             :
@@ -76,7 +77,7 @@ function PackCompletionModal(props, ref) {
                                                                                 :
                                                                                 <CancelIcon sx={{ color: red[500] }} />
                                                                         }
-                                                                    </Tooltip>
+                                                                    </OsuTooltip>
                                                                 </Box>
                                                                 <Box sx={{
                                                                     display: 'flex',

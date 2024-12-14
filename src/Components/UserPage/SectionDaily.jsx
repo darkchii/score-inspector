@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Box, Button, ButtonGroup, Card, CardContent, Grid2, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography, useTheme, Tooltip as MUITooltip, Alert } from "@mui/material";
+import { Box, Button, ButtonGroup, Card, CardContent, Grid2, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography, useTheme, Alert } from "@mui/material";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { GRADE_ORDER, getGradeColor } from "../../Helpers/Osu";
@@ -9,6 +9,7 @@ import { lerpColor, nestedSearch, showNotification } from "../../Helpers/Misc";
 import { ErrorBoundary } from "react-error-boundary";
 import ChartWrapper from "../../Helpers/ChartWrapper";
 import useLongPress from "../../Helpers/useLongPress";
+import OsuTooltip from "../OsuTooltip";
 
 const MAX_DAYS_RANGE = 31;
 
@@ -348,7 +349,7 @@ function SectionDaily(props) {
                                         }
                                         //lets just do a border instead, but bit darker than the color
                                         return (
-                                            <MUITooltip key={index} title={
+                                            <OsuTooltip key={index} title={
                                                 <Typography variant="body2">
                                                     {`${day.date}: ${_clears} clears`}
                                                 </Typography>
@@ -375,7 +376,7 @@ function SectionDaily(props) {
                                                     }}>
 
                                                 </Box>
-                                            </MUITooltip>
+                                            </OsuTooltip>
                                         )
                                     })
                                 }

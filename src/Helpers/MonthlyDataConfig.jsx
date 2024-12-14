@@ -1,4 +1,4 @@
-import { mods } from "./Osu";
+import Mods from "./Mods";
 
 export const dataToList = [
     {
@@ -43,7 +43,7 @@ export const dataToList = [
     {
         outputValue: "highest_sr",
         exec: function (output, score) {
-            if((score.beatmap.approved === 1 || score.beatmap.approved === 2) && !(score.enabled_mods & mods.NF)){
+            if((score.beatmap.approved === 1 || score.beatmap.approved === 2) && !(Mods.hasMod(score.mods, "NF"))){
                 return Math.max(output, score.beatmap.difficulty_data.star_rating ?? 0);
             }
             return output;

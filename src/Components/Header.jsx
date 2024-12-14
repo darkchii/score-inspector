@@ -1,4 +1,4 @@
-import { AppBar, Avatar, Box, Button, Divider, Drawer, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Menu, MenuItem, Stack, Toolbar, Tooltip, Typography, alpha, styled } from '@mui/material';
+import { AppBar, Avatar, Box, Button, Divider, Drawer, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Menu, MenuItem, Stack, Toolbar, Typography, alpha, styled } from '@mui/material';
 import React from 'react';
 import { useRef } from 'react';
 import { Link } from 'react-router';
@@ -23,6 +23,7 @@ import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
 import GroupIcon from '@mui/icons-material/Group';
 import CompareArrowsIcon from '@mui/icons-material/CompareArrows';
 import ChatIcon from '@mui/icons-material/Chat';
+import OsuTooltip from './OsuTooltip';
 
 const HeaderButtonMenu = styled((props) => (
     <Menu
@@ -198,7 +199,7 @@ function Header(props) {
                                         headerNavItems.map((item, index) => {
                                             return (
                                                 <Stack key={index} direction="row">
-                                                    <Tooltip title={item.tooltip ?? ''}>
+                                                    <OsuTooltip title={item.tooltip ?? ''}>
                                                         <Button
                                                             key={index}
                                                             size='small'
@@ -214,7 +215,7 @@ function Header(props) {
                                                                 <IconButton onClick={(e) => handleHeaderMenuOpen(e, index)} size='small'><KeyboardArrowDownIcon /></IconButton>
                                                                 : <></>
                                                         }
-                                                    </Tooltip>
+                                                    </OsuTooltip>
                                                 </Stack>
                                             )
                                         }

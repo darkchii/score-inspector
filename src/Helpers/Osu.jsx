@@ -347,9 +347,9 @@ export function isScoreRealistic(score) {
         return false;
     }
 
-    const maxMissCount = (score.enabled_mods & mods.NF) ? 15 : 30;
+    const maxMissCount = (Mods.hasMod(score.mods, "NF")) ? 15 : 30;
     const minCombo = score.beatmap.maxcombo * 0.8;
-    const minAcc = (score.enabled_mods & mods.NF) ? 96 : 90;
+    const minAcc = (Mods.hasMod(score.mods, "NF")) ? 96 : 90;
 
     if (score.countmiss <= maxMissCount && score.combo > minCombo && score.accuracy > minAcc) {
         return true;

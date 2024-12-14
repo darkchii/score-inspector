@@ -1,7 +1,8 @@
-import { Box, Tooltip, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import GlowBar from "../UI/GlowBar";
 import { LeaderboardItem } from "./LeaderboardItem";
 import { useNavigate } from "react-router";
+import OsuTooltip from "../OsuTooltip";
 
 function ClanLeaderboardItem(props) {
     const navigate = useNavigate();
@@ -80,7 +81,7 @@ function ClanLeaderboardItem(props) {
                 {
                     props.values?.map((value, index) => {
                         return (
-                            <Tooltip key={index} title={value.tooltip ?? ''}>
+                            <OsuTooltip key={index} title={value.tooltip ?? ''}>
                                 <Box sx={{
                                     display: 'flex',
                                     justifyContent: value.alignment,
@@ -101,7 +102,7 @@ function ClanLeaderboardItem(props) {
                                         </Typography>
                                     </Box>
                                 </Box>
-                            </Tooltip>
+                            </OsuTooltip>
                         )
                     })
                 }
@@ -115,7 +116,7 @@ function ClanLeaderboardItem(props) {
                 {
                     props.iconValues?.map((value, index) => {
                         return (
-                            <Tooltip key={index} title={value.tooltip ?? ''}>
+                            <OsuTooltip key={index} title={value.tooltip ?? ''}>
                                 <Box sx={{
                                     display: 'flex',
                                     justifyContent: value.alignment,
@@ -134,7 +135,7 @@ function ClanLeaderboardItem(props) {
                                         {value.value}
                                     </Typography>
                                 </Box>
-                            </Tooltip>
+                            </OsuTooltip>
                         )
                     })
                 }

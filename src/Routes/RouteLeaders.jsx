@@ -1,4 +1,4 @@
-import { Alert, AlertTitle, Box, Button, ButtonGroup, CircularProgress, FormControl, InputLabel, Link, MenuItem, Pagination, Paper, Select, Stack, Tooltip, Typography } from '@mui/material';
+import { Alert, AlertTitle, Box, Button, ButtonGroup, CircularProgress, FormControl, InputLabel, Link, MenuItem, Pagination, Paper, Select, Stack, Typography } from '@mui/material';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
@@ -13,6 +13,7 @@ import { grey } from '@mui/material/colors';
 import { countries } from 'countries-list';
 import { getDedicationLevel } from '../Helpers/Osu';
 import { getFlagIcon } from '../Helpers/Assets';
+import OsuTooltip from '../Components/OsuTooltip';
 momentDurationFormatSetup(moment);
 
 const GROUPED_STATS = {
@@ -387,9 +388,9 @@ function RouteLeaders() {
                                     {
                                         GROUPED_STATS[group].map((stat, j) => {
                                             return (
-                                                <Tooltip key={j} title={stat.description ?? ''}>
+                                                <OsuTooltip key={j} title={stat.description ?? ''}>
                                                     <Button sx={{ m: 0.1 }} disabled={isLoading} size='small' variant={stat.name === statistic.name ? 'contained' : 'outlined'} onClick={() => navigate(`stat/${stat.name}/page/1/country/${country ?? 'world'}`)}>{stat.title}</Button>
-                                                </Tooltip>
+                                                </OsuTooltip>
                                             );
                                         })
                                     }

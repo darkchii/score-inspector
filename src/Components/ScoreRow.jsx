@@ -7,6 +7,7 @@ import { formatNumber, toFixedNumber } from "../Helpers/Misc";
 import Mods from "../Helpers/Mods";
 import WarningIcon from '@mui/icons-material/Warning';
 import ScoreModal from "./ScoreModal";
+import OsuTooltip from "./OsuTooltip";
 
 function ScoreRow(props) {
     const theme = useTheme();
@@ -99,7 +100,7 @@ function ScoreRow(props) {
                                         alignItems: 'center',
                                         maxWidth: '100%',
                                     }}>
-                                        <Tooltip
+                                        <OsuTooltip
                                             title={`${score.beatmap.artist} - ${score.beatmap.title} [${score.beatmap.diffname}]`}
                                         >
                                             <Typography noWrap sx={{ fontSize: '0.8rem', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
@@ -108,7 +109,7 @@ function ScoreRow(props) {
                                             <Typography noWrap sx={{ fontSize: '0.7rem', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                                                 <span style={{ color: '#ea0' }}>{score.beatmap.diffname}</span> <span style={{ opacity: '0.7' }}>{score.date_played_moment.fromNow()}</span>
                                             </Typography>
-                                        </Tooltip>
+                                        </OsuTooltip>
                                     </Box>
                                 </Grid2>
 
@@ -168,9 +169,9 @@ function ScoreRow(props) {
                                         score.beatmap.approved === 4 ?
                                             <>
                                                 <Box sx={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'right' }}>
-                                                    <Tooltip title="Loved">
+                                                    <OsuTooltip title="Loved">
                                                         <FavoriteIcon sx={{ color: red[500] }} />
-                                                    </Tooltip>
+                                                    </OsuTooltip>
                                                 </Box>
                                             </> : <></>
                                     }
@@ -206,11 +207,11 @@ function ScoreRow(props) {
                                 }
                                 <Grid2 size={props.small ? 0.7 : 0.4}>
                                     <Box sx={{ height: '100%', alignContent: 'right', display: 'flex', alignItems: 'center', justifyContent: 'left' }}>
-                                        <Tooltip title={
+                                        <OsuTooltip title={
                                             `Aim: ${score.beatmap.difficulty_data.aim_difficulty.toFixed(2)}, Speed: ${score.beatmap.difficulty_data.speed_difficulty.toFixed(2)}, Flashlight: ${(score.beatmap.difficulty_data.flashlight_rating ?? 0).toFixed(2)}*`
                                         }>
                                             <Typography sx={{ ml: 0.4 }} variant="subtitle2"> {(score.beatmap.difficulty_data.star_rating ?? 0).toFixed(2)}*</Typography>
-                                        </Tooltip>
+                                        </OsuTooltip>
                                     </Box>
                                 </Grid2>
 
@@ -290,9 +291,9 @@ function ScoreRow(props) {
                                     }}>
                                         {
                                             score.beatmap.difficulty_data.is_legacy ?
-                                                <Tooltip title="This score uses old star ratings and may cause incorrect mod and/or pp values">
+                                                <OsuTooltip title="This score uses old star ratings and may cause incorrect mod and/or pp values">
                                                     <WarningIcon sx={{ color: orange[500] }} />
-                                                </Tooltip>
+                                                </OsuTooltip>
                                                 : <></>
                                         }
                                         <Typography variant="subtitle1">

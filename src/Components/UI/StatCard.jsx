@@ -1,6 +1,7 @@
-import { Box, Grid2, Paper, Skeleton, Tooltip, Typography, useTheme } from "@mui/material";
+import { Box, Grid2, Paper, Skeleton, Typography, useTheme } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { useEffect, useState } from "react";
+import OsuTooltip from "../OsuTooltip";
 
 function StatCard(props) {
     const theme = useTheme();
@@ -15,7 +16,7 @@ function StatCard(props) {
     }, [props]);
 
     return <>
-        <Tooltip title={props.tooltip ?? ''}>
+        <OsuTooltip title={props.tooltip ?? ''}>
             <Paper sx={{
                 backgroundColor: `${props.color[props.brightness ?? 600]}${opacity}`,
                 overflow: 'hidden',
@@ -86,7 +87,7 @@ function StatCard(props) {
                     </Grid2>
                 </Box>
             </Paper>
-        </Tooltip>
+        </OsuTooltip>
     </>
 }
 

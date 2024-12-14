@@ -1,4 +1,4 @@
-import { Avatar, Box, Chip, Grid2, Link, Paper, Stack, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableRow, Tooltip, Typography } from "@mui/material";
+import { Avatar, Box, Chip, Grid2, Link, Paper, Stack, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableRow, Typography } from "@mui/material";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { GetFormattedName, GetRoleIcon, GetRoles } from "../../Helpers/Account";
@@ -7,6 +7,7 @@ import { DiscordIcon } from "../../Components/Icons";
 import { getBonusPerformance } from "../../Helpers/Osu";
 import { Link as VLink } from 'react-router';
 import { getFlagIcon } from "../../Helpers/Assets";
+import OsuTooltip from "../OsuTooltip";
 
 const MAX_VISITORS = 5;
 function SectionHeader(props) {
@@ -85,9 +86,9 @@ function SectionHeader(props) {
                                                                     {/* <Tooltip title={role.title}>
                                                                     {GetRoleIcon(role)}
                                                                 </Tooltip> */}
-                                                                    <Tooltip title={role.description}>
+                                                                    <OsuTooltip title={role.description}>
                                                                         <Chip size='small' sx={{ m: 0.2, backgroundColor: `#${role.color}aa` }} icon={GetRoleIcon(role)} label={role.title} />
-                                                                    </Tooltip>
+                                                                    </OsuTooltip>
                                                                 </Box>
                                                             </>
                                                         )
@@ -105,9 +106,9 @@ function SectionHeader(props) {
                                                 props.user.osu.groups.map((group) => {
                                                     return (
                                                         <>
-                                                            <Tooltip title={group.name}>
+                                                            <OsuTooltip title={group.name}>
                                                                 <Chip size='small' sx={{ m: 0.2, backgroundColor: `${group.colour}aa` }} label={group.short_name} />
-                                                            </Tooltip>
+                                                            </OsuTooltip>
                                                         </>
                                                     )
                                                 })
@@ -115,7 +116,7 @@ function SectionHeader(props) {
                                         </> : <></>
                                     }
                                 </Stack>
-                                <Typography variant='h6'>{Math.round(props.user.osu.statistics.pp).toLocaleString('en-US')}pp ({(Math.round(getBonusPerformance(props.user.scores.length ?? 0) * 100) / 100).toLocaleString('en-US')}pp bonus, <Tooltip title='Sum of pp from every set score'><span>{Math.round(props.user.data?.total.pp ?? 0).toLocaleString('en-US')}pp total</span></Tooltip>)</Typography>
+                                <Typography variant='h6'>{Math.round(props.user.osu.statistics.pp).toLocaleString('en-US')}pp ({(Math.round(getBonusPerformance(props.user.scores.length ?? 0) * 100) / 100).toLocaleString('en-US')}pp bonus, <OsuTooltip title='Sum of pp from every set score'><span>{Math.round(props.user.data?.total.pp ?? 0).toLocaleString('en-US')}pp total</span></OsuTooltip>)</Typography>
                                 <Stack direction='row' spacing={1} sx={{ m: 0.5 }}>
                                     {
                                         props.user.osu.twitter !== null ? <>

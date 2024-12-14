@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Loader from "./Loader";
-import { Box, Tooltip, Typography, useTheme } from "@mui/material";
+import { Box, Typography, useTheme } from "@mui/material";
+import OsuTooltip from "../OsuTooltip";
 
 function WordCloud(props) {
     const [wordData, setWordData] = useState(null);
@@ -50,7 +51,7 @@ function WordCloud(props) {
                     const color = `${theme.palette.primary.main}${Math.round(100 + (frequency / maxFrequency) * 105).toString(16)}`;
 
                     return (
-                        <Tooltip key={index} title={`Frequency: ${frequency}`}>
+                        <OsuTooltip key={index} title={`Frequency: ${frequency}`}>
                             <Typography
                                 key={index}
                                 sx={{
@@ -61,7 +62,7 @@ function WordCloud(props) {
                             >
                                 {word}
                             </Typography>
-                        </Tooltip>
+                        </OsuTooltip>
                     );
                 })}
             </Box>

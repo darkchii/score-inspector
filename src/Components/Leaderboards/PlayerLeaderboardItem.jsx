@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useEffect } from "react";
-import { Box, Stack, Tooltip, Typography, useTheme } from "@mui/material";
+import { Box, Stack, Typography, useTheme } from "@mui/material";
 import GlowBar from "../UI/GlowBar";
 import LevelIcon from "../UI/LevelIcon";
 import { LEADERBOARD_BORDER_RADIUS, LEADERBOARD_ITEM_HEIGHT, LeaderboardItem } from "./LeaderboardItem";
@@ -13,6 +13,7 @@ import HorizontalRuleIcon from '@mui/icons-material/HorizontalRule';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { getFlagIcon } from "../../Helpers/Assets";
+import OsuTooltip from "../OsuTooltip";
 
 function PlayerLeaderboardItem(props) {
     const [osu_user, setOsuUser] = useState({});
@@ -172,11 +173,11 @@ function PlayerLeaderboardItem(props) {
                         {GetRoleIcons(inspector_user?.roles ?? [])}
                         {
                             !osu_user &&
-                            <Tooltip title='Cannot find osu! user profile. Probably restricted.'>
+                            <OsuTooltip title='Cannot find osu! user profile. Probably restricted.'>
                                 <Typography variant='body1' sx={{ color: 'red' }} noWrap>
                                     <NotInterestedIcon />
                                 </Typography>
-                            </Tooltip>
+                            </OsuTooltip>
                         }
                     </Stack>
                 </Box>

@@ -14,11 +14,12 @@ import {
 import WorldAtlas from '../Assets/world-110m.json';
 import Countries from '../Assets/countries.json';
 import { lerpColor, linearToLogarithmic } from "../Helpers/Misc";
-import { Box, Button, Grid2, Paper, Table, TableBody, TableCell, TableContainer, TableRow, Tooltip as MUITooltip, Typography, TableHead, Container, useTheme } from "@mui/material";
+import { Box, Button, Grid2, Paper, Table, TableBody, TableCell, TableContainer, TableRow, Typography, TableHead, Container, useTheme } from "@mui/material";
 import Loader from "../Components/UI/Loader";
 import { Helmet } from 'react-helmet';
 import config from "../config.json";
 import { getFlagIcon } from "../Helpers/Assets";
+import OsuTooltip from "../Components/OsuTooltip";
 
 ChartJS.register(
     Title,
@@ -382,9 +383,9 @@ function RoutePopulation() {
                                                 {
                                                     chartTypes.find((t) => t.value === activeChartType).showShare !== false &&
                                                     <TableCell align="right" sx={{ fontStyle: 'italic' }}>
-                                                        <MUITooltip title={`Share of total value`} arrow>
+                                                        <OsuTooltip title={`Share of total value`} arrow>
                                                             {Math.round((c.valuePercent ?? 0) * 100 * 100) / 100}%
-                                                        </MUITooltip>
+                                                        </OsuTooltip>
                                                     </TableCell>
                                                 }
                                             </TableRow>

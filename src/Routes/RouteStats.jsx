@@ -1,4 +1,4 @@
-import { Alert, AlertTitle, Box, Card, CardContent, CardHeader, CircularProgress, Grid2, Link, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip, Typography, tableCellClasses, tableRowClasses } from "@mui/material";
+import { Alert, AlertTitle, Box, Card, CardContent, CardHeader, CircularProgress, Grid2, Link, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, tableCellClasses, tableRowClasses } from "@mui/material";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { IMG_SVG_GRADE_A, IMG_SVG_GRADE_B, IMG_SVG_GRADE_C, IMG_SVG_GRADE_D, IMG_SVG_GRADE_S, IMG_SVG_GRADE_SH, IMG_SVG_GRADE_X, IMG_SVG_GRADE_XH } from "../Helpers/Assets";
@@ -9,6 +9,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import config from "../config.json";
 import { Helmet } from "react-helmet";
 import { GetFormattedName } from "../Helpers/Account";
+import OsuTooltip from "../Components/OsuTooltip";
 
 const TIME_PERIODS = [
     { name: '30min', label: 'Last 30 minutes' },
@@ -218,7 +219,7 @@ function RouteStats() {
                                                                                 }}
                                                                             >
                                                                                 <TableCell width={'3%'} sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})` }}>
-                                                                                    <Tooltip title={`${approval_state[map?.approved] ?? ''}`}>
+                                                                                    <OsuTooltip title={`${approval_state[map?.approved] ?? ''}`}>
                                                                                         <Box>
                                                                                             {
                                                                                                 map?.approved === 1 || map?.approved === 2 ?
@@ -230,7 +231,7 @@ function RouteStats() {
                                                                                                             : <></>
                                                                                             }
                                                                                         </Box>
-                                                                                    </Tooltip>
+                                                                                    </OsuTooltip>
                                                                                 </TableCell>
                                                                                 <TableCell sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})` }}>
                                                                                     {map.title} [{map.diffname}]

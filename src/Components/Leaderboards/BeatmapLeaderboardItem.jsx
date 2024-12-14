@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
-import { Box, Tooltip, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import GlowBar from "../UI/GlowBar";
 import { LeaderboardItem } from "./LeaderboardItem";
 import CheckIcon from '@mui/icons-material/Check';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { approval_state } from "../../Helpers/Osu";
 import { green, red, yellow } from "@mui/material/colors";
+import OsuTooltip from "../OsuTooltip";
 
 function BeatmapLeaderboardItem(props) {
     const [base_beatmap, setBaseBeatmap] = useState({});
@@ -55,7 +56,7 @@ function BeatmapLeaderboardItem(props) {
                     alignItems: 'center',
                     width: '40px'
                 }}>
-                    <Tooltip title={`${approval_state[osu_beatmap?.approved] ?? ''}`}>
+                    <OsuTooltip title={`${approval_state[osu_beatmap?.approved] ?? ''}`}>
                         <Box>
                             {
                                 osu_beatmap?.approved === 1 || osu_beatmap?.approved === 2 ?
@@ -67,7 +68,7 @@ function BeatmapLeaderboardItem(props) {
                                             : <></>
                             }
                         </Box>
-                    </Tooltip>
+                    </OsuTooltip>
                 </Box>
 
                 <Box sx={{

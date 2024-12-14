@@ -1,9 +1,10 @@
-import { Alert, Box, Button, Checkbox, FormControl, FormControlLabel, Grid2, InputLabel, MenuItem, Paper, Select, Stack, TextField, Tooltip, Typography } from "@mui/material";
+import { Alert, Box, Button, Checkbox, FormControl, FormControlLabel, Grid2, InputLabel, MenuItem, Paper, Select, Stack, TextField, Typography } from "@mui/material";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { useEffect, useState } from "react";
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import moment from "moment";
 import TriCheckbox from "../UI/TriCheckbox";
+import OsuTooltip from "../OsuTooltip";
 
 const COMMANDS = [
     {
@@ -320,9 +321,9 @@ function ToolCommandHelper() {
                     {
                         COMMANDS.map((command, index) => {
                             return (
-                                <Tooltip key={index} title={command.desc}>
+                                <OsuTooltip key={index} title={command.desc}>
                                     <Button sx={{ m: 0.5 }} variant={selectedCommand?.cmd === command.cmd ? 'contained' : 'outlined'} onClick={() => { setSelectedCommand(command); resetArgumentData(); }}>{command.cmd}</Button>
-                                </Tooltip>
+                                </OsuTooltip>
                             )
                         })
                     }
@@ -337,7 +338,7 @@ function ToolCommandHelper() {
                                 const compatible = true;
                                 return (
                                     <Grid2 key={index} size={argument.width ?? 3}>
-                                        <Tooltip title={argument.desc}>
+                                        <OsuTooltip title={argument.desc}>
                                             <Box>
                                                 <>
                                                     {
@@ -428,7 +429,7 @@ function ToolCommandHelper() {
                                                     }
                                                 </>
                                             </Box>
-                                        </Tooltip>
+                                        </OsuTooltip>
                                     </Grid2>
                                 )
                             })

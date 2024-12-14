@@ -39,6 +39,12 @@ const chart_types = [
     'grades', 'score', 'clears'
 ]
 
+const chart_types_names = {
+    'grades': 'Grades',
+    'score': 'Score',
+    'clears': 'Clears'
+}
+
 function ScoreSubmissions() {
     const theme = useTheme();
 
@@ -158,7 +164,7 @@ function ScoreSubmissions() {
                     <Tabs disabled={isWorking} value={display} onChange={(e, v) => setDisplay(v)} variant='scrollable'>
                         {
                             chart_types.map((type, i) => {
-                                return <Tab label={type} key={i} />
+                                return <Tab key={i} label={chart_types_names[type]} />
                             })
                         }
                     </Tabs>

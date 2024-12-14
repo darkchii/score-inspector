@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Avatar, Box, Button, Card, Divider, Grid2, Stack, Typography } from '@mui/material';
+import { Avatar, Box, Card, Divider, Grid2, Stack, Typography } from '@mui/material';
 import { Chart as ChartJS, ArcElement, Tooltip as ChartTooltip, Legend } from 'chart.js';
 import moment from 'moment';
 import { useEffect, useRef } from 'react';
@@ -14,7 +14,6 @@ import ScoreDial from './ScoreDial';
 import StarsLabel from './StarsLabel';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import StarIcon from '@mui/icons-material/Star';
-import * as htmlToImage from "html-to-image";
 import ScoreViewStat from './UI/ScoreViewStat';
 import { Link as RLink } from "react-router";
 ChartJS.register(ArcElement, ChartTooltip, Legend);
@@ -23,21 +22,6 @@ function ScoreView(props) {
     const [scoreData, setScoreData] = useState(null);
     const [beatmapData, setBeatmapData] = useState(null);
     const screenshotArea = useRef(null);
-
-    async function createImage() {
-        if (!screenshotArea.current) {
-            return;
-        }
-
-        //with cross-origin
-        await htmlToImage.toPng(screenshotArea.current).then(function (dataUrl) {
-            var link = document.createElement('a');
-            const id = scoreData.score.user.username + '_' + scoreData.score.beatmap.beatmap_id + '_' + scoreData.score.date_played;
-            link.download = `${id}.png`;
-            link.href = dataUrl;
-            link.click();
-        });
-    }
 
     async function fixScore(score) {
         let _score = score.score;
@@ -111,19 +95,6 @@ function ScoreView(props) {
         <>
             {beatmapData !== null ?
                 <>
-                    <Box sx={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        width: '100%',
-                        pt: 1
-                    }}>
-                        <Button
-                            variant='contained'
-                            onClick={createImage}
-                        >Get Image</Button>
-                    </Box>
-
                     <Card
                         sx={{
                             ...props.data.style,

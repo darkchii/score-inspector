@@ -8,6 +8,7 @@ const LocalStyledTooltip = styled(({ className, ...props }) => (
     font-size: 18px;
     padding: 10px;
     font-weight: regular;
+    max-width: 600px;
 `);
 
 function OsuTooltip(props) {

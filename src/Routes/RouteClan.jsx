@@ -33,6 +33,7 @@ import ScoreViewStat from "../Components/UI/ScoreViewStat";
 import ScoreRow from "../Components/ScoreRow";
 import PlayerTooltip from "../Components/UI/PlayerTooltip";
 import Mods from "../Helpers/Mods";
+import OsuTooltip from "../Components/OsuTooltip";
 
 function CustomTabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -663,14 +664,14 @@ function ClanPage(props) {
                                                     </div>
                                                     {
                                                         clanData.clan.discord_invite ? <>
-                                                            <Tooltip title={`${clanData.clan.name} has a Discord server, join them!`}>
+                                                            <OsuTooltip title={`${clanData.clan.name} has a Discord server, join them!`}>
                                                                 <Button size='small' variant='contained' sx={{ backgroundColor: '#7289da' }} startIcon={<DiscordIcon />} href={clanData.clan.discord_invite} target='_blank'>Join Discord</Button>
-                                                            </Tooltip>
+                                                            </OsuTooltip>
                                                         </> : <></>
                                                     }
                                                     <Box>
                                                         {/* read-only, clickable input field to copy shareable clan link */}
-                                                        <Tooltip title='Click to copy. This URL adds metadata that displays name, image in places like Discord.'>
+                                                        <OsuTooltip title='Click to copy. This URL adds metadata that displays name, image in places like Discord.'>
                                                             <TextField
                                                                 variant='outlined'
                                                                 fullWidth
@@ -683,7 +684,7 @@ function ClanPage(props) {
                                                                     showNotification('Copied', 'Clan link copied to clipboard.', 'info');
                                                                 }}
                                                             />
-                                                        </Tooltip>
+                                                        </OsuTooltip>
                                                     </Box>
                                                 </div>
                                                 <Divider sx={{ mt: 2, mb: 2 }} />
@@ -849,14 +850,14 @@ function ClanPage(props) {
                                                                         display: 'flex',
                                                                         alignItems: 'center',
                                                                     }}>
-                                                                        <Tooltip title={clanData.clan.owner === _user_id ? 'Owner' : 'Member'}>
+                                                                        <OsuTooltip title={clanData.clan.owner === _user_id ? 'Owner' : 'Member'}>
                                                                             {
                                                                                 clanData.clan.owner === _user_id ?
                                                                                     <AdminPanelSettingsIcon />
                                                                                     :
                                                                                     <AccountCircleIcon />
                                                                             }
-                                                                        </Tooltip>
+                                                                        </OsuTooltip>
                                                                     </Box>
                                                                     {
                                                                         props.me && props.me?.clan_member?.clan && props.me?.clan_member?.clan?.id === clanData.clan.id
@@ -896,13 +897,13 @@ function ClanPage(props) {
                                                                                     >
                                                                                         <CancelIcon sx={{ mr: 1.75 }} color="error" /> Kick
                                                                                     </MenuItem>
-                                                                                    <Tooltip title='There is a 30 day cooldown before ownership can be transferred again.'>
+                                                                                    <OsuTooltip title='There is a 30 day cooldown before ownership can be transferred again.'>
                                                                                         <MenuItem
                                                                                             onClick={() => { eventTransferOwnership(anchorData) }}
                                                                                         >
                                                                                             <SyncIcon sx={{ mr: 1.75, color: blue[500] }} /> Transfer ownership
                                                                                         </MenuItem>
-                                                                                    </Tooltip>
+                                                                                    </OsuTooltip>
                                                                                     <Divider />
                                                                                     <MenuItem disabled={true}>
                                                                                         Be careful. These changes are permanent.
@@ -953,7 +954,7 @@ function ClanPage(props) {
                                                                                     props.me && props.me?.clan_member?.clan && props.me?.clan_member?.clan?.id === clanData.clan.id
                                                                                         && clanData.clan.owner === props.me?.osu_id ?
                                                                                         <Box>
-                                                                                            <Tooltip title='Accept'>
+                                                                                            <OsuTooltip title='Accept'>
                                                                                                 <IconButton
                                                                                                     onClick={() => eventAcceptJoinRequest(request)}
                                                                                                     color='primary'
@@ -968,8 +969,8 @@ function ClanPage(props) {
                                                                                                 >
                                                                                                     <DoneIcon fontSize="inherit" />
                                                                                                 </IconButton>
-                                                                                            </Tooltip>
-                                                                                            <Tooltip title='Reject'>
+                                                                                            </OsuTooltip>
+                                                                                            <OsuTooltip title='Reject'>
                                                                                                 <IconButton
                                                                                                     onClick={() => eventRejectJoinRequest(request)}
                                                                                                     color='error'
@@ -984,7 +985,7 @@ function ClanPage(props) {
                                                                                                 >
                                                                                                     <ClearIcon fontSize="inherit" />
                                                                                                 </IconButton>
-                                                                                            </Tooltip>
+                                                                                            </OsuTooltip>
                                                                                             {/* <Button
                                                                                      onClick={() => { eventAcceptJoinRequest(request) }}
                                                                                      variant='contained'
@@ -1022,9 +1023,9 @@ function ClanPage(props) {
                                                             if (FormatClanLog(clanData, log) === null) return <></>;
                                                             return <TableRow key={index}>
                                                                 <TableCell sx={{ width: '40%' }}>
-                                                                    <Tooltip title={moment(log.created_at).format('MMMM Do YYYY, h:mm:ss a')}>
+                                                                    <OsuTooltip title={moment(log.created_at).format('MMMM Do YYYY, h:mm:ss a')}>
                                                                         {moment(log.created_at).fromNow()}
-                                                                    </Tooltip>
+                                                                    </OsuTooltip>
                                                                 </TableCell>
                                                                 <TableCell>
                                                                     <Typography variant='body2'>
@@ -1499,7 +1500,6 @@ function ClanPlayTooltipContent({ clan, type }) {
                             }}>
                                 {Mods.valueOf(clan.ranking_prepared?.[type]?.mods).map(mod => Mods.getModElement(mod, 20))}
                             </Box>
-                            {/* <Typography variant='body2'>{clan.ranking_prepared?.top_play?.enabled_mods !== '0' ? getModString(clan.ranking_prepared?.top_play?.enabled_mods) : 'No mods'}</Typography> */}
                             <Divider sx={{ mt: 1, mb: 1 }} />
                             <Typography variant='body1'>{GetFormattedName(clan.ranking_prepared?.[type]?.user)}</Typography>
                         </>

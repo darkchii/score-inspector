@@ -1,6 +1,6 @@
 import { Helmet } from "react-helmet";
 import config from "../config.json";
-import { Alert, Box, Card, CardContent, Grid2, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Tooltip, Typography, useTheme } from "@mui/material";
+import { Alert, Box, Card, CardContent, Grid2, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { formatNumberAsSize, GetAPI } from "../Helpers/Misc";
@@ -14,6 +14,7 @@ import { approval_state } from "../Helpers/Osu";
 import CheckIcon from '@mui/icons-material/Check';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
+import OsuTooltip from "../Components/OsuTooltip";
 
 function RouteChat() {
     const [isWorking, setIsWorking] = useState(false);
@@ -368,7 +369,7 @@ function RouteChat() {
                                                                     }}
                                                                 >
                                                                     <TableCell width={'3%'} sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})` }}>
-                                                                        <Tooltip title={`${approval_state[map?.beatmap?.ranked] ?? ''}`}>
+                                                                        <OsuTooltip title={`${approval_state[map?.beatmap?.ranked] ?? ''}`}>
                                                                             <Box>
                                                                                 {
                                                                                     map?.beatmap?.ranked === 1 || map?.beatmap?.ranked === 2 ?
@@ -380,7 +381,7 @@ function RouteChat() {
                                                                                                 : <QuestionMarkIcon sx={{ color: grey[500] }} />
                                                                                 }
                                                                             </Box>
-                                                                        </Tooltip>
+                                                                        </OsuTooltip>
                                                                     </TableCell>
                                                                     <TableCell sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})` }}>{map.beatmap ? `${map.beatmap.beatmapset.artist} - ${map.beatmap.beatmapset.title} [${map.beatmap.version}]` : map.beatmap_id}</TableCell>
                                                                     <TableCell width={'5%'} sx={{ backgroundColor: `rgba(0,0,0,${black_overlay})` }} align='right'>{map.count}</TableCell>
