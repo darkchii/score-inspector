@@ -692,7 +692,8 @@
                 "UserPlayable": true,
                 "ValidForMultiplayer": true,
                 "ValidForMultiplayerAsFreeMod": true,
-                "AlwaysValidForSubmission": false
+                "AlwaysValidForSubmission": false,
+                "ScoreMultiplier": 0.9
             },
             {
                 "Acronym": "TR",

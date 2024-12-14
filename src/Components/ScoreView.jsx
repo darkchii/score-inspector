@@ -386,99 +386,85 @@ function ScoreView(props) {
                                         width: '20%',
                                         padding: 1,
                                     }}>
-                                        {
-                                            Mods.containsSettings(scoreData.score.mods) ?
-                                                <>
-                                                    <Box sx={{ width: '100%' }}>
-                                                        {
-                                                            Mods.getModsWithSettings(scoreData.score.mods).map((mod, i) => {
-                                                                const settings = mod.settings;
-                                                                return (
-                                                                    <Box key={i}>
-                                                                        <div key={mod.acronym} className='score-stats__group score-stats__group--stats'>
-                                                                            <Box sx={{ display: 'flex', justifyContent: 'left', alignItems: 'center' }}>
-                                                                                <Box sx={{ mr: 1 }}>
-                                                                                    {Mods.getModElement(mod, 20)}
-                                                                                </Box>
-                                                                                <Typography variant='subtitle2'>{mod.data.Name}</Typography>
-                                                                            </Box>
-                                                                            {
-                                                                                Object.keys(settings).map((setting, i) => {
-                                                                                    const data = Mods.getModSettingsData(mod.acronym, setting);
-                                                                                    let value;
-                                                                                    let valueTyped;
-                                                                                    // let originalValue = Mods.getModOriginalValue(beatmapData.beatmap, setting);
-                                                                                    let [originalValue, invertSkillHandler] = Mods.getModOriginalValue(beatmapData.beatmap, mod.acronym, setting);
-                                                                                    let color = undefined;
-
-
-                                                                                    // value = settings[setting];
-                                                                                    value = Mods.getModSettingValue(mod, setting);
-                                                                                    if (data.Type === 'number') {
-                                                                                        valueTyped = parseFloat(value);
-                                                                                    } else if (data.Type === 'boolean') {
-                                                                                        valueTyped = value;
-                                                                                    }
-
-                                                                                    if (originalValue !== null) {
-                                                                                        originalValue = parseFloat(originalValue);
-
-
-                                                                                        if (!invertSkillHandler) {
-                                                                                            if (valueTyped > originalValue) {
-                                                                                                color = red[500];
-                                                                                            } else if (valueTyped < originalValue) {
-                                                                                                color = green[500];
-                                                                                            }
-                                                                                        } else {
-                                                                                            if (valueTyped > originalValue) {
-                                                                                                color = green[500];
-                                                                                            } else if (valueTyped < originalValue) {
-                                                                                                color = red[500];
-                                                                                            }
-                                                                                        }
-                                                                                    }
-
-                                                                                    return (
-                                                                                        <div key={i} className='score-stats__group-row'>
-                                                                                            <ScoreViewStat
-                                                                                                tooltip={data.Description}
-                                                                                                label={data.Label}
-                                                                                                originalValue={originalValue}
-                                                                                                value={value}
-                                                                                                small={true}
-                                                                                                valueColor={color}
-                                                                                            />
-                                                                                        </div>
-                                                                                    );
-                                                                                })
-                                                                            }
-                                                                            {
-                                                                                i < Mods.getModsWithSettings(scoreData.score.mods).length - 1 ?
-                                                                                    <Divider sx={{
-                                                                                        pb: 1
-                                                                                    }} /> : null
-                                                                            }
-                                                                        </div>
+                                        <Box sx={{ width: '100%' }}>
+                                            {
+                                                Mods.getMods(scoreData.score.mods).map((mod, i) => {
+                                                    return (
+                                                        <Box key={i}>
+                                                            <div key={mod.acronym} className='score-stats__group score-stats__group--stats'>
+                                                                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                                    <Box sx={{ display: 'flex', justifyContent: 'left', alignItems: 'center' }}>
+                                                                        <Box sx={{ mr: 1 }}>
+                                                                            {Mods.getModElement(mod, 16)}
+                                                                        </Box>
+                                                                        <Typography variant='body2'>{mod.data.Name}</Typography>
                                                                     </Box>
-                                                                );
-                                                            })
-                                                        }
-                                                    </Box>
-                                                    {/* when we are overflowing, add an icon to indicate there is more */}
-                                                </> : <Box sx={{
-                                                    width: '100%',
-                                                    height: '100%',
-                                                    display: 'flex',
-                                                    justifyContent: 'center',
-                                                    alignItems: 'center',
-                                                    flexDirection: 'column',
-                                                    color: grey[500]
-                                                }}>
-                                                    <EditNoteIcon sx={{ fontSize: '5em' }} />
-                                                    <Typography variant='h6'>No mod settings applied</Typography>
-                                                </Box>
-                                        }
+                                                                    <Typography variant='caption'>{formatNumber(mod.scoreMultiplier, 2)}x</Typography>
+                                                                </Box>
+                                                                {
+                                                                    mod.settings ? Object.keys(mod.settings).map((setting, i) => {
+                                                                        const data = Mods.getModSettingsData(mod.acronym, setting);
+                                                                        let value;
+                                                                        let valueTyped;
+                                                                        // let originalValue = Mods.getModOriginalValue(beatmapData.beatmap, setting);
+                                                                        let [originalValue, invertSkillHandler] = Mods.getModOriginalValue(beatmapData.beatmap, mod.acronym, setting);
+                                                                        let color = undefined;
+
+
+                                                                        // value = settings[setting];
+                                                                        value = Mods.getModSettingValue(mod, setting);
+                                                                        if (data.Type === 'number') {
+                                                                            valueTyped = parseFloat(value);
+                                                                        } else if (data.Type === 'boolean') {
+                                                                            valueTyped = value;
+                                                                        }
+
+                                                                        if (originalValue !== null) {
+                                                                            originalValue = parseFloat(originalValue);
+
+
+                                                                            if (!invertSkillHandler) {
+                                                                                if (valueTyped > originalValue) {
+                                                                                    color = red[500];
+                                                                                } else if (valueTyped < originalValue) {
+                                                                                    color = green[500];
+                                                                                }
+                                                                            } else {
+                                                                                if (valueTyped > originalValue) {
+                                                                                    color = green[500];
+                                                                                } else if (valueTyped < originalValue) {
+                                                                                    color = red[500];
+                                                                                }
+                                                                            }
+                                                                        }
+
+                                                                        return (
+                                                                            <div key={i} className='score-stats__group-row'>
+                                                                                <ScoreViewStat
+                                                                                    tooltip={data.Description}
+                                                                                    label={data.Label}
+                                                                                    originalValue={originalValue}
+                                                                                    value={value}
+                                                                                    small={true}
+                                                                                    valueColor={color}
+                                                                                />
+                                                                            </div>
+                                                                        );
+                                                                    }) : null
+                                                                }
+                                                                {
+                                                                    i < Mods.getMods(scoreData.score.mods).length - 1 ?
+                                                                        <Divider sx={{
+                                                                            mt: 0.25,
+                                                                            mb: 0.25,
+                                                                        }} /> : null
+                                                                }
+                                                            </div>
+                                                        </Box>
+                                                    );
+                                                })
+                                            }
+                                        </Box>
                                     </Grid2>
                                 </Grid2>
                             </Box>

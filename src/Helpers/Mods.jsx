@@ -107,6 +107,10 @@ class Mods {
         return mods.mods_data.find(m => m.acronym === mod);
     }
 
+    static getMods(mods){
+        return mods.mods_data;
+    }
+
     static hasExactMods(mods, acronyms) {
         //return true if the mods are exactly the same
         if (mods.mods_data.length !== acronyms.length) return false;
@@ -156,7 +160,7 @@ class Mods {
 
     static calculateRateChangeScoreModifier(speed_change) {
         //round to 1 decimal place
-        let value = Math.round(speed_change * 10) / 10;
+        let value = Math.floor(speed_change * 10) / 10;
 
         value -= 1;
 
@@ -274,6 +278,7 @@ class Mods {
                     <Box>
                         <Typography variant='h6'>{mod.data.Name}</Typography>
                         <Typography variant='body2'>{mod.data.Description}</Typography>
+                        <Typography variant='subtitle2'>Multiplier: {formatNumber(mod.scoreMultiplier, 2)}x</Typography>
                         {/* {tooltip_extra_data !== null ? `(${tooltip_extra_data})` : ''} */}
                         {
                             display_settings ? <>
