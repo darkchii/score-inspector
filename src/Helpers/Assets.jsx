@@ -48,7 +48,9 @@ function getModIcon(acronym, is_type = false) {
 
 const _GRADE_ICONS_IMG = [];
 _GRADE_ICONS_IMG['XH'] = IMG_SVG_GRADE_XH;
+_GRADE_ICONS_IMG['SSH'] = IMG_SVG_GRADE_XH;
 _GRADE_ICONS_IMG['X'] = IMG_SVG_GRADE_X;
+_GRADE_ICONS_IMG['SS'] = IMG_SVG_GRADE_X;
 _GRADE_ICONS_IMG['SH'] = IMG_SVG_GRADE_SH;
 _GRADE_ICONS_IMG['S'] = IMG_SVG_GRADE_S;
 _GRADE_ICONS_IMG['A'] = IMG_SVG_GRADE_A;
@@ -57,7 +59,7 @@ _GRADE_ICONS_IMG['C'] = IMG_SVG_GRADE_C;
 _GRADE_ICONS_IMG['D'] = IMG_SVG_GRADE_D;
 
 function getGradeIcon(grade) {
-    return _GRADE_ICONS_IMG[grade];
+    return _GRADE_ICONS_IMG[grade.toUpperCase()];
 }
 
 function getFlagIcon(country_code){

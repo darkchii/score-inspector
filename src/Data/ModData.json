@@ -262,7 +262,8 @@
                 "UserPlayable": true,
                 "ValidForMultiplayer": true,
                 "ValidForMultiplayerAsFreeMod": true,
-                "AlwaysValidForSubmission": false
+                "AlwaysValidForSubmission": false,
+                "ScoreMultiplier": 1.06
             },
             {
                 "Acronym": "FL",

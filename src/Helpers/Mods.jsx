@@ -107,7 +107,7 @@ class Mods {
         return mods.mods_data.find(m => m.acronym === mod);
     }
 
-    static getMods(mods){
+    static getMods(mods) {
         return mods.mods_data;
     }
 
@@ -382,7 +382,7 @@ class Mods {
                                 height: '100%',
                                 left: `${1.45 + (
                                     //convert style.marginLeft to em (from px)
-                                    style.marginLeft !== undefined ? style.marginLeft / 16 : 0
+                                    style.marginLeft !== undefined ? (style.marginLeft / 16 - (22 - height) * 0.1) : 0
                                 )}em`
                             }}>
                                 <ImageWithColor
@@ -398,7 +398,7 @@ class Mods {
                                 // left: '1.5em',
                                 left: `${1.5 + (
                                     //convert style.marginLeft to em (from px)
-                                    style.marginLeft !== undefined ? style.marginLeft / 16 : 0
+                                    style.marginLeft !== undefined ? (style.marginLeft / 16 - (22 - height) * 0.1) : 0
                                 )}em`,
                                 display: 'flex',
                                 justifyContent: 'center',

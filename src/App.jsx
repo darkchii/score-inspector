@@ -36,6 +36,7 @@ import RouteCompletionists from './Routes/RouteCompletionists';
 import RouteClan from './Routes/RouteClan';
 import RouteChat from './Routes/RouteChat';
 import RouteTournaments from './Routes/RouteTournaments';
+import RouteWrapped from './Routes/RouteWrapped';
 
 function App() {
   const [loginData, setLoginData] = useState(null);
@@ -118,6 +119,7 @@ function App() {
             <Route path="clan/:id?/:page?" element={<RouteClan />} />
             <Route path="tournaments/:id?" element={<RouteTournaments />} />
             <Route path="bancho" element={<RouteChat />} />
+            <Route path="wrapped/:id?" element={<RouteWrapped />} />
             <Route path="milestones" element={<RouteMilestones />}>
               <Route index element={<RouteMilestones />} />
               <Route path="page/:page" element={<RouteMilestones />} />
