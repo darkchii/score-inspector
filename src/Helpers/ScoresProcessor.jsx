@@ -1,6 +1,6 @@
 import moment from "moment";
 import { GetAPI, sleep } from "./Misc";
-import { computeAccuracy, getLazerScore, MassCalculatePerformance } from "./Osu";
+import { computeAccuracy, getLazerScore, getRankFromAccuracy, MassCalculatePerformance } from "./Osu";
 import { getSessions } from "./Session";
 import { getPeriodicData } from "./ScoresPeriodicProcessor";
 import axios from "axios";
@@ -196,6 +196,7 @@ export function prepareScore(score, user = null) {
 
     if (score.statistics && score.maximum_statistics) {
         score.accuracy = computeAccuracy(score) * 100; //for some reason, osualt sometimes has wrong accuracy values
+        score.rank = getRankFromAccuracy(score, score.accuracy / 100);
     }
 
     score.beatmap = prepareBeatmap(score.beatmap, score.mods);

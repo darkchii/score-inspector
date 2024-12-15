@@ -1,5 +1,5 @@
 import { Alert, Avatar, Box, Button, Card, CardContent, CardMedia, Container, Divider, Grid2, Paper, Stack, TextField, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router";
 import Loader from "../Components/UI/Loader";
 import { formatNumber, GetAPI, showNotification } from "../Helpers/Misc";
@@ -10,6 +10,8 @@ import { prepareScores } from "../Helpers/ScoresProcessor";
 import ScoreModal from "../Components/ScoreModal";
 import { MassCalculatePerformance } from "../Helpers/Osu";
 import Mods from "../Helpers/Mods";
+import { toPng } from "html-to-image";
+import StarsLabel from "../Components/StarsLabel";
 
 function RouteWrapped() {
     const [id, setID] = useState(null);
@@ -92,11 +94,21 @@ function WrappedPlayCard({ score, focus = 'pp' }) {
                 }}>
                     <Stack spacing={0.2}>
                         <Typography noWrap sx={{ lineHeight: 1 }} variant='subtitle1'>{score.beatmap.artist} - {score.beatmap.title}</Typography>
-                        <Typography noWrap variant='subtitle2'>[{score.beatmap.diffname}]</Typography>
+                        <Typography noWrap variant='subtitle2'>
+                            [{score.beatmap.diffname}]
+                        </Typography>
                         <Box sx={{
                             display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
                         }}>
-                            {Mods.getModElements(score.mods, 22, undefined, true, 3)}
+                            <Box sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                            }}>
+                                {Mods.getModElements(score.mods, 22, undefined, false, 3)}
+                            </Box>
+                            {<StarsLabel stars={score.beatmap.difficulty_data?.star_rating} />}
                         </Box>
                         <Box sx={{
                             //left and right align
@@ -123,6 +135,7 @@ function RouteWrappedView({ id }) {
     const [wrapped, setWrapped] = useState(null);
     const [isWorking, setIsWorking] = useState(false);
     const [error, setError] = useState(null);
+    const containerRef = useRef(null);
 
     useEffect(() => {
         (async () => {
@@ -158,6 +171,8 @@ function RouteWrappedView({ id }) {
                         data.data.top_pp_scores = data.data.top_pp_scores.sort((a, b) => {
                             return b.pp - a.pp;
                         });
+
+                        console.log(data.data.top_pp_scores);
                     }
 
                     if (data.data.top_score_scores) {
@@ -186,6 +201,13 @@ function RouteWrappedView({ id }) {
         })();
     }, []);
 
+    const onRequestImage = async () => {
+        const img = await toPng(containerRef.current, { cacheBust: true });
+        const imgBlob = await fetch(img).then(r => r.blob());
+        await navigator.clipboard.write([new ClipboardItem({ 'image/png': imgBlob })]);
+        showNotification('Copied', 'Image copied to clipboard.', 'success');
+    }
+
     if (!id) {
         return <Typography>Something went wrong</Typography>
     }
@@ -205,6 +227,7 @@ function RouteWrappedView({ id }) {
     return (
         <Box>
             <Button
+                onClick={onRequestImage}
                 variant="contained"
                 fullWidth
                 sx={{
@@ -212,7 +235,9 @@ function RouteWrappedView({ id }) {
                 }}>
                 Copy as image
             </Button>
-            <Card elevation={3}>
+            <Card
+                ref={containerRef}
+                elevation={3}>
                 <div style={{
                     position: 'relative'
                 }}>

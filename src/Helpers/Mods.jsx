@@ -360,6 +360,11 @@ class Mods {
         if (extra_data_string !== undefined) {
             width = height * 3;
         }
+
+        const color = Color(Mods.getModTypeColor(mod));
+        if(extra_data_string){
+            console.log(`Mod: ${mod.acronym}, Color: ${color.hex()}`);
+        }
         return (
             <OsuTooltip title={Mods.getTooltipContent(mod, true, showIncompatible)}>
                 <Box sx={{
@@ -374,55 +379,46 @@ class Mods {
                         <img src={mod_icon} alt={mod.acronym} height={height} />
                     </Box>
                     {show_extra_mod_info !== undefined && extra_data_string !== undefined ?
-                        <>
-                            <Box sx={{
-                                position: 'absolute',
-                                top: 0,
-                                bottom: 0,
-                                height: '100%',
-                                left: `${1.45 + (
-                                    //convert style.marginLeft to em (from px)
-                                    style.marginLeft !== undefined ? (style.marginLeft / 16 - (22 - height) * 0.1) : 0
-                                )}em`
-                            }}>
-                                <ImageWithColor
-                                    src={PNG_MOD_EXTENDER}
-                                    height='100%'
-                                    // color={'#ff0000'}
-                                    color={Color(Mods.getModTypeColor(mod)).darken(0.9).hex()}
-                                />
-                            </Box>
-                            <Box sx={{
-                                position: 'absolute',
-                                top: 0,
-                                // left: '1.5em',
-                                left: `${1.5 + (
-                                    //convert style.marginLeft to em (from px)
-                                    style.marginLeft !== undefined ? (style.marginLeft / 16 - (22 - height) * 0.1) : 0
-                                )}em`,
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                height: '100%',
-                                width: width - height,
-                            }}>
-                                <Typography sx={{
-                                    fontSize: '0.65em',
-                                    fontWeight: 'bold',
-                                    color: Color(Mods.getModTypeColor(mod)).lighten(0.1).hex(),
-                                }}>{extra_data_string}</Typography>
-                            </Box>
-                        </>
-                        // <Box sx={{
-                        //     display: 'flex',
-                        //     justifyContent: 'center',
-                        //     alignItems: 'center',
-                        //     height: '100%',
-                        //     width: '100%',
-
-                        // }}>
-                        //     <Typography sx={{ fontSize: '0.8em' }}>{extra_data_string}</Typography>
-                        // </Box>
+                        (
+                            <>
+                                <Box sx={{
+                                    position: 'absolute',
+                                    top: 0,
+                                    bottom: 0,
+                                    height: '100%',
+                                    left: `${1.45 + (
+                                        //convert style.marginLeft to em (from px)
+                                        style.marginLeft !== undefined ? (style.marginLeft / 16 - (22 - height) * 0.1) : 0
+                                    )}em`
+                                }}>
+                                    <ImageWithColor
+                                        src={PNG_MOD_EXTENDER}
+                                        height='100%'
+                                        // color={'#ff0000'}
+                                        color={color.darken(0.9).hex()}
+                                    />
+                                </Box>
+                                <Box sx={{
+                                    position: 'absolute',
+                                    top: 0,
+                                    // left: '1.5em',
+                                    left: `${1.5 + (
+                                        //convert style.marginLeft to em (from px)
+                                        style.marginLeft !== undefined ? (style.marginLeft / 16 - (22 - height) * 0.1) : 0
+                                    )}em`,
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    height: '100%',
+                                    width: width - height,
+                                }}>
+                                    <Typography sx={{
+                                        fontSize: '0.65em',
+                                        fontWeight: 'bold',
+                                        color: color.lighten(0.1).hex(),
+                                    }}>{extra_data_string}</Typography>
+                                </Box>
+                            </>)
                         : null}
                 </Box>
             </OsuTooltip>
