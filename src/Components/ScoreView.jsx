@@ -214,13 +214,13 @@ function ScoreView(props) {
                                                         fontFamily: 'Torus',
                                                         fontSize: '2.8em',
                                                     }}>
-                                                        {toFixedNumber(scoreData.score.score, 0).toLocaleString('en-US')}
+                                                        {formatNumber(scoreData.score.score, 0)}
                                                     </span>
                                                     <span className='lazer-text-gradient' style={{
                                                         fontFamily: 'Torus',
                                                         fontSize: '0.8em',
                                                     }}>
-                                                        {toFixedNumber(scoreData.score.scoreLazerStandardised, 0).toLocaleString('en-US')} ({formatNumber(scoreData.score.mods.scoreMultiplier, 4)}x)
+                                                        {formatNumber(scoreData.score.scoreLazerStandardised, 0)} ({formatNumber(scoreData.score.mods.scoreMultiplier, 4)}x)
                                                     </span>
                                                 </Box>
                                                 <Box sx={{

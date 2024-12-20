@@ -139,10 +139,10 @@ function ScoreRow(props) {
                                                 <Box sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
                                                     <Box>
                                                         <Typography sx={{ fontSize: '0.8rem', maxWidth: '100%', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
-                                                            AR: {toFixedNumber(beatmap.difficulty_data.approach_rate ?? -1, 1)}
+                                                            AR: {formatNumber(beatmap.difficulty_data.approach_rate ?? -1, 1)}
                                                         </Typography>
                                                         <Typography sx={{ fontSize: '0.8rem', maxWidth: '100%', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
-                                                            CS: {toFixedNumber(beatmap.difficulty_data.circle_size ?? -1, 1)}
+                                                            CS: {formatNumber(beatmap.difficulty_data.circle_size ?? -1, 1)}
                                                         </Typography>
                                                     </Box>
                                                 </Box>
@@ -151,10 +151,10 @@ function ScoreRow(props) {
                                                 <Box sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
                                                     <Box>
                                                         <Typography sx={{ fontSize: '0.8rem', maxWidth: '100%', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
-                                                            OD: {toFixedNumber(beatmap.difficulty_data.overall_difficulty ?? -1, 1)}
+                                                            OD: {formatNumber(beatmap.difficulty_data.overall_difficulty ?? -1, 1)}
                                                         </Typography>
                                                         <Typography sx={{ fontSize: '0.8rem', maxWidth: '100%', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
-                                                            HP: {toFixedNumber(beatmap.difficulty_data.drain_rate ?? -1, 1)}
+                                                            HP: {formatNumber(beatmap.difficulty_data.drain_rate ?? -1, 1)}
                                                         </Typography>
                                                     </Box>
                                                 </Box>
@@ -186,7 +186,7 @@ function ScoreRow(props) {
                                                         score.beatmap.difficulty_data.star_rating && (Math.round(score.beatmap.difficulty_data.star_rating * 100) / 100) !== (Math.round(score.beatmap.stars * 100) / 100) ?
                                                             <>
                                                                 <Typography variant="subtitle2" sx={{ opacity: 0.4 }}>
-                                                                    {score.beatmap.stars.toFixed(2)}*
+                                                                    {formatNumber(score.beatmap.stars, 2)}*
                                                                 </Typography>
                                                             </> : <></>
                                                     }
@@ -208,9 +208,9 @@ function ScoreRow(props) {
                                 <Grid2 size={props.small ? 0.7 : 0.4}>
                                     <Box sx={{ height: '100%', alignContent: 'right', display: 'flex', alignItems: 'center', justifyContent: 'left' }}>
                                         <OsuTooltip title={
-                                            `Aim: ${score.beatmap.difficulty_data.aim_difficulty.toFixed(2)}, Speed: ${score.beatmap.difficulty_data.speed_difficulty.toFixed(2)}, Flashlight: ${(score.beatmap.difficulty_data.flashlight_rating ?? 0).toFixed(2)}*`
+                                            `Aim: ${formatNumber(score.beatmap.difficulty_data.aim_difficulty, 2)}, Speed: ${formatNumber(score.beatmap.difficulty_data.speed_difficulty, 2)}, Flashlight: ${formatNumber(score.beatmap.difficulty_data.flashlight_rating ?? 0, 2)}*`
                                         }>
-                                            <Typography sx={{ ml: 0.4 }} variant="subtitle2"> {(score.beatmap.difficulty_data.star_rating ?? 0).toFixed(2)}*</Typography>
+                                            <Typography sx={{ ml: 0.4 }} variant="subtitle2"> {formatNumber(score.beatmap.difficulty_data.star_rating ?? 0, 2)}*</Typography>
                                         </OsuTooltip>
                                     </Box>
                                 </Grid2>
@@ -261,7 +261,6 @@ function ScoreRow(props) {
                                 <Grid2 size={props.small ? 1.1 : 0.6}>
                                     <Box sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
                                         <Typography variant="subtitle2">
-                                            {/* {score.accuracy.toFixed(2)}% */}
                                             {formatNumber(score.accuracy, 2)}%
                                         </Typography>
                                     </Box>
@@ -273,7 +272,7 @@ function ScoreRow(props) {
                                             <Box sx={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'left', pr: 1, color: grey[500] }}>
                                                 {
                                                     !score.is_fc && score.recalc['fc'] ?
-                                                        <Typography variant="caption">If FC:<br />{Math.round(score.recalc['fc']?.total).toLocaleString('en-US')}pp</Typography>
+                                                        <Typography variant="caption">If FC:<br />{formatNumber(Math.round(score.recalc['fc']?.total))}pp</Typography>
                                                         : <></>
                                                 }
                                             </Box>
@@ -298,7 +297,7 @@ function ScoreRow(props) {
                                         }
                                         <Typography variant="subtitle1">
                                             {/* {toFixedNumber(score.pp > 0 ? score.pp : score.estimated_pp, 2).toLocaleString('en-US')}pp */}
-                                            {formatNumber(score.pp > 0 ? score.pp : score.estimated_pp, props.small ? 0 : 1)}pp
+                                            {formatNumber(score.pp > 0 ? score.pp : score.estimated_pp, 0)}pp
                                         </Typography>
                                         {/* <Box
                                             sx={{

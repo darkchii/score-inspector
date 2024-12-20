@@ -217,6 +217,10 @@ function RouteClan() {
         };
     }
 
+    useEffect(()=>{
+        window.onTitleChange('Clans');
+    }, []);
+
     const handleTabChange = (event, newValue) => {
         setTabValue(newValue);
     };
@@ -310,9 +314,11 @@ function ClanPage(props) {
                     setSorter(data.clan.default_sort);
                 }
                 setClanData(data);
+                window.onTitleChange(`${data.clan.name}`);
             } catch (err) {
                 showNotification('Error', 'An error occurred while fetching the clan data.', 'error');
                 showNotification('Error', err.message, 'error');
+                window.onTitleChange('Clans');
             }
         })();
     }
