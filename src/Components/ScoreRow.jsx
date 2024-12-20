@@ -60,7 +60,7 @@ function ScoreRow(props) {
                                     backgroundPosition: 'center',
                                     filter: 'blur(5px)',
                                     borderRadius: theme.shape.borderRadius,
-                                    transform: 'scale(1.2)',
+                                    transform: 'scale(1.5)',
                                 }}
                             />
                             <Box sx={{
