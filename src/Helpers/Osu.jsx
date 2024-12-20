@@ -775,3 +775,47 @@ export function FilterScores(full_scores, filter) {
         filter: filter
     }
 }
+
+const XP_POINTS_DISTRIBUTION = {
+    SS: 200,
+    S: 100,
+    A: 50,
+    RANKED_SCORE_BILLION: 0.000008,
+    TOTAL_SCORE_BILLION: 0.000004,
+    MEDAL: 20000,
+    PLAYTIME_HOUR: 300
+}
+export function CalculateNewXP(user, scores){
+    let xp = 0;
+
+    for(const score of scores){
+        if(score.rank === 'X' || score.rank === 'XH'){
+            xp += XP_POINTS_DISTRIBUTION.SS;
+        } else if(score.rank === 'S' || score.rank === 'SH'){
+            xp += XP_POINTS_DISTRIBUTION.S;
+        } else if(score.rank === 'A'){
+            xp += XP_POINTS_DISTRIBUTION.A;
+        }
+    }
+
+    xp += user.osu.statistics.ranked_score / 1000000000 * XP_POINTS_DISTRIBUTION.RANKED_SCORE_BILLION;
+    xp += user.osu.statistics.total_score / 1000000000 * XP_POINTS_DISTRIBUTION.TOTAL_SCORE_BILLION;
+    xp += (user.alt.medals?.length ?? 0) * XP_POINTS_DISTRIBUTION.MEDAL;
+    xp += (user.osu?.statistics.play_time / 3600) * XP_POINTS_DISTRIBUTION.PLAYTIME_HOUR;
+
+    console.log(`XP: ${xp}`);
+
+    return xp;
+}
+
+export function CalculateNewXPLevel(xp){
+    let varA = 5;
+    let varB = 80;
+    let varC = 225;
+    let varD = varC - varB - varA;
+
+    //xp = ax^3+bx^2+cx+d
+    //solve for x
+    let level = getDedicationLevel(varA, varB, varC, varD, xp);
+    return level;
+}

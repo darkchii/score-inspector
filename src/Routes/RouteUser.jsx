@@ -2,7 +2,7 @@ import { Alert, Box, CircularProgress, Link, Stack, Typography } from '@mui/mate
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { getUserScores, isUserRegistered } from '../Helpers/OsuAlt';
-import { getFullUser } from '../Helpers/Osu';
+import { CalculateNewXP, getFullUser } from '../Helpers/Osu';
 import SectionHeader from '../Components/UserPage/SectionHeader';
 import { processScores } from '../Helpers/ScoresProcessor';
 import { Helmet } from 'react-helmet';
@@ -150,6 +150,14 @@ function RouteUser() {
                     console.warn(e);
                     //ignore
                     user_out.milestones = [];
+                }
+
+                setLoadingState('Calculate XP');
+                try{
+                    user_out.xp = CalculateNewXP(user_out, user_out.scores)
+                }catch(err){
+                    console.warn(err);
+                    user_out.xp = 0;
                 }
 
                 setLoadingState('Server side stuff');

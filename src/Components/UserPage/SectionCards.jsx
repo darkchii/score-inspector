@@ -5,6 +5,7 @@ import ChartWrapper from "../../Helpers/ChartWrapper";
 import { formatNumber } from "../../Helpers/Misc";
 import ScoreRow from "../ScoreRow";
 import ScoreViewStat from "../UI/ScoreViewStat";
+import { CalculateNewXPLevel } from "../../Helpers/Osu";
 
 function SectionCards(props) {
     const theme = useTheme();
@@ -82,6 +83,19 @@ function SectionCards(props) {
             row: 0,
         },
         {
+            title: 'XP 2.0',
+            // value: formatNumber(props.user.alt.unique_ss?.length ?? 0, 0),
+            value: `${formatNumber(props.user.xp ?? 0, 0)}`,
+            tooltip: 'New proposed XP/level system based on grades, score, medals and playtime',
+            row: 1,
+        },
+        {
+            title: 'Level 2.0',
+            value: `${formatNumber(CalculateNewXPLevel(props.user.xp ?? 0), 2)}`,
+            tooltip: 'New proposed XP/level system based on grades, score, medals and playtime',
+            row: 1,
+        },
+        {
             title: 'Unique SS / FC / DT FC',
             // value: formatNumber(props.user.alt.unique_ss?.length ?? 0, 0),
             value: `${formatNumber(props.user.alt.unique_ss?.length ?? 0, 0)} / ${formatNumber(props.user.alt.unique_fc?.length ?? 0, 0)} / ${formatNumber(props.user.alt.unique_dt_fc?.length ?? 0, 0)}`,
@@ -114,7 +128,7 @@ function SectionCards(props) {
         },
         {
             title: "Longest session",
-            value: moment.duration(props.user.data.longestSession.length, 'seconds').format('h [hrs], m [min]'),
+            value: moment.duration(props.user.data.longestSession.length, 'seconds').format('h[h]m[m]'),
             tooltip: 'Started at ' + moment.unix(props.user.data.longestSession.start).format('MMMM Do YYYY, h:mm:ss a') + ' and ended at ' + moment.unix(props.user.data.longestSession.end).format('MMMM Do YYYY, h:mm:ss a'),
             row: 1,
         },
