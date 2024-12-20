@@ -75,6 +75,7 @@ function ScoreRow(props) {
                                 borderRadius: theme.shape.borderRadius,
                             }} />
                             <Grid2 container sx={{
+                                height: '100%',
                                 zIndex: 10,
                                 //force zIndex on all children
                                 '& > *': {
