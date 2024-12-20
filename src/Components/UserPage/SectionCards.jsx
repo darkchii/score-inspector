@@ -22,6 +22,12 @@ function SectionCards(props) {
             row: 0,
         },
         {
+            title: 'Performance',
+            value: formatNumber(props.user.osu.statistics.pp, 0) + 'pp',
+            tooltip: `${formatNumber(props.user.osu.statistics.pp, 2)}pp`,
+            row: 0,
+        },
+        {
             title: 'Avg PP',
             value: formatNumber(props.user.data?.average.pp) + 'pp',
             row: 0,
@@ -56,14 +62,14 @@ function SectionCards(props) {
         {
             title: 'Ranked Score',
             value: (
-                <span>{formatNumber(props.user.data.total.score, 0)}</span>
+                <span style={{ fontSize: '18px' }}>{formatNumber(props.user.data.total.score, 0)}</span>
             ),
             row: 0,
         },
         {
             title: 'Standardised Score',
             value: (
-                <span>{formatNumber(props.user.data?.total.scoreLazerStandardised, 0)}</span>
+                <span style={{ fontSize: '18px' }}>{formatNumber(props.user.data?.total.scoreLazerStandardised, 0)}</span>
             ),
             row: 0,
         },
@@ -71,7 +77,7 @@ function SectionCards(props) {
             title: 'Total Score',
             // value: formatNumber(props.user.osu.statistics.total_score, 0) ?? 'N/A',
             value: (
-                <span>{formatNumber(props.user.osu.statistics.total_score, 0)}</span>
+                <span style={{ fontSize: '18px' }}>{formatNumber(props.user.osu.statistics.total_score, 0)}</span>
             ),
             row: 0,
         },
