@@ -120,14 +120,18 @@ function SectionHeader(props) {
                                 <Stack direction='row' spacing={1} sx={{ m: 0.5 }}>
                                     {
                                         props.user.osu.twitter !== null ? <>
-                                            <Link href={`https://twitter.com/${props.user.osu.twitter}`} target='_blank' rel='noopener noreferrer'>
-                                                <Chip size='small' sx={{ m: 0.2, backgroundColor: `#00ACEEAA` }} icon={<TwitterIcon />} label={props.user.osu.twitter} />
-                                            </Link>
+                                            <Box>
+                                                <Link href={`https://twitter.com/${props.user.osu.twitter}`} target='_blank' rel='noopener noreferrer'>
+                                                    <Chip size='small' sx={{ m: 0.2, backgroundColor: `#00ACEEAA` }} icon={<TwitterIcon />} label={props.user.osu.twitter} />
+                                                </Link>
+                                            </Box>
                                         </> : <></>
                                     }
                                     {
                                         props.user.osu.discord !== null ? <>
-                                            <Chip size='small' sx={{ m: 0.2, backgroundColor: `#5865F2AA` }} icon={<DiscordIcon />} label={props.user.osu.discord} />
+                                            <Box>
+                                                <Chip size='small' sx={{ m: 0.2, backgroundColor: `#5865F2AA` }} icon={<DiscordIcon />} label={props.user.osu.discord} />
+                                            </Box>
                                         </> : <></>
                                     }
                                 </Stack>
