@@ -6,8 +6,6 @@ import { useNavigate, useParams } from 'react-router';
 import { CHANGETYPES, PLATFORMTYPES, updates } from '../Data/Updates';
 import KeyboardDoubleArrowLeftIcon from '@mui/icons-material/KeyboardDoubleArrowLeft';
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
-import { Helmet } from 'react-helmet';
-import config from "../config.json";
 
 function RouteUpdate() {
     const [update, setUpdate] = useState(null);
@@ -36,6 +34,7 @@ function RouteUpdate() {
 
     useEffect(() => {
         fn_update();
+        window.onTitleChange('Changelog');
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -46,9 +45,6 @@ function RouteUpdate() {
 
     return (
         <>
-            <Helmet>
-                <title>Changelog - {config.APP_NAME}</title>
-            </Helmet>
             {
                 update !== null ? <>
                     <Box>

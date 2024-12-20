@@ -11,7 +11,6 @@ import { blue, blueGrey, green, pink, red } from '@mui/material/colors';
 import GlowBar from '../Components/UI/GlowBar';
 import Loader from '../Components/UI/Loader';
 import config from "../config.json";
-import { Helmet } from 'react-helmet';
 import info from '../Data/Info';
 import PersonIcon from '@mui/icons-material/Person';
 import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
@@ -43,6 +42,8 @@ function RouteIndex() {
     const [isHoveringHelpButton, setIsHoveringHelpButton] = useState(false);
 
     useEffect(() => {
+        window.onTitleChange(null);
+
         const _osuAuthCode = searchParams.get("code");
 
         (async () => {
@@ -112,9 +113,6 @@ function RouteIndex() {
 
     return (
         <>
-            <Helmet>
-                <title>{config.APP_NAME}</title>
-            </Helmet>
             {
                 osuAuthCode !== null ?
                     <>

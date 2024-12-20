@@ -11,8 +11,6 @@ import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import moment from "moment";
 import PlayerLeaderboardItem from "../Components/Leaderboards/PlayerLeaderboardItem";
 import { green, grey } from "@mui/material/colors";
-import config from "../config.json";
-import { Helmet } from "react-helmet";
 import ChartWrapper from "../Helpers/ChartWrapper";
 
 const USERS_PER_PAGE = 50;
@@ -117,6 +115,10 @@ function RouteLeadersScore() {
         })();
     }, [mode, page, date, sorting]);
 
+    useEffect(()=>{
+        window.onTitleChange('Score Rank History');
+    }, []);
+
     const disableDate = (date) => {
         const dateStr = moment(date).format("YYYY-MM-DD");
         return !allDates.includes(dateStr);
@@ -124,9 +126,6 @@ function RouteLeadersScore() {
 
     return (
         <>
-            <Helmet>
-                <title>Score Rank History - {config.APP_NAME}</title>
-            </Helmet>
             {
                 isLoadingDates || isLoadingLeaderboard ? (
                     <Loader />

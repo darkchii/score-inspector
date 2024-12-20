@@ -16,8 +16,6 @@ import Countries from '../Assets/countries.json';
 import { lerpColor, linearToLogarithmic } from "../Helpers/Misc";
 import { Box, Button, Grid2, Paper, Table, TableBody, TableCell, TableContainer, TableRow, Typography, TableHead, Container, useTheme } from "@mui/material";
 import Loader from "../Components/UI/Loader";
-import { Helmet } from 'react-helmet';
-import config from "../config.json";
 import { getFlagIcon } from "../Helpers/Assets";
 import OsuTooltip from "../Components/OsuTooltip";
 
@@ -45,6 +43,7 @@ function RoutePopulation() {
             const pop = await getPopulation();
             setPopulation(pop);
         })()
+        window.onTitleChange('Countries');
     }, []);
 
     useEffect(() => {
@@ -316,9 +315,6 @@ function RoutePopulation() {
             flexDirection: 'column',
             alignItems: 'center'
         }}>
-            <Helmet>
-                <title>Countries - {config.APP_NAME}</title>
-            </Helmet>
             {
                 chartData ?
                     <>

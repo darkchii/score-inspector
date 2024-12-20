@@ -28,6 +28,7 @@ function RouteUser() {
             setRegistered(false);
             setIsLoading(true);
             setUser(null);
+            window.onTitleChange('No profile loaded');
             try {
                 const urlParams = new URLSearchParams(location.search);
                 let loved = urlParams.get('loved') ?? true;
@@ -162,6 +163,7 @@ function RouteUser() {
 
                 setUser(user_out);
                 setIsLoading(false);
+                window.onTitleChange(user_out.osu.username);
             } catch (e) {
                 console.error(e);
                 setUser(null);
@@ -174,9 +176,6 @@ function RouteUser() {
 
     return (
         <>
-            <Helmet>
-                <title>No profile loaded - {config.APP_NAME}</title>
-            </Helmet>
             {
                 isLoading ? <>
                     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
@@ -220,15 +219,9 @@ function RouteUser() {
                                             background-attachment: fixed;
                                         }`}
                                     </style>
-                                    <title>{user.osu.username} - {config.APP_NAME}</title>
                                 </Helmet>
                             }
                         </> : <></>
-                        // user.osu.id === 10153735 ? <>
-                        //     <Helmet>
-                        //     </Helmet>
-
-                        // </> : <></>
                     }
                     <Stack spacing={0.5} direction='column'>
                         {

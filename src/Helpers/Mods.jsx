@@ -145,7 +145,7 @@ class Mods {
     }
 
     static getModData(acronym) {
-        return ModData[0].Mods.find(m => m.Acronym === acronym);
+        return ModData[0].Mods.find(m => m.Acronym === acronym.toUpperCase());
     }
 
     static getMultiplier(mods) {

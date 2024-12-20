@@ -5,8 +5,6 @@ import ToolCommandHelper from "../Components/Tools/ToolCommandHelper";
 import ToolLevelCalculator from "../Components/Tools/ToolLevelCalculator";
 import ToolMissingBeatmaps from "../Components/Tools/ToolMissingBeatmaps";
 import ToolScoreRank from "../Components/Tools/ToolScoreRank";
-import { Helmet } from "react-helmet";
-import config from "../config.json";
 
 const NAV_WIDTH = 3;
 function RouteTools() {
@@ -40,15 +38,15 @@ function RouteTools() {
         const index = TOOL_OBJECTS.findIndex((tool) => tool.url === params.tool);
         if (index !== -1) {
             setTool(index);
+            window.onTitleChange(TOOL_OBJECTS[index].name);
+        }else{
+            window.onTitleChange('Tools');
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [params.tool]);
 
     return (
         <>
-            <Helmet>
-                <title>{TOOL_OBJECTS[currentTool]?.name || 'Tools'} - {config.APP_NAME}</title>
-            </Helmet>
             <Grid2 container spacing={2}>
                 <Grid2 size={NAV_WIDTH}>
                     <ButtonGroup orientation="vertical" fullWidth>

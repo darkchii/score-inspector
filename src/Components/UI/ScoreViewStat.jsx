@@ -35,7 +35,7 @@ function ScoreViewStat(props) {
                     alignItems: 'center',
                 }}>
                     {props.labelIcon ?? null}
-                    {props.label}
+                    {props.label ?? ''}
 
                     {/* add a colored horizontal line of 30px wide on the far right if props.lineDecorator is true */}
                     {props.lineDecorator ? <div style={{
@@ -56,6 +56,7 @@ function ScoreViewStat(props) {
                         //align the icon with the text
                         display: 'flex',
                         alignItems: 'center',
+                        width: '100%',
                     }}>
                         {
                             props.originalValue ?

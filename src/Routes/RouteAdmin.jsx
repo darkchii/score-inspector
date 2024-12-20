@@ -6,8 +6,6 @@ import Loader from "../Components/UI/Loader";
 import ImageIcon from '@mui/icons-material/Image';
 import HideImageIcon from '@mui/icons-material/HideImage';
 import { green, red } from "@mui/material/colors";
-import { Helmet } from "react-helmet";
-import config from "../config.json";
 import { AutoSizer, Column, Table as VTable } from 'react-virtualized';
 import BlockIcon from '@mui/icons-material/Block';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
@@ -41,6 +39,7 @@ function RouteAdmin() {
     }, [params.tool]);
 
     useEffect(() => {
+        window.onTitleChange(`Admin`);
         (async () => {
             const _isAdmin = await AdminValidate();
             setIsAdmin(_isAdmin);
@@ -50,9 +49,6 @@ function RouteAdmin() {
 
     return (
         <>
-            <Helmet>
-                <title>Admin - {config.APP_NAME}</title>
-            </Helmet>
             {
                 isLoading ?
                     <Loader />

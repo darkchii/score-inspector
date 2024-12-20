@@ -6,8 +6,6 @@ import { getScoreStats } from "../Helpers/OsuAlt";
 import { approval_state } from "../Helpers/Osu";
 import CheckIcon from '@mui/icons-material/Check';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-import config from "../config.json";
-import { Helmet } from "react-helmet";
 import { GetFormattedName } from "../Helpers/Account";
 import OsuTooltip from "../Components/OsuTooltip";
 
@@ -68,13 +66,11 @@ function RouteStats() {
             setScoreStats(data);
             setStatsTime(data.time);
         })();
+        window.onTitleChange('Stats');
     }, []);
 
     return (
         <>
-            <Helmet>
-                <title>Stats - {config.APP_NAME}</title>
-            </Helmet>
             <Stack direction='column' spacing={2}>
 
                 <Alert severity='info' sx={{ mb: 1 }}>

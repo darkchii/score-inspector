@@ -34,7 +34,6 @@ import RouteMilestones from './Routes/RouteMilestones';
 import RouteLeadersMonthly from './Routes/RouteLeadersMonthly';
 import RouteCompletionists from './Routes/RouteCompletionists';
 import RouteClan from './Routes/RouteClan';
-import RouteChat from './Routes/RouteChat';
 import RouteTournaments from './Routes/RouteTournaments';
 import RouteWrapped from './Routes/RouteWrapped';
 
@@ -43,6 +42,7 @@ function App() {
   const [, setRefresher] = useState(0);
   const [isServerAccessible, setIsServerAccessible] = useState(null);
   const [isWorking, setIsWorking] = useState(false);
+  const [title, setTitle] = useState(null);
 
   useEffect(() => {
     (async () => {
@@ -94,6 +94,96 @@ function App() {
     return () => { window.removeEventListener('settings', onSettings); };
   }, []);
 
+  window.onTitleChange = (title) => {
+    setTitle(title);
+  }
+
+  const routes = [
+    { path: '/', element: <RouteIndex />, },
+    { path: 'update/:id', element: <RouteUpdate />, },
+    { path: '*', element: <RouteError />, },
+    { path: 'user/:id/:page?', element: <RouteUser />, },
+    { path: 'top', element: <RouteTop />, },
+    { path: 'stats', element: <RouteStats />, },
+    { path: 'staff', element: <RouteStaff />, },
+    { path: 'population', element: <RoutePopulation />, },
+    { path: 'completionists', element: <RouteCompletionists />, },
+    { path: 'logout', element: <RouteLogout />, },
+    { path: 'clan/:id?/:page?', element: <RouteClan />, },
+    { path: 'wrapped/:id?', element: <RouteWrapped />, },
+    {
+      path: 'milestones', element: <RouteMilestones />,
+      children: [
+        { path: 'page/:page', element: <RouteMilestones /> },
+      ]
+    },
+    { path: 'admin/:tool?', element: <RouteAdmin /> },
+    { path: 'tools/:tool?', element: <RouteTools /> },
+    { path: 'month_score', element: <RouteLeadersMonthly />, },
+    {
+      path: 'score', element: <RouteLeadersScore />,
+      children: [
+        {
+          path: 'page/:page', element: <RouteLeadersScore />,
+          children: [
+            {
+              path: 'date/:date', element: <RouteLeadersScore />,
+              children: [
+                {
+                  path: 'sort/:sort', element: <RouteLeadersScore />,
+                  children: [
+                    {
+                      path: 'mode/:mode', element: <RouteLeadersScore />
+                    },
+                  ]
+                },
+              ]
+            },
+          ]
+        }
+      ]
+    },
+    {
+      path: 'leaderboard', element: <RouteLeaders />,
+      children: [
+        {
+          path: 'stat/:stat', element: <RouteLeaders />,
+          children: [
+            {
+              path: 'page/:page', element: <RouteLeaders />,
+              children: [
+                {
+                  path: 'country/:country', element: <RouteLeaders />
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+
+  const getRoute = (obj, is_child = false) => {
+    return <>
+      {
+        is_child && <Route
+          onTitleChange={(title) => setTitle(title)}
+          index
+          element={obj.element}
+        />
+      }
+      <Route
+        key={obj.path}
+        path={obj.path}
+        element={obj.element}
+      >
+        {
+          obj.children && obj.children.map((child) => getRoute(child, true))
+        }
+      </Route>
+    </>
+  }
+
   const basePage = (
     <>
       <Box>
@@ -106,7 +196,10 @@ function App() {
       }}>
         <CardContent>
           <Routes>
-            <Route path="/" element={<RouteIndex />} />
+            {
+              routes.map((route) => getRoute(route))
+            }
+            {/* <Route path="/" element={<RouteIndex />} />
             <Route path="update/:id" element={<RouteUpdate />} />
             <Route path="*" element={<RouteError />} />
             <Route path="user/:id/:page?" element={<RouteUser />} />
@@ -118,7 +211,6 @@ function App() {
             <Route path="logout" element={<RouteLogout />} />
             <Route path="clan/:id?/:page?" element={<RouteClan />} />
             <Route path="tournaments/:id?" element={<RouteTournaments />} />
-            <Route path="bancho" element={<RouteChat />} />
             <Route path="wrapped/:id?" element={<RouteWrapped />} />
             <Route path="milestones" element={<RouteMilestones />}>
               <Route index element={<RouteMilestones />} />
@@ -155,7 +247,7 @@ function App() {
                   <Route path="country/:country" element={<RouteLeaders />} />
                 </Route>
               </Route>
-            </Route>
+            </Route> */}
           </Routes>
         </CardContent>
       </Paper>
@@ -180,6 +272,9 @@ function App() {
               background-attachment: fixed;
           }`}
           </style>
+          <title>
+            {title ? `${title} - ` : ''} {config.APP_NAME}
+          </title>
         </Helmet>
         {
           isWorking ? <Loader /> :

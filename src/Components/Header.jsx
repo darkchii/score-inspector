@@ -24,6 +24,7 @@ import GroupIcon from '@mui/icons-material/Group';
 import CompareArrowsIcon from '@mui/icons-material/CompareArrows';
 import ChatIcon from '@mui/icons-material/Chat';
 import OsuTooltip from './OsuTooltip';
+import ParkIcon from '@mui/icons-material/Park';
 
 const HeaderButtonMenu = styled((props) => (
     <Menu
@@ -100,8 +101,8 @@ function Header(props) {
         { name: 'Stats', icon: <DataUsageIcon />, onClick: () => { }, linkTo: '/stats' },
         { name: 'Tools', icon: <BuildIcon />, onClick: () => { }, linkTo: '/tools' },
         { name: 'Milestones', icon: <EmojiEventsIcon />, onClick: () => { }, linkTo: '/milestones' },
-        { name: 'Bancho', icon: <ChatIcon />, onClick: () => { }, linkTo: '/bancho', tooltip: 'Statistics about the public in-game osu chats' },
         { name: 'Clans', icon: <GroupIcon />, onClick: () => { }, linkTo: '/clan' },
+        { name: 'Wrapped', icon: <ParkIcon />, onClick: () => { }, linkTo: '/wrapped' },
         // { name: 'Tournaments', icon: <EmojiEventsIcon />, onClick: () => { }, linkTo: '/tournaments' },
     ];
 

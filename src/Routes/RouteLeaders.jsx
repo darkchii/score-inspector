@@ -7,8 +7,6 @@ import moment from 'moment/moment';
 import momentDurationFormatSetup from "moment-duration-format";
 import PlayerLeaderboardItem from '../Components/Leaderboards/PlayerLeaderboardItem';
 import BeatmapLeaderboardItem from '../Components/Leaderboards/BeatmapLeaderboardItem';
-import { Helmet } from 'react-helmet';
-import config from "../config.json";
 import { grey } from '@mui/material/colors';
 import { countries } from 'countries-list';
 import { getDedicationLevel } from '../Helpers/Osu';
@@ -317,6 +315,7 @@ function RouteLeaders() {
         } else {
             setStatistic(GROUPED_STATS['PP'][0]);
         }
+        window.onTitleChange(`${statistic.title} Leaderboards`);
     }, [params.stat]);
 
     //if page portion of url changes
@@ -365,6 +364,7 @@ function RouteLeaders() {
             setLeaderboard(lb.leaderboard);
             setLeaderboardType(lb.result_type);
             setIsLoading(false);
+            window.onTitleChange(`${statistic.title} Leaderboards`);
         })();
     };
 
@@ -372,9 +372,6 @@ function RouteLeaders() {
 
     return (
         <>
-            <Helmet>
-                <title>{statistic.title} Leaderboards - {config.APP_NAME}</title>
-            </Helmet>
             <Box sx={{ pb: 2 }}>
                 {
                     Object.keys(GROUPED_STATS).map((group, i) => {

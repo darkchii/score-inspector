@@ -8,8 +8,6 @@ import { GetAPI, MILESTONES_FORMATTER } from '../Helpers/Misc';
 import moment from 'moment';
 import { GetFormattedName } from '../Helpers/Account';
 import { Link, useNavigate, useParams } from 'react-router';
-import { Helmet } from 'react-helmet';
-import config from "../config.json";
 
 const MILESTONES_PER_PAGE = 50;
 
@@ -47,11 +45,12 @@ function RouteMilestones() {
         })();
     }, [page]);
 
+    useEffect(()=>{
+        window.onTitleChange('Score Rank History');
+    }, []);
+
     return (
         <>
-            <Helmet>
-                <title>Milestones - {config.APP_NAME}</title>
-            </Helmet>
             {
                 isWorking ? (
                     <Loader />

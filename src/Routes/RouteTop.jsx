@@ -5,8 +5,6 @@ import { Link } from "react-router";
 import ScoreModal from "../Components/ScoreModal";
 import { getBestScores } from "../Helpers/OsuAlt";
 import { prepareScores } from "../Helpers/ScoresProcessor";
-import { Helmet } from "react-helmet";
-import config from "../config.json";
 import { getDiffColor, MassCalculatePerformance } from "../Helpers/Osu";
 import { grey } from "@mui/material/colors";
 import { getGradeIcon } from "../Helpers/Assets";
@@ -87,13 +85,11 @@ function RouteTop() {
 
     useEffect(() => {
         setSelectedPeriod(PERIODS[0]);
+        window.onTitleChange('Top Scores');
     }, []);
 
     return (
         <>
-            <Helmet>
-                <title>Top Scores - {config.APP_NAME}</title>
-            </Helmet>
             <ScoreModal data={modalData} />
             <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", width: "100%" }}>
                 <Tabs value={selected_period.value} onChange={(e, v) => setSelectedPeriod(PERIODS.find(p => p.value === v))}>

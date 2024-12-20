@@ -2,8 +2,6 @@
 import { useEffect, useState } from "react";
 import Loader from "../Components/UI/Loader";
 import { Box, Button, ButtonGroup, Chip, Divider, Grid2, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography, useTheme } from "@mui/material";
-import config from "../config.json";
-import { Helmet } from "react-helmet";
 import { GetAPI } from "../Helpers/Misc";
 import { GetFormattedName } from "../Helpers/Account";
 import moment from "moment";
@@ -137,6 +135,7 @@ function RouteLeadersMonthly() {
 
     useEffect(() => {
         setDataType('score');
+        window.onTitleChange('Month Score Farmers');
     }, [])
 
     useEffect(() => {
@@ -147,9 +146,6 @@ function RouteLeadersMonthly() {
 
     return (
         <>
-            <Helmet>
-                <title>Month Score Farmers - {config.APP_NAME}</title>
-            </Helmet>
             {
                 isLoading || data === null || dataMostAppearances === null || dataOvertakes === null ? (
                     <Loader />
