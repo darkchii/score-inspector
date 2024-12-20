@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Box, Button, ButtonGroup, Divider, Skeleton, Typography, useTheme } from "@mui/material";
+import { Box, Button, ButtonGroup, Divider, Skeleton, Table, TableCell, TableContainer, TableRow, Typography, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
 import ChartWrapper from "../../Helpers/ChartWrapper";
 import { capitalizeFirstLetter } from "../../Helpers/Misc";
@@ -66,7 +66,7 @@ function SectionGraphs(props) {
                 series={
                     props.dataset[period][selectedGraphIndex].data.map((data) => {
                         let _graphData = data.graph_data;
-                        if(props.dataset[period][selectedGraphIndex].filterNull){
+                        if (props.dataset[period][selectedGraphIndex].filterNull) {
                             _graphData = _graphData.filter((data) => {
                                 return !isNaN(data[1]);
                             });
@@ -86,41 +86,55 @@ function SectionGraphs(props) {
             />
         </Box>
         <Box sx={{ mt: 1 }}>
-            {
-                //props.dataset, is array of objects, each object has a category. split by that
+            <TableContainer size='small'>
+                <Table sx={{
+                    //decrease row padding
+                    '& .MuiTableCell-root': {
+                        padding: theme.spacing(0.5)
+                    }
+                }}>
+                    {
+                        //props.dataset, is array of objects, each object has a category. split by that
 
-                Object.keys(categorizedButtonIds).map((category) => {
-                    return (
-                        <>
-                            <Box>
-                                <Typography variant='h6'>{capitalizeFirstLetter(category)}</Typography>
-                                <ButtonGroup variant='outlined' size='small' color='primary'>
-                                    {
-                                        categorizedButtonIds[category].map((index, j) => {
-                                            return <Button key={j}
-                                                variant={selectedGraphIndex === index ? 'contained' : 'outlined'}
-                                                onClick={() => setSelectedGraphIndex(index)}
-                                                disabled={props.dataset[period][index].disabled ?? false}
-                                            >
-                                                {props.dataset[period][index].name}
-                                            </Button>
-                                        })
-                                    }
-                                </ButtonGroup>
-                            </Box>
-                            <Divider sx={{ mb: 1, mt: 1 }} />
-                        </>
-                    )
-                })
-            }
-        </Box>
-        <Box sx={{ mt: 1 }}>
-            <Typography variant='h6'>Periodic Increments</Typography>
-            <ButtonGroup variant='outlined' size='small' color="primary">
-                <Button variant={period === 'y' ? 'contained' : 'outlined'} onClick={() => setPeriod('y')}>Yearly</Button>
-                <Button variant={period === 'm' ? 'contained' : 'outlined'} onClick={() => setPeriod('m')}>Monthly</Button>
-                <Button variant={period === 'd' ? 'contained' : 'outlined'} onClick={() => setPeriod('d')}>Daily</Button>
-            </ButtonGroup>
+                        Object.keys(categorizedButtonIds).map((category, index) => {
+                            return (
+                                <TableRow key={index}>
+                                    <TableCell>
+                                        <Typography variant='body1'>{capitalizeFirstLetter(category)}</Typography>
+                                    </TableCell>
+                                    <TableCell>
+                                        <ButtonGroup variant='outlined' size='small' color='primary'>
+                                            {
+                                                categorizedButtonIds[category].map((index, j) => {
+                                                    return <Button key={j}
+                                                        variant={selectedGraphIndex === index ? 'contained' : 'outlined'}
+                                                        onClick={() => setSelectedGraphIndex(index)}
+                                                        disabled={props.dataset[period][index].disabled ?? false}
+                                                    >
+                                                        {props.dataset[period][index].name}
+                                                    </Button>
+                                                })
+                                            }
+                                        </ButtonGroup>
+                                    </TableCell>
+                                </TableRow>
+                            )
+                        })
+                    }
+                    <TableRow>
+                        <TableCell>
+                            <Typography variant='body1'>Periodic Increments</Typography>
+                        </TableCell>
+                        <TableCell>
+                            <ButtonGroup variant='outlined' size='small' color="primary">
+                                <Button variant={period === 'y' ? 'contained' : 'outlined'} onClick={() => setPeriod('y')}>Yearly</Button>
+                                <Button variant={period === 'm' ? 'contained' : 'outlined'} onClick={() => setPeriod('m')}>Monthly</Button>
+                                <Button variant={period === 'd' ? 'contained' : 'outlined'} onClick={() => setPeriod('d')}>Daily</Button>
+                            </ButtonGroup>
+                        </TableCell>
+                    </TableRow>
+                </Table>
+            </TableContainer>
         </Box>
     </>
 }

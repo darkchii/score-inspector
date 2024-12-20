@@ -1,4 +1,5 @@
 import { amber, blue, green, grey, purple, red } from "@mui/material/colors";
+import { median } from "d3";
 import moment from "moment";
 
 const PERIOD_FORMATS = {
@@ -40,6 +41,7 @@ function getScoresPeriodicData(user, scores, dates, beatmaps, period = 'm') {
 
     data = processCurrentData(scores, data, period);
     data = processAverageData(data, period);
+    data = processMedianData(data, period);
     data = processScoreRankData(user.score_rank_history, data, period);
 
     //convert data to array and sort by date asc
@@ -59,6 +61,7 @@ function getScoresPeriodicData(user, scores, dates, beatmaps, period = 'm') {
 
     data_array = processCumulativeData(data_array, period);
     data_array = processAverageData(data_array, period);
+    data_array = processMedianData(data_array, period);
     data_array = processCompletionData(_beatmaps, data_array, period);
 
     const graph_data = generateGraphData(user, data_array, period);
@@ -137,7 +140,7 @@ function processAverageData(data) {
 
         let _total_sr = 0;
         data[date].scores.forEach((score) => {
-            _total_sr += score.beatmap.stars;
+            _total_sr += score.beatmap.difficulty_data.star_rating;
         });
         data[date].average_star_rating = _total_sr / data[date].gained_clears;
         data[date].highest_star_rating = data[date].scores.reduce((acc, score) => { return Math.max(acc, score.beatmap.stars); }, 0);
@@ -154,6 +157,29 @@ function processAverageData(data) {
         data[date].gained_hits_per_play = data[date].gained_hit_count / data[date].gained_clears;
     }
 
+    return data;
+}
+
+function processMedianData(data) {
+    for (let date in data) {
+        if (data[date].gained_clears === 0 || data[date].scores.length === 0) {
+            continue;
+        }
+
+        let _scores = data[date].scores.map((score) => { return score.score; });
+        let _lengths = data[date].scores.map((score) => { return score.beatmap.length; });
+        let _pp = data[date].scores.map((score) => { return score.pp; });
+        let _hits = data[date].scores.map((score) => { return score.count300 + score.count100 + score.count50; });
+        let _accs = data[date].scores.map((score) => { return score.accuracy; });
+        let _srs = data[date].scores.map((score) => { return score.beatmap.difficulty_data.star_rating; });
+
+        data[date].median_score = median(_scores);
+        data[date].median_length = median(_lengths);
+        data[date].median_pp = median(_pp);
+        data[date].median_hits = median(_hits);
+        data[date].median_acc = median(_accs);
+        data[date].median_sr = median(_srs);
+    }
     return data;
 }
 
@@ -497,7 +523,7 @@ function generateGraphData(user, data_array, period = 'm') {
     //acc gained
     graph_data = [...graph_data, {
         id: 'acc',
-        name: 'Acc',
+        name: 'Accuracy',
         category: 'incremental',
         data: [
             {
@@ -513,7 +539,7 @@ function generateGraphData(user, data_array, period = 'm') {
     //acc cumulative
     graph_data = [...graph_data, {
         id: 'acc',
-        name: 'Acc',
+        name: 'Accuracy',
         category: 'cumulative',
         filterNull: true,
         data: [
@@ -648,133 +674,11 @@ function generateGraphData(user, data_array, period = 'm') {
         }
     }];
 
-    //average sr
-    graph_data = [...graph_data, {
-        id: 'avg_sr',
-        name: 'Average SR',
-        category: 'misc',
-        data: [
-            {
-                name: 'Average Star Rating',
-                graph_data: data_array.map((data) => { return [data.date, data.average_star_rating] }),
-            }
-        ],
-        formatter: (value) => {
-            return `${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}*`;
-        }
-    }];
-
-    //highest sr
-    graph_data = [...graph_data, {
-        id: 'max_sr',
-        name: 'Highest SR',
-        category: 'misc',
-        data: [
-            {
-                name: 'Highest Star Rating',
-                graph_data: data_array.map((data) => { return [data.date, data.highest_star_rating] }),
-            }
-        ],
-        formatter: (value) => {
-            return `${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}*`;
-        }
-    }];
-
-    //average pp
-    graph_data = [...graph_data, {
-        id: 'avg_pp',
-        name: 'Average PP',
-        category: 'misc',
-        data: [
-            {
-                name: 'Average PP',
-                graph_data: data_array.map((data) => { return [data.date, data.average_pp] }),
-            }
-        ],
-        formatter: (value) => {
-            return `${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}pp`;
-        }
-    }];
-
-    //highest pp
-    graph_data = [...graph_data, {
-        id: 'max_pp',
-        name: 'Highest PP',
-        category: 'misc',
-        data: [
-            {
-                name: 'Highest PP',
-                graph_data: data_array.map((data) => { return [data.date, data.highest_pp] }),
-            }
-        ],
-        formatter: (value) => {
-            return `${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}pp`;
-        }
-    }];
-
-    //average score
-    graph_data = [...graph_data, {
-        id: 'avg_score',
-        name: 'Average Score',
-        category: 'misc',
-        data: [
-            {
-                name: 'Average Score',
-                graph_data: data_array.map((data) => { return [data.date, data.average_score] }),
-            }
-        ]
-    }];
-
-    //highest score
-    graph_data = [...graph_data, {
-        id: 'max_score',
-        name: 'Highest Score',
-        category: 'misc',
-        data: [
-            {
-                name: 'Highest Score',
-                graph_data: data_array.map((data) => { return [data.date, data.highest_score] }),
-            }
-        ]
-    }];
-
-    //average length
-    graph_data = [...graph_data, {
-        id: 'avg_length',
-        name: 'Average Length',
-        category: 'misc',
-        data: [
-            {
-                name: 'Average Length',
-                graph_data: data_array.map((data) => { return [data.date, data.average_length] }),
-            }
-        ],
-        formatter: (value) => {
-            return moment.duration(value, 'seconds').format('hh[h] mm[m] ss[s]', { trim: false });
-        }
-    }];
-
-    //highest length
-    graph_data = [...graph_data, {
-        id: 'max_length',
-        name: 'Highest Length',
-        category: 'misc',
-        data: [
-            {
-                name: 'Highest Length',
-                graph_data: data_array.map((data) => { return [data.date, data.highest_length] }),
-            }
-        ],
-        formatter: (value) => {
-            return moment.duration(value, 'seconds').format('hh[h] mm[m] ss[s]', { trim: false });
-        }
-    }];
-
     //score rank
     graph_data = [...graph_data, {
         id: 'rank_score',
         name: 'Score Rank',
-        category: 'misc',
+        category: 'other',
         reversed: true,
         min: 1, //#0 doesn't exist
         data: [
@@ -787,6 +691,180 @@ function generateGraphData(user, data_array, period = 'm') {
             return `#${value.toLocaleString()}`;
         }
     }];
+
+    //HIGHEST
+    graph_data = [...graph_data,
+    {
+        id: 'max_sr',
+        name: 'Stars',
+        category: 'highest',
+        data: [
+            {
+                name: 'Highest Star Rating',
+                graph_data: data_array.map((data) => { return [data.date, data.highest_star_rating] }),
+            }
+        ],
+        formatter: (value) => {
+            return `${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}*`;
+        }
+    },
+    {
+        id: 'max_length',
+        name: 'Length',
+        category: 'highest',
+        data: [
+            {
+                name: 'Highest Length',
+                graph_data: data_array.map((data) => { return [data.date, data.highest_length] }),
+            }
+        ],
+        formatter: (value) => {
+            return moment.duration(value, 'seconds').format('hh[h] mm[m] ss[s]', { trim: false });
+        }
+    },
+    {
+        id: 'max_score',
+        name: 'Score',
+        category: 'highest',
+        data: [
+            {
+                name: 'Highest Score',
+                graph_data: data_array.map((data) => { return [data.date, data.highest_score] }),
+            }
+        ]
+    },
+    {
+        id: 'max_pp',
+        name: 'PP',
+        category: 'highest',
+        data: [
+            {
+                name: 'Highest PP',
+                graph_data: data_array.map((data) => { return [data.date, data.highest_pp] }),
+            }
+        ],
+        formatter: (value) => {
+            return `${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}pp`;
+        }
+    }
+    ]
+
+    //AVERAGES
+    graph_data = [...graph_data,
+    {
+        id: 'avg_sr',
+        name: 'Stars',
+        category: 'average',
+        data: [
+            {
+                name: 'Average Star Rating',
+                graph_data: data_array.map((data) => { return [data.date, data.average_star_rating] }),
+            }
+        ],
+        formatter: (value) => {
+            return `${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}*`;
+        }
+    },
+    {
+        id: 'avg_length',
+        name: 'Length',
+        category: 'average',
+        data: [
+            {
+                name: 'Average Length',
+                graph_data: data_array.map((data) => { return [data.date, data.average_length] }),
+            }
+        ],
+        formatter: (value) => {
+            return moment.duration(value, 'seconds').format('hh[h] mm[m] ss[s]', { trim: false });
+        }
+    },
+    {
+        id: 'avg_score',
+        name: 'Score',
+        category: 'average',
+        data: [
+            {
+                name: 'Average Score',
+                graph_data: data_array.map((data) => { return [data.date, data.average_score] }),
+            }
+        ]
+    },
+    {
+        id: 'avg_pp',
+        name: 'PP',
+        category: 'average',
+        data: [
+            {
+                name: 'Average PP',
+                graph_data: data_array.map((data) => { return [data.date, data.average_pp] }),
+            }
+        ],
+        formatter: (value) => {
+            return `${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}pp`;
+        }
+    }
+    ];
+
+    //MEDIAN
+    graph_data = [...graph_data,
+    {
+        id: 'median_sr',
+        name: 'Stars',
+        category: 'median',
+        data: [
+            {
+                name: 'Median Stars',
+                graph_data: data_array.map((data) => { return [data.date, data.median_sr] }),
+            }
+        ],
+        formatter: (value) => {
+            return `${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}*`;
+        }
+    },
+    {
+        id: 'median_length',
+        name: 'Length',
+        category: 'median',
+        data: [
+            {
+                name: 'Median Length',
+                graph_data: data_array.map((data) => { return [data.date, data.median_length] }),
+            }
+        ],
+        formatter: (value) => {
+            return moment.duration(value, 'seconds').format('hh[h] mm[m] ss[s]', { trim: false });
+        }
+    },
+    {
+        id: 'median_score',
+        name: 'Score',
+        category: 'median',
+        data: [
+            {
+                name: 'Median Score',
+                graph_data: data_array.map((data) => { return [data.date, data.median_score] }),
+            }
+        ],
+        formatter: (value) => {
+            return `${value.toLocaleString()}`;
+        }
+    },
+    {
+        id: 'median_pp',
+        name: 'PP',
+        category: 'median',
+        data: [
+            {
+                name: 'Median PP',
+                graph_data: data_array.map((data) => { return [data.date, data.median_pp] }),
+            }
+        ],
+        formatter: (value) => {
+            return `${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}pp`;
+        }
+    }
+    ];
 
     graph_data.forEach((graph) => {
         graph.period_format = PERIOD_FORMATS[period].format_str;
@@ -890,6 +968,13 @@ function getDateDefaults(date, beatmaps, period = 'm') {
 
         temp_total_acc: 0,
         total_average_acc: 0,
+
+        median_score: 0,
+        median_length: 0,
+        median_pp: 0,
+        median_hits: 0,
+        median_acc: 0,
+        median_sr: 0
     };
 
     beatmaps[period].forEach(beatmap_period_data => {
@@ -897,7 +982,7 @@ function getDateDefaults(date, beatmaps, period = 'm') {
             data.gained_beatmaps = parseInt(beatmap_period_data.amount);
             data.gained_beatmaps_length = parseInt(beatmap_period_data.length);
             data.gained_beatmaps_score = parseInt(beatmap_period_data.score);
-            
+
             data.total_beatmaps = parseInt(beatmap_period_data.amount_total);
             data.total_beatmaps_length = parseInt(beatmap_period_data.length_total);
             data.total_beatmaps_score = parseInt(beatmap_period_data.score_total);
