@@ -217,7 +217,7 @@ function RouteClan() {
         };
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         window.onTitleChange('Clans');
     }, []);
 
@@ -1841,147 +1841,152 @@ function ClanFormFields(props) {
 
     return (
         <>
-            <Card sx={MODAL_STYLE}>
-                <CardContent>
-                    <Box>
-                        <Typography variant='h6'>Create a clan</Typography>
-                        {/* FORM */}
-                        <Box sx={{
-                            mt: 2,
-                            maxHeight: '80vh',
-                            overflowY: 'auto',
-                        }}>
-                            <Container>
-                                <Stack spacing={1}>
-                                    {
-                                        exampleUser && GetFormattedName(exampleUser)
-                                    }
-                                    <TextField
-                                        label='Clan name'
-                                        variant='standard'
-                                        value={clanName}
-                                        onChange={(e) => setClanName(e.target.value)}
-                                        disabled={isWorking}
-                                        inputProps={{
-                                            maxLength: 20,
-                                        }}
-                                    />
-                                    <TextField
-                                        label='Clan tag'
-                                        variant='standard'
-                                        value={clanTag}
-                                        onChange={(e) => setClanTag(e.target.value)}
-                                        disabled={isWorking}
-                                        inputProps={{
-                                            maxLength: 5,
-                                        }}
-                                    />
-                                    <TextField
-                                        label='Clan description'
-                                        variant='standard'
-                                        value={clanDescription}
-                                        onChange={(e) => setClanDescription(e.target.value)}
-                                        disabled={isWorking}
-                                        inputProps={{
-                                            maxLength: 100,
-                                        }}
-                                    />
-                                    <MuiColorInput
-                                        label='Clan color'
-                                        format='hex'
-                                        value={clanColor}
-                                        isAlphaHidden={true}
-                                        onChange={(color) => setClanColor(color)}
-                                        variant="standard"
-                                    />
-                                    {
-                                        isEditMode ? <>
-                                            <TextField
-                                                label='Discord Invite'
-                                                variant='standard'
-                                                value={clanDiscordInvite}
-                                                onChange={(e) => setClanDiscordInvite(e.target.value)}
-                                                disabled={isWorking}
-                                                inputProps={{
-                                                    maxLength: 255,
-                                                }} />
+            <Card sx={{
+                ...MODAL_STYLE,
+                maxHeight: '90vh',
+                height: '90vh',
+            }}>
+                <div style={{
+                    width: '100%',
+                    height: '100%',
+                }}>
+                    {/* <Typography variant='h6'>Create a clan</Typography> */}
+                    {/* FORM */}
+                    <Box sx={{
+                        overflowY: 'auto',
+                        position: 'relative',
+                        padding: 2,
+                    }}>
+                        <Container>
+                            <Stack spacing={1}>
+                                {
+                                    exampleUser && GetFormattedName(exampleUser)
+                                }
+                                <TextField
+                                    label='Clan name'
+                                    variant='standard'
+                                    value={clanName}
+                                    onChange={(e) => setClanName(e.target.value)}
+                                    disabled={isWorking}
+                                    inputProps={{
+                                        maxLength: 20,
+                                    }}
+                                />
+                                <TextField
+                                    label='Clan tag'
+                                    variant='standard'
+                                    value={clanTag}
+                                    onChange={(e) => setClanTag(e.target.value)}
+                                    disabled={isWorking}
+                                    inputProps={{
+                                        maxLength: 5,
+                                    }}
+                                />
+                                <TextField
+                                    label='Clan description'
+                                    variant='standard'
+                                    value={clanDescription}
+                                    onChange={(e) => setClanDescription(e.target.value)}
+                                    disabled={isWorking}
+                                    inputProps={{
+                                        maxLength: 100,
+                                    }}
+                                />
+                                <MuiColorInput
+                                    label='Clan color'
+                                    format='hex'
+                                    value={clanColor}
+                                    isAlphaHidden={true}
+                                    onChange={(color) => setClanColor(color)}
+                                    variant="standard"
+                                />
+                                {
+                                    isEditMode ? <>
+                                        <TextField
+                                            label='Discord Invite'
+                                            variant='standard'
+                                            value={clanDiscordInvite}
+                                            onChange={(e) => setClanDiscordInvite(e.target.value)}
+                                            disabled={isWorking}
+                                            inputProps={{
+                                                maxLength: 255,
+                                            }} />
 
-                                            <TextField
-                                                label='Header  Image URL'
-                                                variant='standard'
-                                                value={clanHeaderUrl}
-                                                onChange={(e) => setClanHeaderUrl(e.target.value)}
-                                                disabled={isWorking}
-                                                inputProps={{
-                                                    maxLength: 255,
-                                                }}
-                                            />
+                                        <TextField
+                                            label='Header  Image URL'
+                                            variant='standard'
+                                            value={clanHeaderUrl}
+                                            onChange={(e) => setClanHeaderUrl(e.target.value)}
+                                            disabled={isWorking}
+                                            inputProps={{
+                                                maxLength: 255,
+                                            }}
+                                        />
 
-                                            <Box sx={{
+                                        <Box sx={{
+                                            width: '100%',
+                                        }}>
+                                            <FormControl sx={{
+                                                mt: 1,
                                                 width: '100%',
                                             }}>
-                                                <FormControl sx={{
-                                                    mt: 1,
-                                                    width: '100%',
-                                                }}>
-                                                    <InputLabel id="edit-default-sort">Default Sort</InputLabel>
-                                                    <Select
-                                                        labelId="edit-default-sort"
-                                                        id="edit-default-sort-select"
-                                                        variant='standard'
-                                                        size="small"
-                                                        value={clanDefaultSort}
-                                                        onChange={(e) => setClanDefaultSort(e.target.value)}
-                                                        disabled={isWorking}
-                                                    >
-                                                        {
-                                                            CLAN_STATS.filter((stat) => stat.user !== false).map((stat, i) => {
-                                                                return (
-                                                                    <MenuItem key={i} value={stat.key}>{stat.name}</MenuItem>
-                                                                )
-                                                            })
-                                                        }
-                                                    </Select>
-                                                </FormControl>
-                                            </Box>
-
-                                            {/* MUI switch */}
-                                            <Stack direction='row' alignItems='center'>
-                                                <Switch
-                                                    checked={clanDisableRequests}
-                                                    onChange={(e) => setClanDisableRequests(e.target.checked)}
+                                                <InputLabel id="edit-default-sort">Default Sort</InputLabel>
+                                                <Select
+                                                    labelId="edit-default-sort"
+                                                    id="edit-default-sort-select"
+                                                    variant='standard'
+                                                    size="small"
+                                                    value={clanDefaultSort}
+                                                    onChange={(e) => setClanDefaultSort(e.target.value)}
                                                     disabled={isWorking}
-                                                />
-                                                <Typography>Disable join requests</Typography>
-                                            </Stack>
-                                        </> : <></>
-                                    }
-                                    <Button
-                                        variant='contained'
-                                        color='primary'
-                                        onClick={onSubmit}
-                                        disabled={isWorking}
-                                    >
-                                        {isEditMode ? 'Update' : 'Create'}
-                                    </Button>
-                                    <Alert severity='info' sx={{ mt: 1 }}>
-                                        Header image must be a direct link to an image. (e.g. https://i.imgur.com/LqGgC4a.jpeg)
-                                    </Alert>
-                                    {/* add header image preview */}
-                                    {
-                                        clanHeaderUrl ? <img src={clanHeaderUrl} alt="Header Preview" style={{
-                                            width: '100%',
-                                            height: '200px',
-                                            objectFit: 'cover',
-                                            borderRadius: '10px',
-                                            marginTop: '5px',
-                                        }} /> : <></>
-                                    }
-                                </Stack>
-                            </Container>
-                        </Box>
+                                                >
+                                                    {
+                                                        CLAN_STATS.filter((stat) => stat.user !== false).map((stat, i) => {
+                                                            return (
+                                                                <MenuItem key={i} value={stat.key}>{stat.name}</MenuItem>
+                                                            )
+                                                        })
+                                                    }
+                                                </Select>
+                                            </FormControl>
+                                        </Box>
+
+                                        {/* MUI switch */}
+                                        <Stack direction='row' alignItems='center'>
+                                            <Switch
+                                                checked={clanDisableRequests}
+                                                onChange={(e) => setClanDisableRequests(e.target.checked)}
+                                                disabled={isWorking}
+                                            />
+                                            <Typography>Disable join requests</Typography>
+                                        </Stack>
+                                    </> : <></>
+                                }
+                                <Button
+                                    variant='contained'
+                                    color='primary'
+                                    onClick={onSubmit}
+                                    disabled={isWorking}
+                                >
+                                    {isEditMode ? 'Update' : 'Create'}
+                                </Button>
+                                <Alert severity='info' sx={{ mt: 1 }}>
+                                    Header image must be a direct link to an image. (e.g. https://i.imgur.com/LqGgC4a.jpeg)
+                                </Alert>
+                                {/* add header image preview */}
+                                {
+                                    clanHeaderUrl ? <img src={clanHeaderUrl} alt="Header Preview" style={{
+                                        width: '100%',
+                                        height: '200px',
+                                        objectFit: 'cover',
+                                        borderRadius: '10px',
+                                        marginTop: '5px',
+                                    }} /> : <></>
+                                }
+                            </Stack>
+                        </Container>
                     </Box>
-                </CardContent>
+                </div>
             </Card>
         </>
     );
