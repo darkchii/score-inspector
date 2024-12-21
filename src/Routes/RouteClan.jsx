@@ -10,7 +10,7 @@ import Loader from "../Components/UI/Loader";
 import moment from "moment";
 import ClanLeaderboardItem from "../Components/Leaderboards/ClanLeaderboardItem";
 import { blue, grey } from "@mui/material/colors";
-import { getLevelForScore } from "../Helpers/Osu";
+import { CalculateNewXPLevel, getLevelForScore } from "../Helpers/Osu";
 import PlayerLeaderboardItem from '../Components/Leaderboards/PlayerLeaderboardItem';
 import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
@@ -35,6 +35,7 @@ import ScoreRow from "../Components/ScoreRow";
 import PlayerTooltip from "../Components/UI/PlayerTooltip";
 import Mods from "../Helpers/Mods";
 import OsuTooltip from "../Components/OsuTooltip";
+import { Helmet } from "react-helmet";
 
 function CustomTabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -96,6 +97,15 @@ const CLAN_STATS = [
         sort_value: (stats) => getLevelForScore(stats.total_score ?? 0),
         key: 'level',
     }, {
+        name: 'XP 2.0',
+        format: (stats) => formatNumber(stats.xp ?? 0, 0),
+        ranking: false,
+        display: true,
+        key: 'xp',
+        extra_format: (stats) => `Level ${formatNumber(CalculateNewXPLevel(stats.xp ?? 0), 2)}`,
+        user: false,
+    },
+    {
         name: 'Clears',
         format: (stats) => (stats.clears ?? 0).toLocaleString('en-US'),
         description: 'Total clears of all members',
@@ -321,7 +331,7 @@ function ClanPage(props) {
                 window.onTitleChange(`${data.clan.name}`);
 
                 //check if the user has moderator permissions
-                if(props.me?.clan_member?.clan?.id === data.clan.id) {
+                if (props.me?.clan_member?.clan?.id === data.clan.id) {
                     setHasOwnerPermissions(props.me.osu_id === data.clan.owner);
                     setHasModeratorPermissions(props.me.clan_member.is_moderator === true || props.me.osu_id === data.clan.owner);
 
@@ -338,8 +348,8 @@ function ClanPage(props) {
 
     const removeClan = () => {
         (async () => {
-            try{
-                if(!hasOwnerPermissions) throw new Error('You do not have permission to remove this clan.');
+            try {
+                if (!hasOwnerPermissions) throw new Error('You do not have permission to remove this clan.');
                 const data = {
                     id: clanData.clan.id,
                     user: {
@@ -354,7 +364,7 @@ function ClanPage(props) {
                     showNotification('Success', 'Clan removed successfully.', 'success');
                     navigate('/clan');
                 }
-            }catch(err){
+            } catch (err) {
                 showNotification('Error', 'An error occurred while removing the clan.', 'error');
                 showNotification('Error', err.message, 'error');
             }
@@ -393,7 +403,7 @@ function ClanPage(props) {
 
     const eventAcceptJoinRequest = async (request) => {
         try {
-            if(!hasModeratorPermissions) throw new Error('You do not have permission to accept join requests.');
+            if (!hasModeratorPermissions) throw new Error('You do not have permission to accept join requests.');
             const user_id = request.user?.osu?.id ?? request.user?.alt?.user_id;
             if (!user_id) return showNotification('Error', 'No user data found...', 'error');
             const response = await AcceptJoinRequestClan(props.me.osu_id, user_id, await GetLoginToken(), clanData.clan.id);
@@ -411,7 +421,7 @@ function ClanPage(props) {
 
     const eventRejectJoinRequest = async (request) => {
         try {
-            if(!hasModeratorPermissions) throw new Error('You do not have permission to reject join requests.');
+            if (!hasModeratorPermissions) throw new Error('You do not have permission to reject join requests.');
             const user_id = request.user?.osu?.id ?? request.user?.alt?.user_id;
             if (!user_id) return showNotification('Error', 'No user data found...', 'error');
             const response = await RejectJoinRequestClan(props.me.osu_id, user_id, await GetLoginToken(), clanData.clan.id);
@@ -429,7 +439,7 @@ function ClanPage(props) {
 
     const eventRemoveMember = async (user_id) => {
         try {
-            if(!hasModeratorPermissions) throw new Error('You do not have permission to remove members.');
+            if (!hasModeratorPermissions) throw new Error('You do not have permission to remove members.');
             const response = await RemoveClanMember(props.me.osu_id, user_id, await GetLoginToken(), clanData.clan.id);
             if (response.error) {
                 showNotification('Error', response.error, 'error');
@@ -445,7 +455,7 @@ function ClanPage(props) {
 
     const eventTransferOwnership = async (user_id) => {
         try {
-            if(!hasOwnerPermissions) throw new Error('You do not have permission to transfer ownership.');
+            if (!hasOwnerPermissions) throw new Error('You do not have permission to transfer ownership.');
             const response = await TransferClanOwnership(props.me.osu_id, user_id, await GetLoginToken(), clanData.clan.id,);
             if (response.error) {
                 showNotification('Error', response.error, 'error');
@@ -462,7 +472,7 @@ function ClanPage(props) {
     const eventChangeModeratorStatus = async (user_id) => {
         //simply toggle the moderator status
         try {
-            if(!hasOwnerPermissions) throw new Error('You do not have permission to change moderator status.');
+            if (!hasOwnerPermissions) throw new Error('You do not have permission to change moderator status.');
             const member = clanData.members.find(m => m.user.alt.user_id === user_id);
             if (!member) return showNotification('Error', 'No member data found...', 'error');
             const response = await UpdateClanModerator(props.me.osu_id, await GetLoginToken(), clanData.clan.id, user_id, !member.is_moderator);
@@ -518,6 +528,21 @@ function ClanPage(props) {
 
     return (
         <>
+            {
+                clanData.clan.background_image_url ?
+                    <Helmet>
+                        <style>
+                            {`
+                        body { 
+                        background-image: url('${clanData.clan.background_image_url}'); 
+                        background-repeat: no-repeat;
+                        background-size: cover;
+                        background-position: center;
+                        background-attachment: fixed;
+                    }`}
+                        </style>
+                    </Helmet> : <></>
+            }
             <Modal
                 open={clanEditModalOpen}
                 onClose={() => setClanEditModalOpen(false)}
@@ -709,7 +734,17 @@ function ClanPage(props) {
                                                         } />
                                                     </div>
                                                     <div className='score-stats__group-row'>
-                                                        <ScoreViewStat label='Members' value={clanData.members.length} />
+                                                        <ScoreViewStat label='Members' value={
+                                                            <span>
+                                                                {clanData.members.length}
+                                                                {/* moderator count, excluding the owner */}
+                                                                <span style={{
+                                                                    color: 'grey',
+                                                                    fontSize: '0.8em',
+                                                                    marginLeft: '0.5em',
+                                                                }}>{`(${clanData.members.filter(m => m.is_moderator && m.user.alt.user_id !== clanData.owner?.user?.inspector_user?.osu_id).length + 1} mod${(clanData.members.filter(m => m.is_moderator && m.user.alt.user_id !== clanData.owner?.user?.inspector_user?.osu_id).length + 1) > 1 ? 's' : ''})`}</span>
+                                                            </span>
+                                                        } />
                                                         <ScoreViewStat
                                                             label='Created'
                                                             value={moment(clanData.clan.creation_date).fromNow()}
@@ -760,7 +795,10 @@ function ClanPage(props) {
                                                                     let ranking = clanData.ranking[stat.key] ?? 0;
                                                                     if (stat.key === 'level') {
                                                                         ranking = clanData.ranking['total_score'] ?? 0;
+                                                                    }else if(stat.key === 'xp_level'){
+                                                                        ranking = clanData.ranking['xp'] ?? 0;
                                                                     }
+
                                                                     let rank_color = null
                                                                     //bright colors
                                                                     if (ranking === 1) rank_color = '#ffd700';
@@ -1421,6 +1459,13 @@ function ClanList() {
                                                             },
                                                             //select clan_stat entry from sorter, then use format function
                                                             { value: CLAN_STATS.find((stat) => stat.key === sorter).format(clan.clan_stats), alignment: 'left', variant: 'body2' },
+                                                            //only if extra_format is set
+                                                            ...[CLAN_STATS.find((stat) => stat.key === sorter).extra_format ? {
+                                                                value: CLAN_STATS.find((stat) => stat.key === sorter).extra_format(clan.clan_stats), 
+                                                                alignment: 'left', 
+                                                                variant: 'body2',
+                                                                color: grey[500]
+                                                            } : {}]
                                                         ]
                                                     }
                                                     iconValues={[
@@ -1747,6 +1792,7 @@ function ClanEdit(props) {
             description: data.clanDescription,
             color: data.clanColor,
             header_image_url: data.clanHeaderUrl,
+            background_image_url: data.clanBackgroundUrl,
             disable_requests: data.clanDisableRequests,
             default_sort: data.clanDefaultSort,
             discord_invite: data.clanDiscordInvite,
@@ -1820,6 +1866,7 @@ function ClanFormFields(props) {
     const [clanDescription, setClanDescription] = useState(props.clan?.clan.description ?? '');
     const [clanColor, setClanColor] = useState(('#' + (props.clan?.clan.color ?? 'ffffff')));
     const [clanHeaderUrl, setClanHeaderUrl] = useState(props.clan?.clan.header_image_url ?? '');
+    const [clanBackgroundUrl, setClanBackgroundUrl] = useState(props.clan?.clan.background_image_url ?? '');
     const [clanDisableRequests, setClanDisableRequests] = useState(props.clan?.clan.disable_requests ?? false);
     const [clanDefaultSort, setClanDefaultSort] = useState(props.clan?.clan.default_sort ?? 'average_pp');
     const [clanDiscordInvite, setClanDiscordInvite] = useState(props.clan?.clan.discord_invite ?? '');
@@ -1866,6 +1913,7 @@ function ClanFormFields(props) {
                 clanDescription: clanDescription,
                 clanColor: clanColor.substring(1),
                 clanHeaderUrl: clanHeaderUrl,
+                clanBackgroundUrl: clanBackgroundUrl,
                 clanDisableRequests: clanDisableRequests,
                 clanDefaultSort: clanDefaultSort,
                 clanDiscordInvite: clanDiscordInvite,
@@ -1885,16 +1933,18 @@ function ClanFormFields(props) {
                 <div style={{
                     width: '100%',
                     height: '100%',
+                    overflowY: 'auto',
                 }}>
                     {/* <Typography variant='h6'>Create a clan</Typography> */}
                     {/* FORM */}
                     <Box sx={{
-                        overflowY: 'auto',
                         position: 'relative',
                         padding: 2,
                     }}>
                         <Container>
                             <Stack spacing={1}>
+                                <Typography variant='h6'>{isEditMode ? 'Edit' : 'Create'} clan</Typography>
+                                <Divider />
                                 {
                                     exampleUser && GetFormattedName(exampleUser)
                                 }
@@ -1959,6 +2009,17 @@ function ClanFormFields(props) {
                                             }}
                                         />
 
+                                        <TextField
+                                            label='Background Image URL'
+                                            variant='standard'
+                                            value={clanBackgroundUrl}
+                                            onChange={(e) => setClanBackgroundUrl(e.target.value)}
+                                            disabled={isWorking}
+                                            inputProps={{
+                                                maxLength: 255,
+                                            }}
+                                        />
+
                                         <Box sx={{
                                             width: '100%',
                                         }}>
@@ -2007,9 +2068,10 @@ function ClanFormFields(props) {
                                     {isEditMode ? 'Update' : 'Create'}
                                 </Button>
                                 <Alert severity='info' sx={{ mt: 1 }}>
-                                    Header image must be a direct link to an image. (e.g. https://i.imgur.com/LqGgC4a.jpeg)
+                                    Header and background image must be a direct link to an image. (e.g. https://i.imgur.com/LqGgC4a.jpeg)
                                 </Alert>
                                 {/* add header image preview */}
+                                <Typography variant='body2'>Header Image Preview</Typography>
                                 {
                                     clanHeaderUrl ? <img src={clanHeaderUrl} alt="Header Preview" style={{
                                         width: '100%',
@@ -2017,7 +2079,17 @@ function ClanFormFields(props) {
                                         objectFit: 'cover',
                                         borderRadius: '10px',
                                         marginTop: '5px',
-                                    }} /> : <></>
+                                    }} /> : <Alert severity='info' sx={{ mt: 1 }}>No header image</Alert>
+                                }
+                                <Divider sx={{ mt: 1, mb: 1 }} />
+                                <Typography variant='body2'>Background Image Preview</Typography>
+                                {
+                                    clanBackgroundUrl ? <img src={clanBackgroundUrl} alt="Background Preview" style={{
+                                        width: '100%',
+                                        objectFit: 'cover',
+                                        borderRadius: '10px',
+                                        marginTop: '5px',
+                                    }} /> : <Alert severity='info' sx={{ mt: 1 }}>No background image</Alert>
                                 }
                             </Stack>
                         </Container>
