@@ -187,8 +187,8 @@ export function FormatClanLog(clan, log) {
             }
         case 'clan_update':
             {
-                const old_data = JSON.parse(log_data.old_data);
-                const new_data = JSON.parse(log_data.new_data);
+                let old_data = JSON.parse(log_data.old_data);
+                let new_data = JSON.parse(log_data.new_data);
 
                 // Create a 3rd object to store the differences (omit keys with same values)
                 const diff = Object.keys(new_data).reduce((acc, key) => {
@@ -208,6 +208,18 @@ export function FormatClanLog(clan, log) {
                     if (typeof old_data[key] === 'boolean') { old_data[key] = old_data[key] ? 'true' : 'false'; }
                     if (typeof new_data[key] === 'boolean') { new_data[key] = new_data[key] ? 'true' : 'false'; }
                 });
+
+                //limit value lengths to 50 characters
+                old_data = Object.keys(old_data).reduce((acc, key) => {
+                    if(old_data[key] === null || old_data[key] === undefined) return acc;
+                    acc[key] = old_data[key].length > 50 ? old_data[key].substring(0, 50) + '...' : old_data[key];
+                    return acc;
+                }, {});
+                new_data = Object.keys(new_data).reduce((acc, key) => {
+                    if(new_data[key] === null || new_data[key] === undefined) return acc;
+                    acc[key] = new_data[key].length > 50 ? new_data[key].substring(0, 50) + '...' : new_data[key];
+                    return acc;
+                }, {});
 
                 //return `Clan updated:\n{list of changes in table fashion}`, no need to show the values
                 // return `Clan updated:\n\n${Object.keys(diff).map(key => `${key}: ${old_data[key]} > ${new_data[key]}`).join('\n')}`;

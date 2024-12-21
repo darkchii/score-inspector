@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Alert, Avatar, Box, Button, ButtonGroup, Card, CardContent, CardMedia, Chip, Container, Divider, FormControl, Grid2, IconButton, InputAdornment, InputLabel, Menu, MenuItem, Modal, OutlinedInput, Pagination, Paper, Select, Stack, Switch, Tab, Table, TableBody, TableCell, TableContainer, TableRow, Tabs, TextField, Tooltip, Typography, styled, tableCellClasses, useTheme } from "@mui/material";
+import { Alert, Avatar, Box, Button, ButtonGroup, Card, CardContent, CardMedia, Chip, Container, Divider, FormControl, Grid2, IconButton, InputAdornment, InputLabel, Menu, MenuItem, Modal, OutlinedInput, Pagination, Paper, Select, Stack, Switch, Tab, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tabs, TextField, Tooltip, Typography, styled, tableCellClasses, useTheme } from "@mui/material";
 import { useState } from "react";
 import { formatNumber, MODAL_STYLE, showNotification } from "../Helpers/Misc";
 import { useEffect } from "react";
@@ -1054,7 +1054,7 @@ function ClanPage(props) {
                                         }
                                     </CustomTabPanel>
                                     <CustomTabPanel value={activeTab} index={2}>
-                                        <GlowBarText sx={{ pb: 1 }}><Typography variant='body1'>Clan history</Typography></GlowBarText>
+                                        <GlowBarText sx={{ pb: 1 }}><Typography variant='body1'>Clan History</Typography></GlowBarText>
                                         <TableContainer>
                                             <Table size='small'>
                                                 <TableBody>
@@ -1062,12 +1062,14 @@ function ClanPage(props) {
                                                         clanData.logs.map((log, index) => {
                                                             if (FormatClanLog(clanData, log) === null) return <></>;
                                                             return <TableRow key={index}>
-                                                                <TableCell sx={{ width: '40%' }}>
+                                                                <TableCell>
                                                                     <OsuTooltip title={moment(log.created_at).format('MMMM Do YYYY, h:mm:ss a')}>
                                                                         {moment(log.created_at).fromNow()}
                                                                     </OsuTooltip>
                                                                 </TableCell>
-                                                                <TableCell>
+                                                                <TableCell sx={{
+                                                                    maxWidth: '60%'
+                                                                }}>
                                                                     <Typography variant='body2'>
                                                                         {FormatClanLog(clanData, log)}
                                                                     </Typography>
