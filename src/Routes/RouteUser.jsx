@@ -67,11 +67,11 @@ function RouteUser() {
                 if (user_out.inspector_user?.is_private) {
                     let skip = false;
                     if (await IsUserLoggedIn()) {
-                        if(((await GetLoginID()).toString() === user_out.inspector_user.osu_id.toString())) {
+                        if (((await GetLoginID()).toString() === user_out.inspector_user.osu_id.toString())) {
                             skip = true;
                         }
                     }
-                    if(!skip){
+                    if (!skip) {
                         setUser(null);
                         setIsLoading(false);
                         setErrorMessage("User has set their profile to private.");

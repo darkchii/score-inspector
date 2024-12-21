@@ -93,13 +93,14 @@ export function GetFormattedName(inspector_user, settings = null) {
     );
 }
 
-export function GetRoleIcons(roles, chips = false) {
+export function GetRoleIcons(roles, chips = false, index = null) {
     if (roles !== null && typeof roles === 'string') {
         roles = JSON.parse(roles);
     }
 
     const wrapIcon = (icon) => (
         <Box
+            key={index}
             display="flex"
             justifyContent="center"
             alignItems="center"

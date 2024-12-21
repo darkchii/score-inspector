@@ -4,7 +4,7 @@ import { useState } from "react";
 import { formatNumber, MODAL_STYLE, showNotification } from "../Helpers/Misc";
 import { useEffect } from "react";
 import { GetFormattedName, GetLoginID, GetLoginToken, GetUser } from "../Helpers/Account";
-import { AcceptJoinRequestClan, CreateClan, DeleteClan, FormatClanLog, GetClan, GetClanList, GetTopClans, JoinRequestClan, LeaveClan, RejectJoinRequestClan, RemoveClanMember, TransferClanOwnership, UpdateClan } from "../Helpers/Clan";
+import { AcceptJoinRequestClan, CreateClan, DeleteClan, FormatClanLog, GetClan, GetClanList, GetTopClans, JoinRequestClan, LeaveClan, RejectJoinRequestClan, RemoveClanMember, TransferClanOwnership, UpdateClan, UpdateClanModerator } from "../Helpers/Clan";
 import { Link, useNavigate, useParams } from "react-router";
 import Loader from "../Components/UI/Loader";
 import moment from "moment";
@@ -23,6 +23,7 @@ import StatCard from "../Components/UI/StatCard";
 import GroupsIcon from '@mui/icons-material/Groups';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import SecurityIcon from '@mui/icons-material/Security';
 import DoneIcon from '@mui/icons-material/Done';
 import ClearIcon from '@mui/icons-material/Clear';
 import { DiscordIcon } from "../Components/Icons";
@@ -294,6 +295,9 @@ function ClanPage(props) {
     const theme = useTheme();
     const params = useParams();
     const [activeTab, setActiveTab] = useState(0);
+    const [isInClan, setIsInClan] = useState(false); //even if pending,
+    const [hasModeratorPermissions, setHasModeratorPermissions] = useState(false);
+    const [hasOwnerPermissions, setHasOwnerPermissions] = useState(false);
 
     const handleDropdownClick = (event, data) => {
         setAnchorEl(event.currentTarget);
@@ -315,6 +319,15 @@ function ClanPage(props) {
                 }
                 setClanData(data);
                 window.onTitleChange(`${data.clan.name}`);
+
+                //check if the user has moderator permissions
+                if(props.me?.clan_member?.clan?.id === data.clan.id) {
+                    setHasOwnerPermissions(props.me.osu_id === data.clan.owner);
+                    setHasModeratorPermissions(props.me.clan_member.is_moderator === true || props.me.osu_id === data.clan.owner);
+
+                    //check the actual clan member list to see if the user is in the clan (since leaving doesn't update the local user object, so it still thinks it's in the clan)
+                    setIsInClan(data.members.find(m => m.user.alt.user_id === props.me.osu_id) !== undefined);
+                }
             } catch (err) {
                 showNotification('Error', 'An error occurred while fetching the clan data.', 'error');
                 showNotification('Error', err.message, 'error');
@@ -325,19 +338,25 @@ function ClanPage(props) {
 
     const removeClan = () => {
         (async () => {
-            const data = {
-                id: clanData.clan.id,
-                user: {
-                    id: props.me?.osu_id,
-                    token: await GetLoginToken(),
+            try{
+                if(!hasOwnerPermissions) throw new Error('You do not have permission to remove this clan.');
+                const data = {
+                    id: clanData.clan.id,
+                    user: {
+                        id: props.me?.osu_id,
+                        token: await GetLoginToken(),
+                    }
                 }
-            }
-            const response = await DeleteClan(data);
-            if (response.error) {
-                showNotification('Error', response.error, 'error');
-            } else {
-                showNotification('Success', 'Clan removed successfully.', 'success');
-                navigate('/clan');
+                const response = await DeleteClan(data);
+                if (response.error) {
+                    showNotification('Error', response.error, 'error');
+                } else {
+                    showNotification('Success', 'Clan removed successfully.', 'success');
+                    navigate('/clan');
+                }
+            }catch(err){
+                showNotification('Error', 'An error occurred while removing the clan.', 'error');
+                showNotification('Error', err.message, 'error');
             }
         })();
     }
@@ -374,6 +393,7 @@ function ClanPage(props) {
 
     const eventAcceptJoinRequest = async (request) => {
         try {
+            if(!hasModeratorPermissions) throw new Error('You do not have permission to accept join requests.');
             const user_id = request.user?.osu?.id ?? request.user?.alt?.user_id;
             if (!user_id) return showNotification('Error', 'No user data found...', 'error');
             const response = await AcceptJoinRequestClan(props.me.osu_id, user_id, await GetLoginToken(), clanData.clan.id);
@@ -391,6 +411,7 @@ function ClanPage(props) {
 
     const eventRejectJoinRequest = async (request) => {
         try {
+            if(!hasModeratorPermissions) throw new Error('You do not have permission to reject join requests.');
             const user_id = request.user?.osu?.id ?? request.user?.alt?.user_id;
             if (!user_id) return showNotification('Error', 'No user data found...', 'error');
             const response = await RejectJoinRequestClan(props.me.osu_id, user_id, await GetLoginToken(), clanData.clan.id);
@@ -408,6 +429,7 @@ function ClanPage(props) {
 
     const eventRemoveMember = async (user_id) => {
         try {
+            if(!hasModeratorPermissions) throw new Error('You do not have permission to remove members.');
             const response = await RemoveClanMember(props.me.osu_id, user_id, await GetLoginToken(), clanData.clan.id);
             if (response.error) {
                 showNotification('Error', response.error, 'error');
@@ -423,7 +445,8 @@ function ClanPage(props) {
 
     const eventTransferOwnership = async (user_id) => {
         try {
-            const response = await TransferClanOwnership(props.me.osu_id, user_id, await GetLoginToken(), clanData.clan.id);
+            if(!hasOwnerPermissions) throw new Error('You do not have permission to transfer ownership.');
+            const response = await TransferClanOwnership(props.me.osu_id, user_id, await GetLoginToken(), clanData.clan.id,);
             if (response.error) {
                 showNotification('Error', response.error, 'error');
             } else {
@@ -433,6 +456,26 @@ function ClanPage(props) {
         } catch (err) {
             showNotification('Error', 'An error occurred while transferring ownership.', 'error');
             showNotification('Error', err.message, 'error');
+        }
+    }
+
+    const eventChangeModeratorStatus = async (user_id) => {
+        //simply toggle the moderator status
+        try {
+            if(!hasOwnerPermissions) throw new Error('You do not have permission to change moderator status.');
+            const member = clanData.members.find(m => m.user.alt.user_id === user_id);
+            if (!member) return showNotification('Error', 'No member data found...', 'error');
+            const response = await UpdateClanModerator(props.me.osu_id, await GetLoginToken(), clanData.clan.id, user_id, !member.is_moderator);
+            if (response.error) {
+                showNotification('Error', response.error, 'error');
+            } else {
+                showNotification('Success', 'Moderator status updated successfully.', 'success');
+                await loadClan(props.id, true);
+            }
+        } catch (err) {
+            showNotification('Error', 'An error occurred while changing the moderator status.', 'error');
+            showNotification('Error', err.message, 'error');
+            console.error(err);
         }
     }
 
@@ -570,9 +613,7 @@ function ClanPage(props) {
                                             display: 'flex'
                                         }}>
                                             {
-                                                props.me && props.me?.clan_member?.clan && props.me?.clan_member?.clan?.id === clanData.clan.id
-                                                    && clanData.clan.owner === props.me?.osu_id
-                                                    ?
+                                                hasOwnerPermissions ?
                                                     <>
                                                         <Button
                                                             sx={{ mr: 1 }}
@@ -598,19 +639,26 @@ function ClanPage(props) {
                                                 props.me
                                                     // && props.me.clan_member?.clan?.owner !== props.me?.osu_id
                                                     ?
-                                                    (props.me.clan_member && props.me.clan_member.clan.id === clanData.clan.id ?
+                                                    (isInClan ?
                                                         <Button
                                                             sx={{ mr: 1 }}
                                                             onClick={eventLeaveClan}
                                                             variant='contained'
                                                             color='error'
                                                         >
-                                                            Leave
-                                                        </Button> : <Button
+                                                            {
+                                                                props.me.clan_member.pending ?
+                                                                    'Cancel request' :
+                                                                    'Leave'
+                                                            }
+                                                        </Button> :
+                                                        <Button
                                                             sx={{ mr: 1 }}
                                                             onClick={eventRequestJoinClan}
                                                             variant='contained'
-                                                            disabled={clanData.clan.disable_requests}
+                                                            disabled={clanData.clan.disable_requests || (
+                                                                props.me.clan_member ? props.me.clan_member.clan.id !== clanData.clan.id : false
+                                                            )}
                                                         >
                                                             Request to join
                                                         </Button>
@@ -827,6 +875,17 @@ function ClanPage(props) {
                                                         const _member = member.user.osu ?? member.user.alt;
                                                         const _username = _member?.username ?? member.user.inspector_user?.known_username;
                                                         const _user_id = _member?.id ?? member.user.inspector_user?.osu_id;
+                                                        const _is_moderator = member?.is_moderator ?? false;
+                                                        let clanRoleIcon = <AccountCircleIcon />;
+                                                        let clanRoleName = 'Member';
+
+                                                        if (clanData.clan.owner === _user_id) {
+                                                            clanRoleIcon = <SecurityIcon />;
+                                                            clanRoleName = 'Owner';
+                                                        } else if (_is_moderator) {
+                                                            clanRoleIcon = <AdminPanelSettingsIcon />;
+                                                            clanRoleName = 'Moderator';
+                                                        }
                                                         return (
                                                             <>
                                                                 <Box display='flex' alignItems='center'>
@@ -856,34 +915,15 @@ function ClanPage(props) {
                                                                         display: 'flex',
                                                                         alignItems: 'center',
                                                                     }}>
-                                                                        <OsuTooltip title={clanData.clan.owner === _user_id ? 'Owner' : 'Member'}>
-                                                                            {
-                                                                                clanData.clan.owner === _user_id ?
-                                                                                    <AdminPanelSettingsIcon />
-                                                                                    :
-                                                                                    <AccountCircleIcon />
-                                                                            }
+                                                                        <OsuTooltip title={clanRoleName}>
+                                                                            {clanRoleIcon}
                                                                         </OsuTooltip>
                                                                     </Box>
                                                                     {
-                                                                        props.me && props.me?.clan_member?.clan && props.me?.clan_member?.clan?.id === clanData.clan.id
-                                                                            && clanData.clan.owner === props.me?.osu_id ?
+                                                                        hasModeratorPermissions ?
                                                                             <Box sx={{
                                                                                 ml: 1
                                                                             }}>
-                                                                                {/* <Button
-                                                                     onClick={() => { eventRemoveMember(_user_id) }}
-                                                                     variant='contained'
-                                                                     color='error'
-                                                                     sx={{
-                                                                         ml: 1,
-                                                                         opacity: _user_id !== clanData.clan.owner ? 1 : 0
-                                                                     }}
-                                                                     size='small'
-                                                                     disabled={_user_id === clanData.clan.owner}
-                                                                 >
-                                                                     Remove
-                                                                 </Button> */}
                                                                                 {/* show a button with 3 dots to open a dropdown */}
                                                                                 <IconButton
                                                                                     disabled={_user_id === clanData.clan.owner}
@@ -903,8 +943,17 @@ function ClanPage(props) {
                                                                                     >
                                                                                         <CancelIcon sx={{ mr: 1.75 }} color="error" /> Kick
                                                                                     </MenuItem>
+                                                                                    <OsuTooltip title='Moderators can accept/reject join requests and kick members.'>
+                                                                                        <MenuItem
+                                                                                            disabled={clanData.clan.owner !== props.me?.osu_id}
+                                                                                            onClick={() => { eventChangeModeratorStatus(anchorData) }}
+                                                                                        >
+                                                                                            <SyncIcon sx={{ mr: 1.75, color: blue[500] }} /> {member.is_moderator ? 'Demote to member' : 'Promote to moderator'}
+                                                                                        </MenuItem>
+                                                                                    </OsuTooltip>
                                                                                     <OsuTooltip title='There is a 30 day cooldown before ownership can be transferred again.'>
                                                                                         <MenuItem
+                                                                                            disabled={clanData.clan.owner !== props.me?.osu_id}
                                                                                             onClick={() => { eventTransferOwnership(anchorData) }}
                                                                                         >
                                                                                             <SyncIcon sx={{ mr: 1.75, color: blue[500] }} /> Transfer ownership
@@ -927,7 +976,7 @@ function ClanPage(props) {
                                         </Stack>
                                         {
                                             //if owner, show member requests
-                                            clanData.clan.owner === props.me?.osu_id ?
+                                            hasModeratorPermissions ?
                                                 <>
                                                     <Divider sx={{ mt: 1, mb: 1 }} />
                                                     <GlowBarText sx={{ pb: 1 }}><Typography variant='body1'>Member requests</Typography></GlowBarText>
@@ -957,8 +1006,7 @@ function ClanPage(props) {
                                                                                     />
                                                                                 </Box>
                                                                                 {
-                                                                                    props.me && props.me?.clan_member?.clan && props.me?.clan_member?.clan?.id === clanData.clan.id
-                                                                                        && clanData.clan.owner === props.me?.osu_id ?
+                                                                                    hasModeratorPermissions ?
                                                                                         <Box>
                                                                                             <OsuTooltip title='Accept'>
                                                                                                 <IconButton
@@ -992,20 +1040,6 @@ function ClanPage(props) {
                                                                                                     <ClearIcon fontSize="inherit" />
                                                                                                 </IconButton>
                                                                                             </OsuTooltip>
-                                                                                            {/* <Button
-                                                                                     onClick={() => { eventAcceptJoinRequest(request) }}
-                                                                                     variant='contained'
-                                                                                     color='primary'
-                                                                                     sx={{ mr: 1, ml: 1 }}>
-                                                                                     Accept
-                                                                                 </Button>
-                                                                                 <Button
-                                                                                     onClick={() => { eventRejectJoinRequest(request) }}
-                                                                                     variant='contained'
-                                                                                     color='error'
-                                                                                     sx={{ mr: 1 }}>
-                                                                                     Reject
-                                                                                 </Button> */}
                                                                                         </Box>
                                                                                         : <></>
                                                                                 }

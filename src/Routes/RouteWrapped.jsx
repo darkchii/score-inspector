@@ -456,6 +456,7 @@ function RouteWrappedEntry({ onUserIDInput }) {
                     value={inputUserID}
                     onChange={(e) => setInputUserID(e.target.value)}
                     fullWidth
+                    type="number"
                 />
                 <Button
                     onClick={() => {

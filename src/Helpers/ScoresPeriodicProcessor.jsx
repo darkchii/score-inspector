@@ -44,6 +44,10 @@ function getScoresPeriodicData(user, scores, dates, beatmaps, period = 'm') {
     data = processMedianData(data, period);
     data = processScoreRankData(user.score_rank_history, data, period);
 
+    if(period === 'm'){
+        console.log(data);
+    }
+
     //convert data to array and sort by date asc
     let data_array = [];
     for (let date in data) {
@@ -134,6 +138,7 @@ function processCumulativeData(data_array) {
 function processAverageData(data) {
     for (let date in data) {
         if (data[date].gained_clears === 0 || data[date].scores.length === 0) {
+            console.log(`No clears on ${date}`);
             continue;
         }
         data[date].gained_average_acc = data[date].temp_periodic_acc / data[date].gained_clears;
@@ -153,6 +158,12 @@ function processAverageData(data) {
 
         data[date].average_pp = data[date].gained_pp / data[date].gained_clears;
         data[date].highest_pp = data[date].scores.reduce((acc, score) => { return Math.max(acc, score.pp); }, 0);
+
+        data[date].average_hits = data[date].gained_hit_count / data[date].gained_clears;
+        data[date].highest_hits = data[date].scores.reduce((acc, score) => { return Math.max(acc, score.count300 + score.count100 + score.count50); }, 0);
+
+        data[date].average_acc = data[date].temp_periodic_acc / data[date].gained_clears;
+        data[date].highest_acc = data[date].scores.reduce((acc, score) => { return Math.max(acc, score.accuracy); }, 0);
 
         data[date].gained_hits_per_play = data[date].gained_hit_count / data[date].gained_clears;
     }
@@ -746,6 +757,31 @@ function generateGraphData(user, data_array, period = 'm') {
         formatter: (value) => {
             return `${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}pp`;
         }
+    },
+    {
+        id: 'max_hits',
+        name: 'Hits',
+        category: 'highest',
+        data: [
+            {
+                name: 'Highest Hits',
+                graph_data: data_array.map((data) => { return [data.date, data.highest_hits] }),
+            }
+        ]
+    },
+    {
+        id: 'max_acc',
+        name: 'Accuracy',
+        category: 'highest',
+        data: [
+            {
+                name: 'Highest Accuracy',
+                graph_data: data_array.map((data) => { return [data.date, data.highest_acc] }),
+            }
+        ],
+        formatter: (value) => {
+            return `${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}%`;
+        }
     }
     ]
 
@@ -802,6 +838,31 @@ function generateGraphData(user, data_array, period = 'm') {
         ],
         formatter: (value) => {
             return `${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}pp`;
+        }
+    },
+    {
+        id: 'avg_hits',
+        name: 'Hits',
+        category: 'average',
+        data: [
+            {
+                name: 'Average Hits',
+                graph_data: data_array.map((data) => { return [data.date, data.average_hits] }),
+            }
+        ]
+    },
+    {
+        id: 'avg_acc',
+        name: 'Accuracy',
+        category: 'average',
+        data: [
+            {
+                name: 'Average Accuracy',
+                graph_data: data_array.map((data) => { return [data.date, data.average_acc] }),
+            }
+        ],
+        formatter: (value) => {
+            return `${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}%`;
         }
     }
     ];
@@ -862,6 +923,31 @@ function generateGraphData(user, data_array, period = 'm') {
         ],
         formatter: (value) => {
             return `${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}pp`;
+        }
+    },
+    {
+        id: 'median_hits',
+        name: 'Hits',
+        category: 'median',
+        data: [
+            {
+                name: 'Median Hits',
+                graph_data: data_array.map((data) => { return [data.date, data.median_hits] }),
+            }
+        ]
+    },
+    {
+        id: 'median_acc',
+        name: 'Accuracy',
+        category: 'median',
+        data: [
+            {
+                name: 'Median Accuracy',
+                graph_data: data_array.map((data) => { return [data.date, data.median_acc] }),
+            }
+        ],
+        formatter: (value) => {
+            return `${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}%`;
         }
     }
     ];

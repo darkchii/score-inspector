@@ -86,7 +86,7 @@ function PlayerCard(props) {
                                             alignItems: 'center',
                                             //1em space between elements
                                             gap: '0.2em',
-                                        }}>
+                                        }} key={1}>
                                             <img 
                                                 src={getFlagIcon(props.user.osu?.country_code)} 
                                                 alt={props.user.osu?.country_code} 
@@ -101,7 +101,7 @@ function PlayerCard(props) {
                                         </Typography>
                                         {
                                             sx.rowHeight >= SECTIONAL_HEIGHT &&
-                                            <Stack direction='row' spacing={0.5}>
+                                            <Stack direction='row' spacing={0.5} key='2'>
                                                 {props.user?.inspector_user?.roles && GetRoleIcons(props.user?.inspector_user?.roles, true)}
                                             </Stack>
                                         }

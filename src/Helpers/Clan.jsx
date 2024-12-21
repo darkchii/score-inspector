@@ -74,7 +74,7 @@ export async function JoinRequestClan(clan_id, user_id, token) {
 
 export async function AcceptJoinRequestClan(accepter_id, join_request_id, token, clan_id) {
     const response = await axios.post(`${GetAPI()}clans/accept_request`, {
-        owner_id: accepter_id,
+        moderator_id: accepter_id,
         join_request_id: join_request_id,
         token: token,
         clan_id: clan_id
@@ -84,7 +84,7 @@ export async function AcceptJoinRequestClan(accepter_id, join_request_id, token,
 
 export async function RejectJoinRequestClan(rejecter_id, join_request_id, token, clan_id) {
     const response = await axios.post(`${GetAPI()}clans/reject_request`, {
-        owner_id: rejecter_id,
+        moderator_id: rejecter_id,
         join_request_id: join_request_id,
         token: token,
         clan_id: clan_id
@@ -92,9 +92,9 @@ export async function RejectJoinRequestClan(rejecter_id, join_request_id, token,
     return response.data;
 }
 
-export async function RemoveClanMember(owner_id, member_id, token, clan_id) {
+export async function RemoveClanMember(moderator_id, member_id, token, clan_id) {
     const response = await axios.post(`${GetAPI()}clans/remove_member`, {
-        owner_id: owner_id,
+        moderator_id: moderator_id,
         member_id: member_id,
         token: token,
         clan_id: clan_id
@@ -108,6 +108,17 @@ export async function TransferClanOwnership(owner_id, new_owner_id, token, clan_
         member_id: new_owner_id,
         token: token,
         clan_id: clan_id
+    });
+    return response.data;
+}
+
+export async function UpdateClanModerator(owner_id, token, clan_id, target_user_id, new_status) {
+    const response = await axios.post(`${GetAPI()}clans/update_moderator`, {
+        owner_id: owner_id,
+        token: token,
+        clan_id: clan_id,
+        target_user_id: target_user_id,
+        new_status: new_status
     });
     return response.data;
 }

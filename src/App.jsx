@@ -199,55 +199,6 @@ function App() {
             {
               routes.map((route) => getRoute(route))
             }
-            {/* <Route path="/" element={<RouteIndex />} />
-            <Route path="update/:id" element={<RouteUpdate />} />
-            <Route path="*" element={<RouteError />} />
-            <Route path="user/:id/:page?" element={<RouteUser />} />
-            <Route path="top" element={<RouteTop />} />
-            <Route path="stats" element={<RouteStats />} />
-            <Route path="staff" element={<RouteStaff />} />
-            <Route path="population" element={<RoutePopulation />} />
-            <Route path="completionists" element={<RouteCompletionists />} />
-            <Route path="logout" element={<RouteLogout />} />
-            <Route path="clan/:id?/:page?" element={<RouteClan />} />
-            <Route path="tournaments/:id?" element={<RouteTournaments />} />
-            <Route path="wrapped/:id?" element={<RouteWrapped />} />
-            <Route path="milestones" element={<RouteMilestones />}>
-              <Route index element={<RouteMilestones />} />
-              <Route path="page/:page" element={<RouteMilestones />} />
-            </Route>
-            <Route path="admin" element={<RouteAdmin />}>
-              <Route index element={<RouteAdmin />} />
-              <Route path=":tool" element={<RouteAdmin />} />
-            </Route>
-            <Route path="tools" element={<RouteTools />}>
-              <Route index element={<RouteTools />} />
-              <Route path=":tool" element={<RouteTools />} />
-            </Route>
-            <Route path="month_score" element={<RouteLeadersMonthly />} />
-            <Route path="score" element={<RouteLeadersScore />}>
-              <Route index element={<RouteLeadersScore />} />
-              <Route path="page/:page" element={<RouteLeadersScore />}>
-                <Route index element={<RouteLeadersScore />} />
-                <Route path="date/:date" element={<RouteLeadersScore />}>
-                  <Route index element={<RouteLeadersScore />} />
-                  <Route path="sort/:sort" element={<RouteLeadersScore />}>
-                    <Route index element={<RouteLeadersScore />} />
-                    <Route path="mode/:mode" element={<RouteLeadersScore />} />
-                  </Route>
-                </Route>
-              </Route>
-            </Route>
-            <Route path="leaderboard" element={<RouteLeaders />}>
-              <Route index element={<RouteLeaders />} />
-              <Route path="stat/:stat" element={<RouteLeaders />}>
-                <Route index element={<RouteLeaders />} />
-                <Route path="page/:page" element={<RouteLeaders />}>
-                  <Route index element={<RouteLeaders />} />
-                  <Route path="country/:country" element={<RouteLeaders />} />
-                </Route>
-              </Route>
-            </Route> */}
           </Routes>
         </CardContent>
       </Paper>
