@@ -709,6 +709,7 @@ function generateGraphData(user, data_array, period = 'm') {
         id: 'max_sr',
         name: 'Stars',
         category: 'highest',
+        filterNull: true,
         data: [
             {
                 name: 'Highest Star Rating',
@@ -723,6 +724,7 @@ function generateGraphData(user, data_array, period = 'm') {
         id: 'max_length',
         name: 'Length',
         category: 'highest',
+        filterNull: true,
         data: [
             {
                 name: 'Highest Length',
@@ -737,6 +739,7 @@ function generateGraphData(user, data_array, period = 'm') {
         id: 'max_score',
         name: 'Score',
         category: 'highest',
+        filterNull: true,
         data: [
             {
                 name: 'Highest Score',
@@ -748,6 +751,7 @@ function generateGraphData(user, data_array, period = 'm') {
         id: 'max_pp',
         name: 'PP',
         category: 'highest',
+        filterNull: true,
         data: [
             {
                 name: 'Highest PP',
@@ -762,6 +766,7 @@ function generateGraphData(user, data_array, period = 'm') {
         id: 'max_hits',
         name: 'Hits',
         category: 'highest',
+        filterNull: true,
         data: [
             {
                 name: 'Highest Hits',
@@ -773,6 +778,7 @@ function generateGraphData(user, data_array, period = 'm') {
         id: 'max_acc',
         name: 'Accuracy',
         category: 'highest',
+        filterNull: true,
         data: [
             {
                 name: 'Highest Accuracy',
@@ -791,6 +797,7 @@ function generateGraphData(user, data_array, period = 'm') {
         id: 'avg_sr',
         name: 'Stars',
         category: 'average',
+        filterNull: true,
         data: [
             {
                 name: 'Average Star Rating',
@@ -805,6 +812,7 @@ function generateGraphData(user, data_array, period = 'm') {
         id: 'avg_length',
         name: 'Length',
         category: 'average',
+        filterNull: true,
         data: [
             {
                 name: 'Average Length',
@@ -819,6 +827,7 @@ function generateGraphData(user, data_array, period = 'm') {
         id: 'avg_score',
         name: 'Score',
         category: 'average',
+        filterNull: true,
         data: [
             {
                 name: 'Average Score',
@@ -830,6 +839,7 @@ function generateGraphData(user, data_array, period = 'm') {
         id: 'avg_pp',
         name: 'PP',
         category: 'average',
+        filterNull: true,
         data: [
             {
                 name: 'Average PP',
@@ -844,6 +854,7 @@ function generateGraphData(user, data_array, period = 'm') {
         id: 'avg_hits',
         name: 'Hits',
         category: 'average',
+        filterNull: true,
         data: [
             {
                 name: 'Average Hits',
@@ -855,6 +866,7 @@ function generateGraphData(user, data_array, period = 'm') {
         id: 'avg_acc',
         name: 'Accuracy',
         category: 'average',
+        filterNull: true,
         data: [
             {
                 name: 'Average Accuracy',
@@ -873,6 +885,7 @@ function generateGraphData(user, data_array, period = 'm') {
         id: 'median_sr',
         name: 'Stars',
         category: 'median',
+        filterNull: true,
         data: [
             {
                 name: 'Median Stars',
@@ -887,6 +900,7 @@ function generateGraphData(user, data_array, period = 'm') {
         id: 'median_length',
         name: 'Length',
         category: 'median',
+        filterNull: true,
         data: [
             {
                 name: 'Median Length',
@@ -901,6 +915,7 @@ function generateGraphData(user, data_array, period = 'm') {
         id: 'median_score',
         name: 'Score',
         category: 'median',
+        filterNull: true,
         data: [
             {
                 name: 'Median Score',
@@ -915,6 +930,7 @@ function generateGraphData(user, data_array, period = 'm') {
         id: 'median_pp',
         name: 'PP',
         category: 'median',
+        filterNull: true,
         data: [
             {
                 name: 'Median PP',
@@ -929,6 +945,7 @@ function generateGraphData(user, data_array, period = 'm') {
         id: 'median_hits',
         name: 'Hits',
         category: 'median',
+        filterNull: true,
         data: [
             {
                 name: 'Median Hits',
@@ -940,6 +957,7 @@ function generateGraphData(user, data_array, period = 'm') {
         id: 'median_acc',
         name: 'Accuracy',
         category: 'median',
+        filterNull: true,
         data: [
             {
                 name: 'Median Accuracy',
