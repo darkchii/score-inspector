@@ -22,7 +22,7 @@ function RouteWrapped() {
         if (_id) {
             setID(_id);
         }
-    }, []);
+    }, [_id]);
 
     useEffect(() => {
         if (id) {
