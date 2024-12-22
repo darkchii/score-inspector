@@ -12,6 +12,7 @@ import { countries } from 'countries-list';
 import { getDedicationLevel } from '../Helpers/Osu';
 import { getFlagIcon } from '../Helpers/Assets';
 import OsuTooltip from '../Components/OsuTooltip';
+import { formatNumber } from '../Helpers/Misc';
 momentDurationFormatSetup(moment);
 
 const GROUPED_STATS = {
@@ -271,16 +272,11 @@ const GROUPED_STATS = {
     ],
     'Experimental': [
         {
-            name: 'dedication_points', title: 'Dedication Points',
+            name: 'dedication_points', title: 'XP 2.0',
             description: 'A custom metric catered towards alternative farm players.',
-            customFormat: (value) => (Math.round(value)).toLocaleString('en-US') + 'dp',
-        },
-        {
-            name: 'dedication_level', title: 'Dedication Level',
-            description: 'A custom metric catered towards alternative farm players.',
-            customFormat: (value) => (getDedicationLevel(5, 80, 225, -310, value * 1000)).toLocaleString('en-US'),
-            diffCheck: false
-        },
+            customFormat: (value) => `${formatNumber(Number(value), 0)}`,
+            extraCustomFormat: (value) => `Level ${formatNumber(getDedicationLevel(5, 80, 225, -310, Number(value)), 0)}`,
+        }
     ]
 }
 
@@ -488,6 +484,14 @@ function RouteLeaders() {
                                                         ...(statistic?.extraFormatter !== undefined && statistic?.extraFormatter != null ?
                                                             [{
                                                                 value: statistic?.extraFormatter(entry?.extra_data),
+                                                                alignment: 'left',
+                                                                variant: 'body2',
+                                                                color: grey[500]
+                                                            }]
+                                                            : []),
+                                                        ...(statistic?.extraCustomFormat !== undefined && statistic?.extraCustomFormat != null ?
+                                                            [{
+                                                                value: statistic?.extraCustomFormat(entry?.stat),
                                                                 alignment: 'left',
                                                                 variant: 'body2',
                                                                 color: grey[500]
