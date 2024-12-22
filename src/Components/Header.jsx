@@ -22,7 +22,6 @@ import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
 import GroupIcon from '@mui/icons-material/Group';
 import CompareArrowsIcon from '@mui/icons-material/CompareArrows';
-import ChatIcon from '@mui/icons-material/Chat';
 import OsuTooltip from './OsuTooltip';
 import ParkIcon from '@mui/icons-material/Park';
 

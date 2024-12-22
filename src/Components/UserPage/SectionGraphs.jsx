@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Box, Button, ButtonGroup, Divider, Skeleton, Table, TableCell, TableContainer, TableRow, Typography, useTheme } from "@mui/material";
+import { Box, Button, ButtonGroup, Skeleton, Table, TableCell, TableContainer, TableRow, Typography, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
 import ChartWrapper from "../../Helpers/ChartWrapper";
 import { capitalizeFirstLetter } from "../../Helpers/Misc";

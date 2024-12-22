@@ -312,6 +312,7 @@ function RouteLeaders() {
             setStatistic(GROUPED_STATS['PP'][0]);
         }
         window.onTitleChange(`${statistic.title} Leaderboards`);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [params.stat]);
 
     //if page portion of url changes

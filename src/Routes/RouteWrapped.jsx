@@ -209,6 +209,7 @@ function RouteWrappedView(props) {
             }
             setIsWorking(false);
         })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const onRequestImage = async () => {

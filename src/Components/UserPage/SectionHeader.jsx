@@ -1,10 +1,7 @@
-import { Avatar, Box, Chip, Container, Grid2, Link, Paper, Stack, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableRow, Typography } from "@mui/material";
+import { Avatar, Box, Chip, Grid2, Paper, Stack, Typography } from "@mui/material";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { GetFormattedName, GetRoleIcon, GetRoles } from "../../Helpers/Account";
-import TwitterIcon from '@mui/icons-material/Twitter';
-import { DiscordIcon } from "../../Components/Icons";
-import { getBonusPerformance } from "../../Helpers/Osu";
 import { Link as VLink } from 'react-router';
 import { getFlagIcon } from "../../Helpers/Assets";
 import OsuTooltip from "../OsuTooltip";

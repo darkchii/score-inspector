@@ -1,4 +1,4 @@
-import { Tooltip, useTheme } from "@mui/material";
+import { useTheme } from "@mui/material";
 import { useSpring, animated } from '@react-spring/web';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import * as d3 from 'd3';

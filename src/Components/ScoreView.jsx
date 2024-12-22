@@ -4,15 +4,14 @@ import { Chart as ChartJS, ArcElement, Tooltip as ChartTooltip, Legend } from 'c
 import moment from 'moment';
 import { useEffect, useRef } from 'react';
 import { useState } from 'react';
-import { toFixedNumber, formatNumber } from '../Helpers/Misc';
+import { formatNumber } from '../Helpers/Misc';
 import { getBeatmapMaxscore, getHitsFromAccuracy } from '../Helpers/Osu';
 import { getCalculator } from '../Helpers/Performance/Performance';
 import { prepareBeatmap } from '../Helpers/ScoresProcessor';
-import { green, grey, red } from '@mui/material/colors';
+import { green, red } from '@mui/material/colors';
 import Mods from '../Helpers/Mods';
 import ScoreDial from './ScoreDial';
 import StarsLabel from './StarsLabel';
-import EditNoteIcon from '@mui/icons-material/EditNote';
 import StarIcon from '@mui/icons-material/Star';
 import ScoreViewStat from './UI/ScoreViewStat';
 import { Link as RLink } from "react-router";

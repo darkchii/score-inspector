@@ -34,7 +34,6 @@ import RouteMilestones from './Routes/RouteMilestones';
 import RouteLeadersMonthly from './Routes/RouteLeadersMonthly';
 import RouteCompletionists from './Routes/RouteCompletionists';
 import RouteClan from './Routes/RouteClan';
-import RouteTournaments from './Routes/RouteTournaments';
 import RouteWrapped from './Routes/RouteWrapped';
 
 function App() {
