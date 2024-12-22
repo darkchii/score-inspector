@@ -132,7 +132,7 @@ function RouteIndex() {
                 <Alert severity="success">
                     As of Nov 22 2024, The new <b>star ratings</b> and <b>performance calculator</b> from <b>Combo Scaling Rework</b> have been implemented.<br />
                     Lazer scores are now supported, including <b>new mods</b>, <b>rate changes</b> and <b>difficulty adjustments</b>.<br />
-                    <span style={{ fontSize: '0.8em' }}>This change is somewhat retroactive to all scores, but scores set before Nov 21 2024 will slowly have their star ratings added.</span>
+                    <span style={{ fontSize: '0.8em' }}>This only fully applies to scores tracked after Nov 21 2024. Refetching will fix this, ask for it in the Discord.</span>
                 </Alert>
             </Grid2>
             <Grid2 container spacing={2}>
