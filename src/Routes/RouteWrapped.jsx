@@ -14,7 +14,7 @@ import { toPng } from "html-to-image";
 import StarsLabel from "../Components/StarsLabel";
 import { LoadingButton } from "@mui/lab";
 
-function RouteWrapped(props) {
+function RouteWrapped() {
     const [id, setID] = useState(null);
     let { id: _id } = useParams();
 
