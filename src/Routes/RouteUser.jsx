@@ -40,7 +40,6 @@ function RouteUser() {
                 const user_in = params.id;
                 setLoadingState('Fetching user data');
                 const user_out = await getFullUser(user_in);
-                console.log(user_out);
 
                 if (user_out === null || user_out.error !== undefined) {
                     setUser(null);

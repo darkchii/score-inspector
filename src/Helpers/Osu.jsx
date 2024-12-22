@@ -803,8 +803,6 @@ export function CalculateNewXP(user, scores){
     xp += (user.alt.medals?.length ?? 0) * XP_POINTS_DISTRIBUTION.MEDAL;
     xp += (user.osu?.statistics.play_time / 3600) * XP_POINTS_DISTRIBUTION.PLAYTIME_HOUR;
 
-    console.log(`XP: ${xp}`);
-
     return xp;
 }
 

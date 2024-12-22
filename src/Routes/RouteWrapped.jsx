@@ -181,8 +181,6 @@ function RouteWrappedView(props) {
                         data.data.top_pp_scores = data.data.top_pp_scores.sort((a, b) => {
                             return b.pp - a.pp;
                         });
-
-                        console.log(data.data.top_pp_scores);
                     }
 
                     if (data.data.top_score_scores) {

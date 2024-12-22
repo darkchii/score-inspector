@@ -44,10 +44,6 @@ function getScoresPeriodicData(user, scores, dates, beatmaps, period = 'm') {
     data = processMedianData(data, period);
     data = processScoreRankData(user.score_rank_history, data, period);
 
-    if(period === 'm'){
-        console.log(data);
-    }
-
     //convert data to array and sort by date asc
     let data_array = [];
     for (let date in data) {
@@ -138,7 +134,6 @@ function processCumulativeData(data_array) {
 function processAverageData(data) {
     for (let date in data) {
         if (data[date].gained_clears === 0 || data[date].scores.length === 0) {
-            console.log(`No clears on ${date}`);
             continue;
         }
         data[date].gained_average_acc = data[date].temp_periodic_acc / data[date].gained_clears;

@@ -140,9 +140,6 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
     scores.sort((a, b) => b.date_played_moment.valueOf() - a.date_played_moment.valueOf());
     data.latest_scores = scores.slice(0, 20);
 
-    //log first score
-    console.log('First score:', scores[0]);
-
     return data;
 }
 

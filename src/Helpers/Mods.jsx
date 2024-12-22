@@ -362,9 +362,6 @@ class Mods {
         }
 
         const color = Color(Mods.getModTypeColor(mod));
-        if(extra_data_string){
-            console.log(`Mod: ${mod.acronym}, Color: ${color.hex()}`);
-        }
         return (
             <OsuTooltip title={Mods.getTooltipContent(mod, true, showIncompatible)}>
                 <Box sx={{

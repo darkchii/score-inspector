@@ -40,8 +40,6 @@ function ScoreView(props) {
         let _score = await fixScore(JSON.parse(JSON.stringify(score)));
         const _scoreData = {};
 
-        console.log(_score);
-
         _score.beatmap = JSON.parse(JSON.stringify(beatmap));
 
         _scoreData.difficulty_data = _score.beatmap.difficulty_data;

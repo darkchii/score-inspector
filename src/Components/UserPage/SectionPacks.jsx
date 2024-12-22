@@ -99,8 +99,6 @@ function SectionPacks(props) {
                 });
             });
 
-            console.log(_packData);
-
             setPackData(_packData);
         })();
     }, []);
