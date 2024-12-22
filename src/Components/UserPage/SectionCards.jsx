@@ -123,7 +123,7 @@ function SectionCards(props) {
         },
         {
             title: 'Avg session length',
-            value: moment.duration(props.user.data.sessions.length > 0 ? (props.user.data.totalSessionLength / props.user.data.sessions.length) : 0, 'seconds').format('h [hrs], m [min]'),
+            value: moment.duration(props.user.data.sessions.length > 0 ? (props.user.data.totalSessionLength / props.user.data.sessions.length) : 0, 'seconds').format('h[h]m[m]'),
             row: 1,
         },
         {

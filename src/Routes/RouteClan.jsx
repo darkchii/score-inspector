@@ -1408,6 +1408,7 @@ function ClanList() {
     }
 
     useEffect(() => {
+        window.onTitleChange('Clans');
         (async () => {
             await fetchData();
         })()
