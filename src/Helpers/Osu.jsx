@@ -798,8 +798,8 @@ export function CalculateNewXP(user, scores){
         }
     }
 
-    xp += user.osu.statistics.ranked_score / 1000000000 * XP_POINTS_DISTRIBUTION.RANKED_SCORE_BILLION;
-    xp += user.osu.statistics.total_score / 1000000000 * XP_POINTS_DISTRIBUTION.TOTAL_SCORE_BILLION;
+    xp += user.osu.statistics.ranked_score * XP_POINTS_DISTRIBUTION.RANKED_SCORE_BILLION;
+    xp += user.osu.statistics.total_score * XP_POINTS_DISTRIBUTION.TOTAL_SCORE_BILLION;
     xp += (user.alt.medals?.length ?? 0) * XP_POINTS_DISTRIBUTION.MEDAL;
     xp += (user.osu?.statistics.play_time / 3600) * XP_POINTS_DISTRIBUTION.PLAYTIME_HOUR;
 
