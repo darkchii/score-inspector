@@ -14,7 +14,7 @@ const PLATFORMTYPES = {
 const updates = [
     {
         version: '3.3.0',
-        date: '2024-12-08',
+        date: '2024-12-22',
         changes: [
             [PLATFORMTYPES.WEB, CHANGETYPES.NEW, '🎄 osu!wrapped 2024', 'c260d917b1d0a9bb2ff8100bf3f0a6ae686b72a2'],
             [PLATFORMTYPES.WEB | PLATFORMTYPES.API, CHANGETYPES.NEW, 'Lazer mods, star ratings now supported (request refetch to update all old scores)', 'c260d917b1d0a9bb2ff8100bf3f0a6ae686b72a2'],
