@@ -32,6 +32,17 @@ function RouteWrapped() {
 
     return (
         <Container>
+            <Alert severity="error" sx={{
+                mb: 2
+            }}>
+                PLEASE READ: Score fetcher is currently disabled and broken due to the sheer amount of people trying to use it. It might stay down until after christmas.
+                <br />osu!wrapped 2024 will remain available in January.
+            </Alert>
+            {/* <Alert severity="warning" sx={{
+                mb: 2
+            }}>
+                If you see a suspicious amount of &quot;NM&quot; (this is lazer nomod, not stable/CL nomod) mod combination count, you might want to refetch (https://osualt.respektive.pw/)
+            </Alert> */}
             {
                 !id ? <>
                     <RouteWrappedEntry onUserIDInput={(req_id) => {
@@ -209,7 +220,7 @@ function RouteWrappedView(props) {
             }
             setIsWorking(false);
         })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const onRequestImage = async () => {
@@ -245,9 +256,6 @@ function RouteWrappedView(props) {
     return (
         <>
             <Box>
-                <Alert severity="warning">
-                    If you see a suspicious amount of &quot;NM&quot; (this is lazer nomod, not stable/CL nomod) mod combination count, you might want to refetch (https://osualt.respektive.pw/)
-                </Alert>
                 <LoadingButton
                     onClick={onRequestImage}
                     variant="contained"
@@ -450,9 +458,6 @@ function RouteWrappedEntry({ onUserIDInput }) {
     return (
         <>
             <Stack spacing={2}>
-                <Alert severity="warning">
-                    If you see a suspicious amount of &quot;NM&quot; (this is lazer nomod, not stable/CL nomod) mod combination count, you might want to refetch (https://osualt.respektive.pw/)
-                </Alert>
                 <Alert severity="info">
                     Players tracked and fetched by osu!alternative will have more accurate data. Also only works for osu!standard unfortunately.
                 </Alert>
