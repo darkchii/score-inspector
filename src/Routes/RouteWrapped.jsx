@@ -245,6 +245,9 @@ function RouteWrappedView(props) {
     return (
         <>
             <Box>
+                <Alert severity="warning">
+                    If you see a suspicious amount of &quot;NM&quot; (this is lazer nomod, not stable/CL nomod) mod combination count, you might want to refetch (https://osualt.respektive.pw/)
+                </Alert>
                 <LoadingButton
                     onClick={onRequestImage}
                     variant="contained"
@@ -252,7 +255,8 @@ function RouteWrappedView(props) {
                     disabled={isWorking}
                     loading={isWorking}
                     sx={{
-                        mb: 2
+                        mb: 2,
+                        mt: 2
                     }}>
                     Copy as image to clipboard
                 </LoadingButton>
@@ -446,6 +450,9 @@ function RouteWrappedEntry({ onUserIDInput }) {
     return (
         <>
             <Stack spacing={2}>
+                <Alert severity="warning">
+                    If you see a suspicious amount of &quot;NM&quot; (this is lazer nomod, not stable/CL nomod) mod combination count, you might want to refetch (https://osualt.respektive.pw/)
+                </Alert>
                 <Alert severity="info">
                     Players tracked and fetched by osu!alternative will have more accurate data. Also only works for osu!standard unfortunately.
                 </Alert>
