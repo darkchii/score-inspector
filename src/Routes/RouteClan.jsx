@@ -336,7 +336,7 @@ function ClanPage(props) {
                     setHasModeratorPermissions(props.me.clan_member.is_moderator === true || props.me.osu_id === data.clan.owner);
 
                     //check the actual clan member list to see if the user is in the clan (since leaving doesn't update the local user object, so it still thinks it's in the clan)
-                    setIsInClan(data.members.find(m => m.user.alt.user_id === props.me.osu_id) !== undefined || props.me?.clan_member?.pending);
+                    setIsInClan(data.members.find(m => m.user?.alt?.user_id === props.me.osu_id || m.user?.osu?.id === props.me?.osu_id) !== undefined || props.me?.clan_member?.pending);
                 }
             } catch (err) {
                 showNotification('Error', 'An error occurred while fetching the clan data.', 'error');
