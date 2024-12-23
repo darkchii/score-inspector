@@ -13,6 +13,7 @@ import DoneIcon from '@mui/icons-material/Done';
 function SectionPacks(props) {
     const theme = useTheme();
     const [packData, setPackData] = useState([]);
+    const [visisblePackData, setVisiblePackData] = useState([]);
     const [selectedPack, setSelectedPack] = useState(null);
     const [selectedPackData, setSelectedPackData] = useState(null);
     const [themeColor] = useState(theme.typography.title.color);
@@ -100,6 +101,7 @@ function SectionPacks(props) {
             });
 
             setPackData(_packData);
+            setVisiblePackData(_packData);
         })();
     }, []);
 
@@ -137,6 +139,21 @@ function SectionPacks(props) {
         })()
     }, [selectedPack]);
 
+    useEffect(() => {
+        if (!packData) {
+            setVisiblePackData(packData);
+        } else {
+            setVisiblePackData(packData.map(packType => {
+                return {
+                    name: packType.name,
+                    packs: packType.packs.filter(pack => {
+                        return !hideCompleted || !pack.completed;
+                    })
+                }
+            }));
+        }
+    }, [hideCompleted]);
+
     const openPackInfo = (pack) => {
         setSelectedPackData(null);
         packInfoModalElement.current.setOpen(true);
@@ -157,7 +174,7 @@ function SectionPacks(props) {
             <Grid2 sx={{ p: 2 }}>
                 <FormControlLabel control={<Switch checked={hideCompleted} onChange={(e) => setHideCompleted(e.target.checked)} />} label="Hide completed packs" />
                 {
-                    packData.map((packType, index) => {
+                    visisblePackData.map((packType, index) => {
                         return (
                             <>
                                 <Typography variant='h6'>{packType.name}</Typography>
@@ -168,7 +185,6 @@ function SectionPacks(props) {
                                 }}>
                                     {
                                         packType.packs && packType.packs.length > 0 ? packType.packs.map(pack => {
-                                            if (hideCompleted && pack.completed) return null;
                                             let progressPercentage = Math.round(pack.played / pack.total * 100);
                                             return (
                                                 <OsuTooltip key={index} title={
