@@ -300,7 +300,7 @@ function RouteWrappedView(props) {
                                     <Stack>
                                         <Typography variant="h6" sx={{ fontStyle: 'italic' }}>osu!wrapped 2024, according to osu!alt</Typography>
                                         <Typography variant="h4">{
-                                            wrapped.clan_data ? <span style={{ color: `#${wrapped.clan_data.clan.color}` }}>[{wrapped.clan_data.clan.tag}]</span> : <span></span>
+                                            wrapped.clan_data && !wrapped.clan_data?.pending ? <span style={{ color: `#${wrapped.clan_data.clan.color}` }}>[{wrapped.clan_data.clan.tag}]</span> : <span></span>
                                         } {wrapped.username}</Typography>
                                     </Stack>
                                 </Grid2>
