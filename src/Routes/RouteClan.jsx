@@ -242,7 +242,11 @@ function RouteClan() {
         <>
             {
                 params.id ?
-                    <ClanPage id={params.id} me={loggedInUser} /> :
+                    <ClanPage id={params.id} me={loggedInUser} onRefreshUser={
+                        async () => {
+                            await loadUser(true);
+                        }
+                    } /> :
                     <>
                         <Modal
                             open={clanCreatorModalOpen}
@@ -362,7 +366,7 @@ function ClanPage(props) {
                     showNotification('Error', response.error, 'error');
                 } else {
                     showNotification('Success', 'Clan removed successfully.', 'success');
-                    navigate('/clan');
+                    window.location.href = '/clan';
                 }
             } catch (err) {
                 showNotification('Error', 'An error occurred while removing the clan.', 'error');
@@ -379,6 +383,7 @@ function ClanPage(props) {
             } else {
                 showNotification('Success', 'Request sent successfully.', 'success');
                 await loadClan(props.id, true);
+                await props.onRefreshUser();
             }
         } catch (err) {
             console.error(err);
@@ -394,6 +399,7 @@ function ClanPage(props) {
             } else {
                 showNotification('Success', 'Left the clan.', 'success');
                 await loadClan(props.id, true);
+                await props.onRefreshUser();
             }
         } catch (err) {
             console.error(err);
@@ -462,6 +468,7 @@ function ClanPage(props) {
             } else {
                 showNotification('Success', 'Clan ownership has been transferred! There is a cooldown of 30 days before this clan can change owner again.', 'success');
                 await loadClan(props.id, true);
+                await props.onRefreshUser();
             }
         } catch (err) {
             showNotification('Error', 'An error occurred while transferring ownership.', 'error');
@@ -521,7 +528,7 @@ function ClanPage(props) {
             }
         }
         loadClan(props.id);
-    }, [props.id]);
+    }, [props.id, props.me]);
 
     if (!clanData)
         return <Loader />
@@ -664,7 +671,7 @@ function ClanPage(props) {
                                                 props.me
                                                     // && props.me.clan_member?.clan?.owner !== props.me?.osu_id
                                                     ?
-                                                    (isInClan ?
+                                                    (isInClan && props.me?.clan_member ?
                                                         <Button
                                                             sx={{ mr: 1 }}
                                                             onClick={eventLeaveClan}
@@ -1847,7 +1854,7 @@ function ClanCreate(props) {
                 showNotification('Error', response.error, 'error');
             } else {
                 showNotification('Success', 'Clan created successfully.', 'success');
-                navigate(`/clan/${response.clan.id}`);
+                window.location.href = `/clan/${response.clan.id}`;
             }
         } catch (err) {
             console.error(err);
