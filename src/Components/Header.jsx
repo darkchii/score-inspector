@@ -101,7 +101,7 @@ function Header(props) {
         { name: 'Tools', icon: <BuildIcon />, onClick: () => { }, linkTo: '/tools' },
         { name: 'Milestones', icon: <EmojiEventsIcon />, onClick: () => { }, linkTo: '/milestones' },
         { name: 'Clans', icon: <GroupIcon />, onClick: () => { }, linkTo: '/clan' },
-        { name: 'Wrapped', icon: <ParkIcon />, onClick: () => { }, linkTo: '/wrapped' },
+        // { name: 'Wrapped', icon: <ParkIcon />, onClick: () => { }, linkTo: '/wrapped' },
         // { name: 'Tournaments', icon: <EmojiEventsIcon />, onClick: () => { }, linkTo: '/tournaments' },
     ];
 

@@ -35,15 +35,21 @@ function RouteWrapped() {
             <Alert severity="error" sx={{
                 mb: 2
             }}>
+                READ: DISABLED. The fetcher this relies on is dead, unknown when it&apos;ll be back. The original osu!wrapped is available, use that one instead:<br/>https://osu.netamaru.id/wrapped
+                <br /><br />Was nice attempt, didn&apos;t work out. Sorry!
+            </Alert>
+            {/* <Alert severity="error" sx={{
+                mb: 2
+            }}>
                 PLEASE READ: Score fetcher is currently disabled and broken due to the sheer amount of people trying to use it. It might stay down until after christmas.
                 <br />osu!wrapped 2024 will remain available in January.
-            </Alert>
+            </Alert> */}
             {/* <Alert severity="warning" sx={{
                 mb: 2
             }}>
                 If you see a suspicious amount of &quot;NM&quot; (this is lazer nomod, not stable/CL nomod) mod combination count, you might want to refetch (https://osualt.respektive.pw/)
             </Alert> */}
-            {
+            {/* {
                 !id ? <>
                     <RouteWrappedEntry onUserIDInput={(req_id) => {
                         setID(req_id);
@@ -51,7 +57,7 @@ function RouteWrapped() {
                 </> : <>
                     <RouteWrappedView id={id} />
                 </>
-            }
+            } */}
         </Container>
     )
 }
