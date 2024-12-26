@@ -36,7 +36,7 @@ function RouteWrapped() {
                 mb: 2
             }}>
                 READ: DISABLED. The fetcher this relies on is dead, unknown when it&apos;ll be back. The original osu!wrapped is available, use that one instead:<br/>https://osu.netamaru.id/wrapped
-                <br /><br />Was nice attempt, didn&apos;t work out. Sorry!
+                <br /><br />Was nice attempt, didn&apos;t work out. Sorry.
             </Alert>
             {/* <Alert severity="error" sx={{
                 mb: 2
