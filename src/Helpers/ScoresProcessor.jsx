@@ -6,6 +6,7 @@ import { getPeriodicData } from "./ScoresPeriodicProcessor";
 import axios from "axios";
 import { getCalculator } from "./Performance/Performance";
 import Mods from "./Mods";
+import _ from "lodash";
 
 const FEEDBACK_SLEEP_TIME = 100; // give the browser bit of breathing room to update the UI before each intensive task
 export async function processScores(user, scores, onCallbackError, onScoreProcessUpdate, allow_loved) {
@@ -24,6 +25,7 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
             C: 0,
             D: 0
         },
+        legacy_scores: 0,
         average_pp: 0,
         clears: scores.length,
         total_beatmaps: 0,
@@ -68,7 +70,12 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
         // data.total.scoreLazerClassic += score.scoreLazerClassic ?? 0;
         data.total.scoreLazerStandardised += score.scoreLazerStandardised ?? 0;
         data.total.is_fc += score.is_fc ?? 0;
+
+        data.legacy_scores += score.beatmap.difficulty_data?.is_legacy ? 1 : 0;
     }
+
+    //print all legacy scores as a array
+    console.log('Legacy scores:', scores.filter(score => score.beatmap.difficulty_data?.is_legacy));
 
     await sleep(FEEDBACK_SLEEP_TIME);
     onScoreProcessUpdate('Average data');
@@ -134,6 +141,11 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
     onScoreProcessUpdate('Average day spread');
     await sleep(FEEDBACK_SLEEP_TIME);
     data.averageDaySpread = getDayPlaycountSpread(scores);
+
+    onScoreProcessUpdate('Rate change spread');
+    await sleep(FEEDBACK_SLEEP_TIME);
+    data.averageRateChangeSpread = getRateChangeSpread(scores);
+    console.log(data.averageRateChangeSpread);
 
     onScoreProcessUpdate('Latest scores');
     await sleep(FEEDBACK_SLEEP_TIME);
@@ -305,6 +317,53 @@ function getDayPlaycountSpread(scores) {
     });
 
     return { hours, values };
+}
+
+const RATE_MIN = 0.5;
+const RATE_MAX = 2.0;
+const RATE_DETAIL = 0.1; //show every 0.05 rate, inbetween values will be rounded to the nearest value
+function getRateChangeSpread(scores){
+    const values = [];
+
+    //convert decimal count to step (1 > 0.1, 2 > 0.01, 3 > 0.001, etc)
+    // const step = Math.pow(10, -RATE_DECIMALS);
+    // for(let i = RATE_MIN; i <= RATE_MAX; i += step){
+    //     values[i.toFixed(RATE_DECIMALS)] = 0;
+    // }
+    // scores.forEach(score => {
+    //     const rate = _.round(parseFloat(score.mods.speed), RATE_DECIMALS);
+
+    //     if (!values[rate]) {
+    //         values[rate] = 0;
+    //     }
+    //     values[rate]++;
+    // });
+
+    for(let i = RATE_MIN; i <= RATE_MAX; i += RATE_DETAIL){
+        values[i.toFixed(2)] = 0;
+    }
+
+    scores.forEach(score => {
+        //round score.mods.speed to nearest RATE_DETAIL
+        let rate = _.floor(parseFloat(score.mods.speed), 2);
+        rate = Math.floor(rate / RATE_DETAIL) * RATE_DETAIL;
+        rate = rate.toFixed(2);
+
+        if (!values[rate]) {
+            values[rate] = 0;
+        }
+        values[rate]++;
+    });
+
+    const objects = [];
+    Object.keys(values).forEach(key => {
+        objects.push({ rate: key, count: values[key] });
+    });
+
+    //sort by rate
+    objects.sort((a, b) => parseFloat(a.rate) - parseFloat(b.rate));
+
+    return objects;
 }
 
 const ar_ms_step1 = 120;

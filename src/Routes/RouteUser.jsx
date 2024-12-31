@@ -9,7 +9,7 @@ import { Helmet } from 'react-helmet';
 import UserDataContainer from '../Components/UserPage/UserDataContainer';
 import config from '../config.json';
 import { GetLoginID, GetVisitors, IsUserLoggedIn, UpdateVisitor } from '../Helpers/Account';
-import { GetAPI, formatBytes } from '../Helpers/Misc';
+import { GetAPI, formatBytes, formatNumber } from '../Helpers/Misc';
 import axios from 'axios';
 import { useLocation, useParams } from 'react-router';
 
@@ -240,6 +240,11 @@ function RouteUser() {
                         {
                             user.inspector_user?.is_private ? <Alert severity='warning'>
                                 This profile is in private mode.
+                            </Alert> : <></>
+                        }
+                        {
+                            user.data.legacy_scores > 0 ? <Alert severity='info'>
+                                User has {formatNumber(user.data.legacy_scores)} legacy scores. Refetching should update these with the new mod structure, correct star ratings and statistics values (slider break data etc.)
                             </Alert> : <></>
                         }
                         <SectionHeader user={user} />

@@ -195,34 +195,73 @@ function SectionCards(props) {
             <Grid2 sx={{ minHeight: '100%' }} size={{ xs: 6, md: 3 }}><BestScoreCard valueTitle={'Top stars'} valueLabel={`${props.user.data.bestScores.best_sr?.beatmap.difficulty_data.star_rating.toFixed(1)}*`} score={props.user.data.bestScores.best_sr} /></Grid2>
             <Grid2 sx={{ minHeight: '100%' }} size={{ xs: 6, md: 3 }}><BestScoreCard valueTitle={'Oldest'} valueLabel={`${moment(props.user.data.bestScores.oldest?.date_played).format('MMMM Do YYYY')}`} score={props.user.data.bestScores.oldest} /></Grid2>
         </Grid2>
-        {
-            props?.user?.data?.averageDaySpread && props?.user?.data?.averageDaySpread?.hours && props?.user?.data?.averageDaySpread?.values ?
-                <Paper elevation={3} sx={{ height: 250 }}>
-                    <ChartWrapper
-                        options={{
-                            chart: {
-                                id: "user-hours-spread",
-                            },
-                        }}
-                        series={[
-                            {
-                                name: 'Scores set at this hour of the day',
-                                data: props.user.data.averageDaySpread.values.map((value, i) => {
-                                    const start = props.user.data.averageDaySpread.hours[i];
-                                    const end = i < props.user.data.averageDaySpread.hours.length - 1 ? props.user.data.averageDaySpread.hours[i + 1] : props.user.data.averageDaySpread.hours[0];
-                                    return {
-                                        x: `${start} - ${end}`,
-                                        y: value
+        <Grid2 container spacing={1}>
+            <Grid2 size={{ xs: 12, md: 6 }}>
+                {
+                    props?.user?.data?.averageDaySpread && props?.user?.data?.averageDaySpread?.hours && props?.user?.data?.averageDaySpread?.values ?
+                        <Paper elevation={3} sx={{ height: 250, p: 1 }}>
+                            <Typography variant='h6'>Average played hours spread</Typography>
+                            <ChartWrapper
+                                style={{ margin: '0' }}
+                                options={{
+                                    chart: {
+                                        id: "user-hours-spread",
+                                    },
+                                }}
+                                series={[
+                                    {
+                                        name: 'Scores set at this hour of the day',
+                                        data: props.user.data.averageDaySpread.values.map((value, i) => {
+                                            const start = props.user.data.averageDaySpread.hours[i];
+                                            const end = i < props.user.data.averageDaySpread.hours.length - 1 ? props.user.data.averageDaySpread.hours[i + 1] : props.user.data.averageDaySpread.hours[0];
+                                            return {
+                                                x: `${start} - ${end}`,
+                                                y: value
+                                            }
+                                        }),
+                                        color: theme.palette.primary.main,
                                     }
-                                }),
-                                color: theme.palette.primary.main,
-                            }
-                        ]}
-                        type={'bar'}
-                    />
-                </Paper>
-                : <></>
-        }
+                                ]}
+                                type={'bar'}
+                            />
+                        </Paper>
+                        : <></>
+                }
+            </Grid2>
+            <Grid2 size={{ xs: 12, md: 6 }}>
+                {
+                    props?.user?.data?.averageRateChangeSpread ?
+                        <Paper elevation={3} sx={{ height: 250, p: 1 }}>
+                            <Typography variant='h6'>Rate change spread</Typography>
+                            <ChartWrapper
+                                height='80%'
+                                style={{ margin: '0' }}
+                                options={{
+                                    chart: {
+                                        id: "rate-change-spread",
+                                    },
+                                }}
+                                series={[
+                                    {
+                                        name: 'Rate change',
+                                        data: props.user.data.averageRateChangeSpread.map((obj, i) => {
+                                            const rate = obj.rate;
+                                            const value = obj.count;
+                                            return {
+                                                x: `x${rate}`,
+                                                y: value
+                                            }
+                                        }),
+                                        color: theme.palette.primary.main,
+                                    }
+                                ]}
+                                type={'bar'}
+                            />
+                        </Paper>
+                        : <></>
+                }
+            </Grid2>
+        </Grid2>
         <Grid2>
             {
                 props?.user?.data?.latest_scores ?
