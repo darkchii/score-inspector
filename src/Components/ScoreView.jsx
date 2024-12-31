@@ -165,9 +165,7 @@ function ScoreView(props) {
                                             <div className='score-stats__group-row'><ScoreViewStat label='Speed Difficult Strain Count' value={`${formatNumber(scoreData.difficulty_data?.speed_difficult_strain_count ?? 0, 2)}`} small={true} /></div>
                                             <div className='score-stats__group-row'><ScoreViewStat label='Slider Factor' value={`${formatNumber(scoreData.difficulty_data?.slider_factor ?? 0, 3)}`} small={true} /></div>
                                             {
-                                                (!scoreData.difficulty_data?.aim_difficult_strain_count || scoreData.difficulty_data?.aim_difficult_strain_count === 0) &&
-                                                (!scoreData.difficulty_data?.speed_difficult_strain_count || scoreData.difficulty_data?.speed_difficult_strain_count === 0) &&
-                                                (!scoreData.difficulty_data?.slider_factor || scoreData.difficulty_data?.slider_factor === 1) ?
+                                                (scoreData.difficulty_data?.is_legacy) ?
                                                 <>
                                                     <div className='score-stats__group-row'><ScoreViewStat backgroundColor={'#f57c00'} irrelevant={true} label='Warning' value={`Score data incomplete, please refetch.`} small={true} /></div>
                                                 </> : null
