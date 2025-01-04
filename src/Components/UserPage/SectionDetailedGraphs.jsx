@@ -1,4 +1,4 @@
-import { Alert, Box, Divider, Grid2, Paper, Stack, Typography, useTheme } from "@mui/material";
+import { Alert, Box, Grid2, Paper, Typography, useTheme } from "@mui/material";
 import ChartWrapper from "../../Helpers/ChartWrapper";
 import _ from "lodash";
 import { formatNumber } from "../../Helpers/Misc";
@@ -100,7 +100,7 @@ function SectionDetailedGraphsRateChangeSpread(props) {
             series={[
                 {
                     name: 'Rate change',
-                    data: props.rateChangeSpread.map((obj, i) => {
+                    data: props.rateChangeSpread.map((obj) => {
                         const rate = obj.rate;
                         const value = obj.count;
                         return {
@@ -138,7 +138,7 @@ function SectionDetailedGraphsSessionTimeSpread(props) {
             series={[
                 {
                     name: 'Sessions',
-                    data: props.sessionTimeSpread.map((obj, i) => {
+                    data: props.sessionTimeSpread.map((obj) => {
                         let hour = parseInt(obj.hour);
                         const h_low = hour;
                         const h_high = hour + 1;
@@ -178,7 +178,7 @@ function SectionDetailedGraphsRateChangeStarsSpread(props) {
                     },
                     // categories: ['0*', '1*', '2*', '3*', '4*', '5*', '6*', '7*', '8*', '9*', '10*+']
                     // categories: ['0-1*', '1-2*', '2-3*', '3-4*', '4-5*', '5-6*', '6-7*', '7-8*', '8-9*', '9-10*', '10*+']
-                    categories: props.rate_change_to_stars_spread.map((obj, i) => {
+                    categories: props.rate_change_to_stars_spread.map((obj) => {
                         let stars_low = obj.stars;
                         let stars_high = obj.stars + 1;
                         let count = obj.count;
@@ -207,7 +207,7 @@ function SectionDetailedGraphsRateChangeStarsSpread(props) {
                 {
                     name: 'Average rate change',
                     //simple make an array of rate change values
-                    data: props.rate_change_to_stars_spread.map((obj, i) => {
+                    data: props.rate_change_to_stars_spread.map((obj) => {
                         const value = _.round(obj.rate, 2);
                         return value;
                     }),
@@ -215,7 +215,7 @@ function SectionDetailedGraphsRateChangeStarsSpread(props) {
 
                 }, {
                     name: 'Lowest rate change',
-                    data: props.rate_change_to_stars_spread.map((obj, i) => {
+                    data: props.rate_change_to_stars_spread.map((obj) => {
                         const value = _.round(obj.lowest, 2);
                         return value;
                     }),
@@ -223,7 +223,7 @@ function SectionDetailedGraphsRateChangeStarsSpread(props) {
                 },
                 {
                     name: 'Highest rate change',
-                    data: props.rate_change_to_stars_spread.map((obj, i) => {
+                    data: props.rate_change_to_stars_spread.map((obj) => {
                         const value = _.round(obj.highest, 2);
                         return value;
                     }),
