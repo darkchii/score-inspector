@@ -130,9 +130,9 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
     onScoreProcessUpdate('Periodic data');
     await sleep(FEEDBACK_SLEEP_TIME);
     data.periodic = {};
-    data.periodic['y'] = getPeriodicData(user, scores, data.beatmaps_counts, 'y');
-    data.periodic['m'] = getPeriodicData(user, scores, data.beatmaps_counts, 'm');
-    data.periodic['d'] = getPeriodicData(user, scores, data.beatmaps_counts, 'd');
+    data.periodic['y'] = getPeriodicData(user, scores, data.beatmaps_counts, 'y', data);
+    data.periodic['m'] = getPeriodicData(user, scores, data.beatmaps_counts, 'm', data);
+    data.periodic['d'] = getPeriodicData(user, scores, data.beatmaps_counts, 'd', data);
 
     onScoreProcessUpdate('Active days');
     await sleep(FEEDBACK_SLEEP_TIME);

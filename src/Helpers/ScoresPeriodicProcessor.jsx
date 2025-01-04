@@ -26,23 +26,23 @@ const PERIOD_FORMATS = {
     }
 }
 
-export function getPeriodicData(user, scores, beatmaps, period = 'd') {
+export function getPeriodicData(user, scores, beatmaps, period = 'd', other_data = {}) {
     //we first generate the list of dates
     let dates = getDates(user, period);
-    let graph_data = getScoresPeriodicData(user, scores, dates, beatmaps, period);
+    let graph_data = getScoresPeriodicData(user, scores, dates, beatmaps, period, other_data);
     return graph_data;
 }
 
-function getScoresPeriodicData(user, scores, dates, beatmaps, period = 'm') {
+function getScoresPeriodicData(user, scores, dates, beatmaps, period = 'm', other_data = {}) {
     let data = {};
     for (let i = 0; i < dates.length; i++) {
         data[dates[i]] = getDateDefaults(dates[i], beatmaps, period);
     }
 
-    data = processCurrentData(scores, data, period);
-    data = processAverageData(data, period);
-    data = processMedianData(data, period);
-    data = processScoreRankData(user.score_rank_history, data, period);
+    data = processCurrentData(other_data, scores, data, period);
+    data = processAverageData(other_data, data, period);
+    data = processMedianData(other_data, data, period);
+    data = processScoreRankData(other_data, user.score_rank_history, data, period);
 
     //convert data to array and sort by date asc
     let data_array = [];
@@ -59,16 +59,16 @@ function getScoresPeriodicData(user, scores, dates, beatmaps, period = 'm') {
         _beatmaps[beatmaps[period][i].date] = beatmaps[period][i];
     }
 
-    data_array = processCumulativeData(data_array, period);
-    data_array = processAverageData(data_array, period);
-    data_array = processMedianData(data_array, period);
-    data_array = processCompletionData(_beatmaps, data_array, period);
+    data_array = processCumulativeData(other_data, data_array, period);
+    data_array = processAverageData(other_data, data_array, period);
+    data_array = processMedianData(other_data, data_array, period);
+    data_array = processCompletionData(other_data, _beatmaps, data_array, period);
 
     const graph_data = generateGraphData(user, data_array, period);
     return graph_data;
 }
 
-function processCurrentData(scores, data, period = 'm') {
+function processCurrentData(user, scores, data, period = 'm') {
     for (let i = 0; i < scores.length; i++) {
         let score = scores[i];
         let date_string = score.date_played_moment.format(PERIOD_FORMATS[period].format_str_num_only);
@@ -92,10 +92,22 @@ function processCurrentData(scores, data, period = 'm') {
         data[date].gained_ss_rate = 100 / data[date].gained_clears * data[date].gained_grade_total_ss;
         data[date].gained_fc_rate = 100 / data[date].gained_clears * data[date].gained_fc;
     }
+
+    for(let i = 0; i<user.sessions.length; i++){
+        let session = user.sessions[i];
+        let end_unix = session.end;
+
+        let date_string = moment.unix(end_unix).format(PERIOD_FORMATS[period].format_str_num_only);
+        let date = correctDate(date_string, period);
+
+        data[date].gained_sessions += 1;
+        data[date].gained_session_length += session.length;
+    }
+
     return data;
 }
 
-function processCumulativeData(data_array) {
+function processCumulativeData(user, data_array) {
     for (let i = 0; i < data_array.length; i++) {
         let previous_data = data_array[i - 1];
         let current_data = data_array[i];
@@ -127,11 +139,14 @@ function processCumulativeData(data_array) {
         current_data.total_hits_per_play = current_data.total_hit_count / current_data.total_clears;
         current_data.total_ss_rate = 100 / current_data.total_clears * current_data.total_grade_total_ss;
         current_data.total_fc_rate = 100 / current_data.total_clears * current_data.total_fc;
+
+        current_data.total_sessions = (previous_data?.total_sessions ?? 0) + current_data.gained_sessions;
+        current_data.total_session_length = (previous_data?.total_session_length ?? 0) + current_data.gained_session_length;
     }
     return data_array;
 }
 
-function processAverageData(data) {
+function processAverageData(user, data) {
     for (let date in data) {
         if (data[date].gained_clears === 0 || data[date].scores.length === 0) {
             continue;
@@ -166,7 +181,7 @@ function processAverageData(data) {
     return data;
 }
 
-function processMedianData(data) {
+function processMedianData(user, data) {
     for (let date in data) {
         if (data[date].gained_clears === 0 || data[date].scores.length === 0) {
             continue;
@@ -189,7 +204,7 @@ function processMedianData(data) {
     return data;
 }
 
-function processCompletionData(beatmaps, data_array) {
+function processCompletionData(user, beatmaps, data_array) {
     for (let i = 0; i < data_array.length; i++) {
         const previous_data = data_array[i - 1];
         data_array[i].total_completion_clears = 100 / (beatmaps[data_array[i].date]?.amount_total ?? 0) * data_array[i].total_clears;
@@ -228,7 +243,7 @@ function processCompletionData(beatmaps, data_array) {
     return data_array;
 }
 
-function processScoreRankData(score_rank_data, data, period = 'm') {
+function processScoreRankData(user, score_rank_data, data, period = 'm') {
     for (let i = 0; i < score_rank_data.length; i++) {
         const rank = score_rank_data[i].rank;
         const full_date = score_rank_data[i].date;
@@ -680,6 +695,66 @@ function generateGraphData(user, data_array, period = 'm') {
         }
     }];
 
+    //sessions gained
+    graph_data = [...graph_data, {
+        id: 'sessions',
+        name: 'Sessions',
+        category: 'incremental',
+        data: [
+            {
+                name: 'Sessions',
+                graph_data: data_array.map((data) => { return [data.date, data.gained_sessions] }),
+            }
+        ]
+    }];
+
+    //sessions cumulative
+    graph_data = [...graph_data, {
+        id: 'sessions',
+        name: 'Sessions',
+        category: 'cumulative',
+        filterNull: true,
+        data: [
+            {
+                name: 'Sessions',
+                graph_data: data_array.map((data) => { return [data.date, data.total_sessions] }),
+            }
+        ]
+    }];
+
+    //session length gained
+    graph_data = [...graph_data, {
+        id: 'session_length',
+        name: 'Session Length',
+        category: 'incremental',
+        data: [
+            {
+                name: 'Session Length',
+                graph_data: data_array.map((data) => { return [data.date, data.gained_session_length] }),
+            }
+        ],
+        formatter: (value) => {
+            return moment.duration(value, 'seconds').format('hh[h] mm[m] ss[s]', { trim: false });
+        }
+    }];
+
+    //session length cumulative
+    graph_data = [...graph_data, {
+        id: 'session_length',
+        name: 'Session Length',
+        category: 'cumulative',
+        filterNull: true,
+        data: [
+            {
+                name: 'Session Length',
+                graph_data: data_array.map((data) => { return [data.date, data.total_session_length] }),
+            }
+        ],
+        formatter: (value) => {
+            return moment.duration(value, 'seconds').format('hh[h] mm[m] ss[s]', { trim: false });
+        }
+    }];
+
     //score rank
     graph_data = [...graph_data, {
         id: 'rank_score',
@@ -1073,7 +1148,12 @@ function getDateDefaults(date, beatmaps, period = 'm') {
         median_pp: 0,
         median_hits: 0,
         median_acc: 0,
-        median_sr: 0
+        median_sr: 0,
+
+        gained_sessions: 0,
+        gained_session_length: 0,
+        total_sessions: 0,
+        total_session_length: 0,
     };
 
     beatmaps[period].forEach(beatmap_period_data => {
