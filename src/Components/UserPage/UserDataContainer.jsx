@@ -20,6 +20,8 @@ import SectionPacks from "./SectionPacks";
 import { useParams } from "react-router";
 import _ from "lodash";
 import SectionSessions from "./SectionSessions";
+import EqualizerIcon from '@mui/icons-material/Equalizer';
+import SectionDetailedGraphs from "./SectionDetailedGraphs";
 
 const StyledTab = styled(Tab)({
     minHeight: 'auto',
@@ -38,17 +40,18 @@ function UserDataContainer(props) {
         'scores': '4',
         'completion': '5',
         'packs': '6',
+        'detailed': '7',
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         if (params.page) {
             setTab(_IDs[params.page]);
-        }else{
+        } else {
             setTab(_IDs['profile']);
         }
     }, [params.page]);
 
-    if(!tab) return null;
+    if (!tab) return null;
 
     return (
         <>
@@ -64,6 +67,7 @@ function UserDataContainer(props) {
                         <StyledTab icon={<TodayIcon />} iconPosition='start' label='Daily' value={_IDs['daily']} />
                         <StyledTab icon={<AccessTimeIcon />} iconPosition='start' label='Sessions' value={_IDs['sessions']} />
                         <StyledTab icon={<AutoGraphIcon />} iconPosition='start' label='Graphs' value={_IDs['graphs']} />
+                        <StyledTab icon={<EqualizerIcon />} iconPosition='start' label='Detailed' value={_IDs['detailed']} />
                         <StyledTab icon={<FormatListBulletedIcon />} iconPosition='start' label='Scores' value={_IDs['scores']} />
                         <StyledTab icon={<GradingIcon />} iconPosition='start' label='Completion' value={_IDs['completion']} />
                         <StyledTab icon={<LayersIcon />} iconPosition='start' label='Packs' value={_IDs['packs']} />
@@ -83,6 +87,10 @@ function UserDataContainer(props) {
                 </TabPanel>
                 <TabPanel sx={{ p: 0 }} value={_IDs['graphs']}>
                     <SectionGraphs user={props.user} dataset={props.user.data.periodic} />
+                </TabPanel>
+                <TabPanel sx={{ p: 0 }} value={_IDs['detailed']}>
+                    {/* todo */}
+                    <SectionDetailedGraphs user={props.user} />
                 </TabPanel>
                 <TabPanel sx={{ p: 0 }} value={_IDs['scores']}>
                     <SectionScores user={props.user} />

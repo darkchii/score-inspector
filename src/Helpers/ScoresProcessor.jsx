@@ -152,6 +152,10 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
     scores.sort((a, b) => b.date_played_moment.valueOf() - a.date_played_moment.valueOf());
     data.latest_scores = scores.slice(0, 20);
 
+    onScoreProcessUpdate('Detailed data');
+    await sleep(FEEDBACK_SLEEP_TIME);
+    data.ultra_detailed = await getDetailedData(data, scores);
+
     return data;
 }
 
@@ -322,31 +326,17 @@ function getDayPlaycountSpread(scores) {
 const RATE_MIN = 0.5;
 const RATE_MAX = 2.0;
 const RATE_DETAIL = 0.1; //show every 0.05 rate, inbetween values will be rounded to the nearest value
-function getRateChangeSpread(scores){
+function getRateChangeSpread(scores, detail = RATE_DETAIL) {
     const values = [];
 
-    //convert decimal count to step (1 > 0.1, 2 > 0.01, 3 > 0.001, etc)
-    // const step = Math.pow(10, -RATE_DECIMALS);
-    // for(let i = RATE_MIN; i <= RATE_MAX; i += step){
-    //     values[i.toFixed(RATE_DECIMALS)] = 0;
-    // }
-    // scores.forEach(score => {
-    //     const rate = _.round(parseFloat(score.mods.speed), RATE_DECIMALS);
-
-    //     if (!values[rate]) {
-    //         values[rate] = 0;
-    //     }
-    //     values[rate]++;
-    // });
-
-    for(let i = RATE_MIN; i <= RATE_MAX; i += RATE_DETAIL){
+    for (let i = RATE_MIN; i <= RATE_MAX; i += detail) {
         values[i.toFixed(2)] = 0;
     }
 
     scores.forEach(score => {
         //round score.mods.speed to nearest RATE_DETAIL
         let rate = _.floor(parseFloat(score.mods.speed), 2);
-        rate = Math.floor(rate / RATE_DETAIL) * RATE_DETAIL;
+        rate = Math.floor(rate / detail) * detail;
         rate = rate.toFixed(2);
 
         if (!values[rate]) {
@@ -487,4 +477,124 @@ function applyModdedAttributes(beatmap, parsed_mods) {
     difficulty_data.is_corrected = true;
 
     return difficulty_data;
+}
+
+async function getDetailedData(data, scores) {
+    const detailed_data = {};
+
+    detailed_data.rate_change_spread = getRateChangeSpread(scores, 0.01);
+    detailed_data.session_time_spread = getSessionTimeSpread(data.sessions);
+    detailed_data.rate_change_to_stars_spread = getRateChangeToStarsSpread(scores);
+    detailed_data.mod_spread = getModSpread(scores);
+
+    console.log(detailed_data);
+    return detailed_data;
+}
+
+function getSessionTimeSpread(sessions) {
+    //range detail is hour,
+    //so 0-1 hour long session, 1-2 hour long session etc.
+    //some users are insane and play for >24 hours, but we will cap it at 24
+
+    const values = {};
+
+    for (let i = 0; i <= 24; i++) {
+        values[i] = 0;
+    }
+
+    sessions.forEach(session => {
+        let hours = Math.floor(session.length / 3600);
+        if (hours > 24) hours = 24;
+        values[hours]++;
+    });
+
+    //convert to array
+    const objects = [];
+    Object.keys(values).forEach(key => {
+        objects.push({ hour: key, count: values[key] });
+    });
+
+    return objects;
+}
+
+function getRateChangeToStarsSpread(scores) {
+    //get the average rate change value for each base star rating range (0-1, 1-2, 2-3 etc.)
+    //limit to 10
+
+    const values = [];
+
+    for (let i = 0; i <= 10; i++) {
+        values[i] = {
+            stars: i,
+            rate: 0,
+            lowest: -1,
+            highest: -1,
+            count: 0,
+            result: 0
+        }
+    }
+
+    scores.forEach(score => {
+        let rate = parseFloat(score.mods.speed);
+        let stars = score.beatmap.stars;
+        let range = Math.floor(stars);
+
+        if (range > 10) range = 10;
+
+        values[range].rate += rate;
+        values[range].count++;
+
+        //-1 means not set, rate can never be negative
+        if (values[range].lowest === -1 || rate < values[range].lowest) values[range].lowest = rate;
+        if (values[range].highest === -1 || rate > values[range].highest) values[range].highest = rate;
+    });
+
+    values.forEach(value => {
+        if (value.lowest === -1) value.lowest = 0;
+        if (value.highest === -1) value.highest = 0;
+        if (value.count === 0) return;
+        value.result = value.rate / value.count;
+    });
+
+    return values.map(value => {
+        return {
+            stars: value.stars,
+            rate: value.result,
+            count: value.count,
+            lowest: value.lowest,
+            highest: value.highest
+        }
+    });
+}
+
+function getModSpread(scores) {
+    const mods = Mods.getAllMods();
+
+    const values = [];
+
+    mods.mods_data.forEach(mod => {
+        values[mod.acronym] = {
+            count: 0,
+            mod: mod
+        }
+    });
+
+
+    scores.forEach(score => {
+        score.mods.mods_data.forEach(mod => {
+            if (mod.acronym === 'NM') return;
+            values[mod.acronym].count++;
+        });
+    });
+
+    //convert to array
+    const objects = [];
+
+    Object.keys(values).forEach(key => {
+        objects.push({ mod: values[key].mod, count: values[key].count });
+    });
+
+    objects.sort((a, b) => b.count - a.count);
+
+    return objects;
 }
