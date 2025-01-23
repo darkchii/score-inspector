@@ -749,7 +749,13 @@ function ClanPage(props) {
                                                                     color: 'grey',
                                                                     fontSize: '0.8em',
                                                                     marginLeft: '0.5em',
-                                                                }}>{`(${clanData.members.filter(m => m.is_moderator && m.user.alt.user_id !== clanData.owner?.user?.inspector_user?.osu_id).length + 1} mod${(clanData.members.filter(m => m.is_moderator && m.user.alt.user_id !== clanData.owner?.user?.inspector_user?.osu_id).length + 1) > 1 ? 's' : ''})`}</span>
+                                                                }}>{`(${clanData.members.filter(m =>
+                                                                    m.is_moderator &&
+                                                                    ((m.user.alt ? m.user.alt.user_id : m.user.osu.id) !== clanData.owner?.user?.inspector_user?.osu_id)
+                                                                ).length + 1} mod${(clanData.members.filter(m =>
+                                                                    m.is_moderator &&
+                                                                    (m.user.alt ? m.user.alt.user_id : m.user.osu.id) !== clanData.owner?.user?.inspector_user?.osu_id
+                                                                ).length + 1) > 1 ? 's' : ''})`}</span>
                                                             </span>
                                                         } />
                                                         <ScoreViewStat
@@ -802,7 +808,7 @@ function ClanPage(props) {
                                                                     let ranking = clanData.ranking[stat.key] ?? 0;
                                                                     if (stat.key === 'level') {
                                                                         ranking = clanData.ranking['total_score'] ?? 0;
-                                                                    }else if(stat.key === 'xp_level'){
+                                                                    } else if (stat.key === 'xp_level') {
                                                                         ranking = clanData.ranking['xp'] ?? 0;
                                                                     }
 
@@ -1217,8 +1223,8 @@ function ClanList() {
                                                             { value: CLAN_STATS.find((stat) => stat.key === sorter).format(clan.clan_stats), alignment: 'left', variant: 'body2' },
                                                             //only if extra_format is set
                                                             ...[CLAN_STATS.find((stat) => stat.key === sorter).extra_format ? {
-                                                                value: CLAN_STATS.find((stat) => stat.key === sorter).extra_format(clan.clan_stats), 
-                                                                alignment: 'left', 
+                                                                value: CLAN_STATS.find((stat) => stat.key === sorter).extra_format(clan.clan_stats),
+                                                                alignment: 'left',
                                                                 variant: 'body2',
                                                                 color: grey[500]
                                                             } : {}]
