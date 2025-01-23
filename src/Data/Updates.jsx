@@ -13,6 +13,16 @@ const PLATFORMTYPES = {
 
 const updates = [
     {
+        version: '3.3.1',
+        date: '2025-01-23',
+        changes: [
+            [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Added rate change spread to profiles', 'c4163a5f873e08dd0bc2e68b74e5f5457561137d'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Added detailed graphs section to profile', '49129ab9d09777b57265ce2928b28a92bf04c33f'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Added session and session length graphs', 'cf6584d313b52f866ad541c75eae1fb18fddcb80'],
+            [PLATFORMTYPES.API, CHANGETYPES.FIX, 'Remove requirement of legacy modded star rating'],
+        ]
+    },
+    {
         version: '3.3.0',
         date: '2024-12-22',
         changes: [
