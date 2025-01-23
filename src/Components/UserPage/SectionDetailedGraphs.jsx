@@ -66,7 +66,7 @@ function SectionDetailedGraphs(props) {
                     <Grid2 item size={{ xs: 12 }}>
                         <Paper sx={{ p: 2 }}>
                             <Typography variant='h5'>Mod spread</Typography>
-                            <Box sx={{ height: 200 }}>
+                            <Box>
                                 <SectionDetailedGraphsModSpread modSpread={props.user.data.ultra_detailed.mod_spread} />
                             </Box>
                         </Paper>
