@@ -56,6 +56,10 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
     scores = _scores;
     data.performance = _performance;
 
+    console.log('------------ PERFORMANCE ------------');
+    console.log(_performance);
+    console.log('------------------------------------');
+
     onScoreProcessUpdate('Misc data');
     await sleep(FEEDBACK_SLEEP_TIME);
     for (const score of scores) {
@@ -570,7 +574,9 @@ function getRateChangeToStarsSpread(scores) {
 function getModSpread(scores) {
     const mods = Mods.getAllMods();
 
-    const values = [];
+    const values = {};
+
+    console.log(mods);
 
     mods.mods_data.forEach(mod => {
         values[mod.acronym] = {
@@ -579,10 +585,12 @@ function getModSpread(scores) {
         }
     });
 
-
     scores.forEach(score => {
         score.mods.mods_data.forEach(mod => {
             if (mod.acronym === 'NM') return;
+            if(!values[mod.acronym]){
+                console.log(score);
+            }
             values[mod.acronym].count++;
         });
     });

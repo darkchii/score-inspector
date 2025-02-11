@@ -3,7 +3,7 @@ import Mods from "../Mods";
 
 const PERFORMANCE_BASE_MULTIPLIER = 1.15;
 
-export function getPerformanceLive(data) {
+export function getPerformanceLive(data, combo_scaling_removal = true) {
     const sr_model = 'live';
     const score = data.score;
     data.statistics = data.statistics ?? score.statistics;
@@ -70,8 +70,8 @@ export function getPerformanceLive(data) {
             data.effectiveMissCount = Math.min(data.effectiveMissCount + data.countOk * okMultiplier + data.countMeh * mehMultiplier, data.totalHits);
         }
 
-        data.aim = getAimValue(data);
-        data.speed = getSpeedValue(data);
+        data.aim = getAimValue(data, combo_scaling_removal);
+        data.speed = getSpeedValue(data, combo_scaling_removal);
         data.acc = getAccuracyValue(data);
         data.flashlight = getFlashlightValue(data);
         data.total = getTotalValue(data);
@@ -112,7 +112,7 @@ function getTotalValue(data) {
     return totalValue;
 }
 
-function getAimValue(data) {
+function getAimValue(data, combo_scaling_removal = true) {
     let aimValue = difficultyToPerformance(data.difficulty_data.aim_difficulty);
 
     let lengthBonus = 0.95 + 0.4 * Math.min(1, data.totalHits / 2000.0) +
@@ -120,8 +120,12 @@ function getAimValue(data) {
 
     aimValue *= lengthBonus;
 
-    if (data.effectiveMissCount > 0)
-        aimValue *= calculateMissPenalty(data.effectiveMissCount, data.difficulty_data.aim_difficult_strain_count);
+    if (data.effectiveMissCount > 0) {
+        if (combo_scaling_removal)
+            aimValue *= calculateMissPenalty(data.effectiveMissCount, data.difficulty_data.aim_difficult_strain_count);
+        else
+            aimValue *= 0.97 * Math.pow(1 - Math.pow(data.effectiveMissCount / data.totalHits, 0.775), data.effectiveMissCount);
+    }
 
     let approachRateFactor = 0.0;
     if (data.difficulty_data.approach_rate > 10.33)
@@ -161,7 +165,7 @@ function getAimValue(data) {
     return aimValue;
 }
 
-function getSpeedValue(data) {
+function getSpeedValue(data, combo_scaling_removal = true) {
     if (Mods.hasMod(data.score.mods, "RX")) {
         return 0;
     }
@@ -171,7 +175,10 @@ function getSpeedValue(data) {
     speedValue *= lengthBonus;
 
     if (data.effectiveMissCount > 0) {
-        speedValue *= calculateMissPenalty(data.effectiveMissCount, data.difficulty_data.speed_difficult_strain_count);
+        if (combo_scaling_removal)
+            speedValue *= calculateMissPenalty(data.effectiveMissCount, data.difficulty_data.speed_difficult_strain_count);
+        else
+            speedValue *= 0.97 * Math.pow(1 - Math.pow(data.effectiveMissCount / data.totalHits, 0.775), Math.pow(data.effectiveMissCount, 0.875));
     }
 
     let approachRateFactor = 0.0;

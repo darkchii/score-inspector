@@ -4,7 +4,10 @@ export function getCalculator(version, data, debug = false) {
     let pp;
     switch (version) {
         default:
-            pp = new getPerformanceLive(data, debug);
+            pp = new getPerformanceLive(data);
+            break;
+        case 'no_csr':
+            pp = new getPerformanceLive(data, false);
             break;
     }
     pp.version = version ?? 'live';

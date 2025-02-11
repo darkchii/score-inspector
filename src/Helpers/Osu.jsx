@@ -616,6 +616,10 @@ export async function MassCalculatePerformance(scores) {
                 calc: getCalculator('live', { score: score })
             },
             {
+                name: 'live_no_csr',
+                calc: getCalculator('no_csr', { score: score })
+            },
+            {
                 name: 'ss',
                 checkRealism: true,
                 calc: getCalculator('live', {
@@ -640,7 +644,7 @@ export async function MassCalculatePerformance(scores) {
                     score: score,
                     statistics: score.maximum_statistics ?? null,
                 })
-            },
+            }
         ]);
 
         score.recalc = {};
@@ -694,9 +698,7 @@ export async function MassCalculatePerformance(scores) {
             }
         });
 
-        if (system !== 'lazer') {
-            data.weighted[system] += bonus_pp;
-        }
+        data.weighted[system] += bonus_pp;
     });
 
     //special cases
@@ -785,15 +787,15 @@ const XP_POINTS_DISTRIBUTION = {
     MEDAL: 20000,
     PLAYTIME_HOUR: 300
 }
-export function CalculateNewXP(user, scores){
+export function CalculateNewXP(user, scores) {
     let xp = 0;
 
-    for(const score of scores){
-        if(score.rank === 'X' || score.rank === 'XH'){
+    for (const score of scores) {
+        if (score.rank === 'X' || score.rank === 'XH') {
             xp += XP_POINTS_DISTRIBUTION.SS;
-        } else if(score.rank === 'S' || score.rank === 'SH'){
+        } else if (score.rank === 'S' || score.rank === 'SH') {
             xp += XP_POINTS_DISTRIBUTION.S;
-        } else if(score.rank === 'A'){
+        } else if (score.rank === 'A') {
             xp += XP_POINTS_DISTRIBUTION.A;
         }
     }
@@ -806,7 +808,7 @@ export function CalculateNewXP(user, scores){
     return xp;
 }
 
-export function CalculateNewXPLevel(xp){
+export function CalculateNewXPLevel(xp) {
     let varA = 5;
     let varB = 80;
     let varC = 225;
