@@ -305,7 +305,7 @@ export const mod_strings = {
     4096: "SO",
     16384: "PF",
     1048576: "FI",
-    2097152: "RN",
+    2097152: "RD",
     4194304: "CN",
     8388608: "TG",
     536870912: "SV2",
@@ -329,7 +329,7 @@ export const mods = {
     SO: 4096,
     PF: 16384, // Only set along with SuddenDeath. i.e: PF only gives 16416  
     FI: 1048576,
-    RN: 2097152,
+    RD: 2097152,
     CI: 4194304,
     TG: 8388608,
     SV2: 536870912,
