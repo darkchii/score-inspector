@@ -633,9 +633,35 @@ export async function MassCalculatePerformance(scores) {
                 })
             },
             {
+                name: 'ss_no_csr',
+                checkRealism: true,
+                calc: getCalculator('no_csr', {
+                    count300: score.count300 + score.countmiss + score.count100 + score.count50,
+                    count100: 0,
+                    count50: 0,
+                    countmiss: 0,
+                    combo: score.beatmap.maxcombo,
+                    score: score,
+                    statistics: score.maximum_statistics ?? null
+                })
+            },
+            {
                 name: 'fc',
                 checkRealism: true,
                 calc: getCalculator('live', {
+                    count300: score.count300 + score.countmiss,
+                    count100: score.count100,
+                    count50: score.count50,
+                    countmiss: 0,
+                    combo: score.beatmap.maxcombo,
+                    score: score,
+                    statistics: score.maximum_statistics ?? null,
+                })
+            },
+            {
+                name: 'fc_no_csr',
+                checkRealism: true,
+                calc: getCalculator('no_csr', {
                     count300: score.count300 + score.countmiss,
                     count100: score.count100,
                     count50: score.count50,

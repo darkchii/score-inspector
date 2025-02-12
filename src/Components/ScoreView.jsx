@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Avatar, Box, Card, Divider, Grid2, Stack, Typography } from '@mui/material';
+import { Avatar, Box, Card, Divider, FormControlLabel, Grid2, Stack, Switch, Typography } from '@mui/material';
 import { Chart as ChartJS, ArcElement, Tooltip as ChartTooltip, Legend } from 'chart.js';
 import moment from 'moment';
 import { useEffect, useRef } from 'react';
@@ -15,11 +15,13 @@ import StarsLabel from './StarsLabel';
 import StarIcon from '@mui/icons-material/Star';
 import ScoreViewStat from './UI/ScoreViewStat';
 import { Link as RLink } from "react-router";
+import OsuTooltip from './OsuTooltip';
 ChartJS.register(ArcElement, ChartTooltip, Legend);
 
 function ScoreView(props) {
     const [scoreData, setScoreData] = useState(null);
     const [beatmapData, setBeatmapData] = useState(null);
+    const [useCSR, setUseCSR] = useState(true);
     const screenshotArea = useRef(null);
 
     async function fixScore(score) {
@@ -166,16 +168,31 @@ function ScoreView(props) {
                                             <div className='score-stats__group-row'><ScoreViewStat label='Slider Factor' value={`${formatNumber(scoreData.difficulty_data?.slider_factor ?? 0, 3)}`} small={true} /></div>
                                             {
                                                 (scoreData.difficulty_data?.is_legacy) ?
-                                                <>
-                                                    <div className='score-stats__group-row'><ScoreViewStat backgroundColor={'#f57c00'} irrelevant={true} label='Warning' value={`Score data incomplete, please refetch.`} small={true} /></div>
-                                                </> : null
+                                                    <>
+                                                        <div className='score-stats__group-row'><ScoreViewStat backgroundColor={'#f57c00'} irrelevant={true} label='Warning' value={`Score data incomplete, please refetch.`} small={true} /></div>
+                                                    </> : null
                                             }
+                                            <div className='score-stats__group-row' style={{
+                                                marginLeft: '2px',
+                                            }}>
+                                                <OsuTooltip title="The performance values with or without combo scaling. This is NOT the old PP system, rather the current one, but toggling between combo and miss-based calculations." placement="top">
+                                                    <FormControlLabel
+                                                        control={
+                                                            <Switch
+                                                                checked={useCSR}
+                                                                onChange={(e) => setUseCSR(e.target.checked)}
+                                                                name="state_csr"
+                                                            />
+                                                        }
+                                                        label="Combo Scaling Removal"
+                                                    />
+                                                </OsuTooltip>
+                                            </div>
                                         </div>
                                     </Grid2>
                                     <Grid2 ref={screenshotArea} sx={{
                                         // width: Mods.containsSettings(scoreData.score.mods) ? '60%' : '70%',
                                         width: '60%',
-                                        padding: 1,
                                         display: 'flex',
                                         justifyContent: 'center',
                                         alignItems: 'center',
@@ -264,15 +281,16 @@ function ScoreView(props) {
                                                             valueColor={scoreData.score.combo === beatmapData.beatmap.maxcombo ? green[500] : undefined} />
                                                         <ScoreViewStat
                                                             tooltip={
-                                                                (scoreData.score.recalc['fc']?.total ?? 0) !== (scoreData.score.recalc[props.data.pp_version]?.total ?? 0) ?
+                                                                (scoreData.score.recalc['fc']?.total ?? 0) !== (scoreData.score.recalc[`live${useCSR ? '' : '_no_csr'}`]?.total ?? 0) ?
                                                                     'PP if your score were an FC' : undefined
                                                             }
                                                             originalValue={
-                                                                (scoreData.score.recalc['fc']?.total ?? 0) !== (scoreData.score.recalc[props.data.pp_version]?.total ?? 0) ?
+                                                                (scoreData.score.recalc['fc']?.total ?? 0) !== (scoreData.score.recalc[`live${useCSR ? '' : '_no_csr'}`]?.total ?? 0) ?
                                                                     formatNumber(scoreData.score.recalc['fc']?.total ?? 0, 0) : undefined
                                                             }
                                                             label='Performance'
-                                                            value={`${formatNumber(scoreData.score.recalc[props.data.pp_version]?.total ?? 0, 0)}`} />
+                                                            value={`${formatNumber(scoreData.score.recalc[`live${useCSR ? '' : '_no_csr'}`]?.total ?? 0, 0)}`}
+                                                        />
                                                     </div>
                                                     <div className='score-stats__group-row'>
                                                         <ScoreViewStat lineDecorator={true} label='Great' value={`${formatNumber(scoreData.score.count300)}`} labelColor='#66FFCC' />
@@ -308,22 +326,26 @@ function ScoreView(props) {
                                                     </div>
                                                     <div className='score-stats__group-row'>
                                                         <ScoreViewStat
-                                                            originalValue={(scoreData.score.recalc['fc'].aim === scoreData.score.recalc[props.data.pp_version].aim) ? undefined : formatNumber(scoreData.score.recalc['fc'].aim ?? 0, 1)}
+                                                            originalValue={(scoreData.score.recalc['fc'].aim === scoreData.score.recalc[`live${useCSR ? '' : '_no_csr'}`].aim) ? undefined : formatNumber(scoreData.score.recalc['fc'].aim ?? 0, 1)}
                                                             label='Aim PP'
-                                                            value={formatNumber(scoreData.score.recalc[props.data.pp_version]?.aim ?? 0, 1)} />
+                                                            value={formatNumber(scoreData.score.recalc[`live${useCSR ? '' : '_no_csr'}`]?.aim ?? 0, 1)}
+                                                        />
                                                         <ScoreViewStat
-                                                            originalValue={(scoreData.score.recalc['fc'].speed === scoreData.score.recalc[props.data.pp_version].speed) ? undefined : formatNumber(scoreData.score.recalc['fc'].speed ?? 0, 1)}
+                                                            originalValue={(scoreData.score.recalc['fc'].speed === scoreData.score.recalc[`live${useCSR ? '' : '_no_csr'}`].speed) ? undefined : formatNumber(scoreData.score.recalc['fc'].speed ?? 0, 1)}
                                                             label='Speed PP'
-                                                            value={formatNumber(scoreData.score.recalc[props.data.pp_version]?.speed ?? 0, 1)} />
+                                                            value={formatNumber(scoreData.score.recalc[`live${useCSR ? '' : '_no_csr'}`]?.speed ?? 0, 1)}
+                                                        />
                                                         <ScoreViewStat
-                                                            originalValue={(scoreData.score.recalc['fc'].acc === scoreData.score.recalc[props.data.pp_version].acc) ? undefined : formatNumber(scoreData.score.recalc['fc'].acc ?? 0, 1)}
+                                                            originalValue={(scoreData.score.recalc['fc'].acc === scoreData.score.recalc[`live${useCSR ? '' : '_no_csr'}`].acc) ? undefined : formatNumber(scoreData.score.recalc['fc'].acc ?? 0, 1)}
                                                             label='Accuracy PP'
-                                                            value={`${formatNumber(scoreData.score.recalc[props.data.pp_version]?.acc ?? 0, 1)}`} />
+                                                            value={`${formatNumber(scoreData.score.recalc[`live${useCSR ? '' : '_no_csr'}`]?.acc ?? 0, 1)}`}
+                                                        />
                                                         <ScoreViewStat
-                                                            originalValue={(!Mods.hasMod(scoreData.score.mods, "FL") || scoreData.score.recalc['fc'].flashlight === scoreData.score.recalc[props.data.pp_version].flashlight) ? undefined : formatNumber(scoreData.score.recalc['fc'].flashlight ?? 0, 1)}
+                                                            originalValue={(!Mods.hasMod(scoreData.score.mods, "FL") || scoreData.score.recalc['fc'].flashlight === scoreData.score.recalc[`live${useCSR ? '' : '_no_csr'}`].flashlight) ? undefined : formatNumber(scoreData.score.recalc['fc'].flashlight ?? 0, 1)}
                                                             label='Flashlight PP'
                                                             irrelevant={!Mods.hasMod(scoreData.score.mods, "FL")}
-                                                            value={`${Mods.hasMod(scoreData.score.mods, "FL") ? (formatNumber(scoreData.score.recalc[props.data.pp_version]?.flashlight ?? 0, 1)) : '-'}`} />
+                                                            value={`${Mods.hasMod(scoreData.score.mods, "FL") ? (formatNumber(scoreData.score.recalc[`live${useCSR ? '' : '_no_csr'}`]?.flashlight ?? 0, 1)) : '-'}`}
+                                                        />
                                                     </div>
                                                     {
                                                         scoreData.score.statistics != null && scoreData.score.maximum_statistics != null ?
