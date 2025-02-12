@@ -33,8 +33,8 @@ import RouteLeadersScore from './Routes/RouteLeadersScore';
 import RouteMilestones from './Routes/RouteMilestones';
 import RouteLeadersMonthly from './Routes/RouteLeadersMonthly';
 import RouteCompletionists from './Routes/RouteCompletionists';
-import RouteClan from './Routes/RouteClan';
 import RouteWrapped from './Routes/RouteWrapped';
+import RouteClan from './Routes/RouteClan';
 
 function App() {
   const [loginData, setLoginData] = useState(null);

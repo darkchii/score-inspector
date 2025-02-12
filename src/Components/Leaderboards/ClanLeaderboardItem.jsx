@@ -1,6 +1,6 @@
-import { Box, Typography } from "@mui/material";
+import { Avatar, Box, Typography } from "@mui/material";
 import GlowBar from "../UI/GlowBar";
-import { LeaderboardItem } from "./LeaderboardItem";
+import { LEADERBOARD_ITEM_HEIGHT, LeaderboardItem } from "./LeaderboardItem";
 import { useNavigate } from "react-router";
 import OsuTooltip from "../OsuTooltip";
 
@@ -57,17 +57,55 @@ function ClanLeaderboardItem(props) {
                 alignItems: 'center',
                 width: '20%'
             }}>
-                <Box sx={{ pl: 2 }}>
-                    <Typography>
-                        {props.clan?.name}
-                    </Typography>
-                    <Typography sx={{
-                        fontSize: '0.8em',
-                        color: 'rgba(255, 255, 255, 0.7)',
-                        fontWeight: 100
+                <Box sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                }}>
+                    <Box sx={{
+                        height: LEADERBOARD_ITEM_HEIGHT * 0.8,
+                        width: LEADERBOARD_ITEM_HEIGHT * 0.8,
+                        justifyContent: 'center',
+                        alignItems: 'center',
                     }}>
-                        Lead by <span style={{ fontWeight: 300, color: 'rgba(255,255,255,0.9)' }}>{props.clan?.owner_user?.known_username}</span>
-                    </Typography>
+                        {
+                            props.clan?.logo_image_url ?
+                                <>
+                                    {/* just a exact square with image fit inside */}
+                                    <Avatar
+                                        src={props.clan.logo_image_url}
+                                        alt={props.clan.name}
+                                        variant='rounded'
+                                        style={{
+                                            height: '100%',
+                                            width: '100%',
+                                            objectFit: 'contain',
+                                        }}
+                                    />
+                                </> : null
+                        }
+                    </Box>
+                    <Box sx={{
+                        pl: 1
+                    }}>
+                        <Box sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                            alignItems: 'left',
+                        }}>
+                            <Typography>
+                                {props.clan?.name}
+                            </Typography>
+                            <Typography sx={{
+                                fontSize: '0.8em',
+                                color: 'rgba(255, 255, 255, 0.7)',
+                                fontWeight: 100
+                            }}>
+                                Lead by <span style={{ fontWeight: 300, color: 'rgba(255,255,255,0.9)' }}>{props.clan?.owner_user?.known_username}</span>
+                            </Typography>
+                        </Box>
+                    </Box>
                 </Box>
             </Box>
 
