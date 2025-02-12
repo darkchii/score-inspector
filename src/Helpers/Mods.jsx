@@ -43,6 +43,11 @@ class Mods {
                     this.mods_data.push(_mod);
                 }
             }
+
+            //if NC and DT are both enabled, remove DT
+            if (this.mods_data.find(m => m.acronym === "NC") !== undefined && this.mods_data.find(m => m.acronym === "DT") !== undefined) {
+                this.mods_data = this.mods_data.filter(m => m.acronym !== "DT");
+            }
         } else {
             this.mods_data = modern_mods;
         }
