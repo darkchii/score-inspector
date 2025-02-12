@@ -127,6 +127,10 @@ function getAimValue(data, combo_scaling_removal = true) {
             aimValue *= 0.97 * Math.pow(1 - Math.pow(data.effectiveMissCount / data.totalHits, 0.775), data.effectiveMissCount);
     }
 
+    if (!combo_scaling_removal){
+        aimValue *= getComboScalingFactor(data);
+    }
+
     let approachRateFactor = 0.0;
     if (data.difficulty_data.approach_rate > 10.33)
         approachRateFactor = 0.3 * (data.difficulty_data.approach_rate - 10.33);
@@ -179,6 +183,10 @@ function getSpeedValue(data, combo_scaling_removal = true) {
             speedValue *= calculateMissPenalty(data.effectiveMissCount, data.difficulty_data.speed_difficult_strain_count);
         else
             speedValue *= 0.97 * Math.pow(1 - Math.pow(data.effectiveMissCount / data.totalHits, 0.775), Math.pow(data.effectiveMissCount, 0.875));
+    }
+
+    if (!combo_scaling_removal){
+        speedValue *= getComboScalingFactor(data);
     }
 
     let approachRateFactor = 0.0;

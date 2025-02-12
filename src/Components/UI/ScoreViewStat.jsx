@@ -109,6 +109,24 @@ function ScoreViewStat(props) {
                         : null
                     }
                 </div>
+                {
+                    props.subValue ?
+                        <div className={`score-stats__stat-row${props.small ? '-small' : ''}`} style={{
+                            color: props.valueColor ?? undefined,
+                            display: 'flex',
+                            justifyContent: 'space-between',
+
+                        }}>
+                            <span style={{
+                                fontSize: '0.6em',
+                                color: theme.palette.text.secondary,
+                                display: 'flex',
+                                alignItems: 'center',
+                            }}>
+                                {props.subValue}
+                            </span>
+                        </div> : null
+                }
             </div>
         </OsuTooltip>
     );
