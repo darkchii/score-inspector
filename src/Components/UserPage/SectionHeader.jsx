@@ -13,7 +13,7 @@ function SectionHeader(props) {
     const [visitorCount, setVisitorCount] = useState(0);
     useEffect(() => {
         if (props.user.visitors !== null) {
-            const vc = props.user.visitors.reduce((acc, o) => { return acc + o.count }, 0);
+            const vc = props.user.visitors.reduce((acc, o) => { return acc + parseInt(o.count) }, 0);
             setVisitorCount(vc);
         }
     }, [props.user]);
