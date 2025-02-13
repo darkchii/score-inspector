@@ -90,7 +90,7 @@ function RouteMilestones() {
                                             if (!formatter) {
                                                 text = `Unknown, contact Amayakase, this should not happen (achievement: ${milestone.achievement})`;
                                             } else {
-                                                text = formatter.getText(formatter.getValue(milestone.count));
+                                                text = formatter.getText(formatter.getValue(Number(milestone.count)));
                                             }
 
                                             return (
