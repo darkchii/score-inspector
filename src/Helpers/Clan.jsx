@@ -51,6 +51,22 @@ export async function GetClan(id, login_user_id = null, login_user_token = null)
     return data;
 }
 
+export async function GetClanRecentScores(id){
+    const response = await axios.get(`${GetAPI()}clans/get/${id}/recent`);
+    const data = response.data;
+
+    if (data.scores !== undefined && data.scores.length > 0) {
+        data.scores = prepareScores(null, data.scores, true);
+        let [_scores] = await MassCalculatePerformance(data.scores);
+        data.scores = _scores;
+
+        //order by date_played_moment
+        data.scores.sort((a, b) => b.date_played_moment - a.date_played_moment);
+    }
+
+    return data.scores;
+}
+
 export async function DeleteClan(data) {
     const response = await fetch(`${GetAPI()}clans/delete`, {
         method: 'POST',

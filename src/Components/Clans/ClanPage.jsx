@@ -1,7 +1,7 @@
 import { Avatar, Box, Button, Card, CardContent, CardMedia, Chip, Container, Divider, FormControl, Grid2, IconButton, Menu, MenuItem, Modal, Paper, Select, Stack, Tab, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableRow, TextField, Typography, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
-import { AcceptJoinRequestClan, DeleteClan, FormatClanLog, GetClan, JoinRequestClan, LeaveClan, RejectJoinRequestClan, RemoveClanMember, TransferClanOwnership, UpdateClanModerator } from "../../Helpers/Clan";
+import { AcceptJoinRequestClan, DeleteClan, FormatClanLog, GetClan, GetClanRecentScores, JoinRequestClan, LeaveClan, RejectJoinRequestClan, RemoveClanMember, TransferClanOwnership, UpdateClanModerator } from "../../Helpers/Clan";
 import { GetFormattedName, GetLoginToken } from "../../Helpers/Account";
 import { MODAL_STYLE, showNotification } from "../../Helpers/Misc";
 import Loader from "../UI/Loader";
@@ -32,6 +32,8 @@ function ClanPage(props) {
     const [clanEditModalOpen, setClanEditModalOpen] = useState(false);
     const [clanRemoveModalOpen, setClanRemoveModalOpen] = useState(false);
     const [clanData, setClanData] = useState(null);
+    const [clanDataActivity, setClanDataActivity] = useState(null);
+    const [isLoadingActivity, setIsLoadingActivity] = useState(true);
     const [sorter, setSorter] = useState('average_pp');
     const [anchorEl, setAnchorEl] = useState(null);
     const [anchorData, setAnchorData] = useState(null);
@@ -51,6 +53,20 @@ function ClanPage(props) {
     const handleDropdownClose = () => {
         setAnchorEl(null);
     };
+
+    useEffect(() => {
+        if (!clanData) return;
+
+        (async () => {
+            setIsLoadingActivity(true);
+            //request recent scores
+            const scores = await GetClanRecentScores(props.id);
+            if (scores && scores.length > 0) {
+                setClanDataActivity(scores);
+            }
+            setIsLoadingActivity(false);
+        })();
+    }, [clanData]);
 
     const loadClan = (id) => {
         setClanData(null);
@@ -605,11 +621,11 @@ function ClanPage(props) {
                                             <Grid2 size={{ xs: 12, sm: 8 }}>
                                                 <GlowBarText sx={{ pb: 1 }}><Typography variant='body1'>Recent Activity</Typography></GlowBarText>
                                                 {
-                                                    clanData.activities?.scores?.length > 0 ?
+                                                    clanDataActivity?.length > 0 ?
                                                         <>
                                                             <Stack direction="column" justifyContent="center" alignItems="center" sx={{ mt: 2 }} spacing={0.5}>
                                                                 {
-                                                                    clanData.activities?.scores.map((score, i) => {
+                                                                    clanDataActivity.map((score, i) => {
                                                                         return (
                                                                             <Box key={i} sx={{
                                                                                 width: '100%',
@@ -635,7 +651,10 @@ function ClanPage(props) {
                                                                 }
                                                             </Stack>
                                                         </> :
-                                                        <Typography variant='body2'>No recent activity</Typography>
+                                                        (isLoadingActivity ?
+                                                            <Loader /> :
+                                                            //no scores
+                                                            <Typography variant='body2'>No recent activity</Typography>)
                                                 }
                                             </Grid2>
                                         </Grid2>
