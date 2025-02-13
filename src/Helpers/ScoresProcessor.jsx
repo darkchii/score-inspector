@@ -221,6 +221,7 @@ export function prepareScore(score, user = null) {
     score.totalhits = score.count300 + score.count100 + score.count50;
 
     score.is_fc = isScoreFullcombo(score);
+    score.is_pfc = score.beatmap.maxcombo - score.combo === 0;
     // score.scoreLazerClassic = Math.floor(getLazerScore(score));
     score.scoreLazerStandardised = Math.floor(getLazerScore(score));
 

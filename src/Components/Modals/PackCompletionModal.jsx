@@ -8,6 +8,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import { green, red } from "@mui/material/colors";
 import Loader from "../UI/Loader";
 import OsuTooltip from "../OsuTooltip";
+import { getGradeIcon } from "../../Helpers/Assets";
 
 const style = {
     position: 'absolute',
@@ -45,7 +46,9 @@ function PackCompletionModal(props, ref) {
                                             <Stack direction='column' spacing={1}>
                                                 {
                                                     props.data?.beatmaps.map((beatmap, index) => {
-                                                        const hasScore = props.data?.scores.find(x => x.beatmap_id === beatmap?.beatmap_id) !== undefined;
+                                                        // const hasScore = props.data?.scores.find(x => x.beatmap_id === beatmap?.beatmap_id) !== undefined;
+                                                        const score = props.data?.scores.find(x => x.beatmap_id === beatmap?.beatmap_id);
+                                                        const hasScore = score !== undefined;
                                                         return (
                                                             <LeaderboardItem
                                                                 key={index}
@@ -62,7 +65,7 @@ function PackCompletionModal(props, ref) {
                                                                     display: 'flex',
                                                                     alignItems: 'center',
                                                                     justifyContent: 'center',
-                                                                    width: '5%',
+                                                                    width: '3%',
                                                                     p: 2
                                                                 }}>
                                                                     <OsuTooltip title={
@@ -82,7 +85,44 @@ function PackCompletionModal(props, ref) {
                                                                 <Box sx={{
                                                                     display: 'flex',
                                                                     alignItems: 'center',
-                                                                    width: '95%',
+                                                                    width: '4%',
+                                                                }}>
+                                                                    {
+                                                                        score ?
+                                                                            <Typography variant='h6' sx={{ fontSize: '1.3em' }} noWrap>
+                                                                                {
+                                                                                    score.is_pfc ?
+                                                                                        'PFC'
+                                                                                        : score.is_fc ?
+                                                                                            'FC'
+                                                                                            : ''
+                                                                                }
+                                                                            </Typography>
+                                                                            : null
+                                                                    }
+                                                                </Box>
+                                                                <Box sx={{
+                                                                    display: 'flex',
+                                                                    alignItems: 'center',
+                                                                    width: '3%',
+                                                                    p: 2
+                                                                }}>
+                                                                    {
+                                                                        score ?
+                                                                            <Box sx={{
+                                                                                height: '100%',
+                                                                                display: 'flex',
+                                                                                alignItems: 'center',
+                                                                                justifyContent: 'center'
+                                                                            }}>
+                                                                                <img src={getGradeIcon(score.rank)} alt={score.rank} />
+                                                                            </Box> : null
+                                                                    }
+                                                                </Box>
+                                                                <Box sx={{
+                                                                    display: 'flex',
+                                                                    alignItems: 'center',
+                                                                    width: '90%',
                                                                     p: 2
                                                                 }}>
                                                                     <Typography variant='h6' sx={{ fontSize: '1.3em' }} noWrap>
