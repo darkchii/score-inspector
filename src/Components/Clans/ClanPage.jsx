@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, Card, CardContent, CardMedia, Chip, Container, Divider, FormControl, Grid2, IconButton, Menu, MenuItem, Modal, Paper, Select, Stack, Tab, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableRow, TextField, Typography, useTheme } from "@mui/material";
+import { Alert, Avatar, Box, Button, Card, CardContent, CardMedia, Chip, Container, Divider, FormControl, Grid2, IconButton, Menu, MenuItem, Modal, Paper, Select, Stack, Tab, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableHead, TableRow, TextField, Typography, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
 import { AcceptJoinRequestClan, DeleteClan, FormatClanLog, GetClan, GetClanRecentScores, JoinRequestClan, LeaveClan, RejectJoinRequestClan, RemoveClanMember, TransferClanOwnership, UpdateClanModerator } from "../../Helpers/Clan";
@@ -652,7 +652,7 @@ function ClanPage(props) {
                                                             </Stack>
                                                         </> :
                                                         (isLoadingActivity ?
-                                                            <Loader /> :
+                                                            <Loader height="200px" /> :
                                                             //no scores
                                                             <Typography variant='body2'>No recent activity</Typography>)
                                                 }
@@ -880,11 +880,23 @@ function ClanPage(props) {
                                     </ClanTabPanel>
                                     <ClanTabPanel value={activeTab} index={2}>
                                         <GlowBarText sx={{ pb: 1 }}><Typography variant='body1'>Clan History</Typography></GlowBarText>
+                                        {
+                                            clanData.clan.disable_logs ?
+                                                <Alert severity='info'>Clan logs visibility are made private by the owner. Only members can see these.</Alert>
+                                            : <></>
+                                        }
                                         <TableContainer>
                                             <Table size='small'>
+                                                <TableHead>
+                                                    <TableRow>
+                                                        <TableCell>Date</TableCell>
+                                                        <TableCell>Action</TableCell>
+                                                        <TableCell>Moderator</TableCell>
+                                                    </TableRow>
+                                                </TableHead>
                                                 <TableBody>
                                                     {
-                                                        clanData.logs.map((log, index) => {
+                                                        clanData.logs && clanData.logs.map((log, index) => {
                                                             if (FormatClanLog(clanData, log) === null) return <></>;
                                                             return <TableRow key={index}>
                                                                 <TableCell>
@@ -898,6 +910,13 @@ function ClanPage(props) {
                                                                     <Typography variant='body2'>
                                                                         {FormatClanLog(clanData, log)}
                                                                     </Typography>
+                                                                </TableCell>
+                                                                <TableCell>
+                                                                    {
+                                                                        JSON.parse(log.data)?.moderator_id ?
+                                                                            GetFormattedName(clanData.logs_user_data.find(u => u.osu_id === JSON.parse(log.data)?.moderator_id))
+                                                                        : <></>
+                                                                    }
                                                                 </TableCell>
                                                             </TableRow>
                                                         })
