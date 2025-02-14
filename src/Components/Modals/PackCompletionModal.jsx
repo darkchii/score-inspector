@@ -9,6 +9,7 @@ import { green, red } from "@mui/material/colors";
 import Loader from "../UI/Loader";
 import OsuTooltip from "../OsuTooltip";
 import { getGradeIcon } from "../../Helpers/Assets";
+import moment from "moment";
 
 const style = {
     position: 'absolute',
@@ -38,7 +39,14 @@ function PackCompletionModal(props, ref) {
                                     <>
                                         {/* close button on */}
                                         <Typography variant="h5">{props.data?.pack_id} {props.data?.name ? ` - ${props.data?.name}` : ''}</Typography>
-                                        <Typography variant="h6">{props.data?.scores.length} / {props.data?.beatmaps?.length} ({Math.round(props.data?.played / props.data?.total * 100)}%)</Typography>
+                                        <Typography variant="body1">
+                                            {props.data?.scores.length} / {props.data?.beatmaps?.length} ({Math.round(props.data?.played / props.data?.total * 100)}%)
+                                        </Typography>
+                                        <OsuTooltip title='This does not account for length-adjusting mods like DT or HT'>
+                                            <Typography variant="body1">
+                                                Length: {moment.duration(props.data?.played_length, 'seconds').format('h[h] m[min]')} / {moment.duration(props.data?.total_length, 'seconds').format('h[h] m[min]')}
+                                            </Typography>
+                                        </OsuTooltip>
                                         <Box sx={{
                                             maxHeight: '700px',
                                             overflowY: 'auto',

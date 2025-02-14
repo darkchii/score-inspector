@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from "react";
 import { useState } from "react";
 import { getBeatmapPackDetails, getBeatmapPacks, getBeatmaps } from "../../Helpers/Osu";
 import { Box, Container, FormControlLabel, Grid2, Paper, Switch, Typography, useTheme } from "@mui/material";
-import { is_numeric, lerpColor } from "../../Helpers/Misc";
+import { formatNumber, is_numeric, lerpColor } from "../../Helpers/Misc";
 import PackCompletionModal from "../Modals/PackCompletionModal";
 import Loader from "../UI/Loader";
 import CompletionModeNotice from "../UI/CompletionModeNotice";
@@ -98,6 +98,15 @@ function SectionPacks(props) {
                     pack.completed = progressPercentage === 100;
                     pack.completed_full_combo = pack.full_combos === pack.total;
                 });
+
+                //cache numbers
+                packType.played = packType.packs.filter(pack => pack.played > 0).length;
+                packType.completed = packType.packs.filter(pack => pack.completed).length;
+                packType.completed_full_combo = packType.packs.filter(pack => pack.completed_full_combo).length;
+
+                packType.played_percentage = Math.round(packType.played / packType.packs.length * 100);
+                packType.completed_percentage = Math.round(packType.completed / packType.packs.length * 100);
+                packType.completed_full_combo_percentage = Math.round(packType.completed_full_combo / packType.packs.length * 100);
             });
 
             setPackData(_packData);
@@ -131,6 +140,13 @@ function SectionPacks(props) {
                 played: scores.length,
                 beatmaps: beatmaps,
                 scores: scores,
+                //sum of beatmap[x].length
+                played_length: scores.reduce((acc, score) => {
+                    return acc + score.beatmap.length;
+                }, 0),
+                total_length: beatmaps.reduce((acc, beatmap) => {
+                    return acc + beatmap.length;
+                }, 0)
             }
 
             if (selectedPack) {
@@ -177,58 +193,65 @@ function SectionPacks(props) {
                     visisblePackData.map((packType, index) => {
                         return (
                             <>
-                                <Typography variant='h6'>{packType.name}</Typography>
-                                <Paper sx={{
-                                    display: 'inline-flex',
-                                    flexWrap: 'wrap',
+                                <Paper key={`packType_${index}`} sx={{
                                     p: 2
                                 }}>
-                                    {
-                                        packType.packs && packType.packs.length > 0 ? packType.packs.map(pack => {
-                                            let progressPercentage = Math.round(pack.played / pack.total * 100);
-                                            return (
-                                                <OsuTooltip key={index} title={
-                                                    <React.Fragment>
-                                                        <Typography variant='body1'>{pack.pack_id} {pack.name ? `(${pack.name})` : ''}</Typography>
-                                                        <Typography variant='body2'>Completion: {progressPercentage}%</Typography>
-                                                        <Typography variant='body2'>{pack.played} / {pack.total}</Typography>
-                                                    </React.Fragment>
-                                                } placement='top' disableInteractive={true}>
-                                                    <Box
-                                                        onClick={() => openPackInfo(pack)}
-                                                        sx={{
-                                                            borderRadius: '3px',
-                                                            height: '12px',
-                                                            position: 'relative',
-                                                            width: '12px',
-                                                            backgroundColor: `${pack.completed ? 'gold' : pack.color}`,
-                                                            margin: '2px',
-                                                            '&:hover': {
-                                                                cursor: 'pointer',
-                                                                opacity: 0.5
-                                                            },
-                                                        }}>
-                                                        {
-                                                            pack.completed_full_combo && <Box sx={{
-                                                                position: 'absolute',
-                                                                top: '50%',
-                                                                left: '50%',
-                                                                transform: 'translate(-50%, -50%)',
+                                    <Typography variant='h6'>{packType.name}</Typography>
+                                    <Typography variant='body2'>Total: {formatNumber(packType.packs.length)}</Typography>
+                                    <Typography variant="body2">Played: {formatNumber(packType.played)} ({formatNumber(packType.played_percentage, 2)}%)</Typography>
+                                    <Typography variant="body2">Completed: {formatNumber(packType.completed)} ({formatNumber(packType.completed_percentage, 2)}%)</Typography>
+                                    <Typography variant="body2">Completed (Full FC): {formatNumber(packType.completed_full_combo)} ({formatNumber(packType.completed_full_combo_percentage, 2)}%)</Typography>
+                                    <Box sx={{
+                                        display: 'inline-flex',
+                                        flexWrap: 'wrap',
+                                    }}>
+                                        {
+                                            packType.packs && packType.packs.length > 0 ? packType.packs.map((pack, pack_index) => {
+                                                let progressPercentage = Math.round(pack.played / pack.total * 100);
+                                                return (
+                                                    <OsuTooltip key={`pack_${pack_index}`} title={
+                                                        <React.Fragment>
+                                                            <Typography variant='body1'>{pack.pack_id} {pack.name ? `(${pack.name})` : ''}</Typography>
+                                                            <Typography variant='body2'>Completion: {progressPercentage}%</Typography>
+                                                            <Typography variant='body2'>{pack.played} / {pack.total}</Typography>
+                                                        </React.Fragment>
+                                                    } placement='top' disableInteractive={true}>
+                                                        <Box
+                                                            onClick={() => openPackInfo(pack)}
+                                                            sx={{
+                                                                borderRadius: '3px',
+                                                                height: '12px',
+                                                                position: 'relative',
+                                                                width: '12px',
+                                                                backgroundColor: `${pack.completed ? 'gold' : pack.color}`,
+                                                                margin: '2px',
+                                                                '&:hover': {
+                                                                    cursor: 'pointer',
+                                                                    opacity: 0.5
+                                                                },
                                                             }}>
-                                                                <DoneIcon
-                                                                    sx={{
-                                                                        color: 'black',
-                                                                        fontSize: 12,
-                                                                        fontWeight: 'bold'
-                                                                    }}
-                                                                />
-                                                            </Box>
-                                                        }
-                                                    </Box>
-                                                </OsuTooltip>
-                                            )
-                                        }) : <Loader />
-                                    }
+                                                            {
+                                                                pack.completed_full_combo && <Box sx={{
+                                                                    position: 'absolute',
+                                                                    top: '50%',
+                                                                    left: '50%',
+                                                                    transform: 'translate(-50%, -50%)',
+                                                                }}>
+                                                                    <DoneIcon
+                                                                        sx={{
+                                                                            color: 'black',
+                                                                            fontSize: 12,
+                                                                            fontWeight: 'bold'
+                                                                        }}
+                                                                    />
+                                                                </Box>
+                                                            }
+                                                        </Box>
+                                                    </OsuTooltip>
+                                                )
+                                            }) : <Loader />
+                                        }
+                                    </Box>
                                 </Paper>
                             </>
                         )
