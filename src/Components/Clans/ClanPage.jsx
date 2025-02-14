@@ -883,47 +883,51 @@ function ClanPage(props) {
                                         {
                                             clanData.clan.disable_logs ?
                                                 <Alert severity='info'>Clan logs visibility are made private by the owner. Only members can see these.</Alert>
-                                            : <></>
+                                                : <></>
                                         }
-                                        <TableContainer>
-                                            <Table size='small'>
-                                                <TableHead>
-                                                    <TableRow>
-                                                        <TableCell>Date</TableCell>
-                                                        <TableCell>Action</TableCell>
-                                                        <TableCell>Moderator</TableCell>
-                                                    </TableRow>
-                                                </TableHead>
-                                                <TableBody>
-                                                    {
-                                                        clanData.logs && clanData.logs.map((log, index) => {
-                                                            if (FormatClanLog(clanData, log) === null) return <></>;
-                                                            return <TableRow key={index}>
-                                                                <TableCell>
-                                                                    <OsuTooltip title={moment(log.created_at).format('MMMM Do YYYY, h:mm:ss a')}>
-                                                                        {moment(log.created_at).fromNow()}
-                                                                    </OsuTooltip>
-                                                                </TableCell>
-                                                                <TableCell sx={{
-                                                                    maxWidth: '60%'
-                                                                }}>
-                                                                    <Typography variant='body2'>
-                                                                        {FormatClanLog(clanData, log)}
-                                                                    </Typography>
-                                                                </TableCell>
-                                                                <TableCell>
-                                                                    {
-                                                                        JSON.parse(log.data)?.moderator_id ?
-                                                                            GetFormattedName(clanData.logs_user_data.find(u => u.osu_id === JSON.parse(log.data)?.moderator_id))
-                                                                        : <></>
-                                                                    }
-                                                                </TableCell>
+                                        {
+                                            clanData.logs && clanData.logs.length > 0 ?
+                                                <TableContainer>
+                                                    <Table size='small'>
+                                                        <TableHead>
+                                                            <TableRow>
+                                                                <TableCell>Date</TableCell>
+                                                                <TableCell>Action</TableCell>
+                                                                <TableCell>Moderator</TableCell>
                                                             </TableRow>
-                                                        })
-                                                    }
-                                                </TableBody>
-                                            </Table>
-                                        </TableContainer>
+                                                        </TableHead>
+                                                        <TableBody>
+                                                            {
+                                                                clanData.logs && clanData.logs.map((log, index) => {
+                                                                    if (FormatClanLog(clanData, log) === null) return <></>;
+                                                                    return <TableRow key={index}>
+                                                                        <TableCell>
+                                                                            <OsuTooltip title={moment(log.created_at).format('MMMM Do YYYY, h:mm:ss a')}>
+                                                                                {moment(log.created_at).fromNow()}
+                                                                            </OsuTooltip>
+                                                                        </TableCell>
+                                                                        <TableCell sx={{
+                                                                            maxWidth: '60%'
+                                                                        }}>
+                                                                            <Typography variant='body2'>
+                                                                                {FormatClanLog(clanData, log)}
+                                                                            </Typography>
+                                                                        </TableCell>
+                                                                        <TableCell>
+                                                                            {
+                                                                                JSON.parse(log.data)?.moderator_id ?
+                                                                                    GetFormattedName(clanData.logs_user_data.find(u => u.osu_id === JSON.parse(log.data)?.moderator_id))
+                                                                                    : <></>
+                                                                            }
+                                                                        </TableCell>
+                                                                    </TableRow>
+                                                                })
+                                                            }
+                                                        </TableBody>
+                                                    </Table>
+                                                </TableContainer>
+                                                : <Typography variant='body2'>No (visible) logs</Typography>
+                                        }
                                     </ClanTabPanel>
                                 </CardContent>
                             </Card>

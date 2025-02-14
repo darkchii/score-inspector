@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Box, Button, Modal, Tab, Tabs } from "@mui/material";
+import { Alert, Box, Button, Modal, Tab, Tabs } from "@mui/material";
 import { useState } from "react";
 import { useEffect } from "react";
 import { GetLoginID, GetUser } from "../Helpers/Account";
@@ -75,6 +75,9 @@ function RouteClan() {
                         >
                             <ClanCreate user={loggedInUser} />
                         </Modal>
+                        <Alert severity="info" sx={{ mb: 2 }}>
+                            Official clans/teams are in development by the osu! developers. Once released, the clans and the system here will cease to exist.
+                        </Alert>
                         <Box sx={{
                             borderBottom: 1, borderColor: 'divider',
                             //spacing in-between
