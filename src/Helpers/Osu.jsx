@@ -307,7 +307,7 @@ export const mod_strings = {
     1048576: "FI",
     2097152: "RD",
     4194304: "CN",
-    8388608: "TG",
+    8388608: "TP",
     536870912: "SV2",
     1073741824: "MR"
 }
@@ -331,7 +331,7 @@ export const mods = {
     FI: 1048576,
     RD: 2097152,
     CI: 4194304,
-    TG: 8388608,
+    TP: 8388608,
     SV2: 536870912,
     MR: 1073741824,
     //THESE ARE NONSENSE FOR NOW, NOT IMPLEMENTED, BUT HERE SO PP CALC IS READY FOR THEM
