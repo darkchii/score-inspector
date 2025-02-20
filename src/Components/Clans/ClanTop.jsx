@@ -9,7 +9,6 @@ import Loader from "../UI/Loader";
 import OsuTabs from "../OsuTabs";
 import ClanLeaderboardItem from "../Leaderboards/ClanLeaderboardItem";
 import { grey } from "@mui/material/colors";
-import { LEADERBOARD_ITEM_HEIGHT } from "../Leaderboards/LeaderboardItem";
 
 const ClanPlayTooltip = styled(({ className, ...props }) => (
     <Tooltip {...props} componentsProps={{ tooltip: { className: className } }} />

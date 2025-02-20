@@ -1,18 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Alert, Box, Button, Modal, Tab, Tabs } from "@mui/material";
+import { Alert, Box, Button, Tab, Tabs } from "@mui/material";
 import { useState } from "react";
 import { useEffect } from "react";
 import { GetLoginID, GetUser } from "../Helpers/Account";
 import { useNavigate, useParams } from "react-router";
 import Loader from "../Components/UI/Loader";
 import ClanPage from "../Components/Clans/ClanPage";
-import ClanCreate from "../Components/Clans/ClanCreate";
 import ClanTabPanel from "../Components/Clans/ClanTabPanel";
 import ClanList from "../Components/Clans/ClanList";
 import ClanTop from "../Components/Clans/ClanTop";
 
 function RouteClan() {
-    const [clanCreatorModalOpen, setClanCreatorModalOpen] = useState(false);
     const [loggedInUser, setLoggedInUser] = useState(null);
     const [isLoadingUser, setIsLoadingUser] = useState(true);
     const [tabValue, setTabValue] = useState(0);
@@ -69,15 +67,9 @@ function RouteClan() {
                         }
                     } /> :
                     <>
-                        <Modal
-                            open={clanCreatorModalOpen}
-                            onClose={() => setClanCreatorModalOpen(false)}
-                        >
-                            <ClanCreate user={loggedInUser} />
-                        </Modal>
                         <Alert severity="warning" sx={{ mb: 2 }}>
                             Due to official teams being live now, osu! inspector clans are now archived. <br/>
-                            You can still visit them here, but actions can no longer be performed. Statistics will not be updated anymore either.<br/>
+                            You can still visit them here, but actions can no longer be performed. Statistics will not be updated anymore either (last updated February 20, 2025).<br/>
                             Thanks for participating!
                         </Alert>
                         <Box sx={{

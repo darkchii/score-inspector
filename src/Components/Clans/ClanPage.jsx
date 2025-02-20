@@ -1,7 +1,7 @@
 import { Alert, Avatar, Box, Button, Card, CardContent, CardMedia, Chip, Container, Divider, FormControl, Grid2, MenuItem, Paper, Select, Stack, Tab, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
-import { FormatClanLog, GetClan, GetClanRecentScores } from "../../Helpers/Clan";
+import { FormatClanLog, GetClan } from "../../Helpers/Clan";
 import { GetFormattedName, GetLoginToken } from "../../Helpers/Account";
 import { showNotification } from "../../Helpers/Misc";
 import Loader from "../UI/Loader";
@@ -14,8 +14,6 @@ import moment from "moment";
 import OsuTooltip from "../OsuTooltip";
 import CLAN_STATS_MAP from "./ClanStatsMap";
 import { DiscordIcon } from "../Icons";
-import PlayerTooltip from "../UI/PlayerTooltip";
-import ScoreRow from "../ScoreRow";
 import PlayerLeaderboardItem from "../Leaderboards/PlayerLeaderboardItem";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
@@ -24,8 +22,6 @@ import { grey } from "@mui/material/colors";
 
 function ClanPage(props) {
     const [clanData, setClanData] = useState(null);
-    const [clanDataActivity, setClanDataActivity] = useState(null);
-    const [isLoadingActivity, setIsLoadingActivity] = useState(true);
     const [sorter, setSorter] = useState('average_pp');
     const navigate = useNavigate();
     const params = useParams();
