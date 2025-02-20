@@ -75,8 +75,10 @@ function RouteClan() {
                         >
                             <ClanCreate user={loggedInUser} />
                         </Modal>
-                        <Alert severity="info" sx={{ mb: 2 }}>
-                            Official clans/teams are in development by the osu! developers. Once released, the clans and the system here will cease to exist.
+                        <Alert severity="warning" sx={{ mb: 2 }}>
+                            Due to official teams being live now, osu! inspector clans are now archived. <br/>
+                            You can still visit them here, but actions can no longer be performed. Statistics will not be updated anymore either.<br/>
+                            Thanks for participating!
                         </Alert>
                         <Box sx={{
                             borderBottom: 1, borderColor: 'divider',
@@ -100,12 +102,7 @@ function RouteClan() {
                                         <Button
                                             onClick={() => navigate(`/clan/${loggedInUser.clan_member.clan.id}`)}
                                             variant='contained' color='primary' fullWidth>Go to {loggedInUser.clan_member.clan.name}</Button> :
-                                        (
-                                            loggedInUser ? <Button
-                                                onClick={() => setClanCreatorModalOpen(true)}
-                                                variant='contained' color='primary' fullWidth>Create a clan</Button> :
-                                                <></>
-                                        )
+                                        <></>
                                 }
 
                             </Box>
