@@ -54,7 +54,12 @@ export class OsuDb {
                     buffer.ReadByte();
                     let mode = buffer.ReadInt32();
                     buffer.ReadByte();
-                    let diff = buffer.ReadDouble();
+                    let diff;
+                    if(this.OsuVersion >= 20250107){
+                        diff = buffer.ReadFloat();
+                    }else{
+                        diff = buffer.ReadDouble();
+                    }
                     diffs[mode] = diff;
                 }
                 difficulties.push(diffs);
@@ -112,14 +117,5 @@ export class OsuDb {
         }
 
         this.AccountRank = buffer.ReadInt32();
-
-        // const beatmapCount = buffer.ReadInt32();
-        // for (let i = 0; i < beatmapCount; i++) {
-        //     const beatmap = new Beatmap();
-        //     await beatmap.Read(buffer);
-        //     this.Beatmaps.push(beatmap);
-        // }
-
-        // this.AccountRank = buffer.ReadInt32();
     }
 }
