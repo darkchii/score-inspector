@@ -176,6 +176,25 @@ class Mods {
         }
     }
 
+    static getClockRate(mods){
+        let rate = 1;
+        let freq = 1;
+        let tempo = 1;
+        for (const mod of mods.mods_data) {
+            if(Mods.isModSpeedChange(mod)){
+                let freqAdjust = 1;
+                let tempoAdjust = mod.settings?.speed_change ?? freqAdjust;
+
+                freq *= freqAdjust;
+                tempo *= tempoAdjust;
+            }
+        }
+
+        rate = freq * tempo;
+
+        return rate;
+    }
+
     static getModOriginalValue(beatmap, acronym, setting) {
 
         let originalValue;

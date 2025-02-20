@@ -159,13 +159,29 @@ function ScoreView(props) {
                                     }}>
                                         <div className='score-stats__group score-stats__group--stats'>
                                             <Typography variant='subtitle2'>Difficulty</Typography>
-                                            <div className='score-stats__group-row'><ScoreViewStat valueIcon={<StarIcon sx={{ fontSize: '1em' }} />} label='Aim Rating' value={`${formatNumber(scoreData.difficulty_data?.aim_difficulty ?? 0, 2)}`} small={true} /></div>
-                                            <div className='score-stats__group-row'><ScoreViewStat valueIcon={<StarIcon sx={{ fontSize: '1em' }} />} label='Speed Rating' value={`${formatNumber(scoreData.difficulty_data?.speed_difficulty ?? 0, 2)}`} small={true} /></div>
-                                            <div className='score-stats__group-row'><ScoreViewStat valueIcon={!Mods.hasMod(scoreData.score.mods, "FL") ? undefined : <StarIcon sx={{ fontSize: '1em' }} />} label='Flashlight Rating' irrelevant={!Mods.hasMod(scoreData.score.mods, "FL")} value={`${!Mods.hasMod(scoreData.score.mods, "FL") ? '-' : formatNumber(scoreData.difficulty_data?.flashlight_difficulty ?? 0, 2)}`} small={true} /></div>
+                                            <div className='score-stats__group score-stats__group--stats'>
+                                                <div className='score-stats__group-row'>
+                                                    <ScoreViewStat valueIcon={<StarIcon sx={{ fontSize: '1em' }} />} label='Aim Rating' value={`${formatNumber(scoreData.difficulty_data?.aim_difficulty ?? 0, 2)}`} small={true} />
+                                                    <ScoreViewStat valueIcon={<StarIcon sx={{ fontSize: '1em' }} />} label='Speed Rating' value={`${formatNumber(scoreData.difficulty_data?.speed_difficulty ?? 0, 2)}`} small={true} />
+                                                    <ScoreViewStat valueIcon={!Mods.hasMod(scoreData.score.mods, "FL") ? undefined : <StarIcon sx={{ fontSize: '1em' }} />} label='Flashlight Rating' irrelevant={!Mods.hasMod(scoreData.score.mods, "FL")} value={`${!Mods.hasMod(scoreData.score.mods, "FL") ? '-' : formatNumber(scoreData.difficulty_data?.flashlight_difficulty ?? 0, 2)}`} small={true} />
+                                                </div>
+                                            </div>
                                             <div className='score-stats__group-row'><ScoreViewStat label='Speed note count' value={`${formatNumber(scoreData.difficulty_data?.speed_note_count ?? 0, 2)}`} small={true} /></div>
-                                            <div className='score-stats__group-row'><ScoreViewStat label='Aim Difficult Strain Count' value={`${formatNumber(scoreData.difficulty_data?.aim_difficult_strain_count ?? 0, 2)}`} small={true} /></div>
-                                            <div className='score-stats__group-row'><ScoreViewStat label='Speed Difficult Strain Count' value={`${formatNumber(scoreData.difficulty_data?.speed_difficult_strain_count ?? 0, 2)}`} small={true} /></div>
+                                            <div className='score-stats__group-row'><ScoreViewStat label='Aim Difficult Slider Count' value={`${formatNumber(scoreData.difficulty_data?.aim_difficult_slider_count ?? 0, 2)}`} small={true} /></div>
+                                            <div className='score-stats__group score-stats__group--stats'>
+                                                <div className='score-stats__group-row'>
+                                                    <ScoreViewStat label='Aim Difficult Strain Count' value={`${formatNumber(scoreData.difficulty_data?.aim_difficult_strain_count ?? 0, 2)}`} small={true} />
+                                                    <ScoreViewStat label='Speed Difficult Strain Count' value={`${formatNumber(scoreData.difficulty_data?.speed_difficult_strain_count ?? 0, 2)}`} small={true} />
+                                                </div>
+                                            </div>
                                             <div className='score-stats__group-row'><ScoreViewStat label='Slider Factor' value={`${formatNumber(scoreData.difficulty_data?.slider_factor ?? 0, 3)}`} small={true} /></div>
+                                            <div className='score-stats__group score-stats__group--stats'>
+                                                <div className='score-stats__group-row'>
+                                                    <ScoreViewStat label='Window Great' value={`${formatNumber(scoreData.score.recalc.live.greatHitWindow ?? 0, 1)}`} small={true} />
+                                                    <ScoreViewStat label='Window Ok' value={`${formatNumber(scoreData.score.recalc.live.okHitWindow ?? 0, 1)}`} small={true} />
+                                                    <ScoreViewStat label='Window Meh' value={`${formatNumber(scoreData.score.recalc.live.mehHitWindow ?? 0, 1)}`} small={true} />
+                                                </div>
+                                            </div>
                                             {
                                                 (scoreData.difficulty_data?.is_legacy) ?
                                                     <>
