@@ -7,8 +7,6 @@ import IMG_SVG_GRADE_B from "../Assets/Grades/Grade-B.svg?url";
 import IMG_SVG_GRADE_C from "../Assets/Grades/Grade-C.svg?url";
 import IMG_SVG_GRADE_D from "../Assets/Grades/Grade-D.svg?url";
 
-import IMG_CLANS_BG from "../Assets/Other/clans.jpg";
-
 import IMG_TRIANGLES from "../Assets/Triangles.svg?url";
 
 import PNG_GUEST from "../Assets/Guest.png";
@@ -95,7 +93,6 @@ export {
     IMG_TRIANGLES,
     PNG_GUEST,
     PNG_LEVEL_BADGE,
-    IMG_CLANS_BG,
     PNG_MOD_EXTENDER,
     getFlagIcon
 };
