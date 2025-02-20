@@ -19,8 +19,6 @@ import TodayTopPlayers from '../Components/TodayTopPlayers';
 import BetterAlert from '../Components/UI/BetterAlert';
 import Error from '../Components/UI/Error';
 import StatCard from '../Components/UI/StatCard';
-import { IMG_CLANS_BG } from '../Helpers/Assets';
-import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
 momentDurationFormatSetup(moment);
@@ -38,7 +36,6 @@ function RouteIndex() {
     const [serverInfo, setServerInfo] = useState(null);
     const [todayData, setTodayData] = useState(null);
     const [visitorStats, setVisitorStats] = useState(null);
-    const [isHoveringClansButton, setIsHoveringClansButton] = useState(false);
     const [isHoveringHelpButton, setIsHoveringHelpButton] = useState(false);
 
     useEffect(() => {

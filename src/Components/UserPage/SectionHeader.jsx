@@ -71,20 +71,6 @@ function SectionHeader(props) {
                             <Grid2 size={8.5}>
                                 <Stack direction='row' spacing={1}>
                                     <Typography variant='h4'>
-                                        {
-                                            props.user.inspector_user?.clan_member && !props.user.inspector_user?.clan_member.pending ?
-                                                <span><VLink
-                                                    // href={`/clan/${props.user.inspector_user?.clan_member.clan.tag}`}
-                                                    to={`/clan/${props.user.inspector_user?.clan_member.clan.id}`}
-                                                    style={{
-                                                        color: `#${props.user.inspector_user?.clan_member.clan.color}`,
-                                                        fontWeight: 'bold',
-                                                        textDecoration: 'none'
-                                                    }}>
-                                                    {`[${props.user.inspector_user?.clan_member.clan.tag}] `}
-                                                </VLink></span>
-                                                : null
-                                        }
                                         {props.user.osu.username}{
                                             props.user.inspector_user !== undefined ? <>
                                                 {

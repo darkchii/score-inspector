@@ -92,11 +92,6 @@ function PlayerCard(props) {
                                                 alt={props.user.osu?.country_code} 
                                                 style={{ height: '1em', borderRadius: '5px'}} 
                                             />
-                                            {
-                                                props.user.inspector_user?.clan_member && !props.user.inspector_user?.clan_member.pending ? 
-                                                    <span><b style={{color: `#${props.user.inspector_user?.clan_member.clan.color}` }}>{`[${props.user.inspector_user?.clan_member.clan.tag}] `}</b></span>
-                                                : null
-                                            }
                                             {props.user.osu?.username}
                                         </Typography>
                                         {
