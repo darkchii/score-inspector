@@ -163,11 +163,6 @@ function PlayerLeaderboardItem(props) {
                 }}>
                     <Stack direction='row' spacing={1} alignItems='center'>
                         <Typography variant='body1' noWrap>
-                            {
-                                inspector_user?.clan_member && !inspector_user?.clan_member.pending ?
-                                    <span><b style={{ color: `#${inspector_user?.clan_member.clan.color}` }}>{`[${inspector_user?.clan_member.clan.tag}] `}</b></span>
-                                    : null
-                            }
                             {base_user?.username ?? 'Unknown'}
                         </Typography>
                         {GetRoleIcons(inspector_user?.roles ?? [])}

@@ -56,10 +56,6 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
     scores = _scores;
     data.performance = _performance;
 
-    console.log('------------ PERFORMANCE ------------');
-    console.log(_performance);
-    console.log('------------------------------------');
-
     onScoreProcessUpdate('Misc data');
     await sleep(FEEDBACK_SLEEP_TIME);
     for (const score of scores) {
@@ -77,9 +73,6 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
 
         data.legacy_scores += score.beatmap.difficulty_data?.is_legacy ? 1 : 0;
     }
-
-    //print all legacy scores as a array
-    console.log('Legacy scores:', scores.filter(score => score.beatmap.difficulty_data?.is_legacy));
 
     await sleep(FEEDBACK_SLEEP_TIME);
     onScoreProcessUpdate('Average data');
@@ -149,7 +142,6 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
     onScoreProcessUpdate('Rate change spread');
     await sleep(FEEDBACK_SLEEP_TIME);
     data.averageRateChangeSpread = getRateChangeSpread(scores);
-    console.log(data.averageRateChangeSpread);
 
     onScoreProcessUpdate('Latest scores');
     await sleep(FEEDBACK_SLEEP_TIME);
@@ -492,7 +484,6 @@ async function getDetailedData(data, scores) {
     detailed_data.rate_change_to_stars_spread = getRateChangeToStarsSpread(scores);
     detailed_data.mod_spread = getModSpread(scores);
 
-    console.log(detailed_data);
     return detailed_data;
 }
 
@@ -577,8 +568,6 @@ function getModSpread(scores) {
 
     const values = {};
 
-    console.log(mods);
-
     mods.mods_data.forEach(mod => {
         values[mod.acronym] = {
             count: 0,
@@ -590,7 +579,8 @@ function getModSpread(scores) {
         score.mods.mods_data.forEach(mod => {
             if (mod.acronym === 'NM') return;
             if(!values[mod.acronym]){
-                console.log(score);
+                console.error(`Mod ${mod.acronym} not found in mods list`);
+                console.error(score);
             }
             values[mod.acronym].count++;
         });

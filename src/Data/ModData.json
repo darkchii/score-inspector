@@ -134,6 +134,12 @@
                 "Type": "DifficultyIncrease",
                 "Settings": [
                     {
+                        "Name": "fail_on_slider_tail",
+                        "Type": "boolean",
+                        "Label": "Also fail when missing a slider tail",
+                        "Description": ""
+                    },
+                    {
                         "Name": "restart",
                         "Type": "boolean",
                         "Label": "Restart on fail",
@@ -533,8 +539,8 @@
                     {
                         "Name": "reflection",
                         "Type": "string",
-                        "Label": "Mirrored axes",
-                        "Description": "Choose which axes objects are mirrored over."
+                        "Label": "Flipped axes",
+                        "Description": ""
                     }
                 ],
                 "IncompatibleMods": [
@@ -1216,34 +1222,34 @@
                 "AlwaysValidForSubmission": false
             },
             {
-              "Acronym": "BM",
-              "Name": "Bloom",
-              "Description": "The cursor blooms into.. a larger cursor!",
-              "Type": "Fun",
-              "Settings": [
-                {
-                  "Name": "max_size_combo_count",
-                  "Type": "number",
-                  "Label": "Max size at combo",
-                  "Description": "The combo count at which the cursor reaches its maximum size"
-                },
-                {
-                  "Name": "max_cursor_size",
-                  "Type": "number",
-                  "Label": "Final size multiplier",
-                  "Description": "The multiplier applied to cursor size when combo reaches maximum"
-                }
-              ],
-              "IncompatibleMods": [
-                "FL",
-                "NS",
-                "TD"
-              ],
-              "RequiresConfiguration": false,
-              "UserPlayable": true,
-              "ValidForMultiplayer": true,
-              "ValidForMultiplayerAsFreeMod": true,
-              "AlwaysValidForSubmission": false
+                "Acronym": "BM",
+                "Name": "Bloom",
+                "Description": "The cursor blooms into.. a larger cursor!",
+                "Type": "Fun",
+                "Settings": [
+                    {
+                        "Name": "max_size_combo_count",
+                        "Type": "number",
+                        "Label": "Max size at combo",
+                        "Description": "The combo count at which the cursor reaches its maximum size"
+                    },
+                    {
+                        "Name": "max_cursor_size",
+                        "Type": "number",
+                        "Label": "Final size multiplier",
+                        "Description": "The multiplier applied to cursor size when combo reaches maximum"
+                    }
+                ],
+                "IncompatibleMods": [
+                    "FL",
+                    "NS",
+                    "TD"
+                ],
+                "RequiresConfiguration": false,
+                "UserPlayable": true,
+                "ValidForMultiplayer": true,
+                "ValidForMultiplayerAsFreeMod": true,
+                "AlwaysValidForSubmission": false
             },
             {
                 "Acronym": "TD",

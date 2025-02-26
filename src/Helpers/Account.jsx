@@ -28,26 +28,6 @@ export function GetFormattedName(inspector_user, settings = null) {
         name = 'Guest';
     }
 
-    // name = <span><b>{`[TEST]`}</b> {name}</span>;
-    // if(inspector_user.clan !== null && inspector_user.clan !== undefined && inspector_user.clan.tag !== null && inspector_user.clan.tag !== undefined && inspector_user.clan.tag !== ''){
-    //     name = <span><b style={{
-    //         color: `#${inspector_user.clan.color ?? '000000'}`,
-    //     }}>{`[${inspector_user.clan.tag}]`}</b> {name}</span>;
-    // }
-
-    if (inspector_user.clan_member &&
-        inspector_user.clan_member.clan !== null &&
-        inspector_user.clan_member.clan !== undefined &&
-        inspector_user.clan_member.clan.tag !== null &&
-        inspector_user.clan_member.clan.tag !== undefined &&
-        inspector_user.clan_member.clan.tag !== '' &&
-        !inspector_user.clan_member.pending) {
-        name = <span><b style={{
-            color: `#${inspector_user.clan_member.clan.color ?? '000000'}`,
-        }}>{`[${inspector_user.clan_member.clan.tag}]`}</b> {name}</span>;
-    }
-
-
     if (inspector_user.roles !== null && typeof inspector_user.roles === 'string') {
         inspector_user.roles = JSON.parse(inspector_user.roles);
     }

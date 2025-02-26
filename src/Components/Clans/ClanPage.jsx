@@ -1,12 +1,11 @@
-import { Alert, Avatar, Box, Button, Card, CardContent, CardMedia, Chip, Container, Divider, FormControl, Grid2, IconButton, Menu, MenuItem, Modal, Paper, Select, Stack, Tab, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableHead, TableRow, TextField, Typography, useTheme } from "@mui/material";
+import { Alert, Avatar, Box, Button, Card, CardContent, CardMedia, Chip, Container, Divider, FormControl, Grid2, MenuItem, Paper, Select, Stack, Tab, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
-import { AcceptJoinRequestClan, DeleteClan, FormatClanLog, GetClan, GetClanRecentScores, JoinRequestClan, LeaveClan, RejectJoinRequestClan, RemoveClanMember, TransferClanOwnership, UpdateClanModerator } from "../../Helpers/Clan";
+import { FormatClanLog, GetClan } from "../../Helpers/Clan";
 import { GetFormattedName, GetLoginToken } from "../../Helpers/Account";
-import { MODAL_STYLE, showNotification } from "../../Helpers/Misc";
+import { showNotification } from "../../Helpers/Misc";
 import Loader from "../UI/Loader";
 import { Helmet } from "react-helmet";
-import ClanEdit from "./ClanEdit";
 import OsuTabs from "../OsuTabs";
 import ClanTabPanel from "./ClanTabPanel";
 import GlowBarText from "../UI/GlowBarText";
@@ -15,58 +14,19 @@ import moment from "moment";
 import OsuTooltip from "../OsuTooltip";
 import CLAN_STATS_MAP from "./ClanStatsMap";
 import { DiscordIcon } from "../Icons";
-import PlayerTooltip from "../UI/PlayerTooltip";
-import ScoreRow from "../ScoreRow";
 import PlayerLeaderboardItem from "../Leaderboards/PlayerLeaderboardItem";
-import SyncIcon from '@mui/icons-material/Sync';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import SecurityIcon from '@mui/icons-material/Security';
-import DoneIcon from '@mui/icons-material/Done';
-import ClearIcon from '@mui/icons-material/Clear';
-import CancelIcon from '@mui/icons-material/Cancel';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-import { blue, grey } from "@mui/material/colors";
+import { grey } from "@mui/material/colors";
 
 function ClanPage(props) {
-    const [clanEditModalOpen, setClanEditModalOpen] = useState(false);
-    const [clanRemoveModalOpen, setClanRemoveModalOpen] = useState(false);
     const [clanData, setClanData] = useState(null);
-    const [clanDataActivity, setClanDataActivity] = useState(null);
-    const [isLoadingActivity, setIsLoadingActivity] = useState(true);
     const [sorter, setSorter] = useState('average_pp');
-    const [anchorEl, setAnchorEl] = useState(null);
-    const [anchorData, setAnchorData] = useState(null);
     const navigate = useNavigate();
-    const theme = useTheme();
     const params = useParams();
     const [activeTab, setActiveTab] = useState(0);
-    const [isInClan, setIsInClan] = useState(false); //even if pending,
     const [hasModeratorPermissions, setHasModeratorPermissions] = useState(false);
-    const [hasOwnerPermissions, setHasOwnerPermissions] = useState(false);
-
-    const handleDropdownClick = (event, data) => {
-        setAnchorEl(event.currentTarget);
-        setAnchorData(data);
-    };
-
-    const handleDropdownClose = () => {
-        setAnchorEl(null);
-    };
-
-    useEffect(() => {
-        if (!clanData) return;
-
-        (async () => {
-            setIsLoadingActivity(true);
-            //request recent scores
-            const scores = await GetClanRecentScores(props.id);
-            if (scores && scores.length > 0) {
-                setClanDataActivity(scores);
-            }
-            setIsLoadingActivity(false);
-        })();
-    }, [clanData]);
 
     const loadClan = (id) => {
         setClanData(null);
@@ -82,11 +42,7 @@ function ClanPage(props) {
 
                 //check if the user has moderator permissions
                 if (props.me?.clan_member?.clan?.id === data.clan.id) {
-                    setHasOwnerPermissions(props.me.osu_id === data.clan.owner);
                     setHasModeratorPermissions(props.me.clan_member.is_moderator === true || props.me.osu_id === data.clan.owner);
-
-                    //check the actual clan member list to see if the user is in the clan (since leaving doesn't update the local user object, so it still thinks it's in the clan)
-                    setIsInClan(data.members.find(m => m.user?.alt?.user_id === props.me.osu_id || m.user?.osu?.id === props.me?.osu_id) !== undefined || props.me?.clan_member?.pending);
                 }
             } catch (err) {
                 showNotification('Error', 'An error occurred while fetching the clan data.', 'error');
@@ -94,152 +50,6 @@ function ClanPage(props) {
                 window.onTitleChange('Clans');
             }
         })();
-    }
-
-    const removeClan = () => {
-        (async () => {
-            try {
-                if (!hasOwnerPermissions) throw new Error('You do not have permission to remove this clan.');
-                const data = {
-                    id: clanData.clan.id,
-                    user: {
-                        id: props.me?.osu_id,
-                        token: await GetLoginToken(),
-                    }
-                }
-                const response = await DeleteClan(data);
-                if (response.error) {
-                    showNotification('Error', response.error, 'error');
-                } else {
-                    showNotification('Success', 'Clan removed successfully.', 'success');
-                    window.location.href = '/clan';
-                }
-            } catch (err) {
-                showNotification('Error', 'An error occurred while removing the clan.', 'error');
-                showNotification('Error', err.message, 'error');
-            }
-        })();
-    }
-
-    const eventRequestJoinClan = async () => {
-        try {
-            const response = await JoinRequestClan(props.id, props.me.osu_id, await GetLoginToken());
-            if (response.error) {
-                showNotification('Error', response.error, 'error');
-            } else {
-                showNotification('Success', 'Request sent successfully.', 'success');
-                await loadClan(props.id, true);
-                await props.onRefreshUser();
-            }
-        } catch (err) {
-            console.error(err);
-            showNotification('Error', 'An error occurred while requesting to join the clan.', 'error');
-        }
-    }
-
-    const eventLeaveClan = async () => {
-        try {
-            const response = await LeaveClan(props.me.osu_id, await GetLoginToken(), props.id);
-            if (response.error) {
-                showNotification('Error', response.error, 'error');
-            } else {
-                showNotification('Success', 'Left the clan.', 'success');
-                await loadClan(props.id, true);
-                await props.onRefreshUser();
-            }
-        } catch (err) {
-            console.error(err);
-            showNotification('Error', 'An error occurred while leaving the clan.', 'error');
-        }
-    }
-
-    const eventAcceptJoinRequest = async (request) => {
-        try {
-            if (!hasModeratorPermissions) throw new Error('You do not have permission to accept join requests.');
-            const user_id = request.user?.osu?.id ?? request.user?.alt?.user_id;
-            if (!user_id) return showNotification('Error', 'No user data found...', 'error');
-            const response = await AcceptJoinRequestClan(props.me.osu_id, user_id, await GetLoginToken(), clanData.clan.id);
-            if (response.error) {
-                showNotification('Error', response.error, 'error');
-            } else {
-                showNotification('Success', 'Request accepted successfully.', 'success');
-                await loadClan(props.id, true);
-            }
-        } catch (err) {
-            console.error(err);
-            showNotification('Error', 'An error occurred while accepting the join request.', 'error');
-        }
-    }
-
-    const eventRejectJoinRequest = async (request) => {
-        try {
-            if (!hasModeratorPermissions) throw new Error('You do not have permission to reject join requests.');
-            const user_id = request.user?.osu?.id ?? request.user?.alt?.user_id;
-            if (!user_id) return showNotification('Error', 'No user data found...', 'error');
-            const response = await RejectJoinRequestClan(props.me.osu_id, user_id, await GetLoginToken(), clanData.clan.id);
-            if (response.error) {
-                showNotification('Error', response.error, 'error');
-            } else {
-                showNotification('Success', 'Request rejected successfully.', 'success');
-                await loadClan(props.id, true);
-            }
-        } catch (err) {
-            console.error(err);
-            showNotification('Error', 'An error occurred while rejecting the join request.', 'error');
-        }
-    }
-
-    const eventRemoveMember = async (user_id) => {
-        try {
-            if (!hasModeratorPermissions) throw new Error('You do not have permission to remove members.');
-            const response = await RemoveClanMember(props.me.osu_id, user_id, await GetLoginToken(), clanData.clan.id);
-            if (response.error) {
-                showNotification('Error', response.error, 'error');
-            } else {
-                showNotification('Success', 'Member removed successfully.', 'success');
-                await loadClan(props.id, true);
-            }
-        } catch (err) {
-            console.error(err);
-            showNotification('Error', 'An error occurred while removing the member.', 'error');
-        }
-    }
-
-    const eventTransferOwnership = async (user_id) => {
-        try {
-            if (!hasOwnerPermissions) throw new Error('You do not have permission to transfer ownership.');
-            const response = await TransferClanOwnership(props.me.osu_id, user_id, await GetLoginToken(), clanData.clan.id,);
-            if (response.error) {
-                showNotification('Error', response.error, 'error');
-            } else {
-                showNotification('Success', 'Clan ownership has been transferred! There is a cooldown of 30 days before this clan can change owner again.', 'success');
-                await loadClan(props.id, true);
-                await props.onRefreshUser();
-            }
-        } catch (err) {
-            showNotification('Error', 'An error occurred while transferring ownership.', 'error');
-            showNotification('Error', err.message, 'error');
-        }
-    }
-
-    const eventChangeModeratorStatus = async (user_id) => {
-        //simply toggle the moderator status
-        try {
-            if (!hasOwnerPermissions) throw new Error('You do not have permission to change moderator status.');
-            const member = clanData.members.find(m => m.user.alt.user_id === user_id);
-            if (!member) return showNotification('Error', 'No member data found...', 'error');
-            const response = await UpdateClanModerator(props.me.osu_id, await GetLoginToken(), clanData.clan.id, user_id, !member.is_moderator);
-            if (response.error) {
-                showNotification('Error', response.error, 'error');
-            } else {
-                showNotification('Success', 'Moderator status updated successfully.', 'success');
-                await loadClan(props.id, true);
-            }
-        } catch (err) {
-            showNotification('Error', 'An error occurred while changing the moderator status.', 'error');
-            showNotification('Error', err.message, 'error');
-            console.error(err);
-        }
     }
 
     useEffect(() => {
@@ -296,32 +106,6 @@ function ClanPage(props) {
                         </style>
                     </Helmet> : <></>
             }
-            <Modal
-                open={clanEditModalOpen}
-                onClose={() => setClanEditModalOpen(false)}
-            >
-                <ClanEdit user={props.me} clan={clanData} />
-            </Modal>
-            <Modal
-                open={clanRemoveModalOpen}
-                onClose={() => setClanRemoveModalOpen(false)}
-            >
-                <Card sx={MODAL_STYLE}>
-                    <CardContent>
-                        <Typography>Are you sure you want to remove your clan?</Typography>
-                        <Button
-                            variant='contained'
-                            color='error'
-                            onClick={removeClan}
-                        >Delete</Button>
-                        <Button
-                            variant='contained'
-                            color='primary'
-                            onClick={() => setClanRemoveModalOpen(false)}
-                        >Cancel</Button>
-                    </CardContent>
-                </Card>
-            </Modal>
             <Container>
                 <Card>
                     {
@@ -399,80 +183,6 @@ function ClanPage(props) {
                         </Paper>
 
                         {/* CLAN NAME CONTAINER END */}
-
-                        {/* CLAN BUTTONS START */}
-                        {
-                            props.me ?
-                                <Paper
-                                    elevation={6}
-                                >
-                                    <Box sx={{
-                                        display: 'flex',
-                                        pt: 2,
-                                        pb: 2,
-                                        justifyContent: 'space-between',
-                                    }}>
-                                        <Box sx={{
-                                            display: 'flex'
-                                        }}>
-                                            {
-                                                hasOwnerPermissions ?
-                                                    <>
-                                                        <Button
-                                                            sx={{ mr: 1 }}
-                                                            variant='contained'
-                                                            color='primary'
-                                                            onClick={() => setClanEditModalOpen(true)}
-                                                        >Settings</Button>
-                                                        <Button
-                                                            sx={{ mr: 1 }}
-                                                            variant='contained'
-                                                            color='error'
-                                                            onClick={() => setClanRemoveModalOpen(true)}
-                                                        >Delete</Button>
-                                                    </>
-                                                    : <></>
-                                            }
-                                        </Box>
-
-                                        <Box sx={{
-                                            display: 'flex'
-                                        }}>
-                                            {
-                                                props.me
-                                                    // && props.me.clan_member?.clan?.owner !== props.me?.osu_id
-                                                    ?
-                                                    (isInClan && props.me?.clan_member ?
-                                                        <Button
-                                                            sx={{ mr: 1 }}
-                                                            onClick={eventLeaveClan}
-                                                            variant='contained'
-                                                            color='error'
-                                                        >
-                                                            {
-                                                                props.me.clan_member.pending ?
-                                                                    'Cancel request' :
-                                                                    'Leave'
-                                                            }
-                                                        </Button> :
-                                                        <Button
-                                                            sx={{ mr: 1 }}
-                                                            onClick={eventRequestJoinClan}
-                                                            variant='contained'
-                                                            disabled={clanData.clan.disable_requests || (
-                                                                props.me.clan_member ? props.me.clan_member.clan.id !== clanData.clan.id : false
-                                                            )}
-                                                        >
-                                                            Request to join
-                                                        </Button>
-                                                    )
-                                                    : <></>
-                                            }
-                                        </Box>
-                                    </Box>
-                                </Paper> : <></>
-                        }
-                        {/* CLAN BUTTONS END */}
 
                         {/* CLAN CATEGORY TABS START*/}
                         <OsuTabs
@@ -620,42 +330,7 @@ function ClanPage(props) {
                                             </Grid2>
                                             <Grid2 size={{ xs: 12, sm: 8 }}>
                                                 <GlowBarText sx={{ pb: 1 }}><Typography variant='body1'>Recent Activity</Typography></GlowBarText>
-                                                {
-                                                    clanDataActivity?.length > 0 ?
-                                                        <>
-                                                            <Stack direction="column" justifyContent="center" alignItems="center" sx={{ mt: 2 }} spacing={0.5}>
-                                                                {
-                                                                    clanDataActivity.map((score, i) => {
-                                                                        return (
-                                                                            <Box key={i} sx={{
-                                                                                width: '100%',
-                                                                                display: 'flex',
-                                                                                gap: '0.5em',
-                                                                            }}>
-                                                                                {/* <Box sx={{
-                                                                                    display: 'flex',
-                                                                                }}>
-                                                                                    Score by <span style={{ marginLeft: '1em' }}>{GetFormattedName(score.inspector_user)}</span>
-                                                                                </Box> */}
-                                                                                <Link to={`/user/${score.user?.user_id}`} style={{ textDecoration: 'none' }}>
-                                                                                    <PlayerTooltip user_id={score.user?.user_id}>
-                                                                                        <Avatar src={`https://a.ppy.sh/${score.user?.user_id}`} variant='rounded' />
-                                                                                    </PlayerTooltip>
-                                                                                </Link>
-                                                                                <ScoreRow data={{
-                                                                                    score: score,
-                                                                                }} small={true} />
-                                                                            </Box>
-                                                                        )
-                                                                    })
-                                                                }
-                                                            </Stack>
-                                                        </> :
-                                                        (isLoadingActivity ?
-                                                            <Loader height="200px" /> :
-                                                            //no scores
-                                                            <Typography variant='body2'>No recent activity</Typography>)
-                                                }
+                                                <Typography variant='body2'>Not loading these to preserve performance for the rest of the site.</Typography>
                                             </Grid2>
                                         </Grid2>
                                     </ClanTabPanel>
@@ -744,54 +419,6 @@ function ClanPage(props) {
                                                                             {clanRoleIcon}
                                                                         </OsuTooltip>
                                                                     </Box>
-                                                                    {
-                                                                        hasModeratorPermissions ?
-                                                                            <Box sx={{
-                                                                                ml: 1
-                                                                            }}>
-                                                                                {/* show a button with 3 dots to open a dropdown */}
-                                                                                <IconButton
-                                                                                    disabled={_user_id === clanData.clan.owner}
-                                                                                    onClick={(e) => handleDropdownClick(e, _user_id)}
-                                                                                >
-                                                                                    <MoreHorizIcon fontSize="inherit" />
-                                                                                </IconButton>
-                                                                                {/* dropdown */}
-                                                                                <Menu
-                                                                                    open={Boolean(anchorEl)}
-                                                                                    onClose={handleDropdownClose}
-                                                                                    keepMounted
-                                                                                    anchorEl={anchorEl}
-                                                                                >
-                                                                                    <MenuItem
-                                                                                        onClick={() => { eventRemoveMember(anchorData) }}
-                                                                                    >
-                                                                                        <CancelIcon sx={{ mr: 1.75 }} color="error" /> Kick
-                                                                                    </MenuItem>
-                                                                                    <OsuTooltip title='Moderators can accept/reject join requests and kick members.'>
-                                                                                        <MenuItem
-                                                                                            disabled={clanData.clan.owner !== props.me?.osu_id}
-                                                                                            onClick={() => { eventChangeModeratorStatus(anchorData) }}
-                                                                                        >
-                                                                                            <SyncIcon sx={{ mr: 1.75, color: blue[500] }} /> {member.is_moderator ? 'Demote to member' : 'Promote to moderator'}
-                                                                                        </MenuItem>
-                                                                                    </OsuTooltip>
-                                                                                    <OsuTooltip title='There is a 30 day cooldown before ownership can be transferred again.'>
-                                                                                        <MenuItem
-                                                                                            disabled={clanData.clan.owner !== props.me?.osu_id}
-                                                                                            onClick={() => { eventTransferOwnership(anchorData) }}
-                                                                                        >
-                                                                                            <SyncIcon sx={{ mr: 1.75, color: blue[500] }} /> Transfer ownership
-                                                                                        </MenuItem>
-                                                                                    </OsuTooltip>
-                                                                                    <Divider />
-                                                                                    <MenuItem disabled={true}>
-                                                                                        Be careful. These changes are permanent.
-                                                                                    </MenuItem>
-                                                                                </Menu>
-                                                                            </Box>
-                                                                            : <></>
-                                                                    }
                                                                 </Box>
                                                             </>
                                                         )
@@ -830,44 +457,6 @@ function ClanPage(props) {
                                                                                         }}
                                                                                     />
                                                                                 </Box>
-                                                                                {
-                                                                                    hasModeratorPermissions ?
-                                                                                        <Box>
-                                                                                            <OsuTooltip title='Accept'>
-                                                                                                <IconButton
-                                                                                                    onClick={() => eventAcceptJoinRequest(request)}
-                                                                                                    color='primary'
-                                                                                                    size="small"
-                                                                                                    sx={{
-                                                                                                        backgroundColor: theme.palette.success.main,
-                                                                                                        color: theme.palette.success.contrastText,
-                                                                                                        "&:hover": { backgroundColor: `${theme.palette.success.main}90` },
-                                                                                                        m: 1,
-                                                                                                        p: 1
-                                                                                                    }}
-                                                                                                >
-                                                                                                    <DoneIcon fontSize="inherit" />
-                                                                                                </IconButton>
-                                                                                            </OsuTooltip>
-                                                                                            <OsuTooltip title='Reject'>
-                                                                                                <IconButton
-                                                                                                    onClick={() => eventRejectJoinRequest(request)}
-                                                                                                    color='error'
-                                                                                                    size="small"
-                                                                                                    sx={{
-                                                                                                        backgroundColor: theme.palette.error.main,
-                                                                                                        color: theme.palette.error.contrastText,
-                                                                                                        "&:hover": { backgroundColor: `${theme.palette.error.main}90` },
-                                                                                                        m: 1,
-                                                                                                        p: 1
-                                                                                                    }}
-                                                                                                >
-                                                                                                    <ClearIcon fontSize="inherit" />
-                                                                                                </IconButton>
-                                                                                            </OsuTooltip>
-                                                                                        </Box>
-                                                                                        : <></>
-                                                                                }
                                                                             </Box>
                                                                         )
                                                                     }) :
