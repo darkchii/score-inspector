@@ -1,7 +1,7 @@
 import { Alert, Box, Button, Card, CardActionArea, CardContent, CircularProgress, Divider, Grid2, Link, Modal, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from '@mui/material';
 import { Link as RouterLink, useSearchParams } from 'react-router';
 import { useEffect, useState } from 'react';
-import { formatNumberAsSize, GetAPI, MODAL_STYLE, parseReadableStreamToJson, showNotification } from '../Helpers/Misc';
+import { formatNumber, formatNumberAsSize, GetAPI, MODAL_STYLE, parseReadableStreamToJson, showNotification } from '../Helpers/Misc';
 import { GetFormattedName, GetLoginIDUnsafe, GetTopVisited, LoginUser } from '../Helpers/Account';
 import axios from 'axios';
 import moment from 'moment';
@@ -125,11 +125,15 @@ function RouteIndex() {
                         </Modal>
                     </> : <></>
             }
-            <Grid2 sx={{ pb: 1 }}>
-                <Alert severity="warning">
-                    Clans are archived now. Head to the clans page for more info.
-                </Alert>
-            </Grid2>
+            {
+                serverInfo?.database?.alt?.modded_sr_recalc_count > 0 ?
+                    <Grid2 sx={{ pb: 1 }}>
+                        <Alert severity="warning">
+                            {formatNumber(serverInfo?.database?.alt?.modded_sr_recalc_count)} scores are in queue for star rating recalculations. While processing, star rating and performance points may be (very) inaccurate.
+                        </Alert>
+                    </Grid2>
+                    : <> </>
+            }
             <Grid2 sx={{ pb: 1 }}>
                 <Alert severity="info">
                     Use this <Link href='https://github.com/darkchii/score-inspector-extension' target='_blank'>browser extension</Link> to integrate extra statistics into the official osu! website
