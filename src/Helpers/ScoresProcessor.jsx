@@ -193,6 +193,7 @@ export function prepareScore(score, user = null) {
         score.beatmap.difficulty_data.slider_factor = parseFloat(score.beatmap.difficulty_data.slider_factor ?? 1);
         score.beatmap.difficulty_data.speed_note_count = parseFloat(score.beatmap.difficulty_data.speed_note_count ?? 0);
 
+        score.beatmap.difficulty_data.aim_difficult_slider_count = parseFloat(score.beatmap.difficulty_data.aim_difficult_slider_count ?? 0);
         score.beatmap.difficulty_data.aim_difficult_strain_count = parseFloat(score.beatmap.difficulty_data.aim_difficult_strain_count ?? 0);
         score.beatmap.difficulty_data.speed_difficult_strain_count = parseFloat(score.beatmap.difficulty_data.speed_difficult_strain_count ?? 0);
 
@@ -380,8 +381,9 @@ function applyModdedAttributes(beatmap, parsed_mods) {
 
         let original_ar = beatmap.ar;
         if (Mods.hasMod(parsed_mods, "DA") && Mods.containsSetting(parsed_mods, "approach_rate")) {
-            original_ar = Mods.getSetting(parsed_mods, "DA", "approach_rate");
+            original_ar = Mods.getModSetting(parsed_mods, "DA", "approach_rate");
         }
+        original_ar = Number(original_ar);
 
         ar = original_ar * ar_multiplier;
 
@@ -414,6 +416,7 @@ function applyModdedAttributes(beatmap, parsed_mods) {
         if (Mods.hasMod(parsed_mods, "DA") && Mods.containsSetting(parsed_mods, "circle_size")) {
             original_cs = Mods.getModSetting(parsed_mods, "DA", "circle_size");
         }
+        original_cs = Number(original_cs);
 
         cs = original_cs * cs_multiplier;
 
@@ -437,6 +440,7 @@ function applyModdedAttributes(beatmap, parsed_mods) {
         if (Mods.hasMod(parsed_mods, "DA") && Mods.containsSetting(parsed_mods, "overall_difficulty")) {
             original_od = Mods.getModSetting(parsed_mods, "DA", "overall_difficulty");
         }
+        original_od = Number(original_od);
 
         od = original_od * od_multiplier;
         odms = od0_ms - Math.ceil(od_ms_step * od);
@@ -463,6 +467,7 @@ function applyModdedAttributes(beatmap, parsed_mods) {
         if (Mods.hasMod(parsed_mods, "DA") && Mods.containsSetting(parsed_mods, "drain_rate")) {
             original_hp = Mods.getModSetting(parsed_mods, "DA", "drain_rate");
         }
+        original_hp = Number(original_hp);
 
         hp = original_hp * hp_multiplier;
 

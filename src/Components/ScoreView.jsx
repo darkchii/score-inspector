@@ -34,6 +34,8 @@ function ScoreView(props) {
                 score.score = (real_score * (score.accuracy * 0.01)).toFixed(0);
             }
         }
+
+        console.log(score);
         return score;
     }
 
@@ -161,8 +163,8 @@ function ScoreView(props) {
                                             <Typography variant='subtitle2'>Difficulty</Typography>
                                             <div className='score-stats__group score-stats__group--stats'>
                                                 <div className='score-stats__group-row'>
-                                                    <ScoreViewStat valueIcon={<StarIcon sx={{ fontSize: '1em' }} />} label='Aim Rating' value={`${formatNumber(scoreData.difficulty_data?.aim_difficulty ?? 0, 2)}`} small={true} />
-                                                    <ScoreViewStat valueIcon={<StarIcon sx={{ fontSize: '1em' }} />} label='Speed Rating' value={`${formatNumber(scoreData.difficulty_data?.speed_difficulty ?? 0, 2)}`} small={true} />
+                                                    <ScoreViewStat valueIcon={Mods.hasMod(scoreData.score.mods, "AP") ? undefined : <StarIcon sx={{ fontSize: '1em' }} />} label='Aim Rating' irrelevant={Mods.hasMod(scoreData.score.mods, "AP")} value={`${Mods.hasMod(scoreData.score.mods, "AP") ? '-' : formatNumber(scoreData.difficulty_data?.aim_difficulty ?? 0, 2)}`} small={true} />
+                                                    <ScoreViewStat valueIcon={Mods.hasMod(scoreData.score.mods, "RX") ? undefined : <StarIcon sx={{ fontSize: '1em' }} />} label='Speed Rating' irrelevant={Mods.hasMod(scoreData.score.mods, "RX")} value={`${Mods.hasMod(scoreData.score.mods, "RX") ? '-' : formatNumber(scoreData.difficulty_data?.speed_difficulty ?? 0, 2)}`} small={true} />
                                                     <ScoreViewStat valueIcon={!Mods.hasMod(scoreData.score.mods, "FL") ? undefined : <StarIcon sx={{ fontSize: '1em' }} />} label='Flashlight Rating' irrelevant={!Mods.hasMod(scoreData.score.mods, "FL")} value={`${!Mods.hasMod(scoreData.score.mods, "FL") ? '-' : formatNumber(scoreData.difficulty_data?.flashlight_difficulty ?? 0, 2)}`} small={true} />
                                                 </div>
                                             </div>
@@ -186,6 +188,12 @@ function ScoreView(props) {
                                                 (scoreData.difficulty_data?.is_legacy) ?
                                                     <>
                                                         <div className='score-stats__group-row'><ScoreViewStat backgroundColor={'#f57c00'} irrelevant={true} label='Warning' value={`Score data incomplete, please refetch.`} small={true} /></div>
+                                                    </> : null
+                                            }
+                                            {
+                                                (scoreData.difficulty_data?.recalc) ?
+                                                    <>
+                                                        <div className='score-stats__group-row'><ScoreViewStat backgroundColor={'#f57c00'} irrelevant={true} label='Warning' value={`Score is marked for recalculation. SR and PP may be wrong.`} small={true} /></div>
                                                     </> : null
                                             }
                                             <div className='score-stats__group-row' style={{
@@ -342,14 +350,16 @@ function ScoreView(props) {
                                                     </div>
                                                     <div className='score-stats__group-row'>
                                                         <ScoreViewStat
-                                                            originalValue={(scoreData.score.recalc['fc'].aim === scoreData.score.recalc[`live${useCSR ? '' : '_no_csr'}`].aim) ? undefined : formatNumber(scoreData.score.recalc['fc'].aim ?? 0, 1)}
+                                                            originalValue={(Mods.hasMod(scoreData.score.mods, "AP") || scoreData.score.recalc['fc'].aim === scoreData.score.recalc[`live${useCSR ? '' : '_no_csr'}`].aim) ? undefined : formatNumber(scoreData.score.recalc['fc'].aim ?? 0, 1)}
                                                             label='Aim PP'
-                                                            value={formatNumber(scoreData.score.recalc[`live${useCSR ? '' : '_no_csr'}`]?.aim ?? 0, 1)}
+                                                            irrelevant={Mods.hasMod(scoreData.score.mods, "AP")}
+                                                            value={`${Mods.hasMod(scoreData.score.mods, "AP") ? '-' : (formatNumber(scoreData.score.recalc[`live${useCSR ? '' : '_no_csr'}`]?.aim ?? 0, 1))}`}
                                                         />
                                                         <ScoreViewStat
-                                                            originalValue={(scoreData.score.recalc['fc'].speed === scoreData.score.recalc[`live${useCSR ? '' : '_no_csr'}`].speed) ? undefined : formatNumber(scoreData.score.recalc['fc'].speed ?? 0, 1)}
+                                                            originalValue={(Mods.hasMod(scoreData.score.mods, "RX") || scoreData.score.recalc['fc'].speed === scoreData.score.recalc[`live${useCSR ? '' : '_no_csr'}`].speed) ? undefined : formatNumber(scoreData.score.recalc['fc'].speed ?? 0, 1)}
                                                             label='Speed PP'
-                                                            value={formatNumber(scoreData.score.recalc[`live${useCSR ? '' : '_no_csr'}`]?.speed ?? 0, 1)}
+                                                            irrelevant={Mods.hasMod(scoreData.score.mods, "RX")}
+                                                            value={`${Mods.hasMod(scoreData.score.mods, "RX") ? '-' : (formatNumber(scoreData.score.recalc[`live${useCSR ? '' : '_no_csr'}`]?.speed ?? 0, 1))}`}
                                                         />
                                                         <ScoreViewStat
                                                             originalValue={(scoreData.score.recalc['fc'].acc === scoreData.score.recalc[`live${useCSR ? '' : '_no_csr'}`].acc) ? undefined : formatNumber(scoreData.score.recalc['fc'].acc ?? 0, 1)}
