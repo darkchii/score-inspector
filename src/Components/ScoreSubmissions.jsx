@@ -79,7 +79,16 @@ function ScoreSubmissions() {
                 const _period = Object.keys(chart_period_data)[period];
                 const _interval = chart_period_data[_period].intervals[interval];
                 setActivePeriodObject(chart_period_data[_period]);
-                let data = await getScoreActivity(_interval, _period);
+                // let data = await getScoreActivity(_interval, _period);
+                //do through promise
+                let [data] = await new Promise((resolve, reject) => {
+                    getScoreActivity(_interval, _period).then((data) => {
+                        resolve([data]);
+                    }).catch((err) => {
+                        reject(err);
+                    });
+                });
+                
                 if (data === null) {
                     setIsWorking(false);
                     setError(true);
