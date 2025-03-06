@@ -82,7 +82,7 @@ function TodayActivePlayers(props) {
                         },
                     },
                     stroke: {
-                        width: [2]
+                        width: [1]
                     },
                     fill: {
                         type: 'gradient',
