@@ -112,13 +112,18 @@ function RouteUser() {
                 }
                 user_out.scores = _scores;
 
+                
                 const onScoreProcessUpdate = (progress) => {
                     setLoadingState(`Processing user scores (${progress})`);
                 };
-
+                
                 const onCallbackError = (error) => {
                     console.error(error);
                 };
+
+                setLoadingState('Fetching beatmaps');
+                const beatmaps = (await axios.get(`${GetAPI()}beatmaps/all?mode=0&approved=1,2,4`))?.data;
+                user_out.beatmaps = beatmaps;
 
                 setLoadingState('Processing user scores');
                 let _data;

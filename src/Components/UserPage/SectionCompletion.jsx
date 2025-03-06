@@ -27,11 +27,7 @@ function SectionCompletion(props) {
         }
 
         (async () => {
-            if (!props.user.data.completion) {
-                setIsWorking(true);
-                props.user.data.completion = await getCompletionData(props.user.osu.id, true);
-            }
-
+            setIsWorking(true);
             const _graphs = {};
             Object.keys(props.user.data.completion).forEach((key) => {
                 const _key = KEY_NAMES[key] ? KEY_NAMES[key] : key;
@@ -46,7 +42,6 @@ function SectionCompletion(props) {
             });
             setGraphs(_graphs);
             setIsWorking(false);
-             
         })();
     }, [props.user]);
 

@@ -6,13 +6,18 @@ import { getPeriodicData } from "./ScoresPeriodicProcessor";
 import axios from "axios";
 import { getCalculator } from "./Performance/Performance";
 import Mods from "./Mods";
-import _ from "lodash";
+import _, { round } from "lodash";
+import OsuHitWindows from "./Performance/Standard/OsuHitWindows";
+import HitResult from "./Performance/HitResult";
+import BeatmapDifficultyInfo from "./Performance/BeatmapDifficultyInfo";
+import { getCompletionData } from "./OsuAlt";
 
 const FEEDBACK_SLEEP_TIME = 100; // give the browser bit of breathing room to update the UI before each intensive task
 export async function processScores(user, scores, onCallbackError, onScoreProcessUpdate, allow_loved) {
     onScoreProcessUpdate('Preparing scores');
     await sleep(FEEDBACK_SLEEP_TIME);
     scores = prepareScores(user, scores);
+    const beatmaps = user.beatmaps.map(beatmap => prepareBeatmap(beatmap));
 
     const data = {
         grades: {
@@ -47,7 +52,8 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
             star_rating: 0
         },
         allow_loved: allow_loved,
-        latest_scores: []
+        latest_scores: [],
+        beatmaps: beatmaps,
     };
 
     onScoreProcessUpdate('Calculating performance');
@@ -152,6 +158,12 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
     await sleep(FEEDBACK_SLEEP_TIME);
     data.ultra_detailed = await getDetailedData(data, scores);
 
+    if(!user.inspector_user.is_completion_mode){
+        onScoreProcessUpdate('Completion data');
+        await sleep(FEEDBACK_SLEEP_TIME);
+        data.completion = await getCompletionData(scores, beatmaps);
+    }
+
     return data;
 }
 
@@ -183,6 +195,7 @@ export function prepareScore(score, user = null) {
     delete score.enabled_mods;
 
 
+
     if (score.beatmap.difficulty_data) {
         score.beatmap.difficulty_data = applyModdedAttributes(score.beatmap, score.mods);
 
@@ -202,6 +215,9 @@ export function prepareScore(score, user = null) {
         score.beatmap.difficulty_data.circle_size = parseFloat(score.beatmap.difficulty_data.circle_size);
         score.beatmap.difficulty_data.drain_rate = parseFloat(score.beatmap.difficulty_data.drain_rate);
     }
+
+
+
     score.accuracy = parseFloat(score.accuracy);
 
     if (score.statistics && score.maximum_statistics) {
@@ -233,10 +249,11 @@ export function prepareBeatmap(beatmap, parsed_mods = null) {
     parsed_mods = parsed_mods ?? new Mods(0);
 
     beatmap.stars = parseFloat(beatmap.stars);
+    beatmap.stars_rounded = round(beatmap.stars, 2);
     beatmap.objects = beatmap.sliders + beatmap.circles + beatmap.spinners;
     beatmap.modded_length = beatmap.length;
     beatmap.modded_bpm = beatmap.bpm;
-    beatmap.date_approved_moment = moment(beatmap.date_approved);
+    beatmap.approved_date_moment = moment(beatmap.approved_date);
 
     if (parsed_mods) {
         beatmap.modded_length /= parsed_mods.speed;
@@ -444,7 +461,7 @@ function applyModdedAttributes(beatmap, parsed_mods) {
 
         od = original_od * od_multiplier;
         odms = od0_ms - Math.ceil(od_ms_step * od);
-        odms = Math.min(od0_ms, Math.max(od10_ms));
+        odms = Math.min(od0_ms, Math.max(od10_ms, odms));
 
         odms /= speed;
 
@@ -583,7 +600,7 @@ function getModSpread(scores) {
     scores.forEach(score => {
         score.mods.mods_data.forEach(mod => {
             if (mod.acronym === 'NM') return;
-            if(!values[mod.acronym]){
+            if (!values[mod.acronym]) {
                 console.error(`Mod ${mod.acronym} not found in mods list`);
                 console.error(score);
             }
