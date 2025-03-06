@@ -411,8 +411,6 @@ export function getBeatmapPacks(beatmaps) {
     //convert to array
     packs = Object.values(packs);
 
-    console.log(packs);
-
     return packs;
 }
 
