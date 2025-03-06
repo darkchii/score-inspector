@@ -13,6 +13,19 @@ const PLATFORMTYPES = {
 
 const updates = [
     {
+        version: '3.4.0',
+        date: '2025-03-06',
+        changes: [
+            [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Updated performance and star ratings calculator', '46f2d5d4a346bd8a320814f577927f158cfe46aa'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Added active players graph to where clans image used to be', '7d4796c1bc37089689bbf2337a77502199ac2cb4'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.MISC, 'User completion tab data is now made client-side', '46f2d5d4a346bd8a320814f577927f158cfe46aa'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.MISC, 'ScoreView difficulty name label now links to the osu! website beatmap', '47df13beb6eab7128d931d35174285feb4d51f30'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.FIX, 'Fix AR calculation using wrong function to get DA mod setting', 'd0afb2ae315ce22f800a63ca6a05a546223984b3'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.FIX, 'Fixed OD calculation', 'bc5d7ce875eb4fd28b6d8d70adc8239c6a2be2af'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.REMOVE, 'Removed completed packs toggle', '6b5d0f75891978eb49ec03e644c98dafe30a028b'],
+        ]
+    },
+    {
         version: '3.3.1',
         date: '2025-01-23',
         changes: [
