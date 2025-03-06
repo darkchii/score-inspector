@@ -64,7 +64,8 @@ const defaultProps = {
     width: '100%',
     height: '100%',
     style: {
-        margin: '1rem'
+        margin: '1rem',
+        minHeight: undefined
     }
 }
 

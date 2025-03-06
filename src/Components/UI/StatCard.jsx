@@ -21,6 +21,7 @@ function StatCard(props) {
                 backgroundColor: `${props.color[props.brightness ?? 600]}${opacity}`,
                 overflow: 'hidden',
                 position: 'relative',
+                height: props.height ?? undefined,
             }}>
                 {
                     props?.stats === null || props?.stats === undefined ?

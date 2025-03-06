@@ -20,6 +20,7 @@ import BetterAlert from '../Components/UI/BetterAlert';
 import Error from '../Components/UI/Error';
 import StatCard from '../Components/UI/StatCard';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import TodayActivePlayers from '../Components/TodayActivePlayers';
 
 momentDurationFormatSetup(moment);
 
@@ -145,31 +146,34 @@ function RouteIndex() {
                         <Grid2>
                             <Card elevation={2}>
                                 <CardContent>
-                                    <Grid2 container spacing={1}>
-                                        <Grid2 size={{ xs: 12, md: 5 }}>
-                                            <div>
-                                                <Grid2 container spacing={1}>
-                                                    <Grid2 size={{ xs: 12, md: 12 / 2 }}>
-                                                        <StatCard stats={serverInfo?.database?.alt?.user_count ? (parseInt(serverInfo?.database?.alt?.user_count ?? 0)).toLocaleString('en-US') : null} title={`Players (${(parseInt(serverInfo?.database?.alt?.priority_user_count ?? 0)).toLocaleString('en-US')} live)`} color={blue} icon={<PersonIcon />} />
-                                                    </Grid2>
-                                                    <Grid2 size={{ xs: 12, md: 12 / 2 }}>
-                                                        <StatCard stats={serverInfo?.database?.alt?.score_count ? formatNumberAsSize(parseInt(serverInfo?.database?.alt?.score_count ?? 0)) : null} title={`Scores (${formatNumberAsSize(parseInt(serverInfo?.database?.alt?.lazerified_score_count ?? 0))} lazerified)`} color={red} icon={<WorkspacePremiumIcon />} />
-                                                    </Grid2>
-                                                    <Grid2 size={{ xs: 12, md: 12 / 2 }}>
-                                                        <StatCard stats={serverInfo?.database?.inspector?.total_visits ? (parseInt(serverInfo?.database?.inspector?.total_visits ?? 0)).toLocaleString('en-US') : null} title={'Profile visits'} color={green} icon={<BadgeIcon />} />
-                                                    </Grid2>
-                                                    <Grid2 size={{ xs: 12, md: 12 / 2 }}>
-                                                        <StatCard stats={serverInfo?.database?.inspector?.unique_visits ? (parseInt(serverInfo?.database?.inspector?.unique_visits ?? 0)).toLocaleString('en-US') : null} title={'Unique users visited'} color={blueGrey} icon={<BadgeIcon />} />
-                                                    </Grid2>
-                                                    <Grid2 size={12}>
-                                                        <Alert severity='info'>
-                                                            <Typography variant='body2'>Join the <Link href='https://discord.gg/VZWRZZXcW4' target='_blank'>osu!alternative discord</Link>!</Typography>
-                                                        </Alert>
-                                                    </Grid2>
+                                    <Grid2 container spacing={1} sx={{
+                                        height: '250px'
+                                    }}>
+                                        <Grid2 size={{ xs: 12, md: 4 }}>
+                                            <Grid2 container spacing={1} sx={{
+                                                //its always 2x2 grid, we want the height to expand to fit the content
+                                                height: '100%',
+                                            }}>
+                                                <Grid2 size={{ xs: 12, md: 12 / 2 }}>
+                                                    <StatCard height='100%' stats={serverInfo?.database?.alt?.user_count ? (parseInt(serverInfo?.database?.alt?.user_count ?? 0)).toLocaleString('en-US') : null} title={`Players (${(parseInt(serverInfo?.database?.alt?.priority_user_count ?? 0)).toLocaleString('en-US')} live)`} color={blue} icon={<PersonIcon />} />
                                                 </Grid2>
-                                            </div>
+                                                <Grid2 size={{ xs: 12, md: 12 / 2 }}>
+                                                    <StatCard height='100%' stats={serverInfo?.database?.alt?.score_count ? formatNumberAsSize(parseInt(serverInfo?.database?.alt?.score_count ?? 0)) : null} title={`Scores (${formatNumberAsSize(parseInt(serverInfo?.database?.alt?.lazerified_score_count ?? 0))} lazerified)`} color={red} icon={<WorkspacePremiumIcon />} />
+                                                </Grid2>
+                                                <Grid2 size={{ xs: 12, md: 12 / 2 }}>
+                                                    <StatCard height='100%' stats={serverInfo?.database?.inspector?.total_visits ? (parseInt(serverInfo?.database?.inspector?.total_visits ?? 0)).toLocaleString('en-US') : null} title={'Profile visits'} color={green} icon={<BadgeIcon />} />
+                                                </Grid2>
+                                                <Grid2 size={{ xs: 12, md: 12 / 2 }}>
+                                                    <StatCard height='100%' stats={serverInfo?.database?.inspector?.unique_visits ? (parseInt(serverInfo?.database?.inspector?.unique_visits ?? 0)).toLocaleString('en-US') : null} title={'Unique users visited'} color={blueGrey} icon={<BadgeIcon />} />
+                                                </Grid2>
+                                                <Grid2 size={12}>
+                                                    <Alert severity='info'>
+                                                        <Typography variant='body2'>Join the <Link href='https://discord.gg/VZWRZZXcW4' target='_blank'>osu!alternative discord</Link>!</Typography>
+                                                    </Alert>
+                                                </Grid2>
+                                            </Grid2>
                                         </Grid2>
-                                        <Grid2 size={{ xs: 12, md: 7 }}>
+                                        <Grid2 size={{ xs: 12, md: 4 }}>
                                             <Paper sx={{
                                                 width: '100%',
                                                 height: '100%',
@@ -246,6 +250,9 @@ function RouteIndex() {
                                                     </CardActionArea>
                                                 </Card>
                                             </Paper>
+                                        </Grid2>
+                                        <Grid2 size={{ xs: 12, md: 4 }}>
+                                            <TodayActivePlayers data={serverInfo?.database?.alt?.active_players} />
                                         </Grid2>
                                     </Grid2>
                                 </CardContent>
