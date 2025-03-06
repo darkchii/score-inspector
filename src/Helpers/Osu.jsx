@@ -389,16 +389,31 @@ export async function getBeatmap(beatmap_id, mods_enum = null) {
     return beatmap?.data;
 }
 
-export async function getBeatmapPacks() {
-    let beatmapPacks;
-    try {
-        beatmapPacks = await axios.get(`${GetAPI()}beatmaps/packs`, { headers: { "Access-Control-Allow-Origin": "*" } });
-    } catch (err) {
-        console.warn(err);
-        return null;
-    }
+export function getBeatmapPacks(beatmaps) {
+    //get array of all beatmap pack ids (and beatmap count for each pack)
+    let packs = {};
+    beatmaps.forEach(beatmap => {
+        if(beatmap.packs && beatmap.packs.length > 0){
+            beatmap.packs.forEach(pack => {
+                // const localPack = packs.find(p => p.pack_id === pack);
+                if(!packs[pack.pack_id]){
+                    packs[pack.pack_id] = {
+                        pack_id: pack.pack_id,
+                        count: 0
+                    }
+                }
 
-    return beatmapPacks?.data;
+                packs[pack.pack_id].count++;
+            });
+        }
+    });
+
+    //convert to array
+    packs = Object.values(packs);
+
+    console.log(packs);
+
+    return packs;
 }
 
 export async function getBeatmapPackDetails() {

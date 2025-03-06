@@ -13,11 +13,9 @@ import DoneIcon from '@mui/icons-material/Done';
 function SectionPacks(props) {
     const theme = useTheme();
     const [packData, setPackData] = useState([]);
-    const [visisblePackData, setVisiblePackData] = useState([]);
     const [selectedPack, setSelectedPack] = useState(null);
     const [selectedPackData, setSelectedPackData] = useState(null);
     const [themeColor] = useState(theme.typography.title.color);
-    const [hideCompleted, setHideCompleted] = useState(false);
     const packInfoModalElement = useRef(null);
 
     useEffect(() => {
@@ -25,7 +23,7 @@ function SectionPacks(props) {
             return;
         }
         (async () => {
-            let packs = await getBeatmapPacks();
+            let packs = getBeatmapPacks(props.user.beatmaps);
             let packDetails = await getBeatmapPackDetails();
             let _standardPacks = [];
             let _otherPacks = [];
@@ -38,6 +36,12 @@ function SectionPacks(props) {
                     played: 0,
                     full_combos: 0
                 }
+                
+                //check if pack_id is a string
+                if(typeof packs[i].pack_id !== 'string'){
+                    continue;
+                }
+
                 if (packs[i].pack_id.charAt(0) === 'S' && is_numeric(packs[i].pack_id.charAt(1))) {
                     _standardPacks.push(obj);
                 } else {
@@ -110,7 +114,6 @@ function SectionPacks(props) {
             });
 
             setPackData(_packData);
-            setVisiblePackData(_packData);
         })();
     }, []);
 
@@ -119,10 +122,17 @@ function SectionPacks(props) {
             if (!selectedPack) return;
             setSelectedPackData(null);
 
-            const beatmaps = (await getBeatmaps({
-                include_loved: true,
-                pack: selectedPack.pack_id
-            }))?.data;
+            // const beatmaps = (await getBeatmaps({
+            //     include_loved: true,
+            //     pack: selectedPack.pack_id
+            // }))?.data;
+            const beatmaps = props.user.beatmaps?.filter(beatmap => {
+                if (beatmap.packs) {
+                    let packs = beatmap.packs?.map(pack => pack.pack_id) ?? [];
+                    return packs.includes(selectedPack.pack_id);
+                }
+                return false;
+            });
 
             //get scores with this pack id
             const scores = props.user.scores?.filter(score => {
@@ -155,21 +165,6 @@ function SectionPacks(props) {
         })()
     }, [selectedPack]);
 
-    useEffect(() => {
-        if (!packData) {
-            setVisiblePackData(packData);
-        } else {
-            setVisiblePackData(packData.map(packType => {
-                return {
-                    name: packType.name,
-                    packs: packType.packs.filter(pack => {
-                        return !hideCompleted || !pack.completed;
-                    })
-                }
-            }));
-        }
-    }, [hideCompleted]);
-
     const openPackInfo = (pack) => {
         setSelectedPackData(null);
         packInfoModalElement.current.setOpen(true);
@@ -188,9 +183,8 @@ function SectionPacks(props) {
         <>
             <PackCompletionModal data={selectedPackData} ref={packInfoModalElement} />
             <Grid2 sx={{ p: 2 }}>
-                <FormControlLabel control={<Switch checked={hideCompleted} onChange={(e) => setHideCompleted(e.target.checked)} />} label="Hide completed packs" />
                 {
-                    visisblePackData.map((packType, index) => {
+                    packData.map((packType, index) => {
                         return (
                             <>
                                 <Paper key={`packType_${index}`} sx={{
