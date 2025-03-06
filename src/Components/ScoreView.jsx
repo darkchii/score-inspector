@@ -220,7 +220,12 @@ function ScoreView(props) {
                                                     <Typography variant="body2" sx={{ fontWeight: 'bold' }}>{beatmapData.beatmap.artist}</Typography>
                                                 </Box>
                                                 <div className='score-info__item score-info__item--dial'>
-                                                    <ScoreDial accuracy={scoreData.score.accuracy * 0.01} rank={scoreData.score.rank} score={scoreData.score} />
+                                                    <a href={`https://osu.ppy.sh/beatmapsets/${beatmapData.beatmap.set_id}`} 
+                                                        target="_blank" 
+                                                        rel="noopener noreferrer" 
+                                                        style={{ textDecoration: 'none' }}>
+                                                        <ScoreDial accuracy={scoreData.score.accuracy * 0.01} rank={scoreData.score.rank} score={scoreData.score} />
+                                                    </a>
                                                 </div>
                                                 <Box sx={{
                                                     display: 'flex',
