@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Avatar, Box, Card, Divider, FormControlLabel, Grid2, Stack, Switch, Typography } from '@mui/material';
+import { Avatar, Box, Card, Divider, FormControlLabel, Grid2, Link, Stack, Switch, Typography } from '@mui/material';
 import { Chart as ChartJS, ArcElement, Tooltip as ChartTooltip, Legend } from 'chart.js';
 import moment from 'moment';
 import { useEffect, useRef } from 'react';
@@ -16,6 +16,7 @@ import StarIcon from '@mui/icons-material/Star';
 import ScoreViewStat from './UI/ScoreViewStat';
 import { Link as RLink } from "react-router";
 import OsuTooltip from './OsuTooltip';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 ChartJS.register(ArcElement, ChartTooltip, Legend);
 
 function ScoreView(props) {
@@ -260,12 +261,14 @@ function ScoreView(props) {
                                                     }}>
                                                         {formatNumber(scoreData.score.score, 0)}
                                                     </span>
-                                                    <span className='lazer-text-gradient' style={{
-                                                        fontFamily: 'Torus',
-                                                        fontSize: '0.8em',
-                                                    }}>
-                                                        {formatNumber(scoreData.score.scoreLazerStandardised, 0)} ({formatNumber(scoreData.score.mods.scoreMultiplier, 4)}x)
-                                                    </span>
+                                                    <OsuTooltip title="Standardised score is approximated and is likely off from the real value." placement="top">
+                                                        <span className='lazer-text-gradient' style={{
+                                                            fontFamily: 'Torus',
+                                                            fontSize: '0.8em',
+                                                        }}>
+                                                            {formatNumber(scoreData.score.scoreLazerStandardised, 0)} ({formatNumber(scoreData.score.mods.scoreMultiplier, 4)}x)
+                                                        </span>
+                                                    </OsuTooltip>
                                                 </Box>
                                                 <Box sx={{
                                                     display: 'flex',
@@ -288,7 +291,18 @@ function ScoreView(props) {
                                                     //they should stack on top of each other
                                                     flexDirection: 'column',
                                                 }}>
-                                                    <Typography variant="body2" sx={{ fontWeight: 'bold' }}>{beatmapData.beatmap.diffname}</Typography>
+                                                    <Link href={`https://osu.ppy.sh/beatmaps/${beatmapData.beatmap.beatmap_id}`} target="_blank" rel="noreferrer" underline="hover" sx={{ color: 'inherit' }}>
+                                                        <span style={{
+                                                            display: 'flex',
+                                                            justifyContent: 'center',
+                                                            alignItems: 'center',
+                                                            gap: 1,
+                                                        }}>
+                                                            <Typography variant="body2" sx={{ fontWeight: 'bold' }}>{beatmapData.beatmap.diffname}</Typography>
+                                                            <OpenInNewIcon fontSize='10px' />
+                                                            {/* small OpenInNewIcon next to it, to show its a clickable link */}
+                                                        </span>
+                                                    </Link>
                                                     <Typography variant="subtitles1" sx={{ fontWeight: 100 }}>mapped by <span style={{ fontWeight: 'bold' }}>{beatmapData.beatmap.creator}</span></Typography>
                                                 </Box>
                                                 <div className='score-stats__group score-stats__group--stats'>
