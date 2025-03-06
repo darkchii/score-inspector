@@ -125,10 +125,10 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
     await sleep(FEEDBACK_SLEEP_TIME);
     data.bestScores = getBestScores(scores);
 
-    onScoreProcessUpdate('Beatmaps');
+    onScoreProcessUpdate('Beatmap counts');
     await sleep(FEEDBACK_SLEEP_TIME);
     data.beatmaps_counts = (await axios.get(`${GetAPI()}beatmaps/count_periodic?include_loved=true`))?.data;
-    data.beatmaps_count_total = (await axios.get(`${GetAPI()}beatmaps/count?include_loved=true`))?.data;
+    data.beatmaps_count_total = beatmaps.length;
 
     onScoreProcessUpdate('Periodic data');
     await sleep(FEEDBACK_SLEEP_TIME);
