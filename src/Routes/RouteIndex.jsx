@@ -21,6 +21,7 @@ import Error from '../Components/UI/Error';
 import StatCard from '../Components/UI/StatCard';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import TodayActivePlayers from '../Components/TodayActivePlayers';
+import { PNG_TEAMS } from '../Helpers/Assets';
 
 momentDurationFormatSetup(moment);
 
@@ -252,7 +253,42 @@ function RouteIndex() {
                                             </Paper>
                                         </Grid2>
                                         <Grid2 size={{ xs: 12, md: 4 }}>
-                                            <TodayActivePlayers data={serverInfo?.database?.alt?.active_players} />
+                                            <Box sx={{ height: '50%', pb: 1 }}>
+                                                <TodayActivePlayers data={serverInfo?.database?.alt?.active_players} />
+                                            </Box>
+                                            <Box sx={{ height: '50%' }}>
+                                                <Card sx={{ height: '100%' }}>
+                                                    <CardActionArea sx={{ height: '100%' }} component={'a'} href='https://kirino.sh/teams/' target='_blank'>
+                                                        <CardContent sx={{
+                                                            height: '100%',
+                                                            display: 'flex',
+                                                            alignItems: 'center',
+                                                            justifyContent: 'start',
+                                                            position: 'relative',
+                                                            // backgroundImage: `url(${PNG_TEAMS})`,
+                                                        }}>
+                                                            <Box 
+                                                                //we want an angled background
+                                                                sx={{
+                                                                    position: 'absolute',
+                                                                    top: 0,
+                                                                    left: 0,
+                                                                    right: 0,
+                                                                    bottom: 0,
+                                                                    backgroundImage: `url(${PNG_TEAMS})`,
+                                                                    backgroundSize: 'cover',
+                                                                    backgroundPosition: 'center',
+                                                                    opacity: 0.1,
+                                                                    //rotate the background on the x axis and move it to the right
+                                                                    transform: 'perspective(500px) rotateY(40deg) translateX(10%)',
+                                                                    scale: 1.7,
+                                                                }}
+                                                            />
+                                                            <Typography variant='h5'>Browse all teams</Typography>
+                                                        </CardContent>
+                                                    </CardActionArea>
+                                                </Card>
+                                            </Box>
                                         </Grid2>
                                     </Grid2>
                                 </CardContent>

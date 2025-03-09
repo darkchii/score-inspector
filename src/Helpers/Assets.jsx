@@ -14,6 +14,7 @@ import PNG_GUEST from "../Assets/Guest.png";
 import PNG_LEVEL_BADGE from "../Assets/levelbadge.png";
 
 import PNG_MOD_EXTENDER from "../Assets/Mods/MOD_EXTENDER.png";
+import PNG_TEAMS from "../Assets/Other/teams.png";
 
 //this dictates the custom icon badge
 //these mods simply get the acronym overlayed on the badge
@@ -94,5 +95,6 @@ export {
     PNG_GUEST,
     PNG_LEVEL_BADGE,
     PNG_MOD_EXTENDER,
+    PNG_TEAMS,
     getFlagIcon
 };
