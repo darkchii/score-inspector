@@ -26,7 +26,6 @@ import RouteTop from './Routes/RouteTop';
 import RouteStats from './Routes/RouteStats';
 import RouteLogout from './Routes/RouteLogout';
 import RouteTools from './Routes/RouteTools';
-import RoutePopulation from './Routes/RoutePopulation';
 import RouteStaff from './Routes/RouteStaff';
 import RouteAdmin from './Routes/RouteAdmin';
 import RouteLeadersScore from './Routes/RouteLeadersScore';
@@ -105,7 +104,6 @@ function App() {
     { path: 'top', element: <RouteTop />, },
     { path: 'stats', element: <RouteStats />, },
     { path: 'staff', element: <RouteStaff />, },
-    { path: 'population', element: <RoutePopulation />, },
     { path: 'completionists', element: <RouteCompletionists />, },
     { path: 'logout', element: <RouteLogout />, },
     { path: 'clan/:id?/:page?', element: <RouteClan />, },
