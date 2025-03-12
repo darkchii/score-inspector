@@ -140,10 +140,10 @@ function ScoreRow(props) {
                                                 <Box sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
                                                     <Box>
                                                         <Typography sx={{ fontSize: '0.8rem', maxWidth: '100%', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
-                                                            AR: {formatNumber(beatmap.difficulty_data.approach_rate ?? -1, 1)}
+                                                            AR: {formatNumber(beatmap.difficulty.approach_rate ?? -1, 1)}
                                                         </Typography>
                                                         <Typography sx={{ fontSize: '0.8rem', maxWidth: '100%', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
-                                                            CS: {formatNumber(beatmap.difficulty_data.circle_size ?? -1, 1)}
+                                                            CS: {formatNumber(beatmap.difficulty.circle_size ?? -1, 1)}
                                                         </Typography>
                                                     </Box>
                                                 </Box>
@@ -152,10 +152,10 @@ function ScoreRow(props) {
                                                 <Box sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
                                                     <Box>
                                                         <Typography sx={{ fontSize: '0.8rem', maxWidth: '100%', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
-                                                            OD: {formatNumber(beatmap.difficulty_data.overall_difficulty ?? -1, 1)}
+                                                            OD: {formatNumber(beatmap.difficulty.overall_difficulty ?? -1, 1)}
                                                         </Typography>
                                                         <Typography sx={{ fontSize: '0.8rem', maxWidth: '100%', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>
-                                                            HP: {formatNumber(beatmap.difficulty_data.drain_rate ?? -1, 1)}
+                                                            HP: {formatNumber(beatmap.difficulty.drain_rate ?? -1, 1)}
                                                         </Typography>
                                                     </Box>
                                                 </Box>
@@ -184,7 +184,7 @@ function ScoreRow(props) {
                                             <Grid2 size={0.4}>
                                                 <Box sx={{ height: '100%', alignContent: 'right', display: 'flex', alignItems: 'center', justifyContent: 'right', pr: 0.3 }}>
                                                     {
-                                                        score.beatmap.difficulty_data.star_rating && (Math.round(score.beatmap.difficulty_data.star_rating * 100) / 100) !== (Math.round(score.beatmap.stars * 100) / 100) ?
+                                                        score.beatmap.difficulty.star_rating && (Math.round(score.beatmap.difficulty.star_rating * 100) / 100) !== (Math.round(score.beatmap.stars * 100) / 100) ?
                                                             <>
                                                                 <Typography variant="subtitle2" sx={{ opacity: 0.4 }}>
                                                                     {formatNumber(score.beatmap.stars, 2)}*
@@ -196,7 +196,7 @@ function ScoreRow(props) {
                                             <Grid2 size={0.1}>
                                                 <Box sx={{ height: '100%', alignContent: 'right', display: 'flex', alignItems: 'center' }}>
                                                     {
-                                                        score.beatmap.difficulty_data.star_rating && (Math.round(score.beatmap.difficulty_data.star_rating * 100) / 100) !== (Math.round(score.beatmap.stars * 100) / 100) ?
+                                                        score.beatmap.difficulty.star_rating && (Math.round(score.beatmap.difficulty.star_rating * 100) / 100) !== (Math.round(score.beatmap.stars * 100) / 100) ?
                                                             <>
                                                                 <Typography variant="subtitle2" sx={{ opacity: 0.4 }}>{"-> "}</Typography>
                                                             </> : <></>
@@ -209,9 +209,9 @@ function ScoreRow(props) {
                                 <Grid2 size={props.small ? 0.7 : 0.4}>
                                     <Box sx={{ height: '100%', alignContent: 'right', display: 'flex', alignItems: 'center', justifyContent: 'left' }}>
                                         <OsuTooltip title={
-                                            `Aim: ${formatNumber(score.beatmap.difficulty_data.aim_difficulty, 2)}, Speed: ${formatNumber(score.beatmap.difficulty_data.speed_difficulty, 2)}, Flashlight: ${formatNumber(score.beatmap.difficulty_data.flashlight_rating ?? 0, 2)}*`
+                                            `Aim: ${formatNumber(score.beatmap.difficulty.aim_difficulty, 2)}, Speed: ${formatNumber(score.beatmap.difficulty.speed_difficulty, 2)}, Flashlight: ${formatNumber(score.beatmap.difficulty.flashlight_rating ?? 0, 2)}*`
                                         }>
-                                            <Typography sx={{ ml: 0.4 }} variant="subtitle2"> {formatNumber(score.beatmap.difficulty_data.star_rating ?? 0, 2)}*</Typography>
+                                            <Typography sx={{ ml: 0.4 }} variant="subtitle2"> {formatNumber(score.beatmap.difficulty.star_rating ?? 0, 2)}*</Typography>
                                         </OsuTooltip>
                                     </Box>
                                 </Grid2>
@@ -290,7 +290,7 @@ function ScoreRow(props) {
                                         pr: 1,
                                     }}>
                                         {
-                                            score.beatmap.difficulty_data.is_legacy ?
+                                            score.beatmap.difficulty.is_legacy ?
                                                 <OsuTooltip title="This score uses old star ratings and may cause incorrect mod and/or pp values">
                                                     <WarningIcon sx={{ color: orange[500] }} />
                                                 </OsuTooltip>

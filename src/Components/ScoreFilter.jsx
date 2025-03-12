@@ -64,7 +64,7 @@ const sorters = [
     {
         name: 'Stars',
         sort: (a, b) => {
-            return b.beatmap.difficulty_data.star_rating - a.beatmap.difficulty_data.star_rating;
+            return b.beatmap.difficulty.star_rating - a.beatmap.difficulty.star_rating;
         },
         internalName: 'star_rating'
     },

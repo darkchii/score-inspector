@@ -6,7 +6,6 @@ import { useState } from 'react';
 import { formatNumber } from '../Helpers/Misc';
 import { getBeatmapMaxscore, getHitsFromAccuracy } from '../Helpers/Osu';
 import { getCalculator } from '../Helpers/Performance/Performance';
-import { prepareBeatmap } from '../Helpers/ScoresProcessor';
 import { green, red } from '@mui/material/colors';
 import Mods from '../Helpers/Mods';
 import ScoreDial from './ScoreDial';
@@ -16,6 +15,7 @@ import ScoreViewStat from './UI/ScoreViewStat';
 import { Link as RLink } from "react-router";
 import OsuTooltip from './OsuTooltip';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import Beatmap from '../Models/Beatmap';
 
 function ScoreView(props) {
     const [scoreData, setScoreData] = useState(null);
@@ -23,28 +23,13 @@ function ScoreView(props) {
     const [useCSR, setUseCSR] = useState(true);
     const screenshotArea = useRef(null);
 
-    async function fixScore(score) {
-        let _score = score.score;
-        if (score.score === -1) { //if we get -1, we approximate the score of this play
-            if (_score !== null && _score !== null) {
-                _score = await getBeatmapMaxscore(score.beatmap_id);
-                var mul = _score.mods.scoreMultiplier;
-                const real_score = _score * mul;
-                score.score = (real_score * (score.accuracy * 0.01)).toFixed(0);
-            }
-        }
-
-        console.log(score);
-        return score;
-    }
-
     async function applyScore(pp_version, score, beatmap) {
-        let _score = await fixScore(JSON.parse(JSON.stringify(score)));
+        let _score = score.duplicate();
         const _scoreData = {};
 
-        _score.beatmap = JSON.parse(JSON.stringify(beatmap));
+        _score.beatmap = beatmap.duplicate();
 
-        _scoreData.difficulty_data = _score.beatmap.difficulty_data;
+        _scoreData.difficulty_data = _score.beatmap.difficulty;
         // _score = prepareScore(_score, null);
         _scoreData.score = _score;
 
@@ -71,7 +56,7 @@ function ScoreView(props) {
     async function applyBeatmap(pp_version, beatmap) {
         const _beatmapData = {};
         _beatmapData.beatmap = beatmap;
-        _beatmapData.difficulty_data = beatmap.difficulty_data;
+        _beatmapData.difficulty_data = beatmap.difficulty;
         setBeatmapData(_beatmapData);
     }
 
@@ -79,9 +64,8 @@ function ScoreView(props) {
         setScoreData(null);
         if (props.data !== undefined) {
             (async () => {
-                let _beatmap = JSON.parse(JSON.stringify(props.data.score?.beatmap || props.data.beatmap));
-                // _beatmap = await getBeatmap(_beatmap.beatmap_id, props.data.score.mods_enum);
-                _beatmap = prepareBeatmap(_beatmap);
+                let _beatmap = props.data.score?.beatmap || props.data.beatmap;
+                _beatmap = new Beatmap(_beatmap);
                 if (props.data.score !== undefined) {
                     await applyScore(props.data.pp_version, props.data.score, _beatmap);
                 }

@@ -11,13 +11,15 @@ import OsuHitWindows from "./Performance/Standard/OsuHitWindows";
 import HitResult from "./Performance/HitResult";
 import BeatmapDifficultyInfo from "./Performance/BeatmapDifficultyInfo";
 import { getCompletionData } from "./OsuAlt";
+import Score from "../Models/Score";
+import Beatmap from "../Models/Beatmap";
 
 const FEEDBACK_SLEEP_TIME = 100; // give the browser bit of breathing room to update the UI before each intensive task
 export async function processScores(user, scores, onCallbackError, onScoreProcessUpdate, allow_loved) {
     onScoreProcessUpdate('Preparing scores');
     await sleep(FEEDBACK_SLEEP_TIME);
     scores = prepareScores(user, scores);
-    const beatmaps = user.beatmaps.map(beatmap => prepareBeatmap(beatmap));
+    const beatmaps = user.beatmaps.map(beatmap => new Beatmap(beatmap));
 
     const data = {
         grades: {
@@ -72,12 +74,12 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
         data.total.score += score.score ?? 0;
         data.total.acc += score.accuracy ?? 0;
         data.total.length += score.beatmap.modded_length ?? 0;
-        data.total.star_rating += score.beatmap.difficulty_data?.star_rating ?? 0;
+        data.total.star_rating += score.beatmap.difficulty?.star_rating ?? 0;
         // data.total.scoreLazerClassic += score.scoreLazerClassic ?? 0;
         data.total.scoreLazerStandardised += score.scoreLazerStandardised ?? 0;
         data.total.is_fc += score.is_fc ?? 0;
 
-        data.legacy_scores += score.beatmap.difficulty_data?.is_legacy ? 1 : 0;
+        data.legacy_scores += score.beatmap.difficulty?.is_legacy ? 1 : 0;
     }
 
     await sleep(FEEDBACK_SLEEP_TIME);
@@ -179,88 +181,21 @@ export function prepareScores(user, scores) {
 }
 
 export function prepareScore(score, user = null) {
-    score.is_loved = score.beatmap.approved === 4;
+    let obj = new Score(score, user ?? score.user ?? null);
+    return obj;
+
+    console.log(obj);
     if (user !== null) {
         score.is_unique_ss = user.alt.unique_ss.includes(score.beatmap_id);
         score.is_unique_fc = user.alt.unique_fc.includes(score.beatmap_id);
         score.is_unique_dt_fc = user.alt.unique_dt_fc.includes(score.beatmap_id);
     }
-    score.pp = Math.max(0, parseFloat(score.pp));
-    score.date_played_moment = moment(score.date_played).local();
-
-    //only if score.mods isnt of type Mods
-    if (!(score.mods instanceof Mods)) {
-        score.mods = new Mods(parseInt(score.enabled_mods), score.mods);
-    }
-    delete score.enabled_mods;
-
-
-
-    if (score.beatmap.difficulty_data) {
-        score.beatmap.difficulty_data = applyModdedAttributes(score.beatmap, score.mods);
-
-        score.beatmap.difficulty_data.aim_difficulty = parseFloat(score.beatmap.difficulty_data.aim_difficulty);
-        score.beatmap.difficulty_data.speed_difficulty = parseFloat(score.beatmap.difficulty_data.speed_difficulty);
-        score.beatmap.difficulty_data.flashlight_difficulty = parseFloat(score.beatmap.difficulty_data.flashlight_difficulty);
-        score.beatmap.difficulty_data.star_rating = parseFloat(score.beatmap.difficulty_data.star_rating);
-        score.beatmap.difficulty_data.slider_factor = parseFloat(score.beatmap.difficulty_data.slider_factor ?? 1);
-        score.beatmap.difficulty_data.speed_note_count = parseFloat(score.beatmap.difficulty_data.speed_note_count ?? 0);
-
-        score.beatmap.difficulty_data.aim_difficult_slider_count = parseFloat(score.beatmap.difficulty_data.aim_difficult_slider_count ?? 0);
-        score.beatmap.difficulty_data.aim_difficult_strain_count = parseFloat(score.beatmap.difficulty_data.aim_difficult_strain_count ?? 0);
-        score.beatmap.difficulty_data.speed_difficult_strain_count = parseFloat(score.beatmap.difficulty_data.speed_difficult_strain_count ?? 0);
-
-        score.beatmap.difficulty_data.overall_difficulty = parseFloat(score.beatmap.difficulty_data.overall_difficulty);
-        score.beatmap.difficulty_data.approach_rate = parseFloat(score.beatmap.difficulty_data.approach_rate);
-        score.beatmap.difficulty_data.circle_size = parseFloat(score.beatmap.difficulty_data.circle_size);
-        score.beatmap.difficulty_data.drain_rate = parseFloat(score.beatmap.difficulty_data.drain_rate);
-    }
-
-
-
-    score.accuracy = parseFloat(score.accuracy);
-
-    if (score.statistics && score.maximum_statistics) {
-        score.accuracy = computeAccuracy(score) * 100; //for some reason, osualt sometimes has wrong accuracy values
-        score.rank = getRankFromAccuracy(score, score.accuracy / 100);
-    }
-
-    score.beatmap = prepareBeatmap(score.beatmap, score.mods);
-
-    score.totalhits = score.count300 + score.count100 + score.count50;
-
-    score.is_fc = isScoreFullcombo(score);
-    score.is_pfc = score.beatmap.maxcombo - score.combo === 0;
-    // score.scoreLazerClassic = Math.floor(getLazerScore(score));
-    score.scoreLazerStandardised = Math.floor(getLazerScore(score));
-
-    score.estimated_pp = getCalculator('live', {
-        score: score,
-    }).total;
 
     if (!score.user && user) {
         score.user = user.alt;
     }
 
     return score;
-}
-
-export function prepareBeatmap(beatmap, parsed_mods = null) {
-    parsed_mods = parsed_mods ?? new Mods(0);
-
-    beatmap.stars = parseFloat(beatmap.stars);
-    beatmap.stars_rounded = round(beatmap.stars, 2);
-    beatmap.objects = beatmap.sliders + beatmap.circles + beatmap.spinners;
-    beatmap.modded_length = beatmap.length;
-    beatmap.modded_bpm = beatmap.bpm;
-    beatmap.approved_date_moment = moment(beatmap.approved_date);
-
-    if (parsed_mods) {
-        beatmap.modded_length /= parsed_mods.speed;
-        beatmap.modded_bpm *= parsed_mods.speed;
-    }
-
-    return beatmap;
 }
 
 function getBestScores(scores) {
@@ -278,7 +213,7 @@ function getBestScores(scores) {
                     _scores.best_pp = score;
                 }
                 if (!Mods.hasMod(score.mods, "NF")) {
-                    if ((_scores.best_sr === null || (score.beatmap.difficulty_data?.star_rating ?? 0) > (_scores.best_sr.beatmap.difficulty_data?.star_rating ?? 0))) {
+                    if ((_scores.best_sr === null || (score.beatmap.difficulty?.star_rating ?? 0) > (_scores.best_sr.beatmap.difficulty?.star_rating ?? 0))) {
                         _scores.best_sr = score;
                     }
                 }
@@ -310,11 +245,6 @@ function getActiveDays(scores) {
         return new Date(a) - new Date(b);
     });
     return arrayActiveDays;
-}
-
-function isScoreFullcombo(score) {
-    const is_fc = (score.countmiss === 0 && ((score.beatmap.maxcombo - score.combo) <= score.count100)) || score.perfect === 1 || score.rank === 'X' || score.rank === 'XH';
-    return is_fc;
 }
 
 function getDayPlaycountSpread(scores) {
@@ -369,133 +299,6 @@ function getRateChangeSpread(scores, detail = RATE_DETAIL) {
     objects.sort((a, b) => parseFloat(a.rate) - parseFloat(b.rate));
 
     return objects;
-}
-
-const ar_ms_step1 = 120;
-const ar_ms_step2 = 150;
-
-const ar0_ms = 1800;
-const ar5_ms = 1200;
-
-const od_ms_step = 6;
-const od0_ms = 79.5;
-const od10_ms = 19.5;
-function applyModdedAttributes(beatmap, parsed_mods) {
-    let difficulty_data = JSON.parse(JSON.stringify(beatmap.difficulty_data));
-    if (difficulty_data.is_corrected) return difficulty_data;
-    let speed = parsed_mods.speed;
-
-    if (!difficulty_data.approach_rate) {
-        let ar_multiplier = 1;
-        let ar;
-        let ar_ms;
-
-        if (Mods.hasMod(parsed_mods, "HR")) {
-            ar_multiplier = 1.4;
-        } else if (Mods.hasMod(parsed_mods, "EZ")) {
-            ar_multiplier = 0.5;
-        }
-
-        let original_ar = beatmap.ar;
-        if (Mods.hasMod(parsed_mods, "DA") && Mods.containsSetting(parsed_mods, "approach_rate")) {
-            original_ar = Mods.getModSetting(parsed_mods, "DA", "approach_rate");
-        }
-        original_ar = Number(original_ar);
-
-        ar = original_ar * ar_multiplier;
-
-        if (ar <= 5)
-            ar_ms = ar0_ms - ar_ms_step1 * ar;
-        else
-            ar_ms = ar5_ms - ar_ms_step2 * (ar - 5);
-
-        ar_ms /= speed;
-
-        if (ar <= 5)
-            ar = (ar0_ms - ar_ms) / ar_ms_step1;
-        else
-            ar = 5 + (ar5_ms - ar_ms) / ar_ms_step2;
-
-        difficulty_data.approach_rate = ar;
-    }
-
-    if (!difficulty_data.circle_size) {
-        let cs = 1;
-        let cs_multiplier = 1;
-
-        if (Mods.hasMod(parsed_mods, "HR")) {
-            cs_multiplier = 1.3;
-        } else if (Mods.hasMod(parsed_mods, "EZ")) {
-            cs_multiplier = 0.5;
-        }
-
-        let original_cs = beatmap.cs;
-        if (Mods.hasMod(parsed_mods, "DA") && Mods.containsSetting(parsed_mods, "circle_size")) {
-            original_cs = Mods.getModSetting(parsed_mods, "DA", "circle_size");
-        }
-        original_cs = Number(original_cs);
-
-        cs = original_cs * cs_multiplier;
-
-        if (cs > 10) cs = 10;
-
-        difficulty_data.circle_size = cs;
-    }
-
-    if (!difficulty_data.overall_difficulty) {
-        let od = 1;
-        let odms = 1;
-        let od_multiplier = 1;
-
-        if (Mods.hasMod(parsed_mods, "HR")) {
-            od_multiplier = 1.4;
-        } else if (Mods.hasMod(parsed_mods, "EZ")) {
-            od_multiplier = 0.5;
-        }
-
-        let original_od = beatmap.od;
-        if (Mods.hasMod(parsed_mods, "DA") && Mods.containsSetting(parsed_mods, "overall_difficulty")) {
-            original_od = Mods.getModSetting(parsed_mods, "DA", "overall_difficulty");
-        }
-        original_od = Number(original_od);
-
-        od = original_od * od_multiplier;
-        odms = od0_ms - Math.ceil(od_ms_step * od);
-        odms = Math.min(od0_ms, Math.max(od10_ms, odms));
-
-        odms /= speed;
-
-        od = (od0_ms - odms) / od_ms_step;
-
-        difficulty_data.overall_difficulty = od;
-    }
-
-    if (!difficulty_data.drain_rate) {
-        let hp = 1;
-        let hp_multiplier = 1;
-
-        if (Mods.hasMod(parsed_mods, "HR")) {
-            hp_multiplier = 1.4;
-        } else if (Mods.hasMod(parsed_mods, "EZ")) {
-            hp_multiplier = 0.5;
-        }
-
-        let original_hp = beatmap.hp;
-        if (Mods.hasMod(parsed_mods, "DA") && Mods.containsSetting(parsed_mods, "drain_rate")) {
-            original_hp = Mods.getModSetting(parsed_mods, "DA", "drain_rate");
-        }
-        original_hp = Number(original_hp);
-
-        hp = original_hp * hp_multiplier;
-
-        if (hp > 10) hp = 10;
-
-        difficulty_data.drain_rate = hp;
-    }
-
-    difficulty_data.is_corrected = true;
-
-    return difficulty_data;
 }
 
 async function getDetailedData(data, scores) {

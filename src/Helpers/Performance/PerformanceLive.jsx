@@ -31,7 +31,7 @@ export function getPerformanceLive(data, combo_scaling_removal = true) {
     data.effectiveMissCount = data.countMiss;
     data.totalImperfectHits = data.countOk + data.countMeh + data.countMiss;
     data.totalSuccessFullHits = data.countGreat + data.countOk + data.countMeh;
-    data.difficulty_data = score.beatmap.difficulty_data;
+    data.difficulty_data = score.beatmap.difficulty;
 
     data.countSliderEndsDropped = 0;
     data.countSliderTickMiss = 0;

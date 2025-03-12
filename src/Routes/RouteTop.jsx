@@ -69,6 +69,8 @@ function RouteTop() {
                         },
                     }
 
+                    console.log(_scores);
+
                     setScores(_scores);
                 });
             } catch (err) {
@@ -167,8 +169,7 @@ function RouteTop() {
                                                                             left: 0,
                                                                             width: '100%',
                                                                             height: '100%',
-                                                                            // backgroundColor: `${getDiffColor(score.beatmap.difficulty_data?.star_rating ?? 0)}`,
-                                                                            backgroundImage: `linear-gradient(90deg, ${getDiffColor(score.beatmap.difficulty_data?.star_rating ?? 0)} 0%, rgba(0,0,0,0) 100%)`,
+                                                                            backgroundImage: `linear-gradient(90deg, ${getDiffColor(score.beatmap.difficulty?.star_rating ?? 0)} 0%, rgba(0,0,0,0) 100%)`,
                                                                             opacity: 0.6,
                                                                             borderRadius: '10px',
                                                                         }} />
@@ -177,7 +178,7 @@ function RouteTop() {
                                                                                 display: 'flex',
                                                                                 alignItems: 'center',
                                                                             }}>
-                                                                                <StarsLabel style={{ marginRight: '1em' }} stars={score.beatmap.difficulty_data?.star_rating} />
+                                                                                <StarsLabel style={{ marginRight: '1em' }} stars={score.beatmap.difficulty?.star_rating} />
                                                                                 <OsuTooltip title={`${score.beatmap.artist} - ${score.beatmap.title} [${score.beatmap.diffname}]`}>
                                                                                     <Typography textOverflow='ellipsis' noWrap variant='h6' sx={{ fontSize: '1em' }}>{score.beatmap.artist} - {score.beatmap.title} [{score.beatmap.diffname}]</Typography>
                                                                                 </OsuTooltip>
@@ -262,9 +263,9 @@ function RouteTop() {
                                                                                 fontWeight: 100
                                                                             }}>
                                                                                 {
-                                                                                    score.beatmap.difficulty_data ? <>
-                                                                                        <Typography variant='body1' sx={{ color: grey[500] }}>Aim: {score.beatmap.difficulty_data.aim_difficulty.toFixed(2)}* | Speed: {score.beatmap.difficulty_data.speed_difficulty.toFixed(2)}* | {score.beatmap.difficulty_data.flashlight_difficulty > 0 ? `Flashlight: ${score.beatmap.difficulty_data.flashlight_difficulty.toFixed(2)}* |` : ''} Speed Notes: {score.beatmap.difficulty_data.speed_note_count.toFixed(2)}</Typography>
-                                                                                        <Typography variant='body1' sx={{ color: grey[500] }}>OD{score.beatmap.difficulty_data.overall_difficulty.toFixed(2)} AR{score.beatmap.difficulty_data.approach_rate.toFixed(2)} CS{score.beatmap.difficulty_data.circle_size.toFixed(2)} HP{score.beatmap.difficulty_data.drain_rate.toFixed(2)}</Typography>
+                                                                                    score.beatmap.difficulty ? <>
+                                                                                        <Typography variant='body1' sx={{ color: grey[500] }}>Aim: {score.beatmap.difficulty.aim_difficulty.toFixed(2)}* | Speed: {score.beatmap.difficulty.speed_difficulty.toFixed(2)}* | {score.beatmap.difficulty.flashlight_difficulty > 0 ? `Flashlight: ${score.beatmap.difficulty.flashlight_difficulty.toFixed(2)}* |` : ''} Speed Notes: {score.beatmap.difficulty.speed_note_count.toFixed(2)}</Typography>
+                                                                                        <Typography variant='body1' sx={{ color: grey[500] }}>OD{score.beatmap.difficulty.overall_difficulty.toFixed(2)} AR{score.beatmap.difficulty.approach_rate.toFixed(2)} CS{score.beatmap.difficulty.circle_size.toFixed(2)} HP{score.beatmap.difficulty.drain_rate.toFixed(2)}</Typography>
                                                                                     </> :
                                                                                         <Typography variant='body1' color='error'>Star ratings currently not available.</Typography>
                                                                                 }

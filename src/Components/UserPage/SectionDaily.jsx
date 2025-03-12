@@ -228,7 +228,7 @@ function SectionDaily(props) {
                     _stats.clears++;
                     _stats.pp += score.pp ?? 0;
                     acc += score.accuracy;
-                    sr += score.beatmap.difficulty_data?.star_rating ?? 0;
+                    sr += score.beatmap.difficulty?.star_rating ?? 0;
                     _stats.playtime += score.beatmap.modded_length;
                 });
                 _stats.average_acc = acc / sorted.length;

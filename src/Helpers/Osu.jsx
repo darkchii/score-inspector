@@ -742,8 +742,8 @@ export function FilterScores(full_scores, filter) {
         if (filter.minScore !== null && filter.minScore !== '' && filter.minScore >= 0) { if (score.score < filter.minScore) return false; }
         if (filter.maxScore !== null && filter.maxScore !== '' && filter.maxScore >= 0) { if (score.score > filter.maxScore) return false; }
 
-        if (filter.minStars !== null && filter.minStars !== '' && filter.minStars >= 0) { if (score.beatmap.difficulty_data.star_rating < filter.minStars) return false; }
-        if (filter.maxStars !== null && filter.maxStars !== '' && filter.maxStars >= 0) { if (score.beatmap.difficulty_data.star_rating > filter.maxStars) return false; }
+        if (filter.minStars !== null && filter.minStars !== '' && filter.minStars >= 0) { if (score.beatmap.difficulty.star_rating < filter.minStars) return false; }
+        if (filter.maxStars !== null && filter.maxStars !== '' && filter.maxStars >= 0) { if (score.beatmap.difficulty.star_rating > filter.maxStars) return false; }
 
         if (filter.minPP !== null && filter.minPP !== '' && filter.minPP >= 0) { if (score.pp < filter.minPP) return false; }
         if (filter.maxPP !== null && filter.maxPP !== '' && filter.maxPP >= 0) { if (score.pp > filter.maxPP) return false; }
@@ -754,17 +754,17 @@ export function FilterScores(full_scores, filter) {
         if (filter.minCombo !== null && filter.minCombo !== '' && filter.minCombo >= 0) { if (score.combo < filter.minCombo) return false; }
         if (filter.maxCombo !== null && filter.maxCombo !== '' && filter.maxCombo >= 0) { if (score.combo > filter.maxCombo) return false; }
 
-        if (filter.minAR !== null && filter.minAR !== '' && filter.minAR >= 0) { if (score.beatmap.difficulty_data.modded_ar < filter.minAR) return false; }
-        if (filter.maxAR !== null && filter.maxAR !== '' && filter.maxAR >= 0) { if (score.beatmap.difficulty_data.modded_ar > filter.maxAR) return false; }
+        if (filter.minAR !== null && filter.minAR !== '' && filter.minAR >= 0) { if (score.beatmap.difficulty.modded_ar < filter.minAR) return false; }
+        if (filter.maxAR !== null && filter.maxAR !== '' && filter.maxAR >= 0) { if (score.beatmap.difficulty.modded_ar > filter.maxAR) return false; }
 
-        if (filter.minOD !== null && filter.minOD !== '' && filter.minOD >= 0) { if (score.beatmap.difficulty_data.modded_od < filter.minOD) return false; }
-        if (filter.maxOD !== null && filter.maxOD !== '' && filter.maxOD >= 0) { if (score.beatmap.difficulty_data.modded_od > filter.maxOD) return false; }
+        if (filter.minOD !== null && filter.minOD !== '' && filter.minOD >= 0) { if (score.beatmap.difficulty.modded_od < filter.minOD) return false; }
+        if (filter.maxOD !== null && filter.maxOD !== '' && filter.maxOD >= 0) { if (score.beatmap.difficulty.modded_od > filter.maxOD) return false; }
 
-        if (filter.minCS !== null && filter.minCS !== '' && filter.minCS >= 0) { if (score.beatmap.difficulty_data.modded_cs < filter.minCS) return false; }
-        if (filter.maxCS !== null && filter.maxCS !== '' && filter.maxCS >= 0) { if (score.beatmap.difficulty_data.modded_cs > filter.maxCS) return false; }
+        if (filter.minCS !== null && filter.minCS !== '' && filter.minCS >= 0) { if (score.beatmap.difficulty.modded_cs < filter.minCS) return false; }
+        if (filter.maxCS !== null && filter.maxCS !== '' && filter.maxCS >= 0) { if (score.beatmap.difficulty.modded_cs > filter.maxCS) return false; }
 
-        if (filter.minHP !== null && filter.minHP !== '' && filter.minHP >= 0) { if (score.beatmap.difficulty_data.modded_hp < filter.minHP) return false; }
-        if (filter.maxHP !== null && filter.maxHP !== '' && filter.maxHP >= 0) { if (score.beatmap.difficulty_data.modded_hp > filter.maxHP) return false; }
+        if (filter.minHP !== null && filter.minHP !== '' && filter.minHP >= 0) { if (score.beatmap.difficulty.modded_hp < filter.minHP) return false; }
+        if (filter.maxHP !== null && filter.maxHP !== '' && filter.maxHP >= 0) { if (score.beatmap.difficulty.modded_hp > filter.maxHP) return false; }
 
         if (filter.minLength !== null && filter.minLength !== '' && filter.minLength >= 0) { if (score.beatmap.modded_length < filter.minLength) return false; }
         if (filter.maxLength !== null && filter.maxLength !== '' && filter.maxLength >= 0) { if (score.beatmap.modded_length > filter.maxLength) return false; }

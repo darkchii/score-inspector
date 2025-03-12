@@ -155,7 +155,7 @@ function processAverageData(user, data) {
 
         let _total_sr = 0;
         data[date].scores.forEach((score) => {
-            _total_sr += score.beatmap.difficulty_data.star_rating;
+            _total_sr += score.beatmap.difficulty.star_rating;
         });
         data[date].average_star_rating = _total_sr / data[date].gained_clears;
         data[date].highest_star_rating = data[date].scores.reduce((acc, score) => { return Math.max(acc, score.beatmap.stars); }, 0);
@@ -192,7 +192,7 @@ function processMedianData(user, data) {
         let _pp = data[date].scores.map((score) => { return score.pp; });
         let _hits = data[date].scores.map((score) => { return score.count300 + score.count100 + score.count50; });
         let _accs = data[date].scores.map((score) => { return score.accuracy; });
-        let _srs = data[date].scores.map((score) => { return score.beatmap.difficulty_data.star_rating; });
+        let _srs = data[date].scores.map((score) => { return score.beatmap.difficulty.star_rating; });
 
         data[date].median_score = median(_scores);
         data[date].median_length = median(_lengths);
