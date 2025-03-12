@@ -1,34 +1,10 @@
 import { Box, useTheme } from "@mui/material";
 import { useEffect } from "react";
 import { useState } from "react";
-import {
-    Chart as ChartJS,
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    Title,
-    Tooltip,
-    Legend,
-    TimeScale
-} from 'chart.js';
-import zoomPlugin from 'chartjs-plugin-zoom';
-import 'chartjs-adapter-moment';
 import ChartWrapper from "../Helpers/ChartWrapper";
 import moment from "moment";
 import { formatNumberAsSize } from "../Helpers/Misc";
 import { getModString } from "../Helpers/Osu";
-ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    Title,
-    Tooltip,
-    Legend,
-    TimeScale,
-    zoomPlugin
-);
 
 function PerformanceRecordsChart(props) {
     const theme = useTheme();

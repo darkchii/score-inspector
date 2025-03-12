@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Avatar, Box, Card, Divider, FormControlLabel, Grid2, Link, Stack, Switch, Typography } from '@mui/material';
-import { Chart as ChartJS, ArcElement, Tooltip as ChartTooltip, Legend } from 'chart.js';
 import moment from 'moment';
 import { useEffect, useRef } from 'react';
 import { useState } from 'react';
@@ -17,7 +16,6 @@ import ScoreViewStat from './UI/ScoreViewStat';
 import { Link as RLink } from "react-router";
 import OsuTooltip from './OsuTooltip';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
-ChartJS.register(ArcElement, ChartTooltip, Legend);
 
 function ScoreView(props) {
     const [scoreData, setScoreData] = useState(null);

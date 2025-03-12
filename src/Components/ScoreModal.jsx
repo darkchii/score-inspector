@@ -2,9 +2,7 @@ import { Modal } from "@mui/material";
 import { useEffect } from "react";
 import { useState } from "react";
 import ScoreView from "./ScoreView";
-import { Chart as ChartJS, ArcElement, Tooltip as ChartTooltip, Legend } from 'chart.js';
 import { MODAL_STYLE } from "../Helpers/Misc";
-ChartJS.register(ArcElement, ChartTooltip, Legend);
 
 function ScoreModal(props) {
     const [targetProg, setTargetProg] = useState(0);
