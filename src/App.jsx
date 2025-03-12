@@ -32,7 +32,6 @@ import RouteLeadersScore from './Routes/RouteLeadersScore';
 import RouteMilestones from './Routes/RouteMilestones';
 import RouteLeadersMonthly from './Routes/RouteLeadersMonthly';
 import RouteCompletionists from './Routes/RouteCompletionists';
-import RouteWrapped from './Routes/RouteWrapped';
 import RouteClan from './Routes/RouteClan';
 
 function App() {
@@ -107,7 +106,6 @@ function App() {
     { path: 'completionists', element: <RouteCompletionists />, },
     { path: 'logout', element: <RouteLogout />, },
     { path: 'clan/:id?/:page?', element: <RouteClan />, },
-    { path: 'wrapped/:id?', element: <RouteWrapped />, },
     {
       path: 'milestones', element: <RouteMilestones />,
       children: [
