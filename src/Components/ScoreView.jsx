@@ -4,7 +4,7 @@ import moment from 'moment';
 import { useEffect, useRef } from 'react';
 import { useState } from 'react';
 import { formatNumber } from '../Helpers/Misc';
-import { getBeatmapMaxscore, getHitsFromAccuracy } from '../Helpers/Osu';
+import { getHitsFromAccuracy } from '../Helpers/Osu';
 import { getCalculator } from '../Helpers/Performance/Performance';
 import { green, red } from '@mui/material/colors';
 import Mods from '../Helpers/Mods';
@@ -16,6 +16,8 @@ import { Link as RLink } from "react-router";
 import OsuTooltip from './OsuTooltip';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import Beatmap from '../Models/Beatmap';
+import ChartWrapper from "../Helpers/ChartWrapper";
+import { round } from 'lodash';
 
 function ScoreView(props) {
     const [scoreData, setScoreData] = useState(null);
@@ -25,6 +27,7 @@ function ScoreView(props) {
 
     async function applyScore(pp_version, score, beatmap) {
         let _score = score.duplicate();
+        console.log(_score);
         const _scoreData = {};
 
         _score.beatmap = beatmap.duplicate();
@@ -146,9 +149,27 @@ function ScoreView(props) {
                                             <Typography variant='subtitle2'>Difficulty</Typography>
                                             <div className='score-stats__group score-stats__group--stats'>
                                                 <div className='score-stats__group-row'>
-                                                    <ScoreViewStat valueIcon={Mods.hasMod(scoreData.score.mods, "AP") ? undefined : <StarIcon sx={{ fontSize: '1em' }} />} label='Aim Rating' irrelevant={Mods.hasMod(scoreData.score.mods, "AP")} value={`${Mods.hasMod(scoreData.score.mods, "AP") ? '-' : formatNumber(scoreData.difficulty_data?.aim_difficulty ?? 0, 2)}`} small={true} />
-                                                    <ScoreViewStat valueIcon={Mods.hasMod(scoreData.score.mods, "RX") ? undefined : <StarIcon sx={{ fontSize: '1em' }} />} label='Speed Rating' irrelevant={Mods.hasMod(scoreData.score.mods, "RX")} value={`${Mods.hasMod(scoreData.score.mods, "RX") ? '-' : formatNumber(scoreData.difficulty_data?.speed_difficulty ?? 0, 2)}`} small={true} />
-                                                    <ScoreViewStat valueIcon={!Mods.hasMod(scoreData.score.mods, "FL") ? undefined : <StarIcon sx={{ fontSize: '1em' }} />} label='Flashlight Rating' irrelevant={!Mods.hasMod(scoreData.score.mods, "FL")} value={`${!Mods.hasMod(scoreData.score.mods, "FL") ? '-' : formatNumber(scoreData.difficulty_data?.flashlight_difficulty ?? 0, 2)}`} small={true} />
+                                                    <ScoreViewStat
+                                                    //compared to star_rating
+                                                        progress={1 / (beatmapData.difficulty_data?.star_rating ?? 0) * (scoreData.difficulty_data?.relative_aim_difficulty ?? 0)}
+                                                        valueIcon={Mods.hasMod(scoreData.score.mods, "AP") ? undefined : <StarIcon sx={{ fontSize: '1em' }} />}
+                                                        label='Aim Rating' irrelevant={Mods.hasMod(scoreData.score.mods, "AP")}
+                                                        value={`${Mods.hasMod(scoreData.score.mods, "AP") ? '-' : formatNumber(scoreData.difficulty_data?.aim_difficulty ?? 0, 2)}`}
+                                                        small={true}
+                                                    />
+                                                    <ScoreViewStat
+                                                        progress={1 / (beatmapData.difficulty_data?.star_rating ?? 0) * (scoreData.difficulty_data?.relative_speed_difficulty ?? 0)}
+                                                        valueIcon={Mods.hasMod(scoreData.score.mods, "RX") ? undefined : <StarIcon sx={{ fontSize: '1em' }} />}
+                                                        label='Speed Rating' irrelevant={Mods.hasMod(scoreData.score.mods, "RX")}
+                                                        value={`${Mods.hasMod(scoreData.score.mods, "RX") ? '-' : formatNumber(scoreData.difficulty_data?.speed_difficulty ?? 0, 2)}`}
+                                                        small={true}
+                                                    />
+                                                    <ScoreViewStat
+                                                        valueIcon={!Mods.hasMod(scoreData.score.mods, "FL") ? undefined : <StarIcon sx={{ fontSize: '1em' }} />}
+                                                        label='Flashlight Rating' irrelevant={!Mods.hasMod(scoreData.score.mods, "FL")}
+                                                        value={`${!Mods.hasMod(scoreData.score.mods, "FL") ? '-' : formatNumber(scoreData.difficulty_data?.flashlight_difficulty ?? 0, 2)}`}
+                                                        small={true}
+                                                    />
                                                 </div>
                                             </div>
                                             <div className='score-stats__group-row'><ScoreViewStat label='Speed note count' value={`${formatNumber(scoreData.difficulty_data?.speed_note_count ?? 0, 2)}`} small={true} /></div>

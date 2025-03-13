@@ -50,7 +50,6 @@ function ScoreViewStat(props) {
                     color: props.valueColor ?? undefined,
                     display: 'flex',
                     justifyContent: 'space-between',
-
                 }}>
                     <span style={{
                         //align the icon with the text
@@ -79,7 +78,6 @@ function ScoreViewStat(props) {
                     {/* progress circle on the far right, use inline styling, theres no class */}
                     {props.progress !== undefined ?
                         <div style={{
-                            height: 'inherit',
                             width: '1em',
                             marginLeft: '1em',
                         }}>
