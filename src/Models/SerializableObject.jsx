@@ -16,6 +16,8 @@ class SerializableObject {
         for (let property of properties) {
             if (this[property] instanceof SerializableObject) {
                 duplicate[property] = this[property].duplicate();
+            }else{
+                duplicate[property] = this[property];
             }
         }
 
