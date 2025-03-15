@@ -77,7 +77,18 @@ const TOP_PLAY_GRAPH_DATA = [
         formatter: (value) => `${formatNumber(value)}pp`
     },
     {
-        name: 'Stars',
+        name: 'Score',
+        data_points: [
+            {
+                name: 'Score',
+                path: 'score',
+                size: 4
+            }
+        ],
+        formatter: (value) => `${formatNumber(value)}`
+    },
+    {
+        name: 'Difficulty',
         data_points: [
             {
                 name: 'Starrating',
@@ -95,6 +106,30 @@ const TOP_PLAY_GRAPH_DATA = [
             }
         ],
         formatter: (value) => `${value.toFixed(2)}*`
+    },
+    {
+        name: 'Attributes',
+        data_points: [
+            {
+                name: 'CS',
+                path: 'beatmap.difficulty.circle_size',
+                size: 1
+            },
+            {
+                name: 'OD',
+                path: 'beatmap.difficulty.overall_difficulty',
+                size: 1
+            }, {
+                name: 'HP',
+                path: 'beatmap.difficulty.drain_rate',
+                size: 1
+            }, {
+                name: 'AR',
+                path: 'beatmap.difficulty.approach_rate',
+                size: 1
+            }
+        ],
+        formatter: (value) => `${value.toFixed(2)}`
     },
     {
         name: 'Strain',
@@ -207,6 +242,28 @@ function SectionDetailedGraphsTopPlays(props) {
                     },
                     stroke: {
                         width: TOP_PLAY_GRAPH_DATA[activeGraph].data_points.map((obj) => obj.size || 4)
+                    },
+                    tooltip: {
+                        //along with the default, show the score title
+                        custom: function ({ series, seriesIndex, dataPointIndex, w }) {
+                            let score = scoresSubset[dataPointIndex];
+                            let artist = score.beatmap.artist;
+                            let title = score.beatmap.title;
+                            let version = score.beatmap.diffname;
+                            
+                            let tooltip = `<div class="apexcharts-tooltip-title">${artist} - ${title} [${version}]</div>`;
+
+                            tooltip += '<div style="padding-bottom:5px" class="apexcharts-tooltip-series-group.apexcharts-active">';
+                            for (let i = 0; i < series.length; i++) {
+                                let data_point = TOP_PLAY_GRAPH_DATA[activeGraph].data_points[i];
+                                let value = series[i][dataPointIndex];
+                                let color = w.globals.colors[i];
+
+                                tooltip += `<div><div style='color:#${color}' class='apexcharts-tooltip-marker apexcharts-tooltip-marker[shape="circle"]'></div>${data_point.name}: ${TOP_PLAY_GRAPH_DATA[activeGraph].formatter(value)}</div>`;
+                            }
+                            tooltip += '</div>';
+                            return tooltip;
+                        }
                     }
                 }}
                 series={graphData}
