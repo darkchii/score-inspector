@@ -20,8 +20,8 @@ class BeatmapDifficulty extends SerializableObject {
         this.aim_difficulty = parseFloat(data.aim_difficulty ?? data.aim_diff ?? 0);
         this.speed_difficulty = parseFloat(data.speed_difficulty ?? data.speed_diff ?? 0);
 
-        this.relative_aim_difficulty = (this.aim_difficulty / this.star_rating) * 10;
-        this.relative_speed_difficulty = (this.speed_difficulty / this.star_rating) * 10;
+        this.relative_aim_difficulty = this.aim_difficulty;
+        this.relative_speed_difficulty = this.speed_difficulty;
 
         this.flashlight_difficulty = parseFloat(data.flashlight_difficulty ?? data.fl_diff ?? 0);
 

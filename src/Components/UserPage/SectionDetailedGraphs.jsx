@@ -1,8 +1,10 @@
-import { Alert, Box, Grid2, Paper, Typography, useTheme } from "@mui/material";
+import { Alert, Box, Button, Grid2, Paper, Typography, useTheme } from "@mui/material";
 import ChartWrapper from "../../Helpers/ChartWrapper";
 import _ from "lodash";
-import { formatNumber } from "../../Helpers/Misc";
+import { formatNumber, range } from "../../Helpers/Misc";
 import Mods from "../../Helpers/Mods";
+import { useEffect, useState } from "react";
+import Loader from "../UI/Loader";
 
 function SectionDetailedGraphs(props) {
     if (props.user == null) return (<></>);
@@ -12,33 +14,18 @@ function SectionDetailedGraphs(props) {
                 These graphs go very in-depth and may be hard to read and/or comprehend. <br />
                 This is primarily meant for players who like to play with the lazer mod settings etc. and for graphs that don&apos;t fit the criteria for the other graph section.
             </Alert>
-            {/* <Stack direction='column' spacing={2} sx={{
-                    width: '100%',
-                }}>
-                    <Typography variant='h5'>Rate change spread</Typography>
-                    <Box sx={{ height: 200 }}>
-                        <SectionDetailedGraphsRateChangeSpread rateChangeSpread={props.user.data.ultra_detailed.rate_change_spread} />
-                    </Box>
-                    <Divider />
-                    <Typography variant='h5'>Session time spread</Typography>
-                    <Box sx={{ height: 200 }}>
-                        <SectionDetailedGraphsSessionTimeSpread sessionTimeSpread={props.user.data.ultra_detailed.session_time_spread} />
-                    </Box>
-                    <Divider />
-                    <Typography variant='h5'>Average rate change per star rating</Typography>
-                    <Box sx={{ height: 200 }}>
-                        <SectionDetailedGraphsRateChangeStarsSpread rate_change_to_stars_spread={props.user.data.ultra_detailed.rate_change_to_stars_spread} />
-                    </Box>
-                    <Divider />
-                    <Typography variant='h5'>Mod spread</Typography>
-                    <Box sx={{ height: 200 }}>
-                        <SectionDetailedGraphsModSpread modSpread={props.user.data.ultra_detailed.mod_spread} />
-                    </Box>
-                </Stack> */}
             <Box sx={{
                 m: 1,
             }}>
                 <Grid2 container spacing={2}>
+                    <Grid2 item size={{ xs: 12 }}>
+                        <Paper sx={{ p: 2 }}>
+                            <Typography variant='h5'>Top plays</Typography>
+                            <Box sx={{ height: 250, width: '100%' }}>
+                                <SectionDetailedGraphsTopPlays scores={props.user.scores} />
+                            </Box>
+                        </Paper>
+                    </Grid2>
                     <Grid2 item size={{ xs: 12 }}>
                         <Paper sx={{ p: 2 }}>
                             <Typography variant='h5'>Rate change spread</Typography>
@@ -72,6 +59,170 @@ function SectionDetailedGraphs(props) {
                         </Paper>
                     </Grid2>
                 </Grid2>
+            </Box>
+        </>
+    )
+}
+
+const TOP_PLAY_GRAPH_DATA = [
+    {
+        name: 'Performance',
+        data_points: [
+            {
+                name: 'Performance',
+                path: 'pp',
+                size: 4
+            }
+        ],
+        formatter: (value) => `${formatNumber(value)}pp`
+    },
+    {
+        name: 'Stars',
+        data_points: [
+            {
+                name: 'Starrating',
+                path: 'beatmap.difficulty.star_rating',
+                size: 4
+            },
+            {
+                name: 'Aim',
+                path: 'beatmap.difficulty.aim_difficulty',
+                size: 1
+            }, {
+                name: 'Speed',
+                path: 'beatmap.difficulty.speed_difficulty',
+                size: 1
+            }
+        ],
+        formatter: (value) => `${value.toFixed(2)}*`
+    },
+    {
+        name: 'Strain',
+        data_points: [
+            {
+                name: 'Aim',
+                path: 'beatmap.difficulty.aim_difficult_strain_count',
+                size: 1
+            }, {
+                name: 'Speed',
+                path: 'beatmap.difficulty.speed_difficult_strain_count',
+                size: 1
+            }
+        ],
+        formatter: (value) => `${value.toFixed(2)}`
+    },
+    {
+        name: 'Accuracy',
+        data_points: [
+            {
+                name: 'Accuracy',
+                path: 'accuracy',
+            }
+        ],
+        formatter: (value) => `${value.toFixed(2)}%`
+    },
+    {
+        name: 'Length',
+        data_points: [
+            {
+                name: 'Length',
+                path: 'beatmap.modded_length',
+            }
+        ],
+        formatter: (value) => `${value.toFixed(0)}s`
+    }
+]
+const TOP_PLAYS_COUNT = 200;
+function SectionDetailedGraphsTopPlays(props) {
+    const [activeGraph, setActiveGraph] = useState(0);
+    const [graphData, setGraphData] = useState(null);
+    const [scoresSubset, setScoresSubset] = useState(null);
+
+    useEffect(() => {
+        if (props.scores) {
+            //if loved, assume 0 pp
+            props.scores.sort((a, b) => b.pp - a.pp);
+            let topScores = props.scores.slice(0, TOP_PLAYS_COUNT);
+            setScoresSubset(topScores);
+        }
+    }, [])
+
+    useEffect(() => {
+        if (!scoresSubset) return;
+
+        let graph = TOP_PLAY_GRAPH_DATA[activeGraph];
+        let data_points = graph.data_points;
+
+        let series = [];
+
+        for (let i = 0; i < data_points.length; i++) {
+            series[i] = {
+                name: data_points[i].name,
+                data: [],
+            }
+        }
+
+        for (let i = 0; i < scoresSubset.length; i++) {
+            let score = scoresSubset[i];
+            for (let j = 0; j < graph.data_points.length; j++) {
+                let data_point = graph.data_points[j];
+                let value = _.get(score, data_point.path) || 0;
+
+                series[j].data.push(value);
+            }
+        }
+        setGraphData(series);
+        console.log(series);
+    }, [activeGraph, scoresSubset]);
+
+    if (!graphData) return <Loader />;
+
+    return (
+        <>
+            <ChartWrapper
+                height='200px'
+                style={{ margin: '0' }}
+                options={{
+                    chart: {
+                        id: "top-plays",
+                    },
+                    xaxis: {
+                        labels: {
+                            rotate: -90,
+                            style: {
+                                fontSize: '9px'
+                            }
+                        },
+                        categories: range(TOP_PLAYS_COUNT, 1).map((i) => `#${i}`)
+                    },
+                    dataLabels: {
+                        //rotate the labels
+                        enabled: false,
+                        formatter: TOP_PLAY_GRAPH_DATA[activeGraph].formatter || null
+                    },
+                    yaxis: {
+                        labels: {
+                            formatter: TOP_PLAY_GRAPH_DATA[activeGraph].formatter || null
+                        }
+                    },
+                    stroke: {
+                        width: TOP_PLAY_GRAPH_DATA[activeGraph].data_points.map((obj) => obj.size || 4)
+                    }
+                }}
+                series={graphData}
+            />
+            <Box>
+                {
+                    TOP_PLAY_GRAPH_DATA.map((graph, i) => {
+                        return <Button
+                            key={i}
+                            onClick={() => setActiveGraph(i)}
+                            variant={i === activeGraph ? 'contained' : 'outlined'}
+                            sx={{ m: 0.5 }}
+                            size='small'
+                        >{graph.name}</Button>
+                    })
+                }
             </Box>
         </>
     )
