@@ -44,6 +44,7 @@ export function GetFormattedName(inspector_user, settings = null) {
                             borderRadius: '5px',
                             textDecoration: 'none'
                         }}
+                            team={inspector_user.team}
                             user_id={inspector_user.osu_id}
                             roleIcons={Array.isArray(inspector_user.roles) && GetRoleIcons(inspector_user.roles)}
                             avatar={_settings.show_avatar ? <Avatar alt={name} src={`https://a.ppy.sh/${inspector_user.osu_id}`} /> : null}
@@ -59,6 +60,7 @@ export function GetFormattedName(inspector_user, settings = null) {
                             borderRadius: '5px',
                             textDecoration: 'none'
                         }}
+                            team={inspector_user.team}
                             user_id={inspector_user.osu_id}
                             roleIcons={Array.isArray(inspector_user.roles) && GetRoleIcons(inspector_user.roles)}
                             avatar={_settings.show_avatar ? <Avatar alt={name} src={`https://a.ppy.sh/${inspector_user.osu_id}`} /> : null}

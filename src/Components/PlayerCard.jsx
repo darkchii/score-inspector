@@ -92,6 +92,11 @@ function PlayerCard(props) {
                                                 alt={props.user.osu?.country_code} 
                                                 style={{ height: '1em', borderRadius: '5px'}} 
                                             />
+                                            {
+                                                props.user?.inspector_user?.team && <>
+                                                    <span style={{color: props.user?.inspector_user?.team?.color, fontWeight: 'bold'}}>[{props.user?.inspector_user?.team?.short_name}] </span>
+                                                </>
+                                            }
                                             {props.user.osu?.username}
                                         </Typography>
                                         {

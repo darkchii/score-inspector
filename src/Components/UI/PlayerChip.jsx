@@ -50,6 +50,11 @@ function PlayerChip(props) {
             }}>
                 {AvatarClone}
                 <Typography variant={props.variant}>
+                    {
+                        props.team && <>
+                            <span style={{ color: props.team.color, fontWeight: 'bold' }}>[{props.team.short_name}] </span>
+                        </>
+                    }
                     {props.label}
                 </Typography>
                 {

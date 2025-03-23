@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import Loader from "../Components/UI/Loader";
 import axios from "axios";
-import { GetAPI, formatNumberAsSize } from "../Helpers/Misc";
+import { GetAPI, formatNumber, formatNumberAsSize } from "../Helpers/Misc";
 import { Alert, Box, Button, ButtonGroup, Pagination, Stack, Typography, useTheme } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
@@ -197,7 +197,7 @@ function RouteLeadersScore() {
                                                             {
                                                                 value: (
                                                                     <span>
-                                                                        {item.ranked_score.toLocaleString('en-US')}
+                                                                        {formatNumber(Number(item.ranked_score), 0)}
                                                                         <span>
                                                                             <Typography color={
                                                                                 (ranked_score_diff ?? 0) > 0 ? green[400] : grey[400]

@@ -163,6 +163,11 @@ function PlayerLeaderboardItem(props) {
                 }}>
                     <Stack direction='row' spacing={1} alignItems='center'>
                         <Typography variant='body1' noWrap>
+                            {
+                                inspector_user?.team && <>
+                                    <span style={{ color: inspector_user?.team?.color, fontWeight: 'bold' }}>[{inspector_user?.team?.short_name}] </span>
+                                </>
+                            }
                             {base_user?.username ?? 'Unknown'}
                         </Typography>
                         {GetRoleIcons(inspector_user?.roles ?? [])}

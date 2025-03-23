@@ -71,6 +71,11 @@ function SectionHeader(props) {
                             <Grid2 size={8.5}>
                                 <Stack direction='row' spacing={1}>
                                     <Typography variant='h4'>
+                                        {
+                                            props.user?.inspector_user?.team && <>
+                                                <span style={{ color: props.user?.inspector_user?.team?.color, fontWeight: 'bold' }}>[{props.user?.inspector_user?.team?.short_name}] </span>
+                                            </>
+                                        }
                                         {props.user.osu.username}{
                                             props.user.inspector_user !== undefined ? <>
                                                 {
