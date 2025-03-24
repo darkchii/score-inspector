@@ -63,6 +63,8 @@ class Beatmap extends SerializableObject {
         this.modded_bpm = this.bpm;
         this.approved_date_moment = moment(this.approved_date);
 
+        this.packs = data.packs ?? [];
+
         if (mods) {
             this.modded_length /= mods.speed;
             this.modded_bpm *= mods.speed;

@@ -12,6 +12,7 @@ import { GetLoginID, GetVisitors, IsUserLoggedIn, UpdateVisitor } from '../Helpe
 import { GetAPI, formatBytes, formatNumber } from '../Helpers/Misc';
 import axios from 'axios';
 import { useLocation, useParams } from 'react-router';
+import Beatmap from '../Models/Beatmap';
 
 function RouteUser() {
     const [user, setUser] = useState(null);
@@ -122,8 +123,12 @@ function RouteUser() {
                 };
 
                 setLoadingState('Fetching beatmaps');
-                const beatmaps = (await axios.get(`${GetAPI()}beatmaps/all?mode=0&approved=1,2,4`))?.data;
-                user_out.beatmaps = beatmaps;
+                const beatmaps = (await axios.get(`${GetAPI()}beatmaps/all?mode=0&approved=1,2,4&compact=true`))?.data;
+                user_out.beatmaps = {};
+
+                for (let i = 0; i < beatmaps.length; i++) {
+                    user_out.beatmaps[beatmaps[i].beatmap_id] = new Beatmap(beatmaps[i]);
+                }
 
                 setLoadingState('Processing user scores');
                 let _data;

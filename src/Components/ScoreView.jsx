@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { formatNumber } from '../Helpers/Misc';
 import { getHitsFromAccuracy } from '../Helpers/Osu';
 import { getCalculator } from '../Helpers/Performance/Performance';
-import { green, red } from '@mui/material/colors';
+import { blue, green, red } from '@mui/material/colors';
 import Mods from '../Helpers/Mods';
 import ScoreDial from './ScoreDial';
 import StarsLabel from './StarsLabel';
@@ -27,7 +27,6 @@ function ScoreView(props) {
 
     async function applyScore(pp_version, score, beatmap) {
         let _score = score.duplicate();
-        console.log(_score);
         const _scoreData = {};
 
         _score.beatmap = beatmap.duplicate();
@@ -53,6 +52,7 @@ function ScoreView(props) {
         pp["80%"] = getCalculator(pp_version ?? 'live', { statistics: _score.maximum_statistics, accuracy: 0.80, score: _score, combo: beatmap.maxcombo, count300: accHits["80%"].count300, count100: accHits["80%"].count100, count50: accHits["80%"].count50, countmiss: accHits["80%"].countmiss });
         _scoreData.pp = pp;
 
+        console.log(_scoreData);
         setScoreData(_scoreData);
     }
 
@@ -150,7 +150,7 @@ function ScoreView(props) {
                                             <div className='score-stats__group score-stats__group--stats'>
                                                 <div className='score-stats__group-row'>
                                                     <ScoreViewStat
-                                                    //compared to star_rating
+                                                        //compared to star_rating
                                                         progress={1 / (beatmapData.difficulty_data?.star_rating ?? 0) * (scoreData.difficulty_data?.relative_aim_difficulty ?? 0)}
                                                         valueIcon={Mods.hasMod(scoreData.score.mods, "AP") ? undefined : <StarIcon sx={{ fontSize: '1em' }} />}
                                                         label='Aim Rating' irrelevant={Mods.hasMod(scoreData.score.mods, "AP")}
@@ -215,6 +215,51 @@ function ScoreView(props) {
                                                         label="Combo Scaling Removal"
                                                     />
                                                 </OsuTooltip>
+                                            </div>
+                                            {/* aim/speed */}
+                                            <div style={{ display: 'flex', width: '100%', borderRadius: '5px', overflow: 'hidden' }}>
+                                                {
+                                                    scoreData.difficulty_data?.relative_aim_difficulty > 0 &&
+                                                    //% tooltip
+                                                    <OsuTooltip title={`${(scoreData.difficulty_data?.relative_aim_difficulty / (scoreData.difficulty_data?.relative_aim_difficulty + scoreData.difficulty_data?.relative_speed_difficulty) * 100).toFixed(2)}% Aim`} placement="top">
+                                                        <div style={{
+                                                            //center the text
+                                                            display: 'flex',
+                                                            justifyContent: 'center',
+                                                            alignItems: 'center',
+                                                            backgroundColor: `${blue[800]}77`,
+                                                            height: '40px',
+                                                            width: `${100 / (scoreData.difficulty_data?.relative_aim_difficulty + scoreData.difficulty_data?.relative_speed_difficulty) * scoreData.difficulty_data?.relative_aim_difficulty}%`,
+                                                        }}>
+                                                            <span style={{
+                                                                //bold if its the higher value
+                                                                fontWeight: scoreData.difficulty_data?.relative_aim_difficulty > scoreData.difficulty_data?.relative_speed_difficulty ? 'bold' : undefined,
+                                                            }}>
+                                                                Aim
+                                                            </span>
+                                                        </div>
+                                                    </OsuTooltip>
+                                                }
+                                                {
+                                                    scoreData.difficulty_data?.relative_speed_difficulty > 0 &&
+                                                    //% tooltip
+                                                    <OsuTooltip title={`${(scoreData.difficulty_data?.relative_speed_difficulty / (scoreData.difficulty_data?.relative_aim_difficulty + scoreData.difficulty_data?.relative_speed_difficulty) * 100).toFixed(2)}% Speed`} placement="top">
+                                                        <div style={{
+                                                            display: 'flex',
+                                                            justifyContent: 'center',
+                                                            alignItems: 'center',
+                                                            backgroundColor: `${red[500]}77`,
+                                                            height: '40px',
+                                                            width: `${100 / (scoreData.difficulty_data?.relative_aim_difficulty + scoreData.difficulty_data?.relative_speed_difficulty) * scoreData.difficulty_data?.relative_speed_difficulty}%`,
+                                                        }}>
+                                                            <span style={{
+                                                                fontWeight: scoreData.difficulty_data?.relative_speed_difficulty > scoreData.difficulty_data?.relative_aim_difficulty ? 'bold' : undefined,
+                                                            }}>
+                                                                Speed
+                                                            </span>
+                                                        </div>
+                                                    </OsuTooltip>
+                                                }
                                             </div>
                                         </div>
                                     </Grid2>
@@ -437,7 +482,14 @@ function ScoreView(props) {
                                                             gap: 1,
                                                         }}>
                                                             <Avatar variant="rounded" src={`https://a.ppy.sh/${scoreData.score.user_id}`} />
-                                                            <Typography variant='subtitle1'>{scoreData.score.user.username}</Typography>
+                                                            <Typography variant='subtitle1'>
+                                                                {
+                                                                    scoreData.score.user.inspector_user?.team && <>
+                                                                        <span style={{ color: scoreData.score.user.inspector_user?.team?.color, fontWeight: 'bold' }}>[{scoreData.score.user.inspector_user?.team?.short_name}] </span>
+                                                                    </>
+                                                                }
+                                                                {scoreData.score.user.inspector_user.known_username}
+                                                            </Typography>
                                                         </Box>
                                                     </RLink>
                                                     <Box>

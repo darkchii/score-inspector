@@ -72,6 +72,12 @@ const TOP_PLAY_GRAPH_DATA = [
                 name: 'Performance',
                 path: 'pp',
                 size: 4
+            },
+            {
+                name: 'Performance (if FC)',
+                // path: 'recalc['fc']?.total',
+                path: 'recalc.fc.total',
+                size: 1
             }
         ],
         formatter: (value) => `${formatNumber(value)}pp`
@@ -103,7 +109,31 @@ const TOP_PLAY_GRAPH_DATA = [
                 name: 'Speed',
                 path: 'beatmap.difficulty.speed_difficulty',
                 size: 1
+            }, {
+                name: 'Flashlight',
+                path: 'beatmap.difficulty.flashlight_difficulty',
+                size: 1
             }
+        ],
+        formatter: (value) => `${value.toFixed(2)}*`
+    },
+    {
+        name: 'Unmodded Difficulty',
+        data_points: [
+            {
+                name: 'Starrating',
+                path: 'beatmap.stars',
+                size: 4
+            },
+            {
+                name: 'Aim',
+                path: 'beatmap.diff_aim',
+                size: 1
+            }, {
+                name: 'Speed',
+                path: 'beatmap.diff_speed',
+                size: 1
+            },
         ],
         formatter: (value) => `${value.toFixed(2)}*`
     },
@@ -141,6 +171,17 @@ const TOP_PLAY_GRAPH_DATA = [
             }, {
                 name: 'Speed',
                 path: 'beatmap.difficulty.speed_difficult_strain_count',
+                size: 1
+            }
+        ],
+        formatter: (value) => `${value.toFixed(2)}`
+    },
+    {
+        name: 'Slider Factor',
+        data_points: [
+            {
+                name: 'Slider Factor',
+                path: 'beatmap.difficulty.slider_factor',
                 size: 1
             }
         ],

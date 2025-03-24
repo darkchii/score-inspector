@@ -63,8 +63,9 @@ function SectionPacks(props) {
             });
 
             props.user.scores?.forEach(score => {
-                if (score.beatmap && score.beatmap.packs) {
-                    let packs = score.beatmap.packs?.map(pack => pack.pack_id) ?? [];
+                if (score.beatmap && props.user.beatmaps[score.beatmap.beatmap_id]) {
+                    // let packs = score.beatmap.packs?.map(pack => pack.pack_id) ?? [];
+                    let packs = props.user.beatmaps[score.beatmap.beatmap_id].packs?.map(pack => pack.pack_id) ?? [];
                     packs.forEach(pack => {
                         _standardPacks.forEach(_pack => {
                             if (_pack.pack_id === pack) {
@@ -126,7 +127,7 @@ function SectionPacks(props) {
             //     include_loved: true,
             //     pack: selectedPack.pack_id
             // }))?.data;
-            const beatmaps = props.user.beatmaps?.filter(beatmap => {
+            const beatmaps = Object.values(props.user.beatmaps)?.filter(beatmap => {
                 if (beatmap.packs) {
                     let packs = beatmap.packs?.map(pack => pack.pack_id) ?? [];
                     return packs.includes(selectedPack.pack_id);

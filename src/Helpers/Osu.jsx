@@ -392,7 +392,7 @@ export async function getBeatmap(beatmap_id, mods_enum = null) {
 export function getBeatmapPacks(beatmaps) {
     //get array of all beatmap pack ids (and beatmap count for each pack)
     let packs = {};
-    beatmaps.forEach(beatmap => {
+    Object.values(beatmaps).forEach(beatmap => {
         if(beatmap.packs && beatmap.packs.length > 0){
             beatmap.packs.forEach(pack => {
                 // const localPack = packs.find(p => p.pack_id === pack);

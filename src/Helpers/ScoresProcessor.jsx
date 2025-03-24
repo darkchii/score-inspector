@@ -19,7 +19,6 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
     onScoreProcessUpdate('Preparing scores');
     await sleep(FEEDBACK_SLEEP_TIME);
     scores = prepareScores(user, scores);
-    const beatmaps = user.beatmaps.map(beatmap => new Beatmap(beatmap));
 
     const data = {
         grades: {
@@ -55,7 +54,6 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
         },
         allow_loved: allow_loved,
         latest_scores: [],
-        beatmaps: beatmaps,
     };
 
     onScoreProcessUpdate('Calculating performance');
@@ -130,7 +128,7 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
     onScoreProcessUpdate('Beatmap counts');
     await sleep(FEEDBACK_SLEEP_TIME);
     data.beatmaps_counts = (await axios.get(`${GetAPI()}beatmaps/count_periodic?include_loved=true`))?.data;
-    data.beatmaps_count_total = beatmaps.length;
+    data.beatmaps_count_total = Object.keys(user.beatmaps).length;
 
     onScoreProcessUpdate('Periodic data');
     await sleep(FEEDBACK_SLEEP_TIME);
@@ -163,7 +161,7 @@ export async function processScores(user, scores, onCallbackError, onScoreProces
     if(!user.inspector_user.is_completion_mode){
         onScoreProcessUpdate('Completion data');
         await sleep(FEEDBACK_SLEEP_TIME);
-        data.completion = await getCompletionData(scores, beatmaps);
+        data.completion = await getCompletionData(scores, Object.values(user.beatmaps));
     }
 
     return data;
