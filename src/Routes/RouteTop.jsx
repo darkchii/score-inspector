@@ -188,7 +188,14 @@ function RouteTop() {
                                                                             <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                                                                                 <Box>
                                                                                     <Typography variant='body1'>
-                                                                                        By <Typography component={Link} variant='body1' sx={{ textDecoration: 'none' }} color='primary' to={`/user/${score.user_id}`}>{score.user.username}</Typography> <OsuTooltip title={moment(score.date_played).format('HH:mm MMMM Do, YYYY')}>{moment(score.date_played).fromNow()}</OsuTooltip>
+                                                                                        By <Typography component={Link} variant='body1' sx={{ textDecoration: 'none' }} color='primary' to={`/user/${score.user_id}`}>
+                                                                                            {
+                                                                                                score.user.inspector_user?.team && <>
+                                                                                                    <span style={{ color: score.user.inspector_user?.team?.color, fontWeight: 'bold' }}>[{score.user.inspector_user?.team?.short_name}] </span>
+                                                                                                </>
+                                                                                            }
+                                                                                            {score.user.inspector_user?.known_username}
+                                                                                        </Typography> <OsuTooltip title={moment(score.date_played).format('HH:mm MMMM Do, YYYY')}>{moment(score.date_played).fromNow()}</OsuTooltip>
                                                                                     </Typography>
                                                                                     <Box sx={{
                                                                                         display: 'flex',

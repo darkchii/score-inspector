@@ -26,9 +26,9 @@ class Score extends SerializableObject {
         this.rank = data.rank;
 
         if (user?.alt) {
-            this.is_unique_ss = user.alt.unique_ss.includes(this.beatmap_id);
-            this.is_unique_fc = user.alt.unique_fc.includes(this.beatmap_id);
-            this.is_unique_dt_fc = user.alt.unique_dt_fc.includes(this.beatmap_id);
+            this.is_unique_ss = user.alt.unique_ss?.includes(this.beatmap_id);
+            this.is_unique_fc = user.alt.unique_fc?.includes(this.beatmap_id);
+            this.is_unique_dt_fc = user.alt.unique_dt_fc?.includes(this.beatmap_id);
         }
 
         this.accuracy = parseFloat(data.accuracy);
