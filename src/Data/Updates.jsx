@@ -13,6 +13,17 @@ const PLATFORMTYPES = {
 
 const updates = [
     {
+        version: '3.4.1',
+        date: '2025-03-24',
+        changes: [
+            [PLATFORMTYPES.WEB, CHANGETYPES.NEW, 'Added (colored) team tags', '481b16fe6b21e035494ed926369937e8973cb0b1'],
+            [PLATFORMTYPES.API, CHANGETYPES.NEW, 'Reduce the response size of full beatmap fetch on user profile', 'cfb27c14dc40aabdbcfe882a038945cd801ca950'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.MISC, 'Added aim/speed share on ScoreView', 'a4f5818ed5f954e65d853b775e58f723cdc3eff8'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.MISC, 'Created models that deal with the given data', 'a8d155dcc17095151f7eb00a8e2fda834c743398'],
+            [PLATFORMTYPES.WEB, CHANGETYPES.REMOVE, 'Population data removed', '3cdd00269ce91f3cee24ea526f85d05a77e4fa92'],
+        ]
+    },
+    {
         version: '3.4.0',
         date: '2025-03-06',
         changes: [
