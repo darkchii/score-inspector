@@ -7,6 +7,7 @@ class BeatmapDifficultyInfo {
             return mid + (max - mid) * BeatmapDifficultyInfo.DifficultyRange(difficulty);
         if (difficulty < 5)
             return mid + (mid - min) * BeatmapDifficultyInfo.DifficultyRange(difficulty);
+        return mid;
     }
 }
 

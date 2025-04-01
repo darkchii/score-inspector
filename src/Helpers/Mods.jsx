@@ -183,7 +183,7 @@ class Mods {
         for (const mod of mods.mods_data) {
             if(Mods.isModSpeedChange(mod)){
                 let freqAdjust = 1;
-                let tempoAdjust = mod.settings?.speed_change ?? freqAdjust;
+                let tempoAdjust = mod.settings?.speed_change ?? Mods.getDefaultSpeedChange(mod);
 
                 freq *= freqAdjust;
                 tempo *= tempoAdjust;

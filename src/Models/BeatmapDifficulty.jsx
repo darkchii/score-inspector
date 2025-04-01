@@ -1,4 +1,7 @@
 import Mods from "../Helpers/Mods";
+import BeatmapDifficultyInfo from "../Helpers/Performance/BeatmapDifficultyInfo";
+import HitResult from "../Helpers/Performance/HitResult";
+import OsuHitWindows from "../Helpers/Performance/Standard/OsuHitWindows";
 import SerializableObject from "./SerializableObject";
 
 const ar_ms_step1 = 120;
@@ -46,115 +49,105 @@ class BeatmapDifficulty extends SerializableObject {
     }
 
     static applyMods(beatmapDifficulty, beatmap, mods) {
-        let speed = mods.speed;
+        let od = 1;
+        let od_multiplier = 1;
+        
+        if (Mods.hasMod(mods, "HR")) {
+            od_multiplier = 1.4;
+        } else if (Mods.hasMod(mods, "EZ")) {
+            od_multiplier = 0.5;
+        }
+        
+        let original_od = beatmap.od;
+        if (Mods.hasMod(mods, "DA") && Mods.containsSetting(mods, "overall_difficulty")) {
+            original_od = Mods.getModSetting(mods, "DA", "overall_difficulty");
+        }
+        original_od = Number(original_od);
+        
+        od = original_od * od_multiplier;
+        
+        if (Mods.hasMod(mods, "HR")) {
+            if (od > 10) od = 10;
+        }
+        
+        beatmapDifficulty.clockRate = Mods.getClockRate(mods);
+        beatmapDifficulty.hitWindows = new OsuHitWindows();
+        beatmapDifficulty.hitWindows.SetDifficulty(od);
 
-        if (!beatmapDifficulty.approach_rate) {
-            let ar_multiplier = 1;
-            let ar;
-            let ar_ms;
+        beatmapDifficulty.greatHitWindow = beatmapDifficulty.hitWindows.WindowFor(HitResult.Great) / beatmapDifficulty.clockRate;
+        beatmapDifficulty.okHitWindow = beatmapDifficulty.hitWindows.WindowFor(HitResult.Ok) / beatmapDifficulty.clockRate;
+        beatmapDifficulty.mehHitWindow = beatmapDifficulty.hitWindows.WindowFor(HitResult.Meh) / beatmapDifficulty.clockRate;
 
-            if (Mods.hasMod(mods, "HR")) {
-                ar_multiplier = 1.4;
-            } else if (Mods.hasMod(mods, "EZ")) {
-                ar_multiplier = 0.5;
-            }
+        beatmapDifficulty.overall_difficulty = (80 - beatmapDifficulty.greatHitWindow) / 6;
 
-            let original_ar = beatmap.ar;
-            if (Mods.hasMod(mods, "DA") && Mods.containsSetting(mods, "approach_rate")) {
-                original_ar = Mods.getModSetting(mods, "DA", "approach_rate");
-            }
-            original_ar = Number(original_ar);
+        let ar_multiplier = 1;
+        let ar;
 
-            ar = original_ar * ar_multiplier;
-
-            if (ar <= 5)
-                ar_ms = ar0_ms - ar_ms_step1 * ar;
-            else
-                ar_ms = ar5_ms - ar_ms_step2 * (ar - 5);
-
-            ar_ms /= speed;
-
-            if (ar <= 5)
-                ar = (ar0_ms - ar_ms) / ar_ms_step1;
-            else
-                ar = 5 + (ar5_ms - ar_ms) / ar_ms_step2;
-
-            beatmapDifficulty.approach_rate = ar;
+        if (Mods.hasMod(mods, "HR")) {
+            ar_multiplier = 1.4;
+        } else if (Mods.hasMod(mods, "EZ")) {
+            ar_multiplier = 0.5;
         }
 
-        if (!beatmapDifficulty.circle_size) {
-            let cs = 1;
-            let cs_multiplier = 1;
+        let original_ar = beatmap.ar;
+        if (Mods.hasMod(mods, "DA") && Mods.containsSetting(mods, "approach_rate")) {
+            original_ar = Mods.getModSetting(mods, "DA", "approach_rate");
+        }
+        original_ar = Number(original_ar);
 
-            if (Mods.hasMod(mods, "HR")) {
-                cs_multiplier = 1.3;
-            } else if (Mods.hasMod(mods, "EZ")) {
-                cs_multiplier = 0.5;
-            }
+        ar = original_ar * ar_multiplier;
 
-            let original_cs = beatmap.cs;
-            if (Mods.hasMod(mods, "DA") && Mods.containsSetting(mods, "circle_size")) {
-                original_cs = Mods.getModSetting(mods, "DA", "circle_size");
-            }
-            original_cs = Number(original_cs);
+        if (Mods.hasMod(mods, "HR")) {
+            if (ar > 10) ar = 10;
+        }
+        beatmapDifficulty.approach_rate_before_rate_change = ar;
 
-            cs = original_cs * cs_multiplier;
+        let preempt = BeatmapDifficultyInfo.DifficultyRange(ar, 1800, 1200, 450) / beatmapDifficulty.clockRate;
+        beatmapDifficulty.preempt = preempt;
 
-            if (cs > 10) cs = 10;
+        beatmapDifficulty.approach_rate = preempt > 1200 ? (1800 - preempt) / 120 : (1200 - preempt) / 150 + 5;
 
-            beatmapDifficulty.circle_size = cs;
+        let cs = 1;
+        let cs_multiplier = 1;
+
+        if (Mods.hasMod(mods, "HR")) {
+            cs_multiplier = 1.3;
+        } else if (Mods.hasMod(mods, "EZ")) {
+            cs_multiplier = 0.5;
         }
 
-        if (!beatmapDifficulty.overall_difficulty) {
-            let od = 1;
-            let odms = 1;
-            let od_multiplier = 1;
+        let original_cs = beatmap.cs;
+        if (Mods.hasMod(mods, "DA") && Mods.containsSetting(mods, "circle_size")) {
+            original_cs = Mods.getModSetting(mods, "DA", "circle_size");
+        }
+        original_cs = Number(original_cs);
 
-            if (Mods.hasMod(mods, "HR")) {
-                od_multiplier = 1.4;
-            } else if (Mods.hasMod(mods, "EZ")) {
-                od_multiplier = 0.5;
-            }
+        cs = original_cs * cs_multiplier;
 
-            let original_od = beatmap.od;
-            if (Mods.hasMod(mods, "DA") && Mods.containsSetting(mods, "overall_difficulty")) {
-                original_od = Mods.getModSetting(mods, "DA", "overall_difficulty");
-            }
-            original_od = Number(original_od);
+        if (cs > 10) cs = 10;
 
-            od = original_od * od_multiplier;
-            odms = od0_ms - Math.ceil(od_ms_step * od);
-            odms = Math.min(od0_ms, Math.max(od10_ms, odms));
+        beatmapDifficulty.circle_size = cs;
 
-            odms /= speed;
+        let hp = 1;
+        let hp_multiplier = 1;
 
-            od = (od0_ms - odms) / od_ms_step;
-
-            beatmapDifficulty.overall_difficulty = od;
+        if (Mods.hasMod(mods, "HR")) {
+            hp_multiplier = 1.4;
+        } else if (Mods.hasMod(mods, "EZ")) {
+            hp_multiplier = 0.5;
         }
 
-        if (!beatmapDifficulty.drain_rate) {
-            let hp = 1;
-            let hp_multiplier = 1;
-
-            if (Mods.hasMod(mods, "HR")) {
-                hp_multiplier = 1.4;
-            } else if (Mods.hasMod(mods, "EZ")) {
-                hp_multiplier = 0.5;
-            }
-
-            let original_hp = beatmap.hp;
-            if (Mods.hasMod(mods, "DA") && Mods.containsSetting(mods, "drain_rate")) {
-                original_hp = Mods.getModSetting(mods, "DA", "drain_rate");
-            }
-            original_hp = Number(original_hp);
-
-            hp = original_hp * hp_multiplier;
-
-            if (hp > 10) hp = 10;
-
-            beatmapDifficulty.drain_rate = hp;
+        let original_hp = beatmap.hp;
+        if (Mods.hasMod(mods, "DA") && Mods.containsSetting(mods, "drain_rate")) {
+            original_hp = Mods.getModSetting(mods, "DA", "drain_rate");
         }
+        original_hp = Number(original_hp);
+
+        hp = original_hp * hp_multiplier;
+
+        if (hp > 10) hp = 10;
+
+        beatmapDifficulty.drain_rate = hp;
     }
 }
 

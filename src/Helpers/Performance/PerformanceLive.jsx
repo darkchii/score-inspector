@@ -43,18 +43,12 @@ export function getPerformanceLive(data, combo_scaling_removal = true) {
     }
 
     if (data.difficulty_data) {
-        let clockRate = Mods.getClockRate(data.score.mods);
-        data.hitWindows = new OsuHitWindows();
-        data.hitWindows.SetDifficulty(data.difficulty_data.overall_difficulty);
+        data.greatHitWindow = data.difficulty_data.greatHitWindow;
+        data.okHitWindow = data.difficulty_data.okHitWindow;
+        data.mehHitWindow = data.difficulty_data.mehHitWindow;
 
-        data.greatHitWindow = data.hitWindows.WindowFor(HitResult.Great) / clockRate;
-        data.okHitWindow = data.hitWindows.WindowFor(HitResult.Ok) / clockRate;
-        data.mehHitWindow = data.hitWindows.WindowFor(HitResult.Meh) / clockRate;
-
-        let preempt = BeatmapDifficultyInfo.DifficultyRange(data.difficulty_data.approach_rate, 1800, 1200, 450) / clockRate;
-
-        data.overallDifficulty = (80 - data.greatHitWindow) / 6;
-        data.approachRate = preempt > 1200 ? (1800 - preempt) / 120 : (1200 - preempt) / 150 + 5;
+        data.overallDifficulty = data.difficulty_data.overall_difficulty;
+        data.approachRate = data.difficulty_data.approach_rate;
 
         if (data.sliderCount > 0) {
             if (data.usingClassicSliderAccuracy) {
@@ -107,7 +101,7 @@ export function getPerformanceLive(data, combo_scaling_removal = true) {
         acc: data.acc ?? 0,
         flashlight: data.flashlight ?? 0,
         total: data.total ?? 0,
-        hitWindows: data.hitWindows,
+        hitWindows: data.difficulty_data?.hitWindows,
         greatHitWindow: data.greatHitWindow,
         okHitWindow: data.okHitWindow,
         mehHitWindow: data.mehHitWindow,
@@ -206,7 +200,7 @@ function getAimValue(data, combo_scaling_removal = true) {
 }
 
 function getSpeedValue(data, combo_scaling_removal = true) {
-    if (Mods.hasMod(data.score.mods, "RX") || data.speedDeviation === null) {
+    if (Mods.hasMod(data.score.mods, "RX") || data.speedDeviation === null || isNaN(data.speedDeviation)) {
         return 0;
     }
 
