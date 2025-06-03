@@ -14,8 +14,16 @@ function TodayActivePlayers(props) {
         if (props.data && !props.data.error) {
             let graphData = [];
             for (let i = 0; i < 24; i++) {
-                let hour = props.data[i].hour; //in unix timestamp
-                let count = props.data[i].count;
+                let hour;
+                let count = 0;
+                if (props.data[i] && props.data[i].hour) {
+                    hour = props.data[i].hour; //in unix timestamp
+                    count = props.data[i].count;
+                }else{
+                    hour = new Date();
+                    hour.setHours(hour.getHours() - (24 - i)); //set to the past hour
+                    hour.setMinutes(0, 0, 0); //set minutes, seconds and milliseconds to 0
+                }
                 let time = new Date(hour);
                 graphData.push([time, count]);
             }
