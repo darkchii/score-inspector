@@ -141,6 +141,11 @@ function RouteIndex() {
                     Use this <Link href='https://github.com/darkchii/score-inspector-extension' target='_blank'>browser extension</Link> to integrate extra statistics into the official osu! website
                 </Alert>
             </Grid2>
+            <Grid2 sx={{ pb: 1 }}>
+                <Alert severity="warning">
+                    A rewrite is in the works to support all modes! Check out the osu!alternative Discord for more information, and to try the new bot.
+                </Alert>
+            </Grid2>
             <Grid2 container spacing={2}>
                 <Grid2 size={{ xs: 12, md: 9 }}>
                     <Stack spacing={2}>

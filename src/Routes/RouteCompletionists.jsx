@@ -59,8 +59,8 @@ function RouteCompletionists() {
                                                         completionists.filter((user) => user.mode === mode).sort((a, b) => a.scores - b.scores).sort((a, b) => new Date(a.completion_date) - new Date(b.completion_date)).map((user) => {
                                                             return (
                                                                 // <Typography>{GetFormattedName(user.user.inspector_user)}</Typography>
-                                                                (<TableRow key={user.user.osu_id}>
-                                                                    <TableCell>{GetFormattedName(user.user.inspector_user)}</TableCell>
+                                                                (<TableRow key={user.osu_id}>
+                                                                    <TableCell>{user.user?.inspector_user ? GetFormattedName(user.user.inspector_user) : <span>{user.osu_id} <span style={{fontStyle: 'italic'}}>(banned?)</span></span>}</TableCell>
                                                                     <TableCell>{user.completion_date}</TableCell>
                                                                     <TableCell>{user.scores.toLocaleString('en-US')}</TableCell>
                                                                 </TableRow>)
